@@ -41,7 +41,7 @@ class TestCalculationChain(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=attr1.id
         )
-        effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1,))
+        effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier1])
         modifier2 = DogmaModifier(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
@@ -49,7 +49,7 @@ class TestCalculationChain(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=attr2.id
         )
-        effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier2,))
+        effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier2])
         modifier3 = DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
@@ -57,9 +57,9 @@ class TestCalculationChain(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=attr3.id
         )
-        effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier3,))
+        effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier3])
         implant_item = Implant(self.ch.type(effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}).id)
-        ship_item = Ship(self.ch.type(effects=(effect3,), attributes={attr3.id: 150}).id)
+        ship_item = Ship(self.ch.type(effects=[effect3], attributes={attr3.id: 150}).id)
         rig_item = Rig(self.ch.type(attributes={attr4.id: 12.5}).id)
         self.fit.implants.add(implant_item)
         self.fit.ship = ship_item

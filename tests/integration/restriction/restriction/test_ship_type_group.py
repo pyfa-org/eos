@@ -44,7 +44,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_types, [10])
         self.assertCountEqual(restriction_error.allowed_groups, ())
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
@@ -84,7 +84,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_types, [10])
         self.assertCountEqual(restriction_error.allowed_groups, ())
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
@@ -103,7 +103,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, ())
-        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertCountEqual(restriction_error.allowed_groups, [38])
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
@@ -143,7 +143,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, ())
-        self.assertCountEqual(restriction_error.allowed_groups, (38,))
+        self.assertCountEqual(restriction_error.allowed_groups, [38])
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
@@ -164,8 +164,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_types, (1089,))
-        self.assertCountEqual(restriction_error.allowed_groups, (23,))
+        self.assertCountEqual(restriction_error.allowed_types, [1089])
+        self.assertCountEqual(restriction_error.allowed_groups, [23])
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
@@ -181,7 +181,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_types, (10,))
+        self.assertCountEqual(restriction_error.allowed_types, [10])
         self.assertCountEqual(restriction_error.allowed_groups, ())
         self.assertEqual(restriction_error.ship_type, None)
         self.assertEqual(restriction_error.ship_group, None)

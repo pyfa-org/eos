@@ -48,7 +48,7 @@ class TestTargetAttribute(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1, modifier2))
-        item = Rig(self.ch.type(effects=(effect,), attributes={
+        item = Rig(self.ch.type(effects=[effect], attributes={
             tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20
         }).id)
         # Action

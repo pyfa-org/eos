@@ -39,7 +39,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.src_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
+        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
 
     def test_independent(self):
         item = Ship(self.ch.type(effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}).id)

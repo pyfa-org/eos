@@ -68,7 +68,7 @@ class TestMapMethods(CalculatorTestCase):
             category=EffectCategory.passive, modifiers=(modifier1, modifier2, modifier3, modifier4)
         )
         self.item = Implant(self.ch.type(
-            effects=(effect,), attributes={self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4}
+            effects=[effect], attributes={self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4}
         ).id)
         self.fit.implants.add(self.item)
 
@@ -97,7 +97,7 @@ class TestMapMethods(CalculatorTestCase):
         # both attribute containers. First, values are not calculated
         self.assertEqual(len(self.item.attributes), 3)
         # Force calculation
-        self.calculate_attrs(special=(1008,))
+        self.calculate_attrs(special=[1008])
         # Length should change, as it now includes attr which had no
         # value on item but has default value
         self.assertEqual(len(self.item.attributes), 4)
@@ -116,7 +116,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertFalse(self.attr4.id in self.item.attributes)
         self.assertTrue(self.attr5.id in self.item.attributes)
         self.assertFalse(1008 in self.item.attributes)
-        self.calculate_attrs(special=(1008,))
+        self.calculate_attrs(special=[1008])
         self.assertTrue(self.attr1.id in self.item.attributes)
         self.assertTrue(self.attr2.id in self.item.attributes)
         self.assertTrue(self.attr3.id in self.item.attributes)
@@ -132,7 +132,7 @@ class TestMapMethods(CalculatorTestCase):
         # When we request map keys, they should include all unique
         # attribute IDs w/o duplication
         self.assertCountEqual(self.item.attributes.keys(), (self.attr1.id, self.attr2.id, self.attr5.id))
-        self.calculate_attrs(special=(1008,))
+        self.calculate_attrs(special=[1008])
         self.assertCountEqual(
             self.item.attributes.keys(),
             (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id)
@@ -147,7 +147,7 @@ class TestMapMethods(CalculatorTestCase):
         # takes any iterable - we just check its contents here,
         # w/o checking format of returned data
         self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr5.id))
-        self.calculate_attrs(special=(1008,))
+        self.calculate_attrs(special=[1008])
         self.assertCountEqual(self.item.attributes, (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id))
         # Cleanup
         # Log entries are unrelated to this test

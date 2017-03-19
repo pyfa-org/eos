@@ -137,7 +137,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         .armor.em, .armor.thermal, .armor.kinetic, .armor.explosive,
         .shield.em, .shield.thermal, .shield.kinetic, .shield.explosive
         If fit has no ship or some data cannot be fetched, corresponding attribs
-        will be set to None.
+            will be set to None.
         """
         ship_item = self._fit.ship
         try:
@@ -180,11 +180,11 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
 
         Optional arguments:
         item_filter -- when iterating over fit item, this function is called.
-        If evaluated as True, this item is taken into consideration, else not.
-        If argument is None, all items 'pass filter'. By default None.
+            If evaluated as True, this item is taken into consideration, else not.
+            If argument is None, all items 'pass filter'. By default None.
         target_resistances -- resistance profile to calculate effective volley.
-        Profile should contain em, thermal, kinetic and explosive attributes as
-        numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
+            Profile should contain em, thermal, kinetic and explosive attributes as
+            numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
 
         Return value:
         Object with em, thermal, kinetic, explosive and total attributes.
@@ -202,13 +202,13 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
 
         Optional arguments:
         item_filter -- when iterating over fit item, this function is called.
-        If evaluated as True, this item is taken into consideration, else not.
-        If argument is None, all items 'pass filter'. By default None.
+            If evaluated as True, this item is taken into consideration, else not.
+            If argument is None, all items 'pass filter'. By default None.
         target_resistances -- resistance profile to calculate effective dps.
-        Profile should contain em, thermal, kinetic and explosive attributes as
-        numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
+            Profile should contain em, thermal, kinetic and explosive attributes as
+            numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
         reload -- boolean flag, should reload be taken into consideration or not.
-        By default False.
+            By default False.
 
         Return value:
         Object with em, thermal, kinetic, explosive and total attributes.

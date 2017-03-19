@@ -41,8 +41,8 @@ class TestTgtDomainSkillrqDomainOther(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        source_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 20})
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        source_eve_type = self.ch.type(effects=[effect], attributes={src_attr.id: 20})
         influence_source = Rig(source_eve_type.id)
         # Action
         # Charge's container or module's charge can't be 'owner'

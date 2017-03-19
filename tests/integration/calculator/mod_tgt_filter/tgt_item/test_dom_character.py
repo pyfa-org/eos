@@ -40,7 +40,7 @@ class TestTgtItemDomainChar(CalculatorTestCase):
             src_attr=src_attr.id
         )
         self.influence_source = Rig(self.ch.type(
-            effects=(self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,)),),
+            effects=(self.ch.effect(category=EffectCategory.passive, modifiers=[modifier]),),
             attributes={src_attr.id: 20}
         ).id)
 

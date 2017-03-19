@@ -39,7 +39,7 @@ class TestDroneGroup(RestrictionTestCase):
         restriction_error = self.get_restriction_error(fit, item, Restriction.drone_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_groups, (4,))
+        self.assertCountEqual(restriction_error.allowed_groups, [4])
         self.assertEqual(restriction_error.drone_group, 56)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -57,7 +57,7 @@ class TestDroneGroup(RestrictionTestCase):
         restriction_error = self.get_restriction_error(fit, item, Restriction.drone_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_groups, (69,))
+        self.assertCountEqual(restriction_error.allowed_groups, [69])
         self.assertEqual(restriction_error.drone_group, 797)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -94,7 +94,7 @@ class TestDroneGroup(RestrictionTestCase):
         restriction_error = self.get_restriction_error(fit, item, Restriction.drone_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_groups, (1896,))
+        self.assertCountEqual(restriction_error.allowed_groups, [1896])
         self.assertEqual(restriction_error.drone_group, None)
         # Cleanup
         self.assertEqual(len(self.log), 0)

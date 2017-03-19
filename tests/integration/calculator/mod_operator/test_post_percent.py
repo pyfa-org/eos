@@ -39,12 +39,12 @@ class TestOperatorPostPercent(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source1 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
-        self.influence_source2 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 50}).id)
-        self.influence_source3 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: -90}).id)
-        self.influence_source4 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: -25}).id)
-        self.influence_source5 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 400}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        self.influence_source1 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
+        self.influence_source2 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 50}).id)
+        self.influence_source3 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: -90}).id)
+        self.influence_source4 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: -25}).id)
+        self.influence_source5 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 400}).id)
         self.influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(self.influence_source1)
         self.fit.implants.add(self.influence_source2)

@@ -63,7 +63,7 @@ class RahSimTestCase(IntegrationTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.heat_attr.id
         )
-        self.heat_effect = self.ch.effect(category=EffectCategory.overload, modifiers=(heat_modifier,))
+        self.heat_effect = self.ch.effect(category=EffectCategory.overload, modifiers=[heat_modifier])
         # Cleanup
         self.fit = Fit()
 

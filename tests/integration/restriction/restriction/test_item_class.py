@@ -218,7 +218,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_high_pass(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.hi_power, category=EffectCategory.passive)
-        item = ModuleHigh(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        item = ModuleHigh(self.ch.type(category=Category.module, effects=[slot_effect]).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -231,7 +231,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_high_fail_category(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.hi_power, category=EffectCategory.passive)
-        item = ModuleHigh(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        item = ModuleHigh(self.ch.type(category=1008, effects=[slot_effect]).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -245,7 +245,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_high_fail_slot(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
-        item = ModuleHigh(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        item = ModuleHigh(self.ch.type(category=1008, effects=[slot_effect]).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -260,7 +260,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_medium_pass(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
-        item = ModuleMed(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        item = ModuleMed(self.ch.type(category=Category.module, effects=[slot_effect]).id)
         fit.modules.med.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -273,7 +273,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_med_fail_category(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
-        item = ModuleMed(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        item = ModuleMed(self.ch.type(category=1008, effects=[slot_effect]).id)
         fit.modules.med.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -288,7 +288,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_med_fail_slot(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
-        item = ModuleMed(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        item = ModuleMed(self.ch.type(category=Category.module, effects=[slot_effect]).id)
         fit.modules.med.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -303,7 +303,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_low_pass(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.lo_power, category=EffectCategory.passive)
-        item = ModuleLow(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        item = ModuleLow(self.ch.type(category=Category.module, effects=[slot_effect]).id)
         fit.modules.low.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -316,7 +316,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_low_fail_category(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.lo_power, category=EffectCategory.passive)
-        item = ModuleLow(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        item = ModuleLow(self.ch.type(category=1008, effects=[slot_effect]).id)
         fit.modules.low.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -331,7 +331,7 @@ class TestItemClass(RestrictionTestCase):
     def test_module_low_fail_slot(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
-        item = ModuleLow(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        item = ModuleLow(self.ch.type(category=Category.module, effects=[slot_effect]).id)
         fit.modules.low.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -346,7 +346,7 @@ class TestItemClass(RestrictionTestCase):
     def test_rig_pass(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
-        item = Rig(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        item = Rig(self.ch.type(category=Category.module, effects=[slot_effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -359,7 +359,7 @@ class TestItemClass(RestrictionTestCase):
     def test_rig_fail_category(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
-        item = Rig(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        item = Rig(self.ch.type(category=1008, effects=[slot_effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -374,7 +374,7 @@ class TestItemClass(RestrictionTestCase):
     def test_rig_fail_slot(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
-        item = Rig(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        item = Rig(self.ch.type(category=Category.module, effects=[slot_effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -467,7 +467,7 @@ class TestItemClass(RestrictionTestCase):
     def test_subsystem_pass(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
-        item = Subsystem(self.ch.type(category=Category.subsystem, effects=(slot_effect,)).id)
+        item = Subsystem(self.ch.type(category=Category.subsystem, effects=[slot_effect]).id)
         fit.subsystems.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -480,7 +480,7 @@ class TestItemClass(RestrictionTestCase):
     def test_subsystem_fail_category(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
-        item = Subsystem(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        item = Subsystem(self.ch.type(category=1008, effects=[slot_effect]).id)
         fit.subsystems.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -495,7 +495,7 @@ class TestItemClass(RestrictionTestCase):
     def test_subsystem_fail_slot(self):
         fit = Fit()
         slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
-        item = Subsystem(self.ch.type(category=Category.subsystem, effects=(slot_effect,)).id)
+        item = Subsystem(self.ch.type(category=Category.subsystem, effects=[slot_effect]).id)
         fit.subsystems.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)

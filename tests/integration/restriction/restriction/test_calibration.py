@@ -109,8 +109,8 @@ class TestCalibration(RestrictionTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        item = Rig(self.ch.type(effects=(effect,), attributes={Attribute.upgrade_cost: 50, src_attr.id: 2}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        item = Rig(self.ch.type(effects=[effect], attributes={Attribute.upgrade_cost: 50, src_attr.id: 2}).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.calibration)

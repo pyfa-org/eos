@@ -39,9 +39,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.pre_assign,
             src_attr=src_attr.id
         )
-        effect_pre_ass = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_pre_ass,))
+        effect_pre_ass = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_pre_ass])
         influence_source_pre_ass = Implant(self.ch.type(
-            effects=(effect_pre_ass,), attributes={src_attr.id: 5}
+            effects=[effect_pre_ass], attributes={src_attr.id: 5}
         ).id)
         self.fit.implants.add(influence_source_pre_ass)
         modifier_pre_mul = DogmaModifier(
@@ -51,9 +51,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.pre_mul,
             src_attr=src_attr.id
         )
-        effect_pre_mul = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_pre_mul,))
+        effect_pre_mul = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_pre_mul])
         influence_source_pre_mul = Implant(self.ch.type(
-            effects=(effect_pre_mul,), attributes={src_attr.id: 50}
+            effects=[effect_pre_mul], attributes={src_attr.id: 50}
         ).id)
         self.fit.implants.add(influence_source_pre_mul)
         modifier_pre_div = DogmaModifier(
@@ -63,9 +63,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.pre_div,
             src_attr=src_attr.id
         )
-        effect_pre_div = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_pre_div,))
+        effect_pre_div = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_pre_div])
         influence_source_pre_div = Implant(self.ch.type(
-            effects=(effect_pre_div,), attributes={src_attr.id: 0.5}
+            effects=[effect_pre_div], attributes={src_attr.id: 0.5}
         ).id)
         self.fit.implants.add(influence_source_pre_div)
         modifier_mod_add = DogmaModifier(
@@ -75,9 +75,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.mod_add,
             src_attr=src_attr.id
         )
-        effect_mod_add = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_mod_add,))
+        effect_mod_add = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_mod_add])
         influence_source_mod_add = Implant(self.ch.type(
-            effects=(effect_mod_add,), attributes={src_attr.id: 10}
+            effects=[effect_mod_add], attributes={src_attr.id: 10}
         ).id)
         self.fit.implants.add(influence_source_mod_add)
         modifier_mod_sub = DogmaModifier(
@@ -87,9 +87,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.mod_sub,
             src_attr=src_attr.id
         )
-        effect_mod_sub = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_mod_sub,))
+        effect_mod_sub = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_mod_sub])
         influence_source_mod_sub = Implant(self.ch.type(
-            effects=(effect_mod_sub,), attributes={src_attr.id: 63}
+            effects=[effect_mod_sub], attributes={src_attr.id: 63}
         ).id)
         self.fit.implants.add(influence_source_mod_sub)
         modifier_post_mul = DogmaModifier(
@@ -99,9 +99,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect_post_mul = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_post_mul,))
+        effect_post_mul = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_post_mul])
         influence_source_post_mul = Implant(self.ch.type(
-            effects=(effect_post_mul,), attributes={src_attr.id: 1.35}
+            effects=[effect_post_mul], attributes={src_attr.id: 1.35}
         ).id)
         self.fit.implants.add(influence_source_post_mul)
         modifier_post_div = DogmaModifier(
@@ -111,9 +111,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_div,
             src_attr=src_attr.id
         )
-        effect_post_div = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_post_div,))
+        effect_post_div = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_post_div])
         influence_source_post_div = Implant(self.ch.type(
-            effects=(effect_post_div,), attributes={src_attr.id: 2.7}
+            effects=[effect_post_div], attributes={src_attr.id: 2.7}
         ).id)
         self.fit.implants.add(influence_source_post_div)
         modifier_post_perc = DogmaModifier(
@@ -123,9 +123,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect_post_perc = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_post_perc,))
+        effect_post_perc = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_post_perc])
         influence_source_post_perc = Implant(self.ch.type(
-            effects=(effect_post_perc,), attributes={src_attr.id: 15}
+            effects=[effect_post_perc], attributes={src_attr.id: 15}
         ).id)
         self.fit.implants.add(influence_source_post_perc)
         modifier_post_ass = DogmaModifier(
@@ -135,9 +135,9 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_assign,
             src_attr=src_attr.id
         )
-        effect_post_ass = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_post_ass,))
+        effect_post_ass = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_post_ass])
         influence_source_post_ass = Implant(self.ch.type(
-            effects=(effect_post_ass,), attributes={src_attr.id: 68}
+            effects=[effect_post_ass], attributes={src_attr.id: 68}
         ).id)
         self.fit.implants.add(influence_source_post_ass)
         influence_target = Rig(self.ch.type(attributes={tgt_attr.id: 100}).id)

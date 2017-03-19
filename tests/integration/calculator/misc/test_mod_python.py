@@ -113,7 +113,7 @@ class TestModifierPython(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=attr4.id
         )
-        dogma_effect = self.ch.effect(category=EffectCategory.active, modifiers=(dogma_modifier,))
+        dogma_effect = self.ch.effect(category=EffectCategory.active, modifiers=[dogma_modifier])
         item = ModuleHigh(self.ch.type(
             effects=(self.python_effect, dogma_effect), attributes={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5}
         ).id)
@@ -139,7 +139,7 @@ class TestModifierPython(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.attr2.id
         )
-        dogma_effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=(dogma_modifier1,))
+        dogma_effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=[dogma_modifier1])
         dogma_modifier2 = DogmaModifier(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -147,7 +147,7 @@ class TestModifierPython(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.attr3.id
         )
-        dogma_effect2 = self.ch.effect(category=EffectCategory.online, modifiers=(dogma_modifier2,))
+        dogma_effect2 = self.ch.effect(category=EffectCategory.online, modifiers=[dogma_modifier2])
         python_item = ModuleHigh(self.ch.type(
             effects=(self.python_effect,), attributes={self.attr1.id: 100, self.attr2.id: 2}
         ).id)

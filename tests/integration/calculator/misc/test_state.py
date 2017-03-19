@@ -71,11 +71,11 @@ class TestStateSwitching(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id
         )
-        effect_off = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier_off,))
-        effect_on = self.ch.effect(category=EffectCategory.online, modifiers=(modifier_on,))
-        effect_act = self.ch.effect(category=EffectCategory.active, modifiers=(modifier_act,))
-        effect_over = self.ch.effect(category=EffectCategory.overload, modifiers=(modifier_over,))
-        effect_disabled = self.ch.effect(category=EffectCategory.active, modifiers=(modifier_disabled,))
+        effect_off = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_off])
+        effect_on = self.ch.effect(category=EffectCategory.online, modifiers=[modifier_on])
+        effect_act = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_act])
+        effect_over = self.ch.effect(category=EffectCategory.overload, modifiers=[modifier_over])
+        effect_disabled = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.ch.type(
             effects=(effect_off, effect_on, effect_act, effect_over, effect_disabled),
             attributes={

@@ -22,27 +22,27 @@
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, Ship
-from tests.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stat_testcase import StatTestCase
 
 
-class TestLowSlot(StatTestCase):
+class TestMedSlot(StatTestCase):
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.low_slots: 2})
+        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.med_slots: 2})
         ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.low_slots: 6}
+        ship_item.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_item)
-        self.assertEqual(self.ss.low_slots.total, 6)
+        self.assertEqual(self.ss.med_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_output_no_ship(self):
         # None for slot amount when no ship
-        self.assertIsNone(self.ss.low_slots.total)
+        self.assertIsNone(self.ss.med_slots.total)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
@@ -50,83 +50,83 @@ class TestLowSlot(StatTestCase):
         ship_item = self.make_item_mock(Ship, ship_eve_type)
         ship_item.attributes = {}
         self.set_ship(ship_item)
-        self.assertIsNone(self.ss.low_slots.total)
+        self.assertIsNone(self.ss.med_slots.total)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_empty(self):
-        self.assertEqual(self.ss.low_slots.used, 0)
+        self.assertEqual(self.ss.med_slots.used, 0)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple(self):
         eve_type = self.ch.type(type_id=1, attributes={})
         item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.low.append(item1)
-        self.fit.modules.low.append(item2)
-        self.assertEqual(self.ss.low_slots.used, 2)
+        self.fit.modules.med.append(item1)
+        self.fit.modules.med.append(item2)
+        self.assertEqual(self.ss.med_slots.used, 2)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple_with_none(self):
         eve_type = self.ch.type(type_id=1, attributes={})
         item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.low.append(None)
-        self.fit.modules.low.append(item1)
-        self.fit.modules.low.append(None)
-        self.fit.modules.low.append(item2)
-        self.assertEqual(self.ss.low_slots.used, 4)
+        self.fit.modules.med.append(None)
+        self.fit.modules.med.append(item1)
+        self.fit.modules.med.append(None)
+        self.fit.modules.med.append(item2)
+        self.assertEqual(self.ss.med_slots.used, 4)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_other_container(self):
         eve_type = self.ch.type(type_id=1, attributes={})
         item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.high.append(item)
-        self.assertEqual(self.ss.low_slots.used, 0)
+        self.fit.modules.low.append(item)
+        self.assertEqual(self.ss.med_slots.used, 0)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_cache(self):
         ship_eve_type = self.ch.type(type_id=1)
         ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.low_slots: 6}
+        ship_item.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_item)
         eve_type = self.ch.type(type_id=2, attributes={})
         item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.low.append(item1)
-        self.fit.modules.low.append(item2)
-        self.assertEqual(self.ss.low_slots.used, 2)
-        self.assertEqual(self.ss.low_slots.total, 6)
-        ship_item.attributes[Attribute.low_slots] = 4
-        self.fit.modules.low.remove(item1)
-        self.assertEqual(self.ss.low_slots.used, 2)
-        self.assertEqual(self.ss.low_slots.total, 6)
+        self.fit.modules.med.append(item1)
+        self.fit.modules.med.append(item2)
+        self.assertEqual(self.ss.med_slots.used, 2)
+        self.assertEqual(self.ss.med_slots.total, 6)
+        ship_item.attributes[Attribute.med_slots] = 4
+        self.fit.modules.med.remove(item1)
+        self.assertEqual(self.ss.med_slots.used, 2)
+        self.assertEqual(self.ss.med_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_volatility(self):
         ship_eve_type = self.ch.type(type_id=1)
         ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.low_slots: 6}
+        ship_item.attributes = {Attribute.med_slots: 6}
         self.set_ship(ship_item)
         eve_type = self.ch.type(type_id=2, attributes={})
         item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
         item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.low.append(item1)
-        self.fit.modules.low.append(item2)
-        self.assertEqual(self.ss.low_slots.used, 2)
-        self.assertEqual(self.ss.low_slots.total, 6)
-        ship_item.attributes[Attribute.low_slots] = 4
-        self.fit.modules.low.remove(item1)
+        self.fit.modules.med.append(item1)
+        self.fit.modules.med.append(item2)
+        self.assertEqual(self.ss.med_slots.used, 2)
+        self.assertEqual(self.ss.med_slots.total, 6)
+        ship_item.attributes[Attribute.med_slots] = 4
+        self.fit.modules.med.remove(item1)
         self.ss._clear_volatile_attrs()
-        self.assertEqual(self.ss.low_slots.used, 1)
-        self.assertEqual(self.ss.low_slots.total, 4)
+        self.assertEqual(self.ss.med_slots.used, 1)
+        self.assertEqual(self.ss.med_slots.total, 4)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)

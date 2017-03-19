@@ -30,7 +30,7 @@ class TestState(RestrictionTestCase):
     def test_state_lower(self):
         fit = Fit()
         effect = self.ch.effect(category=EffectCategory.active)
-        item = ModuleHigh(self.ch.type(effects=(effect,), default_effect=effect).id, state=State.online)
+        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.online)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.state)
@@ -43,7 +43,7 @@ class TestState(RestrictionTestCase):
     def test_state_equal(self):
         fit = Fit()
         effect = self.ch.effect(category=EffectCategory.active)
-        item = ModuleHigh(self.ch.type(effects=(effect,), default_effect=effect).id, state=State.active)
+        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.active)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.state)
@@ -56,7 +56,7 @@ class TestState(RestrictionTestCase):
     def test_state_higher(self):
         fit = Fit()
         effect = self.ch.effect(category=EffectCategory.active)
-        item = ModuleHigh(self.ch.type(effects=(effect,), default_effect=effect).id, state=State.overload)
+        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.overload)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.state)

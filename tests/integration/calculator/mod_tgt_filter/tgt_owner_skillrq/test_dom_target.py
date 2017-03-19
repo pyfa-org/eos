@@ -39,8 +39,8 @@ class TestTgtOwnerSkillrqDomainTarget(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        influence_source = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        influence_source = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
         influence_target = Drone(self.ch.type(attributes={tgt_attr.id: 100}, required_skills={56: 1}).id)
         self.fit.drones.add(influence_target)
         # Action

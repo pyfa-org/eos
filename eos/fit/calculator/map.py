@@ -228,7 +228,7 @@ class MutableAttributeMap:
         except (AttributeError, AttributeFetchError) as e:
             msg = 'unable to fetch metadata for attribute {}, requested for eve type {}'.format(
                 attr, self.__item._eve_type_id)
-            logger.error(msg)
+            logger.warning(msg)
             raise AttributeMetaError(attr) from e
         # Base attribute value which we'll use for modification
         try:
@@ -242,7 +242,7 @@ class MutableAttributeMap:
             if result is None:
                 msg = 'unable to find base value for attribute {} on eve type {}'.format(
                     attr, self.__item._eve_type_id)
-                logger.warning(msg)
+                logger.info(msg)
                 raise BaseValueError(attr)
         # Container for non-penalized modifications
         # Format: {operator: [values]}

@@ -109,9 +109,9 @@ class TestPowerGrid(RestrictionTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         item = ModuleHigh(self.ch.type(
-            effects=(effect,), attributes={Attribute.power: 50, src_attr.id: 2}
+            effects=[effect], attributes={Attribute.power: 50, src_attr.id: 2}
         ).id, state=State.online)
         fit.modules.high.append(item)
         # Action

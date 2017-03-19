@@ -39,7 +39,7 @@ class TestRahSimAttributeOverride(RahSimTestCase):
             src_attr=skill_attr.id
         ) for attr in (self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id))
         skill_effect = self.ch.effect(category=EffectCategory.passive, modifiers=skill_modifiers)
-        skill_eve_type = self.ch.type(attributes={skill_attr.id: 0.5}, effects=(skill_effect,))
+        skill_eve_type = self.ch.type(attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
         rah_item = ModuleLow(self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)

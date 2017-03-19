@@ -42,8 +42,8 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=1008,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier,))
-        item_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100})
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[invalid_modifier])
+        item_eve_type = self.ch.type(effects=[effect], attributes={src_attr.id: 1.2, tgt_attr.id: 100})
         item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)
@@ -80,7 +80,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
-        item_eve_type = self.ch.type(effects=(effect,), attributes={src_attr.id: 1.2, tgt_attr.id: 100})
+        item_eve_type = self.ch.type(effects=[effect], attributes={src_attr.id: 1.2, tgt_attr.id: 100})
         item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)
@@ -114,7 +114,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
-        item = Rig(self.ch.type(effects=(effect,), attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
+        item = Rig(self.ch.type(effects=[effect], attributes={src_attr.id: 1.5, tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(item)
         # Verification

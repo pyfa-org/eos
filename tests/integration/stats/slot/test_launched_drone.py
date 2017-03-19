@@ -22,7 +22,7 @@
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.item import Character, Drone, Implant
-from tests.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stat_testcase import StatTestCase
 
 
 class TestLaunchedDrone(StatTestCase):
@@ -36,13 +36,13 @@ class TestLaunchedDrone(StatTestCase):
         self.assertEqual(self.ss.launched_drones.total, 6)
         self.set_character(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_output_no_ship(self):
         # None for max launched amount when no ship
         self.assertIsNone(self.ss.launched_drones.total)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_output_no_attr(self):
         # None for max launched amount when no attribute on ship
@@ -53,12 +53,12 @@ class TestLaunchedDrone(StatTestCase):
         self.assertIsNone(self.ss.launched_drones.total)
         self.set_character(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_empty(self):
         self.assertEqual(self.ss.launched_drones.used, 0)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_single(self):
         eve_type = self.ch.type(type_id=1, attributes={})
@@ -67,7 +67,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assertEqual(self.ss.launched_drones.used, 1)
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple(self):
         eve_type = self.ch.type(type_id=1, attributes={})
@@ -79,7 +79,7 @@ class TestLaunchedDrone(StatTestCase):
         self.remove_item(item1)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_other_class(self):
         eve_type = self.ch.type(type_id=1, attributes={})
@@ -88,7 +88,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assertEqual(self.ss.launched_drones.used, 0)
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_state(self):
         eve_type = self.ch.type(type_id=1, attributes={})
@@ -97,7 +97,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assertEqual(self.ss.launched_drones.used, 0)
         self.remove_item(item)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_cache(self):
         char_eve_type = self.ch.type(type_id=1)
@@ -118,7 +118,7 @@ class TestLaunchedDrone(StatTestCase):
         self.set_character(None)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_volatility(self):
         char_eve_type = self.ch.type(type_id=1)
@@ -140,4 +140,4 @@ class TestLaunchedDrone(StatTestCase):
         self.set_character(None)
         self.remove_item(item2)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)

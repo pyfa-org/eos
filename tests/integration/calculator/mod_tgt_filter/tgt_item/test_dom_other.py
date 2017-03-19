@@ -39,7 +39,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.src_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
+        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
 
     def test_other_domain_container(self):
         influence_source = ModuleHigh(self.ch.type(effects=(self.effect,), attributes={self.src_attr.id: 20}).id)

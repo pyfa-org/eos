@@ -39,10 +39,10 @@ class TestOperatorPostAssign(CalculatorTestCase):
             operator=ModifierOperator.post_assign,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source1 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 10}).id)
-        self.influence_source2 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: -20}).id)
-        self.influence_source3 = Implant(self.ch.type(effects=(effect,), attributes={src_attr.id: 53}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        self.influence_source1 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 10}).id)
+        self.influence_source2 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: -20}).id)
+        self.influence_source3 = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 53}).id)
         self.influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(self.influence_source1)
         self.fit.implants.add(self.influence_source2)

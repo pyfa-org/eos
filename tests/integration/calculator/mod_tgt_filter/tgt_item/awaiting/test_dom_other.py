@@ -38,8 +38,8 @@ class TestTgtItemAwaitingDomainOther(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        influence_source = ModuleHigh(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        influence_source = ModuleHigh(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
         self.fit.modules.high.append(influence_source)
         influence_target = Charge(self.ch.type(attributes={tgt_attr.id: 100}).id)
         # Action

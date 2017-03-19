@@ -34,7 +34,7 @@ class RestrictionTestCase(IntegrationTestCase):
     """
 
     def get_restriction_error(self, fit, item, restriction):
-        skip_checks = set(Restriction).difference((restriction,))
+        skip_checks = set(Restriction).difference([restriction])
         try:
             fit.validate(skip_checks)
         except ValidationError as e:

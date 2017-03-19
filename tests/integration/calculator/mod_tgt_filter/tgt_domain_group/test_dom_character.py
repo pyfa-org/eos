@@ -40,8 +40,8 @@ class TestTgtDomainGroupDomainChar(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
-        self.influence_source = Rig(self.ch.type(effects=(effect,), attributes={src_attr.id: 20}).id)
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        self.influence_source = Rig(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
 
     def test_parent_domain_character(self):
         influence_target = Implant(self.ch.type(group=35, attributes={self.tgt_attr.id: 100}).id)

@@ -22,7 +22,7 @@
 from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, Ship
-from tests.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stat_testcase import StatTestCase
 
 
 class TestRig(StatTestCase):
@@ -36,13 +36,13 @@ class TestRig(StatTestCase):
         self.assertEqual(self.ss.rig_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_output_no_ship(self):
         # None for slot amount when no ship
         self.assertIsNone(self.ss.rig_slots.total)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
@@ -53,12 +53,12 @@ class TestRig(StatTestCase):
         self.assertIsNone(self.ss.rig_slots.total)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_empty(self):
         self.assertEqual(self.ss.rig_slots.used, 0)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple(self):
         eve_type = self.ch.type(type_id=1, attributes={})
@@ -68,7 +68,7 @@ class TestRig(StatTestCase):
         self.fit.rigs.add(item2)
         self.assertEqual(self.ss.rig_slots.used, 2)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_use_other_container(self):
         eve_type = self.ch.type(type_id=1, attributes={})
@@ -76,7 +76,7 @@ class TestRig(StatTestCase):
         self.fit.subsystems.add(item)
         self.assertEqual(self.ss.rig_slots.used, 0)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_cache(self):
         ship_eve_type = self.ch.type(type_id=1)
@@ -96,7 +96,7 @@ class TestRig(StatTestCase):
         self.assertEqual(self.ss.rig_slots.total, 6)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)
 
     def test_volatility(self):
         ship_eve_type = self.ch.type(type_id=1)
@@ -117,4 +117,4 @@ class TestRig(StatTestCase):
         self.assertEqual(self.ss.rig_slots.total, 4)
         self.set_ship(None)
         self.assertEqual(len(self.log), 0)
-        self.assert_stat_buffers_empty()
+        self.assert_fit_buffers_empty(fit)

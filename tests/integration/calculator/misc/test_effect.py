@@ -56,9 +56,9 @@ class TestEffectToggling(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id
         )
-        self.effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier1,))
-        self.effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier2,))
-        self.effect_active = self.ch.effect(category=EffectCategory.active, modifiers=(modifier_active,))
+        self.effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier1])
+        self.effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier2])
+        self.effect_active = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_active])
         self.item = ModuleHigh(self.ch.type(
             effects=(self.effect1, self.effect2, self.effect_active),
             attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2}
