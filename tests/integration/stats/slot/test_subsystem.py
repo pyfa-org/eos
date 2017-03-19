@@ -19,102 +19,70 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.const.eve import Attribute
-from eos.fit.item import ModuleHigh, Ship
+from eos import *
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
 class TestSubsystem(StatTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.max_subsystems)
+        self.slot_effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
+
     def test_output(self):
-        # Check that modified attribute of ship is used
-        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.subsystem_slot: 2})
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.subsystem_slot: 6}
-        self.set_ship(ship_item)
-        self.assertEqual(self.ss.subsystem_slots.total, 6)
-        self.set_ship(None)
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.max_subsystems: 3}).id)
+        # Verification
+        self.assertAlmostEqual(fit.stats.subsystem_slots.total, 3)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_output_no_ship(self):
         # None for slot amount when no ship
-        self.assertIsNone(self.ss.subsystem_slots.total)
+        fit = Fit()
+        # Verification
+        self.assertIsNone(fit.stats.subsystem_slots.total)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
-        ship_eve_type = self.ch.type(type_id=1)
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {}
-        self.set_ship(ship_item)
-        self.assertIsNone(self.ss.subsystem_slots.total)
-        self.set_ship(None)
-        self.assertEqual(len(self.log), 0)
+        fit = Fit()
+        fit.ship = Ship(self.ch.type().id)
+        # Verification
+        self.assertIsNone(fit.stats.subsystem_slots.total)
+        # Cleanup
+        # Log entry is due to inability to calculate requested attribute
+        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_empty(self):
-        self.assertEqual(self.ss.subsystem_slots.used, 0)
+        fit = Fit()
+        # Verification
+        self.assertEqual(fit.stats.subsystem_slots.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.subsystems.add(item1)
-        self.fit.subsystems.add(item2)
-        self.assertEqual(self.ss.subsystem_slots.used, 2)
+        fit = Fit()
+        fit.subsystems.add(Subsystem(self.ch.type(effects=[self.slot_effect]).id))
+        fit.subsystems.add(Subsystem(self.ch.type(effects=[self.slot_effect]).id))
+        # Verification
+        self.assertEqual(fit.stats.subsystem_slots.used, 2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_use_other_container(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.rigs.add(item)
-        self.assertEqual(self.ss.subsystem_slots.used, 0)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_cache(self):
-        ship_eve_type = self.ch.type(type_id=1)
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.subsystem_slot: 6}
-        self.set_ship(ship_item)
-        eve_type = self.ch.type(type_id=2, attributes={})
-        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.subsystems.add(item1)
-        self.fit.subsystems.add(item2)
-        self.assertEqual(self.ss.subsystem_slots.used, 2)
-        self.assertEqual(self.ss.subsystem_slots.total, 6)
-        ship_item.attributes[Attribute.subsystem_slot] = 4
-        self.fit.subsystems.remove(item1)
-        self.assertEqual(self.ss.subsystem_slots.used, 2)
-        self.assertEqual(self.ss.subsystem_slots.total, 6)
-        self.set_ship(None)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_volatility(self):
-        ship_eve_type = self.ch.type(type_id=1)
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.subsystem_slot: 6}
-        self.set_ship(ship_item)
-        eve_type = self.ch.type(type_id=2, attributes={})
-        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.subsystems.add(item1)
-        self.fit.subsystems.add(item2)
-        self.assertEqual(self.ss.subsystem_slots.used, 2)
-        self.assertEqual(self.ss.subsystem_slots.total, 6)
-        ship_item.attributes[Attribute.subsystem_slot] = 4
-        self.fit.subsystems.remove(item1)
-        self.ss._clear_volatile_attrs()
-        self.assertEqual(self.ss.subsystem_slots.used, 1)
-        self.assertEqual(self.ss.subsystem_slots.total, 4)
-        self.set_ship(None)
+    def test_use_other_item_class(self):
+        fit = Fit()
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        # Verification
+        self.assertEqual(fit.stats.subsystem_slots.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

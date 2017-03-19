@@ -19,114 +19,92 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.const.eve import Attribute
-from eos.fit.item import ModuleHigh, Ship
+from eos import *
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
 class TestMedSlot(StatTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.med_slots)
+        self.slot_effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
+
     def test_output(self):
         # Check that modified attribute of ship is used
-        ship_eve_type = self.ch.type(type_id=1, attributes={Attribute.med_slots: 2})
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.med_slots: 6}
-        self.set_ship(ship_item)
-        self.assertEqual(self.ss.med_slots.total, 6)
-        self.set_ship(None)
+        src_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=Attribute.med_slots,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(effects=[effect], attributes={Attribute.med_slots: 3, src_attr.id: 2}).id)
+        # Verification
+        self.assertAlmostEqual(fit.stats.med_slots.total, 6)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_output_no_ship(self):
         # None for slot amount when no ship
-        self.assertIsNone(self.ss.med_slots.total)
+        fit = Fit()
+        # Verification
+        self.assertIsNone(fit.stats.med_slots.total)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
-        ship_eve_type = self.ch.type(type_id=1)
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {}
-        self.set_ship(ship_item)
-        self.assertIsNone(self.ss.med_slots.total)
-        self.set_ship(None)
-        self.assertEqual(len(self.log), 0)
+        fit = Fit()
+        fit.ship = Ship(self.ch.type().id)
+        # Verification
+        self.assertIsNone(fit.stats.med_slots.total)
+        # Cleanup
+        # Log entry is due to inability to calculate requested attribute
+        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_empty(self):
-        self.assertEqual(self.ss.med_slots.used, 0)
+        fit = Fit()
+        # Verification
+        self.assertEqual(fit.stats.med_slots.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(item1)
-        self.fit.modules.med.append(item2)
-        self.assertEqual(self.ss.med_slots.used, 2)
+        fit = Fit()
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        # Verification
+        self.assertEqual(fit.stats.med_slots.used, 2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple_with_none(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(None)
-        self.fit.modules.med.append(item1)
-        self.fit.modules.med.append(None)
-        self.fit.modules.med.append(item2)
-        self.assertEqual(self.ss.med_slots.used, 4)
+        fit = Fit()
+        fit.modules.med.place(1, ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        fit.modules.med.place(3, ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        # Verification
+        self.assertEqual(fit.stats.med_slots.used, 4)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_use_other_container(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.low.append(item)
-        self.assertEqual(self.ss.med_slots.used, 0)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_cache(self):
-        ship_eve_type = self.ch.type(type_id=1)
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.med_slots: 6}
-        self.set_ship(ship_item)
-        eve_type = self.ch.type(type_id=2, attributes={})
-        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(item1)
-        self.fit.modules.med.append(item2)
-        self.assertEqual(self.ss.med_slots.used, 2)
-        self.assertEqual(self.ss.med_slots.total, 6)
-        ship_item.attributes[Attribute.med_slots] = 4
-        self.fit.modules.med.remove(item1)
-        self.assertEqual(self.ss.med_slots.used, 2)
-        self.assertEqual(self.ss.med_slots.total, 6)
-        self.set_ship(None)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_volatility(self):
-        ship_eve_type = self.ch.type(type_id=1)
-        ship_item = self.make_item_mock(Ship, ship_eve_type)
-        ship_item.attributes = {Attribute.med_slots: 6}
-        self.set_ship(ship_item)
-        eve_type = self.ch.type(type_id=2, attributes={})
-        item1 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        item2 = self.make_item_mock(ModuleHigh, eve_type, state=State.offline)
-        self.fit.modules.med.append(item1)
-        self.fit.modules.med.append(item2)
-        self.assertEqual(self.ss.med_slots.used, 2)
-        self.assertEqual(self.ss.med_slots.total, 6)
-        ship_item.attributes[Attribute.med_slots] = 4
-        self.fit.modules.med.remove(item1)
-        self.ss._clear_volatile_attrs()
-        self.assertEqual(self.ss.med_slots.used, 1)
-        self.assertEqual(self.ss.med_slots.total, 4)
-        self.set_ship(None)
+    def test_use_other_item_class(self):
+        fit = Fit()
+        fit.modules.low.append(ModuleLow(self.ch.type(effects=[self.slot_effect]).id))
+        # Verification
+        self.assertEqual(fit.stats.med_slots.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

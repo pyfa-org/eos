@@ -19,125 +19,92 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.const.eve import Attribute
-from eos.fit.item import Character, Drone, Implant
+from eos import *
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import Attribute, EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
 class TestLaunchedDrone(StatTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.max_active_drones)
+
     def test_output(self):
-        # Check that modified attribute of character is used
-        char_eve_type = self.ch.type(type_id=1, attributes={Attribute.max_active_drones: 2})
-        char_item = self.make_item_mock(Character, char_eve_type)
-        char_item.attributes = {Attribute.max_active_drones: 6}
-        self.set_character(char_item)
-        self.assertEqual(self.ss.launched_drones.total, 6)
-        self.set_character(None)
+        src_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=Attribute.max_active_drones,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        fit = Fit()
+        fit.character = Character(self.ch.type(
+            effects=[effect], attributes={Attribute.max_active_drones: 3, src_attr.id: 2}
+        ).id)
+        # Verification
+        self.assertAlmostEqual(fit.stats.launched_drones.total, 6)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_output_no_ship(self):
-        # None for max launched amount when no ship
-        self.assertIsNone(self.ss.launched_drones.total)
+    def test_output_no_char(self):
+        # None for slot amount when no ship
+        fit = Fit()
+        fit.character = None
+        # Verification
+        self.assertIsNone(fit.stats.launched_drones.total)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_output_no_attr(self):
-        # None for max launched amount when no attribute on ship
-        char_eve_type = self.ch.type(type_id=1)
-        char_item = self.make_item_mock(Character, char_eve_type)
-        char_item.attributes = {}
-        self.set_character(char_item)
-        self.assertIsNone(self.ss.launched_drones.total)
-        self.set_character(None)
-        self.assertEqual(len(self.log), 0)
+        # None for slot amount when no attribute on ship
+        fit = Fit()
+        fit.character = Character(self.ch.type().id)
+        # Verification
+        self.assertIsNone(fit.stats.launched_drones.total)
+        # Cleanup
+        # Log entry is due to inability to calculate requested attribute
+        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_empty(self):
-        self.assertEqual(self.ss.launched_drones.used, 0)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_use_single(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_item(item)
-        self.assertEqual(self.ss.launched_drones.used, 1)
-        self.remove_item(item)
+        fit = Fit()
+        # Verification
+        self.assertEqual(fit.stats.launched_drones.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_multiple(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item1 = self.make_item_mock(Drone, eve_type, state=State.online)
-        item2 = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_item(item1)
-        self.add_item(item2)
-        self.assertEqual(self.ss.launched_drones.used, 2)
-        self.remove_item(item1)
-        self.remove_item(item2)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_use_other_class(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item = self.make_item_mock(Implant, eve_type, state=State.online)
-        self.add_item(item)
-        self.assertEqual(self.ss.launched_drones.used, 0)
-        self.remove_item(item)
+        fit = Fit()
+        fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        # Verification
+        self.assertEqual(fit.stats.launched_drones.used, 2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_use_state(self):
-        eve_type = self.ch.type(type_id=1, attributes={})
-        item = self.make_item_mock(Drone, eve_type, state=State.offline)
-        self.add_item(item)
-        self.assertEqual(self.ss.launched_drones.used, 0)
-        self.remove_item(item)
+        fit = Fit()
+        fit.subsystems.add(Subsystem(self.ch.type().id))
+        # Verification
+        self.assertEqual(fit.stats.launched_drones.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_cache(self):
-        char_eve_type = self.ch.type(type_id=1)
-        char_item = self.make_item_mock(Character, char_eve_type)
-        char_item.attributes = {Attribute.max_active_drones: 6}
-        self.set_character(char_item)
-        eve_type = self.ch.type(type_id=2, attributes={})
-        item1 = self.make_item_mock(Drone, eve_type, state=State.online)
-        item2 = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_item(item1)
-        self.add_item(item2)
-        self.assertEqual(self.ss.launched_drones.used, 2)
-        self.assertEqual(self.ss.launched_drones.total, 6)
-        char_item.attributes[Attribute.max_active_drones] = 4
-        self.remove_item(item1)
-        self.assertEqual(self.ss.launched_drones.used, 2)
-        self.assertEqual(self.ss.launched_drones.total, 6)
-        self.set_character(None)
-        self.remove_item(item2)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_volatility(self):
-        char_eve_type = self.ch.type(type_id=1)
-        char_item = self.make_item_mock(Character, char_eve_type)
-        char_item.attributes = {Attribute.max_active_drones: 6}
-        self.set_character(char_item)
-        eve_type = self.ch.type(type_id=2, attributes={})
-        item1 = self.make_item_mock(Drone, eve_type, state=State.online)
-        item2 = self.make_item_mock(Drone, eve_type, state=State.online)
-        self.add_item(item1)
-        self.add_item(item2)
-        self.assertEqual(self.ss.launched_drones.used, 2)
-        self.assertEqual(self.ss.launched_drones.total, 6)
-        char_item.attributes[Attribute.max_active_drones] = 4
-        self.remove_item(item1)
-        self.ss._clear_volatile_attrs()
-        self.assertEqual(self.ss.launched_drones.used, 1)
-        self.assertEqual(self.ss.launched_drones.total, 4)
-        self.set_character(None)
-        self.remove_item(item2)
+    def test_use_other_item_class(self):
+        fit = Fit()
+        fit.modules.med.append(ModuleMed(self.ch.type().id, state=State.online))
+        # Verification
+        self.assertEqual(fit.stats.launched_drones.used, 0)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

@@ -143,7 +143,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_pass_other_item(self):
+    def test_pass_other_item_class(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         fit = Fit()
