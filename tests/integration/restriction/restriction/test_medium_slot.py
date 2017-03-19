@@ -20,57 +20,48 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
 class TestMediumSlot(RestrictionTestCase):
     """Check functionality of medium slot amount restriction"""
 
-    def test_fail_excess_signle(self):
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.med_slots)
+        self.slot_effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
+
+    def test_fail_excess_single(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         fit = Fit()
-        eve_type = self.ch.type()
-        item = ModuleHigh(eve_type.id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 0}).id)
+        item = ModuleMed(self.ch.type(effects=(self.slot_effect,)).id)
         fit.modules.med.append(item)
-        fit.stats.med_slots.used = 1
-        fit.stats.med_slots.total = 0
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.medium_slot)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_fail_excess_single_other_class(self):
-        # Make sure items of all classes are affected
-        fit = Fit()
-        eve_type = self.ch.type()
-        item = Implant(eve_type.id)
-        fit.modules.med.append(item)
-        fit.stats.med_slots.used = 1
-        fit.stats.med_slots.total = 0
-        restriction_error = self.get_restriction_error(fit, item, Restriction.medium_slot)
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_fail_excess_signle_undefined_output(self):
+    def test_fail_excess_single_no_ship(self):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         fit = Fit()
-        eve_type = self.ch.type()
-        item = ModuleHigh(eve_type.id, state=State.offline)
+        item = ModuleMed(self.ch.type(effects=(self.slot_effect,)).id)
         fit.modules.med.append(item)
-        fit.stats.med_slots.used = 1
-        fit.stats.med_slots.total = None
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.medium_slot)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -78,91 +69,106 @@ class TestMediumSlot(RestrictionTestCase):
         # Check that error works for multiple items, and raised
         # only for those which lie out of bounds
         fit = Fit()
-        eve_type = self.ch.type()
-        item1 = ModuleHigh(eve_type.id, state=State.offline)
-        item2 = ModuleHigh(eve_type.id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 1}).id)
+        eve_type = self.ch.type(effects=(self.slot_effect,))
+        item1 = ModuleMed(eve_type.id)
+        item2 = ModuleMed(eve_type.id)
         fit.modules.med.append(item1)
         fit.modules.med.append(item2)
-        fit.stats.med_slots.used = 2
-        fit.stats.med_slots.total = 1
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.medium_slot)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.medium_slot)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_fail_excess_multiple_with_nones(self):
         # Make sure Nones are processed properly
         fit = Fit()
-        eve_type = self.ch.type()
-        item1 = ModuleHigh(eve_type.id, state=State.offline)
-        item2 = ModuleHigh(eve_type.id, state=State.offline)
-        item3 = ModuleHigh(eve_type.id, state=State.offline)
-        fit.modules.med.append(None)
-        fit.modules.med.append(item1)
-        fit.modules.med.append(None)
-        fit.modules.med.append(None)
-        fit.modules.med.append(item2)
-        fit.modules.med.append(None)
-        fit.modules.med.append(item3)
-        fit.stats.med_slots.used = 7
-        fit.stats.med_slots.total = 3
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 3}).id)
+        eve_type = self.ch.type(effects=(self.slot_effect,))
+        item1 = ModuleMed(eve_type.id)
+        item2 = ModuleMed(eve_type.id)
+        item3 = ModuleMed(eve_type.id)
+        fit.modules.med.place(1, item1)
+        fit.modules.med.place(4, item2)
+        fit.modules.med.place(6, item3)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.medium_slot)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.medium_slot)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 3)
         self.assertEqual(restriction_error2.slots_used, 7)
+        # Action
         restriction_error3 = self.get_restriction_error(fit, item2, Restriction.medium_slot)
+        # Verification
         self.assertIsNotNone(restriction_error3)
         self.assertEqual(restriction_error3.slots_max_allowed, 3)
         self.assertEqual(restriction_error3.slots_used, 7)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_equal(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        item1 = ModuleHigh(eve_type.id, state=State.offline)
-        item2 = ModuleHigh(eve_type.id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 2}).id)
+        eve_type = self.ch.type(effects=(self.slot_effect,))
+        item1 = ModuleMed(eve_type.id)
+        item2 = ModuleMed(eve_type.id)
         fit.modules.med.append(item1)
         fit.modules.med.append(item2)
-        fit.stats.med_slots.used = 2
-        fit.stats.med_slots.total = 2
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.medium_slot)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.medium_slot)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_greater(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        item1 = ModuleHigh(eve_type.id, state=State.offline)
-        item2 = ModuleHigh(eve_type.id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 5}).id)
+        eve_type = self.ch.type(effects=(self.slot_effect,))
+        item1 = ModuleMed(eve_type.id)
+        item2 = ModuleMed(eve_type.id)
         fit.modules.med.append(item1)
         fit.modules.med.append(item2)
-        fit.stats.med_slots.used = 2
-        fit.stats.med_slots.total = 5
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.medium_slot)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.medium_slot)
+        # Verification
         self.assertIsNone(restriction_error2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_pass_other_container(self):
+    def test_pass_other_item_class(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        item = ModuleHigh(eve_type.id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 0}).id)
+        item = ModuleLow(self.ch.type(effects=(self.slot_effect,)).id)
         fit.modules.low.append(item)
-        fit.stats.med_slots.used = 1
-        fit.stats.med_slots.total = 0
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.medium_slot)
+        # Verification
         self.assertIsNone(restriction_error)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

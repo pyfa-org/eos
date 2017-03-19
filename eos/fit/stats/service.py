@@ -86,7 +86,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         self.med_slots = ShipSlots(fit, fit.modules.med, Attribute.med_slots)
         self.low_slots = ShipSlots(fit, fit.modules.low, Attribute.low_slots)
         self.rig_slots = ShipSlots(fit, fit.rigs, Attribute.rig_slots)
-        self.subsystem_slots = ShipSlots(fit, fit.subsystems, Attribute.subsystem_slot)
+        self.subsystem_slots = ShipSlots(fit, fit.subsystems, Attribute.max_subsystems)
         self.turret_slots = ShipSlots(fit, turret_reg, Attribute.turret_slots_left)
         self.launcher_slots = ShipSlots(fit, launcher_reg, Attribute.launcher_slots_left)
         self.launched_drones = CharSlots(fit, launched_drone_reg, Attribute.max_active_drones)

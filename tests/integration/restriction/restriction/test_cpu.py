@@ -20,48 +20,35 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
-from eos.const.eve import Attribute
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import Attribute, EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
 class TestCpu(RestrictionTestCase):
     """Check functionality of cpu restriction"""
 
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.cpu)
+        self.ch.attribute(attribute_id=Attribute.cpu_output)
+
     def test_fail_excess_single(self):
         # When ship provides cpu output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item = ModuleHigh(eve_type.id, state=State.online)
-        item.attributes = {Attribute.cpu: 50}
-        self.add_item(item)
-        fit.stats.cpu.used = 50
-        fit.stats.cpu.output = 40
+        fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 40}).id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}).id, state=State.online)
+        fit.modules.high.append(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 40)
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
-        self.remove_item(item)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_fail_excess_single_other_class(self):
-        # Make sure items of all classes are affected
-        fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item = Implant(eve_type.id, state=State.online)
-        item.attributes = {Attribute.cpu: 50}
-        self.add_item(item)
-        fit.stats.cpu.used = 50
-        fit.stats.cpu.output = 40
-        restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.output, 40)
-        self.assertEqual(restriction_error.total_use, 50)
-        self.assertEqual(restriction_error.item_use, 50)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -69,18 +56,16 @@ class TestCpu(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item = ModuleHigh(eve_type.id, state=State.online)
-        item.attributes = {Attribute.cpu: 5}
-        self.add_item(item)
-        fit.stats.cpu.used = 5
-        fit.stats.cpu.output = None
+        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 5}).id, state=State.online)
+        fit.modules.high.append(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 0)
         self.assertEqual(restriction_error.total_use, 5)
         self.assertEqual(restriction_error.item_use, 5)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -89,71 +74,54 @@ class TestCpu(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item1 = ModuleHigh(eve_type.id, state=State.online)
-        item1.attributes = {Attribute.cpu: 25}
-        self.add_item(item1)
-        item2 = ModuleHigh(eve_type.id, state=State.online)
-        item2.attributes = {Attribute.cpu: 20}
-        self.add_item(item2)
-        fit.stats.cpu.used = 45
-        fit.stats.cpu.output = 40
+        fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 40}).id)
+        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 25}).id, state=State.online)
+        fit.modules.high.append(item1)
+        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 20}).id, state=State.online)
+        fit.modules.high.append(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.cpu)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 40)
         self.assertEqual(restriction_error1.total_use, 45)
         self.assertEqual(restriction_error1.item_use, 25)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.cpu)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.output, 40)
         self.assertEqual(restriction_error2.total_use, 45)
         self.assertEqual(restriction_error2.item_use, 20)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_fail_excess_modified(self):
         # Make sure modified cpu values are taken
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 40})
-        item = ModuleHigh(eve_type.id, state=State.online)
-        item.attributes = {Attribute.cpu: 100}
-        self.add_item(item)
-        fit.stats.cpu.used = 100
-        fit.stats.cpu.output = 50
+        fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 50}).id)
+        src_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=Attribute.cpu,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
+        effect = self.ch.effect(category=EffectCategory.passive, modifiers=(modifier,))
+        item = ModuleHigh(self.ch.type(
+            effects=(effect,), attributes={Attribute.cpu: 50, src_attr.id: 2}
+        ).id, state=State.online)
+        fit.modules.high.append(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.output, 50)
         self.assertEqual(restriction_error.total_use, 100)
         self.assertEqual(restriction_error.item_use, 100)
-        self.remove_item(item)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_mix_usage_negative(self):
-        # If some item has negative usage and cpu error is
-        # still raised, check it's not raised for item with
-        # negative usage
-        fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item1 = ModuleHigh(eve_type.id, state=State.online)
-        item1.attributes = {Attribute.cpu: 100}
-        self.add_item(item1)
-        item2 = ModuleHigh(eve_type.id, state=State.online)
-        item2.attributes = {Attribute.cpu: -10}
-        self.add_item(item2)
-        fit.stats.cpu.used = 90
-        fit.stats.cpu.output = 50
-        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.cpu)
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.output, 50)
-        self.assertEqual(restriction_error1.total_use, 90)
-        self.assertEqual(restriction_error1.item_use, 100)
-        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.cpu)
-        self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -162,24 +130,23 @@ class TestCpu(RestrictionTestCase):
         # still raised, check it's not raised for item with
         # zero usage
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item1 = ModuleHigh(eve_type.id, state=State.online)
-        item1.attributes = {Attribute.cpu: 100}
-        self.add_item(item1)
-        item2 = ModuleHigh(eve_type.id, state=State.online)
-        item2.attributes = {Attribute.cpu: 0}
-        self.add_item(item2)
-        fit.stats.cpu.used = 100
-        fit.stats.cpu.output = 50
+        fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 50}).id)
+        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 100}).id, state=State.online)
+        fit.modules.high.append(item1)
+        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 0}).id, state=State.online)
+        fit.modules.high.append(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.cpu)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.output, 50)
         self.assertEqual(restriction_error1.total_use, 100)
         self.assertEqual(restriction_error1.item_use, 100)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.cpu)
+        # Verification
         self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -187,52 +154,33 @@ class TestCpu(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item1 = ModuleHigh(eve_type.id, state=State.online)
-        item1.attributes = {Attribute.cpu: 25}
-        self.add_item(item1)
-        item2 = ModuleHigh(eve_type.id, state=State.online)
-        item2.attributes = {Attribute.cpu: 20}
-        self.add_item(item2)
-        fit.stats.cpu.used = 45
-        fit.stats.cpu.output = 50
+        fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 50}).id)
+        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 25}).id, state=State.online)
+        fit.modules.high.append(item1)
+        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 20}).id, state=State.online)
+        fit.modules.high.append(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.cpu)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.cpu)
+        # Verification
         self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_pass_no_attr_eve_type(self):
-        # When added item's eve type doesn't have attribute, item
-        # shouldn't be tracked by register, and thus, no errors
-        # should be raised
-        fit = Fit()
-        eve_type = self.ch.type()
-        item = ModuleHigh(eve_type.id, state=State.online)
-        item.attributes = {Attribute.cpu: 100}
-        self.add_item(item)
-        fit.stats.cpu.used = 100
-        fit.stats.cpu.output = 50
-        restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
-        self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_state(self):
         # When item isn't online, it shouldn't consume anything
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.cpu: 0})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        item.attributes = {Attribute.cpu: 50}
-        self.add_item(item)
-        fit.stats.cpu.used = 50
-        fit.stats.cpu.output = 40
+        fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 40}).id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}).id, state=State.offline)
+        fit.modules.high.append(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

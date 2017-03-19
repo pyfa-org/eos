@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
+from eos.const.eve import EffectCategory
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -29,10 +29,9 @@ class TestState(RestrictionTestCase):
 
     def test_state_lower(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.max_state = State.active
-        item = ModuleHigh(eve_type.id, state=State.online)
-        fit._items.add(item)
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(effects=(effect,), default_effect=effect).id, state=State.online)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.state)
         # Verification
@@ -43,10 +42,9 @@ class TestState(RestrictionTestCase):
 
     def test_state_equal(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.max_state = State.active
-        item = ModuleHigh(eve_type.id, state=State.active)
-        fit._items.add(item)
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(effects=(effect,), default_effect=effect).id, state=State.active)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.state)
         # Verification
@@ -57,10 +55,9 @@ class TestState(RestrictionTestCase):
 
     def test_state_higher(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.max_state = State.active
-        item = ModuleHigh(eve_type.id, state=State.overload)
-        fit._items.add(item)
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(effects=(effect,), default_effect=effect).id, state=State.overload)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.state)
         # Verification

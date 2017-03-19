@@ -20,55 +20,101 @@
 
 
 from eos import *
-from eos.const.eos import Restriction
+from eos.const.eve import EffectCategory
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
 class TestBoosterEffect(RestrictionTestCase):
     """Check functionality of booster's hidden effects restriction"""
 
+    def setUp(self):
+        super().setUp()
+        # Create attribs for both handlers
+        self.chance_attr1_id = self.allocate_attribute_id(self.ch, self.ch2)
+        self.ch.attribute(attribute_id=self.chance_attr1_id)
+        self.ch2.attribute(attribute_id=self.chance_attr1_id)
+        self.chance_attr2_id = self.allocate_attribute_id(self.ch, self.ch2)
+        self.ch.attribute(attribute_id=self.chance_attr2_id)
+        self.ch2.attribute(attribute_id=self.chance_attr2_id)
+        # Second handler doesn't have 3rd and 4th attributes
+        self.chance_attr3_id = self.allocate_attribute_id(self.ch, self.ch2)
+        self.ch.attribute(attribute_id=self.chance_attr3_id)
+        self.chance_attr4_id = self.allocate_attribute_id(self.ch, self.ch2)
+        self.ch.attribute(attribute_id=self.chance_attr4_id)
+        # Create effects for both handlers
+        self.effect1_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect1_src1 = self.ch.effect(
+            effect_id=self.effect1_id, category=EffectCategory.passive,
+            fitting_usage_chance_attribute=self.chance_attr1_id
+        )
+        effect1_src2 = self.ch2.effect(
+            effect_id=self.effect1_id, category=EffectCategory.passive,
+            fitting_usage_chance_attribute=self.chance_attr1_id
+        )
+        self.effect2_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect2_src1 = self.ch.effect(
+            effect_id=self.effect2_id, category=EffectCategory.passive,
+            fitting_usage_chance_attribute=self.chance_attr2_id
+        )
+        effect2_src2 = self.ch2.effect(
+            effect_id=self.effect2_id, category=EffectCategory.passive,
+            fitting_usage_chance_attribute=self.chance_attr2_id
+        )
+        # Second handler has 3rd effect as normal effect
+        self.effect3_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect3_src1 = self.ch.effect(
+            effect_id=self.effect3_id, category=EffectCategory.passive,
+            fitting_usage_chance_attribute=self.chance_attr3_id
+        )
+        effect3_src2 = self.ch2.effect(effect_id=self.effect3_id, category=EffectCategory.passive)
+        # Second handler has no 4th effect at all
+        self.effect4_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect4_src1 = self.ch.effect(
+            effect_id=self.effect4_id, category=EffectCategory.passive,
+            fitting_usage_chance_attribute=self.chance_attr4_id
+        )
+        # Regular effect on both
+        self.effect5_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect5_src1 = self.ch.effect(effect_id=self.effect5_id, category=EffectCategory.passive)
+        effect5_src2 = self.ch2.effect(effect_id=self.effect5_id, category=EffectCategory.passive)
+        # Create EVE types
+        self.booster_type_id = self.allocate_type_id(self.ch, self.ch2)
+        self.ch.type(
+            type_id=self.booster_type_id, attributes={
+                self.chance_attr1_id: 0.2, self.chance_attr2_id: 0.4,
+                self.chance_attr3_id: 0.6, self.chance_attr4_id: 0.8,
+            }, effects=(effect1_src1, effect2_src1, effect3_src1, effect4_src1, effect5_src1)
+        )
+        self.ch2.type(
+            type_id=self.booster_type_id, attributes={self.chance_attr1_id: 0.2, self.chance_attr2_id: 0.4},
+            effects=(effect1_src2, effect2_src2, effect3_src2, effect5_src2)
+        )
+
     def test_fail(self):
         # Check if error is raised when there's disabled effect
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Booster(eve_type.id)
-        item.side_effects = {55, 66}
-        item._disabled_effects = {77, 99}
+        item = Booster(self.booster_type_id)
         fit.boosters.add(item)
+        item.set_side_effect_status(self.effect3_id, False)
+        item.set_side_effect_status(self.effect4_id, False)
+        fit.source = 'src2'
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.booster_effect)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.illegally_disabled, {77, 99})
-        self.assertEqual(restriction_error.disablable, {55, 66})
+        self.assertEqual(restriction_error.illegally_disabled, {self.effect3_id})
+        self.assertEqual(restriction_error.disablable, {self.effect1_id, self.effect2_id})
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_disabled_side_effect(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Booster(eve_type.id)
-        item.side_effects = {55, 66}
-        item._disabled_effects = {55, 66}
+        item = Booster(self.booster_type_id)
         fit.boosters.add(item)
-        # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.booster_effect)
-        # Verification
-        self.assertIsNone(restriction_error)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_pass_enabled_regular_effect(self):
-        fit = Fit()
-        eve_type = self.ch.type()
-        item = Booster(eve_type.id)
-        # Enabled regular effects are not listed in any of
-        # these containers
-        item.side_effects = {}
-        item._disabled_effects = set()
-        fit.boosters.add(item)
+        item.set_side_effect_status(self.effect1_id, False)
+        item.set_side_effect_status(self.effect2_id, False)
+        fit.source = 'src2'
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.booster_effect)
         # Verification
@@ -79,11 +125,10 @@ class TestBoosterEffect(RestrictionTestCase):
 
     def test_pass_non_booster(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Implant(eve_type.id, strict_spec=False)
-        item.side_effects = {55, 66}
-        item._disabled_effects = {77, 99}
+        item = Implant(self.booster_type_id)
         fit.implants.add(item)
+        item._set_effects_activability((self.effect3_id, self.effect4_id), False)
+        fit.source = 'src2'
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.booster_effect)
         # Verification

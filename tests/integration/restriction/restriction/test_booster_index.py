@@ -20,7 +20,6 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
@@ -28,63 +27,50 @@ from tests.integration.restriction.restriction_testcase import RestrictionTestCa
 class TestBoosterIndex(RestrictionTestCase):
     """Check functionality of booster slot index restriction"""
 
+    def setUp(self):
+        super().setUp()
+        self.index_attr = self.ch.attribute(attribute_id=Attribute.boosterness)
+
     def test_fail(self):
         # Check that if 2 or more items are put into single slot
         # index, error is raised
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.boosterness: 120})
-        item1 = Booster(eve_type.id)
-        item2 = Booster(eve_type.id)
-        self.add_item(item1)
-        self.add_item(item2)
+        item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item1 = Booster(item_eve_type.id)
+        item2 = Booster(item_eve_type.id)
+        fit.boosters.add(item1)
+        fit.boosters.add(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.booster_index)
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.item_slot_index, 120)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.booster_index)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.item_slot_index, 120)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_fail_other_item_class(self):
         # Make sure items of all classes are affected
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.boosterness: 120})
-        item1 = ModuleHigh(eve_type.id, state=State.offline)
-        item2 = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item1)
-        self.add_item(item2)
+        item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item1 = ModuleHigh(item_eve_type.id)
+        item2 = ModuleHigh(item_eve_type.id)
+        fit.modules.high.append(item1)
+        fit.modules.high.append(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.booster_index)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.item_slot_index, 120)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.booster_index)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.item_slot_index, 120)
-        self.remove_item(item1)
-        self.remove_item(item2)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_fail_attr_eve_type(self):
-        # Make sure that eve type attributes are used
-        fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.boosterness: 120})
-        item1 = Booster(eve_type.id)
-        item2 = Booster(eve_type.id)
-        item1.attributes = {Attribute.boosterness: 119}
-        item2.attributes = {Attribute.boosterness: 121}
-        self.add_item(item1)
-        self.add_item(item2)
-        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.booster_index)
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.item_slot_index, 120)
-        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.booster_index)
-        self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.item_slot_index, 120)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -92,29 +78,31 @@ class TestBoosterIndex(RestrictionTestCase):
         # Single item which takes some slot shouldn't
         # trigger any errors
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.boosterness: 120})
-        item = Booster(eve_type.id)
-        self.add_item(item)
+        item = Booster(self.ch.type(attributes={self.index_attr.id: 120}).id)
+        fit.boosters.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.booster_index)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_different(self):
         # Items taking different slots shouldn't trigger any errors
         fit = Fit()
-        eve_type1 = self.ch.type(attributes={Attribute.boosterness: 120})
-        eve_type2 = self.ch.type(attributes={Attribute.boosterness: 121})
-        item1 = Booster(eve_type1.id)
-        item2 = Booster(eve_type2.id)
-        self.add_item(item1)
-        self.add_item(item2)
+        item1 = Booster(self.ch.type(attributes={self.index_attr.id: 120}).id)
+        item2 = Booster(self.ch.type(attributes={self.index_attr.id: 121}).id)
+        fit.boosters.add(item1)
+        fit.boosters.add(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.booster_index)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.booster_index)
+        # Verification
         self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

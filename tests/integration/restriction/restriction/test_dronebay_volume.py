@@ -20,7 +20,6 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
@@ -28,16 +27,18 @@ from tests.integration.restriction.restriction_testcase import RestrictionTestCa
 class TestDroneBayVolume(RestrictionTestCase):
     """Check functionality of drone bay volume restriction"""
 
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.volume)
+        self.ch.attribute(attribute_id=Attribute.drone_capacity)
+
     def test_fail_excess_single(self):
-        # When ship provides drone bay volume, but single consumer
+        # When ship provides dronebay volume output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 0})
-        item = Drone(eve_type.id, state=State.offline)
-        item.attributes = {Attribute.volume: 50}
-        self.add_item(item)
-        fit.stats.dronebay.used = 50
-        fit.stats.dronebay.output = 40
+        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 40}).id)
+        item = Drone(self.ch.type(attributes={Attribute.volume: 50}).id)
+        fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
         # Verification
@@ -53,12 +54,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 0})
-        item = Drone(eve_type.id, state=State.offline)
-        item.attributes = {Attribute.volume: 5}
-        self.add_item(item)
-        fit.stats.dronebay.used = 5
-        fit.stats.dronebay.output = None
+        item = Drone(self.ch.type(attributes={Attribute.volume: 5}).id)
+        fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
         # Verification
@@ -71,19 +68,15 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_fail_excess_multiple(self):
-        # When multiple consumers require less than drone bay volume
+        # When multiple consumers require less than dronebay volume output
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 0})
-        item1 = Drone(eve_type.id, state=State.offline)
-        item1.attributes = {Attribute.volume: 25}
-        self.add_item(item1)
-        item2 = Drone(eve_type.id, state=State.offline)
-        item2.attributes = {Attribute.volume: 20}
-        self.add_item(item2)
-        fit.stats.dronebay.used = 45
-        fit.stats.dronebay.output = 40
+        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 40}).id)
+        item1 = Drone(self.ch.type(attributes={Attribute.volume: 25}).id)
+        fit.drones.add(item1)
+        item2 = Drone(self.ch.type(attributes={Attribute.volume: 20}).id)
+        fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.dronebay_volume)
         # Verification
@@ -102,69 +95,16 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_fail_excess_modified(self):
-        # Make sure modified volume values are taken
-        fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 40})
-        item = Drone(eve_type.id, state=State.offline)
-        item.attributes = {Attribute.volume: 100}
-        self.add_item(item)
-        fit.stats.dronebay.used = 100
-        fit.stats.dronebay.output = 50
-        # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
-        # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.output, 50)
-        self.assertEqual(restriction_error.total_use, 100)
-        self.assertEqual(restriction_error.item_use, 100)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_mix_usage_negative(self):
-        # If some item has negative usage and drone bay error is
-        # still raised, check it's not raised for item with
-        # negative usage
-        fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 0})
-        item1 = Drone(eve_type.id, state=State.offline)
-        item1.attributes = {Attribute.volume: 100}
-        self.add_item(item1)
-        item2 = Drone(eve_type.id, state=State.offline)
-        item2.attributes = {Attribute.volume: -10}
-        self.add_item(item2)
-        fit.stats.dronebay.used = 90
-        fit.stats.dronebay.output = 50
-        # Action
-        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.dronebay_volume)
-        # Verification
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.output, 50)
-        self.assertEqual(restriction_error1.total_use, 90)
-        self.assertEqual(restriction_error1.item_use, 100)
-        # Action
-        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.dronebay_volume)
-        # Verification
-        self.assertIsNone(restriction_error2)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_mix_usage_zero(self):
-        # If some item has zero usage and drone bay error is
+        # If some item has zero usage and dronebay volume error is
         # still raised, check it's not raised for item with
         # zero usage
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 0})
-        item1 = Drone(eve_type.id, state=State.offline)
-        item1.attributes = {Attribute.volume: 100}
-        self.add_item(item1)
-        item2 = Drone(eve_type.id, state=State.offline)
-        item2.attributes = {Attribute.volume: 0}
-        self.add_item(item2)
-        fit.stats.dronebay.used = 100
-        fit.stats.dronebay.output = 50
+        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 50}).id)
+        item1 = Drone(self.ch.type(attributes={Attribute.volume: 100}).id)
+        fit.drones.add(item1)
+        item2 = Drone(self.ch.type(attributes={Attribute.volume: 0}).id)
+        fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.dronebay_volume)
         # Verification
@@ -184,15 +124,11 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 0})
-        item1 = Drone(eve_type.id, state=State.offline)
-        item1.attributes = {Attribute.volume: 25}
-        self.add_item(item1)
-        item2 = Drone(eve_type.id, state=State.offline)
-        item2.attributes = {Attribute.volume: 20}
-        self.add_item(item2)
-        fit.stats.dronebay.used = 45
-        fit.stats.dronebay.output = 50
+        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 50}).id)
+        item1 = Drone(self.ch.type(attributes={Attribute.volume: 25}).id)
+        fit.drones.add(item1)
+        item2 = Drone(self.ch.type(attributes={Attribute.volume: 20}).id)
+        fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.dronebay_volume)
         # Verification
@@ -205,34 +141,12 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_pass_no_attr_eve_type(self):
-        # When added item's eve type doesn't have attribute, item
-        # shouldn't be tracked by register, and thus, no errors
-        # should be raised
-        fit = Fit()
-        eve_type = self.ch.type()
-        item = Drone(eve_type.id, state=State.offline)
-        item.attributes = {Attribute.volume: 100}
-        self.add_item(item)
-        fit.stats.dronebay.used = 100
-        fit.stats.dronebay.output = 50
-        # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
-        # Verification
-        self.assertIsNone(restriction_error)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_pass_other_class(self):
-        # Make sure items placed to other containers are unaffected
+        # Make sure non-drones are not affected
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.volume: 0})
-        item = Charge(eve_type.id, state=State.offline)
-        item.attributes = {Attribute.volume: 50}
-        self.add_item(item)
-        fit.stats.dronebay.used = 50
-        fit.stats.dronebay.output = 40
+        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 40}).id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 50}).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
         # Verification

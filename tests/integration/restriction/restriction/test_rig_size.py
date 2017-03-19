@@ -20,7 +20,6 @@
 
 
 from eos import *
-from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
@@ -32,38 +31,16 @@ class TestRigSize(RestrictionTestCase):
         # Error should be raised when mismatching rig size
         # is added to ship
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.rig_size: 10})
-        item = Rig(eve_type.id)
-        self.add_item(item)
-        ship_eve_type = self.ch.type(attributes={Attribute.rig_size: 6})
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
+        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_size: 6}).id)
+        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}).id)
+        fit.rigs.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_size)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.allowed_size, 6)
         self.assertEqual(restriction_error.item_size, 10)
-        self.remove_item(item)
-        fit.ship = None
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_fail_attr_eve_type(self):
-        # Eve type value must be taken
-        fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.rig_size: 10})
-        item = Rig(eve_type.id)
-        item.attributes = {Attribute.rig_size: 5}
-        self.add_item(item)
-        ship_eve_type = self.ch.type(attributes={Attribute.rig_size: 6})
-        ship_item = Ship(ship_eve_type.id)
-        ship_item.attributes = {Attribute.rig_size: 5}
-        fit.ship = ship_item
-        restriction_error = self.get_restriction_error(fit, item, Restriction.rig_size)
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.allowed_size, 6)
-        self.assertEqual(restriction_error.item_size, 10)
-        self.remove_item(item)
-        fit.ship = None
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -71,12 +48,13 @@ class TestRigSize(RestrictionTestCase):
         # When no ship is assigned, no restriction
         # should be applied to ships
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.rig_size: 10})
-        item = Rig(eve_type.id)
-        self.add_item(item)
+        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}).id)
+        fit.rigs.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_size)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -84,16 +62,13 @@ class TestRigSize(RestrictionTestCase):
         # If ship doesn't have rig size attribute,
         # no restriction is applied onto rigs
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.rig_size: 10})
-        item = Rig(eve_type.id)
-        self.add_item(item)
-        ship_eve_type = self.ch.type()
-        ship_item = Ship(ship_eve_type.id)
-        ship_item.attributes = {}
-        fit.ship = ship_item
+        fit.ship = Ship(self.ch.type().id)
+        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}).id)
+        fit.rigs.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_size)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
-        fit.ship = None
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

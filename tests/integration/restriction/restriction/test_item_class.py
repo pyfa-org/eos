@@ -20,8 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, Slot
-from eos.const.eve import Attribute, Group, Category
+from eos.const.eve import Attribute, Effect, EffectCategory, Group, Category
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -30,10 +29,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_booster_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.implant, attributes={Attribute.boosterness: 3})
-        item = Booster(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Booster(self.ch.type(category=Category.implant, attributes={Attribute.boosterness: 3}).id)
+        fit.boosters.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -44,10 +41,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_booster_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008, attributes={Attribute.boosterness: 3})
-        item = Booster(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Booster(self.ch.type(category=1008, attributes={Attribute.boosterness: 3}).id)
+        fit.boosters.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -60,10 +55,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_booster_fail_attr(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.implant)
-        item = Booster(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Booster(self.ch.type(category=Category.implant).id)
+        fit.boosters.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -76,10 +69,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_character_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(group=Group.character)
-        item = Character(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Character(self.ch.type(group=Group.character).id)
+        fit.character = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -90,10 +81,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_character_fail_group(self):
         fit = Fit()
-        eve_type = self.ch.type(group=1008)
-        item = Character(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Character(self.ch.type(group=1008).id)
+        fit.character = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -106,10 +95,10 @@ class TestItemClass(RestrictionTestCase):
 
     def test_charge_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.charge)
-        item = Charge(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Charge(self.ch.type(category=Category.charge).id)
+        container = ModuleHigh(self.ch.type().id)
+        container.charge = item
+        fit.modules.high.append(container)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -120,10 +109,10 @@ class TestItemClass(RestrictionTestCase):
 
     def test_charge_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        item = Charge(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Charge(self.ch.type(category=1008).id)
+        container = ModuleHigh(self.ch.type().id)
+        container.charge = item
+        fit.modules.high.append(container)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -134,12 +123,10 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_drone_ass(self):
+    def test_drone_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.drone)
-        item = Drone(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Drone(self.ch.type(category=Category.drone).id)
+        fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -150,10 +137,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_drone_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        item = Drone(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Drone(self.ch.type(category=1008).id)
+        fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -166,10 +151,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_effect_beacon_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(group=Group.effect_beacon)
-        item = EffectBeacon(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = EffectBeacon(self.ch.type(group=Group.effect_beacon).id)
+        fit.effect_beacon = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -180,10 +163,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_effect_beacon_fail_group(self):
         fit = Fit()
-        eve_type = self.ch.type(group=1008)
-        item = EffectBeacon(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = EffectBeacon(self.ch.type(group=1008).id)
+        fit.effect_beacon = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -196,10 +177,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_implant_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.implant, attributes={Attribute.implantness: 3})
-        item = Implant(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Implant(self.ch.type(category=Category.implant, attributes={Attribute.implantness: 3}).id)
+        fit.implants.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -210,10 +189,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_implant_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008, attributes={Attribute.implantness: 3})
-        item = Implant(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Implant(self.ch.type(category=1008, attributes={Attribute.implantness: 3}).id)
+        fit.implants.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -226,10 +203,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_implant_fail_attr(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.implant)
-        item = Implant(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Implant(self.ch.type(category=1008).id)
+        fit.implants.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -242,11 +217,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_high_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {Slot.module_high}
-        item = ModuleHigh(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.hi_power, category=EffectCategory.passive)
+        item = ModuleHigh(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -257,11 +230,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_high_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        eve_type.slots = {Slot.module_high}
-        item = ModuleHigh(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.hi_power, category=EffectCategory.passive)
+        item = ModuleHigh(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -273,11 +244,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_high_fail_slot(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {1008}
-        item = ModuleHigh(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
+        item = ModuleHigh(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -290,11 +259,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_medium_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {Slot.module_med}
-        item = ModuleMed(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
+        item = ModuleMed(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        fit.modules.med.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -305,11 +272,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_med_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        eve_type.slots = {Slot.module_med}
-        item = ModuleMed(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
+        item = ModuleMed(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        fit.modules.med.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -322,11 +287,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_med_fail_slot(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {1008}
-        item = ModuleMed(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
+        item = ModuleMed(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        fit.modules.med.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -339,11 +302,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_low_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {Slot.module_low}
-        item = ModuleLow(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.lo_power, category=EffectCategory.passive)
+        item = ModuleLow(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        fit.modules.low.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -354,11 +315,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_low_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        eve_type.slots = {Slot.module_low}
-        item = ModuleLow(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.lo_power, category=EffectCategory.passive)
+        item = ModuleLow(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        fit.modules.low.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -371,11 +330,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_module_low_fail_slot(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {1008}
-        item = ModuleLow(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
+        item = ModuleLow(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        fit.modules.low.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -388,11 +345,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_rig_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {Slot.rig}
-        item = Rig(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+        item = Rig(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -403,11 +358,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_rig_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        eve_type.slots = {Slot.rig}
-        item = Rig(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+        item = Rig(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -420,11 +373,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_rig_fail_slot(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.module)
-        eve_type.slots = {1008}
-        item = Rig(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
+        item = Rig(self.ch.type(category=Category.module, effects=(slot_effect,)).id)
+        fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -437,10 +388,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_ship_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.ship)
-        item = Ship(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Ship(self.ch.type(category=Category.ship).id)
+        fit.ship = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -451,10 +400,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_ship_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        item = Ship(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Ship(self.ch.type(category=1008).id)
+        fit.ship = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -467,10 +414,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_skill_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.skill)
-        item = Skill(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Skill(self.ch.type(category=Category.skill).id)
+        fit.skills.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -481,10 +426,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_skill_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        item = Skill(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Skill(self.ch.type(category=1008).id)
+        fit.skills.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -497,10 +440,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_stance_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(group=Group.ship_modifier)
-        item = Stance(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Stance(self.ch.type(group=Group.ship_modifier).id)
+        fit.stance = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -511,10 +452,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_stance_fail_group(self):
         fit = Fit()
-        eve_type = self.ch.type(group=1008)
-        item = Stance(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Stance(self.ch.type(group=1008).id)
+        fit.stance = item
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -527,11 +466,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_subsystem_pass(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.subsystem)
-        eve_type.slots = {Slot.subsystem}
-        item = Subsystem(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
+        item = Subsystem(self.ch.type(category=Category.subsystem, effects=(slot_effect,)).id)
+        fit.subsystems.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -542,10 +479,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_subsystem_fail_category(self):
         fit = Fit()
-        eve_type = self.ch.type(category=1008)
-        item = Subsystem(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
+        item = Subsystem(self.ch.type(category=1008, effects=(slot_effect,)).id)
+        fit.subsystems.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -558,11 +494,9 @@ class TestItemClass(RestrictionTestCase):
 
     def test_subsystem_fail_slot(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.subsystem)
-        eve_type.slots = {1008}
-        item = Subsystem(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        slot_effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
+        item = Subsystem(self.ch.type(category=Category.subsystem, effects=(slot_effect,)).id)
+        fit.subsystems.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -575,10 +509,8 @@ class TestItemClass(RestrictionTestCase):
 
     def test_single_replacement(self):
         fit = Fit()
-        eve_type = self.ch.type(category=Category.implant, attributes={Attribute.boosterness: 3})
-        item = Implant(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Implant(self.ch.type(category=Category.implant, attributes={Attribute.boosterness: 3}).id)
+        fit.implants.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification
@@ -592,11 +524,10 @@ class TestItemClass(RestrictionTestCase):
 
     def test_multiple_replacements(self):
         fit = Fit()
-        eve_type = self.ch.type(
-            type_id=1, category=Category.implant, attributes={Attribute.boosterness: 3, Attribute.implantness: 1})
-        item = Drone(eve_type.id)
-        item._eve_type = eve_type
-        fit._items.add(item)
+        item = Drone(self.ch.type(
+            category=Category.implant, attributes={Attribute.boosterness: 3, Attribute.implantness: 1}
+        ).id)
+        fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
         # Verification

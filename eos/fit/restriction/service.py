@@ -46,11 +46,9 @@ class RestrictionService(BaseSubscriber):
             BoosterEffectRestriction(fit),
             DroneGroupRestriction(fit),
             HighSlotRestriction(fit),
-            ItemClassRestrictionRegister(),
             LowSlotRestriction(fit),
             MediumSlotRestriction(fit),
             RigSlotRestriction(fit),
-            StateRestrictionRegister(),
             SubsystemSlotRestriction(fit)
         )
         # Set with 'stateless' restriction registers. Items
@@ -65,11 +63,13 @@ class RestrictionService(BaseSubscriber):
             ChargeVolumeRestrictionRegister(),
             DroneBayVolumeRegister(fit),
             ImplantIndexRegister(),
+            ItemClassRestrictionRegister(),
             LauncherSlotRestrictionRegister(fit),
             MaxGroupFittedRegister(),
             RigSizeRestrictionRegister(fit),
             ShipTypeGroupRestrictionRegister(fit),
             SkillRequirementRestrictionRegister(fit),
+            StateRestrictionRegister(),
             SubsystemIndexRegister(),
             TurretSlotRestrictionRegister(fit)
         )

@@ -20,7 +20,6 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
@@ -28,21 +27,26 @@ from tests.integration.restriction.restriction_testcase import RestrictionTestCa
 class TestShipTypeGroup(RestrictionTestCase):
     """Check functionality of 'can fit to ship type/group' restriction"""
 
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.can_fit_ship_type_1)
+        self.ch.attribute(attribute_id=Attribute.can_fit_ship_type_2)
+        self.ch.attribute(attribute_id=Attribute.can_fit_ship_group_1)
+        self.ch.attribute(attribute_id=Attribute.can_fit_ship_group_2)
+
     def test_fail_type(self):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, (10,))
         self.assertCountEqual(restriction_error.allowed_groups, ())
-        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -51,19 +55,18 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_type_multiple_different(self):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(
-            type_id=1, attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 11})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 11}
+        ).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, (10, 11))
         self.assertCountEqual(restriction_error.allowed_groups, ())
-        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -72,19 +75,18 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_type_multiple_same(self):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(
-            type_id=1, attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 10})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 10}
+        ).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, (10,))
         self.assertCountEqual(restriction_error.allowed_groups, ())
-        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -93,18 +95,16 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group(self):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(attributes={Attribute.can_fit_ship_group_1: 38})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_group_1: 38}).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, ())
         self.assertCountEqual(restriction_error.allowed_groups, (38,))
-        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -113,19 +113,18 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group_multiple_different(self):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(
-            type_id=1, attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 83})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 83}
+        ).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, ())
         self.assertCountEqual(restriction_error.allowed_groups, (38, 83))
-        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -134,19 +133,18 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_group_multiple_same(self):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(
-            type_id=1, attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 38})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 38}
+        ).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, ())
         self.assertCountEqual(restriction_error.allowed_groups, (38,))
-        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -157,19 +155,18 @@ class TestShipTypeGroup(RestrictionTestCase):
         # item specifies both type and group restrictions
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(
-            type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23}
+        ).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error.allowed_types, (1089,))
         self.assertCountEqual(restriction_error.allowed_groups, (23,))
-        self.assertEqual(restriction_error.ship_type, 772)
+        self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
         self.assertEqual(len(self.log), 0)
@@ -178,9 +175,8 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_no_ship(self):
         # Absent ship should trigger this error too
         fit = Fit()
-        eve_type = self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
@@ -193,38 +189,14 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_fail_attr_eve_type(self):
-        # Make sure eve type attribute value is taken
-        fit = Fit()
-        ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        item.attributes = {Attribute.can_fit_ship_type_1: 772}
-        self.add_item(item)
-        # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
-        # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_types, (10,))
-        self.assertCountEqual(restriction_error.allowed_groups, ())
-        self.assertEqual(restriction_error.ship_type, 772)
-        self.assertEqual(restriction_error.ship_group, 31)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_pass_type_match(self):
         # When type of ship matches type-restriction attribute,
         # no error should be raised
         fit = Fit()
         ship_eve_type = self.ch.type(group=23)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(attributes={Attribute.can_fit_ship_type_1: 554})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: ship_eve_type.id}).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
@@ -237,12 +209,9 @@ class TestShipTypeGroup(RestrictionTestCase):
         # When type of ship matches group-restriction attribute,
         # no error should be raised
         fit = Fit()
-        ship_eve_type = self.ch.type(group=23)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(attributes={Attribute.can_fit_ship_group_1: 23})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(self.ch.type(group=23).id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_group_1: 23}).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
@@ -256,12 +225,11 @@ class TestShipTypeGroup(RestrictionTestCase):
         # to be fittable, even if both conditions are specified
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(
-            type_id=1, attributes={Attribute.can_fit_ship_type_1: 671, Attribute.can_fit_ship_group_1: 38})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.can_fit_ship_type_1: ship_eve_type.id, Attribute.can_fit_ship_group_1: 38}
+        ).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
@@ -274,13 +242,11 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Check that it's enough to match group condition
         # to be fittable, even if both conditions are specified
         fit = Fit()
-        ship_eve_type = self.ch.type(group=23)
-        ship_item = Ship(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(
-            type_id=1, attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23})
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        fit.ship = Ship(self.ch.type(group=23).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23}
+        ).id)
+        fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification
@@ -291,12 +257,9 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def test_pass_item_other_class(self):
         fit = Fit()
-        ship_eve_type = self.ch.type(group=31)
-        ship_item = Rig(ship_eve_type.id)
-        fit.ship = ship_item
-        eve_type = self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10})
-        item = Ship(eve_type.id)
-        self.add_item(item)
+        fit.ship = Ship(self.ch.type(group=31).id)
+        item = Rig(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
         # Verification

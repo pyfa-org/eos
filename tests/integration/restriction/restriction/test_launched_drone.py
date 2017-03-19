@@ -20,128 +20,140 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
+from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
 class TestLaunchedDrone(RestrictionTestCase):
     """Check functionality of max launched drone restriction"""
 
-    def test_fail_excess_signle(self):
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.max_active_drones)
+
+    def test_fail_excess_single(self):
         # Check that error is raised when number of used
-        # slots exceeds slot amount provided by character
+        # slots exceeds slot amount provided by ship
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Drone(eve_type.id, state=State.online)
-        self.add_item(item)
-        fit.stats.launched_drones.used = 1
-        fit.stats.launched_drones.total = 0
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 0}).id)
+        item = Drone(self.ch.type().id, state=State.online)
+        fit.drones.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.launched_drone)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_fail_excess_signle_undefined_output(self):
+    def test_fail_excess_single_no_char(self):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Drone(eve_type.id, state=State.online)
-        self.add_item(item)
-        fit.stats.launched_drones.used = 1
-        fit.stats.launched_drones.total = None
+        fit.character = None
+        item = Drone(self.ch.type().id, state=State.online)
+        fit.drones.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.launched_drone)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
         fit = Fit()
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 1}).id)
         eve_type = self.ch.type()
         item1 = Drone(eve_type.id, state=State.online)
         item2 = Drone(eve_type.id, state=State.online)
-        self.add_item(item1)
-        self.add_item(item2)
-        fit.stats.launched_drones.used = 2
-        fit.stats.launched_drones.total = 1
+        fit.drones.add(item1)
+        fit.drones.add(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.launched_drone)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.slots_max_allowed, 1)
         self.assertEqual(restriction_error1.slots_used, 2)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.launched_drone)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_equal(self):
         fit = Fit()
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 2}).id)
         eve_type = self.ch.type()
         item1 = Drone(eve_type.id, state=State.online)
         item2 = Drone(eve_type.id, state=State.online)
-        self.add_item(item1)
-        self.add_item(item2)
-        fit.stats.launched_drones.used = 2
-        fit.stats.launched_drones.total = 2
+        fit.drones.add(item1)
+        fit.drones.add(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.launched_drone)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.launched_drone)
+        # Verification
         self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_greater(self):
         fit = Fit()
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 5}).id)
         eve_type = self.ch.type()
         item1 = Drone(eve_type.id, state=State.online)
         item2 = Drone(eve_type.id, state=State.online)
-        self.add_item(item1)
-        self.add_item(item2)
-        fit.stats.launched_drones.used = 2
-        fit.stats.launched_drones.total = 5
+        fit.drones.add(item1)
+        fit.drones.add(item2)
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.launched_drone)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.launched_drone)
+        # Verification
         self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_pass_other_class(self):
-        fit = Fit()
-        eve_type = self.ch.type()
-        item = ModuleHigh(eve_type.id, state=State.online)
-        self.add_item(item)
-        fit.stats.launched_drones.used = 1
-        fit.stats.launched_drones.total = 0
-        restriction_error = self.get_restriction_error(fit, item, Restriction.launched_drone)
-        self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_state(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Drone(eve_type.id, state=State.offline)
-        self.add_item(item)
-        fit.stats.launched_drones.used = 1
-        fit.stats.launched_drones.total = 0
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 0}).id)
+        item = Drone(self.ch.type().id, state=State.offline)
+        fit.drones.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.launched_drone)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_pass_other_item(self):
+        # Check that error is raised when number of used
+        # slots exceeds slot amount provided by ship
+        fit = Fit()
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 0}).id)
+        item = ModuleHigh(self.ch.type().id, state=State.online)
+        fit.modules.high.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.launched_drone)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import Restriction, State
+from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -28,37 +28,36 @@ class TestSkillRequirement(RestrictionTestCase):
     """Check functionality of skill requirement restriction"""
 
     def test_fail_single(self):
-        # Check that error is raised when skill requirement
-        # is not met
+        # Check that error is raised when skill requirement is not met
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.required_skills = {50: 3}
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.required_skill_1: 50, Attribute.required_skill_1_level: 3
+        }).id)
+        fit.modules.high.append(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 3),))
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_fail_multiple(self):
         # Check that multiple errors are shown as iterable
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.required_skills = {48: 1, 50: 5}
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
-        skill_eve_type = self.ch.type()
-        skill_item = Skill(skill_eve_type.id)
-        skill_item.level = 2
-        self.add_item(skill_item)
-        fit.skills[50] = skill_item
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.required_skill_1: 48, Attribute.required_skill_1_level: 1,
+            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 5
+        }).id)
+        fit.modules.high.append(item)
+        fit.skills.add(Skill(self.ch.type(type_id=50).id, level=2))
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, 2, 5), (48, None, 1)))
-        self.remove_item(item)
-        self.remove_item(skill_item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -66,20 +65,18 @@ class TestSkillRequirement(RestrictionTestCase):
         # Make sure satisfied skill requirements are not shown
         # up in error
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.required_skills = {48: 1, 50: 5}
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
-        skill_eve_type = self.ch.type()
-        skill_item = Skill(skill_eve_type.id)
-        skill_item.level = 5
-        self.add_item(skill_item)
-        fit.skills[48] = skill_item
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.required_skill_1: 48, Attribute.required_skill_1_level: 1,
+            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 5
+        }).id)
+        fit.modules.high.append(item)
+        fit.skills.add(Skill(self.ch.type(type_id=48).id, level=5))
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 5),))
-        self.remove_item(item)
-        self.remove_item(skill_item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
@@ -87,31 +84,30 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that error isn't raised when all skill requirements
         # are met
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.required_skills = {50: 3}
-        item = ModuleHigh(eve_type.id, state=State.offline)
-        self.add_item(item)
-        skill_eve_type = self.ch.type()
-        skill_item = Skill(skill_eve_type.id)
-        skill_item.level = 3
-        self.add_item(skill_item)
-        fit.skills[50] = skill_item
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 3
+        }).id)
+        fit.modules.high.append(item)
+        fit.skills.add(Skill(self.ch.type(type_id=50).id, level=3))
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
-        self.remove_item(skill_item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_exception_rig(self):
         # Check that skillreqs on rigs are not checked
         fit = Fit()
-        eve_type = self.ch.type()
-        eve_type.required_skills = {50: 3}
-        item = Rig(eve_type.id)
-        self.add_item(item)
+        item = Rig(self.ch.type(attributes={
+            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 3
+        }).id)
+        fit.rigs.add(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

@@ -20,141 +20,125 @@
 
 
 from eos import *
-from eos.const.eos import Restriction
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
 class TestRigSlot(RestrictionTestCase):
     """Check functionality of rig slot amount restriction"""
 
-    def test_fail_excess_signle(self):
+    def setUp(self):
+        super().setUp()
+        self.ch.attribute(attribute_id=Attribute.rig_slots)
+        self.slot_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+
+    def test_fail_excess_single(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Rig(eve_type.id)
+        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 0}).id)
+        item = Rig(self.ch.type(effects=(self.slot_effect,)).id)
         fit.rigs.add(item)
-        self.add_item(item)
-        fit.stats.rig_slots.used = 1
-        fit.stats.rig_slots.total = 0
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_slot)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_fail_excess_single_other_class(self):
-        # Make sure items of all classes are affected
-        fit = Fit()
-        eve_type = self.ch.type()
-        item = Implant(eve_type.id)
-        fit.rigs.add(item)
-        self.add_item(item)
-        fit.stats.rig_slots.used = 1
-        fit.stats.rig_slots.total = 0
-        restriction_error = self.get_restriction_error(fit, item, Restriction.rig_slot)
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_item(item)
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_fail_excess_signle_undefined_output(self):
+    def test_fail_excess_single_no_ship(self):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Rig(eve_type.id)
+        item = Rig(self.ch.type(effects=(self.slot_effect,)).id)
         fit.rigs.add(item)
-        self.add_item(item)
-        fit.stats.rig_slots.used = 1
-        fit.stats.rig_slots.total = None
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_slot)
+        # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
         fit = Fit()
-        eve_type = self.ch.type()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 1}).id)
+        eve_type = self.ch.type(effects=(self.slot_effect,))
         item1 = Rig(eve_type.id)
         item2 = Rig(eve_type.id)
         fit.rigs.add(item1)
         fit.rigs.add(item2)
-        self.add_item(item1)
-        self.add_item(item2)
-        fit.stats.rig_slots.used = 2
-        fit.stats.rig_slots.total = 1
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.rig_slot)
+        # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.slots_max_allowed, 1)
         self.assertEqual(restriction_error1.slots_used, 2)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.rig_slot)
+        # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_equal(self):
         fit = Fit()
-        eve_type = self.ch.type()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 2}).id)
+        eve_type = self.ch.type(effects=(self.slot_effect,))
         item1 = Rig(eve_type.id)
         item2 = Rig(eve_type.id)
         fit.rigs.add(item1)
         fit.rigs.add(item2)
-        self.add_item(item1)
-        self.add_item(item2)
-        fit.stats.rig_slots.used = 2
-        fit.stats.rig_slots.total = 2
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.rig_slot)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.rig_slot)
+        # Verification
         self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
     def test_pass_greater(self):
         fit = Fit()
-        eve_type = self.ch.type()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 5}).id)
+        eve_type = self.ch.type(effects=(self.slot_effect,))
         item1 = Rig(eve_type.id)
         item2 = Rig(eve_type.id)
         fit.rigs.add(item1)
         fit.rigs.add(item2)
-        self.add_item(item1)
-        self.add_item(item2)
-        fit.stats.rig_slots.used = 2
-        fit.stats.rig_slots.total = 5
+        # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.rig_slot)
+        # Verification
         self.assertIsNone(restriction_error1)
+        # Action
         restriction_error2 = self.get_restriction_error(fit, item2, Restriction.rig_slot)
+        # Verification
         self.assertIsNone(restriction_error2)
-        self.remove_item(item1)
-        self.remove_item(item2)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_pass_other_container(self):
+    def test_pass_other_item_class(self):
         fit = Fit()
-        eve_type = self.ch.type()
-        item = Rig(eve_type.id)
-        fit.subsystems.add(item)
-        self.add_item(item)
-        fit.stats.rig_slots.used = 1
-        fit.stats.rig_slots.total = 0
+        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 0}).id)
+        item = ModuleLow(self.ch.type(effects=(self.slot_effect,)).id)
+        fit.modules.low.append(item)
+        # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_slot)
+        # Verification
         self.assertIsNone(restriction_error)
-        self.remove_item(item)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
