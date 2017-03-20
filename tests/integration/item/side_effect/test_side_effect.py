@@ -19,149 +19,226 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.fit.item.mixin.side_effect import SideEffectMixin
-from eos.fit.message import EffectsEnabled, EffectsDisabled
+from eos import *
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eve import EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
 class TestItemMixinSideEffect(ItemMixinTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.mixin = self.instantiate_mixin(SideEffectMixin, type_id=None)
-        self.mixin._eve_type = Mock()
-
     def test_data(self):
         # Setup
-        effect1 = Mock()
-        effect1.id = 22
-        effect1.fitting_usage_chance_attribute = 2
-        effect2 = Mock()
-        effect2.id = 555
-        effect2.fitting_usage_chance_attribute = 55
-        effect3 = Mock()
-        effect3.id = 999
-        effect3.fitting_usage_chance_attribute = None
-        self.mixin.set_side_effect_status(555, False)
-        self.mixin._eve_type.effects = (effect1, effect2, effect3)
-        self.mixin.attributes = {2: 0.5, 55: 0.1}
+        chance_attr1 = self.ch.attribute()
+        chance_attr2 = self.ch.attribute()
+        src_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=chance_attr2.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
+        effect1 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1.id)
+        effect2 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr2.id)
+        effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        fit = Fit()
+        item = Booster(self.ch.type(
+            attributes={chance_attr1.id: 0.5, chance_attr2.id: 0.1, src_attr.id: -25},
+            effects=(effect1, effect2, effect3)
+        ).id)
+        fit.boosters.add(item)
+        item.set_side_effect_status(effect2.id, False)
         # Verification
-        side_effects = self.mixin.side_effects
+        side_effects = item.side_effects
         self.assertEqual(len(side_effects), 2)
-        self.assertIn(22, side_effects)
-        side_effect1 = side_effects[22]
-        self.assertEqual(side_effect1.effect, effect1)
-        self.assertEqual(side_effect1.chance, 0.5)
-        self.assertEqual(side_effect1.status, True)
-        self.assertIn(555, side_effects)
-        side_effect2 = side_effects[555]
-        self.assertEqual(side_effect2.effect, effect2)
-        self.assertEqual(side_effect2.chance, 0.1)
-        self.assertEqual(side_effect2.status, False)
+        self.assertIn(effect1.id, side_effects)
+        side_effect1 = side_effects[effect1.id]
+        self.assertIs(side_effect1.effect, effect1)
+        self.assertAlmostEqual(side_effect1.chance, 0.5)
+        self.assertIs(side_effect1.status, True)
+        self.assertIn(effect2.id, side_effects)
+        side_effect2 = side_effects[effect2.id]
+        self.assertIs(side_effect2.effect, effect2)
+        self.assertAlmostEqual(side_effect2.chance, 0.075)
+        self.assertIs(side_effect2.status, False)
 
     def test_persistence(self):
         # Here we check that when item._eve_type doesn't have effect
         # which was disabled anymore, everything runs as expected, and
         # when this effect appears again - it's disabled
         # Setup
-        effect1 = Mock()
-        effect1.id = 22
-        effect1.fitting_usage_chance_attribute = 2
-        effect2 = Mock()
-        effect2.id = 555
-        effect2.fitting_usage_chance_attribute = 55
-        effect2_repl = Mock()
-        effect2_repl.id = 555
-        effect2_repl.fitting_usage_chance_attribute = None
-        effect3 = Mock()
-        effect3.id = 999
-        effect3.fitting_usage_chance_attribute = None
-        self.mixin.set_side_effect_status(555, False)
-        self.mixin.set_side_effect_status(22, False)
-        self.mixin._eve_type.effects = (effect1, effect2, effect3)
-        self.mixin.attributes = {2: 0.5, 55: 0.1}
+        chance_attr1_id = self.allocate_attribute_id(self.ch, self.ch2)
+        self.ch.attribute(attribute_id=chance_attr1_id)
+        self.ch2.attribute(attribute_id=chance_attr1_id)
+        chance_attr2 = self.ch.attribute()
+        chance_attr3 = self.ch.attribute()
+        # 1st effect exists as side-effect in both sources
+        effect1_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect1_src1 = self.ch.effect(
+            effect_id=effect1_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1_id
+        )
+        effect1_src2 = self.ch2.effect(
+            effect_id=effect1_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1_id
+        )
+        # 2nd effect exists as side-effect in src1, and as regular effect in src2
+        effect2_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect2_src1 = self.ch.effect(
+            effect_id=effect2_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr2.id
+        )
+        effect2_src2 = self.ch2.effect(effect_id=effect2_id, category=EffectCategory.passive)
+        # 3rd effect exists as side-effect in src1 and doesn't exist in src2 at all
+        effect3_id = self.allocate_effect_id(self.ch, self.ch2)
+        effect3_src1 = self.ch.effect(
+            effect_id=effect3_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr3.id
+        )
+        eve_type_id = self.allocate_type_id(self.ch, self.ch2)
+        self.ch.type(
+            type_id=eve_type_id, attributes={chance_attr1_id: 0.2, chance_attr2.id: 0.3, chance_attr3.id: 0.4},
+            effects=(effect1_src1, effect2_src1, effect3_src1)
+        )
+        self.ch2.type(type_id=eve_type_id, attributes={chance_attr1_id: 0.7}, effects=(effect1_src2, effect2_src2))
+        fit = Fit()
+        item = Booster(eve_type_id)
+        fit.boosters.add(item)
+        item.set_side_effect_status(effect2_id, False)
+        item.set_side_effect_status(effect3_id, False)
         # Action
-        self.mixin._eve_type.effects = (effect2_repl, effect3)
+        fit.source = 'src2'
         # Verification
-        side_effects = self.mixin.side_effects
+        side_effects = item.side_effects
+        self.assertEqual(len(side_effects), 1)
+        self.assertIn(effect1_id, side_effects)
+        side_effect1 = side_effects[effect1_id]
+        self.assertIs(side_effect1.effect, effect1_src2)
+        self.assertAlmostEqual(side_effect1.chance, 0.7)
+        self.assertIs(side_effect1.status, True)
         # Action
-        self.mixin._eve_type.effects = (effect1, effect2, effect3)
+        fit.source = 'src1'
         # Verification
-        side_effects = self.mixin.side_effects
-        self.assertEqual(len(side_effects), 2)
-        self.assertIn(22, side_effects)
-        side_effect1 = side_effects[22]
-        self.assertEqual(side_effect1.effect, effect1)
-        self.assertEqual(side_effect1.chance, 0.5)
-        self.assertEqual(side_effect1.status, False)
-        self.assertIn(555, side_effects)
-        side_effect2 = side_effects[555]
-        self.assertEqual(side_effect2.effect, effect2)
-        self.assertEqual(side_effect2.chance, 0.1)
-        self.assertEqual(side_effect2.status, False)
+        side_effects = item.side_effects
+        self.assertEqual(len(side_effects), 3)
+        self.assertIn(effect1_id, side_effects)
+        side_effect1 = side_effects[effect1_id]
+        self.assertIs(side_effect1.effect, effect1_src1)
+        self.assertAlmostEqual(side_effect1.chance, 0.2)
+        self.assertIs(side_effect1.status, True)
+        self.assertIn(effect2_id, side_effects)
+        side_effect2 = side_effects[effect2_id]
+        self.assertIs(side_effect2.effect, effect2_src1)
+        self.assertAlmostEqual(side_effect2.chance, 0.3)
+        self.assertIs(side_effect2.status, False)
+        self.assertIn(effect3_id, side_effects)
+        side_effect3 = side_effects[effect3_id]
+        self.assertIs(side_effect3.effect, effect3_src1)
+        self.assertAlmostEqual(side_effect3.chance, 0.4)
+        self.assertIs(side_effect3.status, False)
 
     def test_disabling_attached(self):
         # Setup
-        fit_mock = Mock()
-        self.mixin._BaseItemMixin__fit = fit_mock
-        fit_calls_before = len(fit_mock.mock_calls)
+        chance_attr = self.ch.attribute()
+        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
+        effect = self.ch.effect(
+            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+        )
+        fit = Fit()
+        item = Booster(self.ch.type(
+            attributes={chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2}, effects=[effect]
+        ).id)
+        fit.boosters.add(item)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
         # Action
-        self.mixin.set_side_effect_status(5, False)
+        item.set_side_effect_status(effect.id, False)
         # Verification
-        fit_calls_after = len(fit_mock.mock_calls)
-        self.assertEqual(fit_calls_after - fit_calls_before, 1)
-        fit_call_name, fit_call_args, fit_call_kwargs = fit_mock.mock_calls[-1]
-        self.assertEqual(fit_call_name, '_publish')
-        self.assertEqual(len(fit_call_args), 1)
-        self.assertEqual(len(fit_call_kwargs), 0)
-        message = fit_call_args[0]
-        self.assertTrue(isinstance(message, EffectsDisabled))
-        self.assertIs(message.item, self.mixin)
-        self.assertEqual(message.effects, {5})
-        fit_calls_before = len(fit_mock.mock_calls)
-        # Action
-        self.mixin.set_side_effect_status(5, False)
-        # Verification
-        fit_calls_after = len(fit_mock.mock_calls)
-        self.assertEqual(fit_calls_after - fit_calls_before, 0)
+        self.assertIs(item.side_effects[effect.id].status, False)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
 
     def test_disabling_detached(self):
         # Setup
-        self.mixin._BaseItemMixin__fit = None
-        # Action & verification - we just make sure it doesn't crash
-        self.mixin.set_side_effect_status(16, False)
+        chance_attr = self.ch.attribute()
+        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
+        effect = self.ch.effect(
+            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+        )
+        fit = Fit()
+        item = Booster(self.ch.type(
+            attributes={chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2}, effects=[effect]
+        ).id)
+        item.set_side_effect_status(effect.id, False)
+        # Action
+        fit.boosters.add(item)
+        # Verification
+        self.assertIs(item.side_effects[effect.id].status, False)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
 
     def test_enabling_attached(self):
         # Setup
-        fit_mock = Mock()
-        self.mixin._BaseItemMixin__fit = fit_mock
-        self.mixin.set_side_effect_status(11, False)
-        fit_calls_before = len(fit_mock.mock_calls)
+        chance_attr = self.ch.attribute()
+        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
+        effect = self.ch.effect(
+            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+        )
+        fit = Fit()
+        item = Booster(self.ch.type(
+            attributes={chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2}, effects=[effect]
+        ).id)
+        fit.boosters.add(item)
+        item.set_side_effect_status(effect.id, False)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
         # Action
-        self.mixin.set_side_effect_status(11, True)
+        item.set_side_effect_status(effect.id, True)
         # Verification
-        fit_calls_after = len(fit_mock.mock_calls)
-        self.assertEqual(fit_calls_after - fit_calls_before, 1)
-        fit_call_name, fit_call_args, fit_call_kwargs = fit_mock.mock_calls[-1]
-        self.assertEqual(fit_call_name, '_publish')
-        self.assertEqual(len(fit_call_args), 1)
-        self.assertEqual(len(fit_call_kwargs), 0)
-        message = fit_call_args[0]
-        self.assertTrue(isinstance(message, EffectsEnabled))
-        self.assertIs(message.item, self.mixin)
-        self.assertEqual(message.effects, {11})
-        fit_calls_before = len(fit_mock.mock_calls)
-        # Action
-        self.mixin.set_side_effect_status(11, True)
-        # Verification
-        fit_calls_after = len(fit_mock.mock_calls)
-        self.assertEqual(fit_calls_after - fit_calls_before, 0)
+        self.assertIs(item.side_effects[effect.id].status, True)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
 
     def test_enabling_detached(self):
         # Setup
-        self.mixin._BaseItemMixin__fit = None
-        self.mixin.set_side_effect_status(99, False)
-        # Action & verification - we just make sure it doesn't crash
-        self.mixin.set_side_effect_status(99, True)
+        chance_attr = self.ch.attribute()
+        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=tgt_attr.id,
+            operator=ModifierOperator.post_mul,
+            src_attr=src_attr.id
+        )
+        effect = self.ch.effect(
+            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+        )
+        fit = Fit()
+        item = Booster(self.ch.type(
+            attributes={chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2}, effects=[effect]
+        ).id)
+        item.set_side_effect_status(effect.id, False)
+        item.set_side_effect_status(effect.id, True)
+        # Action
+        fit.boosters.add(item)
+        # Verification
+        self.assertIs(item.side_effects[effect.id].status, True)
+        self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)

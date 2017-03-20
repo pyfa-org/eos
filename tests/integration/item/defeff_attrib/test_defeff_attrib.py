@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
