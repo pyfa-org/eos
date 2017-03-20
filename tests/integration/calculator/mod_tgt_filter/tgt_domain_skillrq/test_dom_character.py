@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory
+from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -44,7 +44,9 @@ class TestTgtDomainSkillrqDomainCharacter(CalculatorTestCase):
         self.influence_source = Rig(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
 
     def test_parent_domain_character(self):
-        influence_target = Implant(self.ch.type(attributes={self.tgt_attr.id: 100}, required_skills={56: 1}).id)
+        influence_target = Implant(self.ch.type(attributes={
+            self.tgt_attr.id: 100, Attribute.required_skill_1: 56, Attribute.required_skill_1_level: 1
+        }).id)
         self.fit.implants.add(influence_target)
         # Action
         self.fit.rigs.add(self.influence_source)
@@ -59,7 +61,9 @@ class TestTgtDomainSkillrqDomainCharacter(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_parent_domain_other(self):
-        influence_target = Drone(self.ch.type(attributes={self.tgt_attr.id: 100}, required_skills={56: 1}).id)
+        influence_target = Drone(self.ch.type(attributes={
+            self.tgt_attr.id: 100, Attribute.required_skill_1: 56, Attribute.required_skill_1_level: 1
+        }).id)
         self.fit.drones.add(influence_target)
         # Action
         self.fit.rigs.add(self.influence_source)
@@ -70,7 +74,9 @@ class TestTgtDomainSkillrqDomainCharacter(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_skill_other(self):
-        influence_target = Implant(self.ch.type(attributes={self.tgt_attr.id: 100}, required_skills={87: 1}).id)
+        influence_target = Implant(self.ch.type(attributes={
+            self.tgt_attr.id: 100, Attribute.required_skill_1: 87, Attribute.required_skill_1_level: 1
+        }).id)
         self.fit.implants.add(influence_target)
         # Action
         self.fit.rigs.add(self.influence_source)

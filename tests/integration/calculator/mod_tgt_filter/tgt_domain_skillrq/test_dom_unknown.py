@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory
+from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -52,7 +52,9 @@ class TestTgtDomainSkillrqDomainUnknown(CalculatorTestCase):
             modifiers=(invalid_modifier, valid_modifier)
         )
         influence_source = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
-        influence_target = Rig(self.ch.type(group=33, attributes={tgt_attr.id: 100}, required_skills={33: 1}).id)
+        influence_target = Rig(self.ch.type(group=33, attributes={
+            tgt_attr.id: 100, Attribute.required_skill_1: 33, Attribute.required_skill_1_level: 1
+        }).id)
         self.fit.rigs.add(influence_target)
         # Action
         self.fit.implants.add(influence_source)

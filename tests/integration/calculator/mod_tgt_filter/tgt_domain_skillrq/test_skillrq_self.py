@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosEveTypes
-from eos.const.eve import EffectCategory
+from eos.const.eve import Attribute, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -45,9 +45,10 @@ class TestTgtDomainSkillrqSkillrqSelf(CalculatorTestCase):
         self.influence_source = Implant(self.source_eve_type.id)
 
     def test_match(self):
-        influence_target = Rig(self.ch.type(
-            attributes={self.tgt_attr.id: 100}, required_skills={self.source_eve_type.id: 1}
-        ).id)
+        influence_target = Rig(self.ch.type(attributes={
+            self.tgt_attr.id: 100, Attribute.required_skill_1: self.source_eve_type.id,
+            Attribute.required_skill_1_level: 1
+        }).id)
         self.fit.rigs.add(influence_target)
         # Action
         self.fit.implants.add(self.influence_source)
@@ -62,7 +63,9 @@ class TestTgtDomainSkillrqSkillrqSelf(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_skill_other(self):
-        influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}, required_skills={87: 1}).id)
+        influence_target = Rig(self.ch.type(attributes={
+            self.tgt_attr.id: 100, Attribute.required_skill_1: 87, Attribute.required_skill_1_level: 1
+        }).id)
         self.fit.rigs.add(influence_target)
         # Action
         self.fit.implants.add(self.influence_source)

@@ -36,14 +36,12 @@ class CacheHandler:
         self.__allocated_attribute = 0
         self.__allocated_effect = 0
 
-    def type(self, type_id=None, required_skills=None, **kwargs):
+    def type(self, type_id=None, **kwargs):
         if type_id is None:
             type_id = self.allocate_type_id()
         eve_type = Type(type_id=type_id, **kwargs)
         if eve_type.id in self.__type_data:
             raise KeyError(eve_type.id)
-        if required_skills is not None:
-            eve_type.required_skills = required_skills
         self.__type_data[eve_type.id] = eve_type
         return eve_type
 
