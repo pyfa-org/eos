@@ -19,11 +19,8 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
+from eos import *
 from eos.const.eve import Attribute
-from eos.fit.container import ItemSet
-from eos.fit.item import Ship
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -31,26 +28,34 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.item = Ship(type_id=None)
-        self.item._clear_volatile_attrs = Mock()
-        self.item.attributes = {}
-
-    def make_fit(self, *args, **kwargs):
-        fit = super().make_fit(*args, **kwargs)
-        fit.container = ItemSet(fit, Ship)
-        return fit
+        self.ch.attribute(attribute_id=Attribute.hp)
+        self.ch.attribute(attribute_id=Attribute.armor_hp)
+        self.ch.attribute(attribute_id=Attribute.shield_capacity)
 
     def test_generic(self):
-        self.item.attributes[Attribute.hp] = 8
-        self.item.attributes[Attribute.armor_hp] = 10
-        self.item.attributes[Attribute.shield_capacity] = 12
-        self.assertAlmostEqual(self.item.hp.hull, 8)
-        self.assertAlmostEqual(self.item.hp.armor, 10)
-        self.assertAlmostEqual(self.item.hp.shield, 12)
-        self.assertAlmostEqual(self.item.hp.total, 30)
+        fit = Fit()
+        item = Ship(self.ch.type(
+            attributes={Attribute.hp: 8, Attribute.armor_hp: 10, Attribute.shield_capacity: 12}
+        ).id)
+        fit.ship = item
+        # Verification
+        self.assertAlmostEqual(item.hp.hull, 8)
+        self.assertAlmostEqual(item.hp.armor, 10)
+        self.assertAlmostEqual(item.hp.shield, 12)
+        self.assertAlmostEqual(item.hp.total, 30)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_unspecified(self):
-        self.assertIsNone(self.item.hp.hull)
-        self.assertIsNone(self.item.hp.armor)
-        self.assertIsNone(self.item.hp.shield)
-        self.assertIsNone(self.item.hp.total)
+        fit = Fit()
+        item = Ship(self.ch.type().id)
+        fit.ship = item
+        # Verification
+        self.assertIsNone(item.hp.hull)
+        self.assertIsNone(item.hp.armor)
+        self.assertIsNone(item.hp.shield)
+        self.assertIsNone(item.hp.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 3)
+        self.assert_fit_buffers_empty(fit)

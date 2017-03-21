@@ -19,9 +19,8 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.fit.item.mixin.tanking import BufferTankingMixin
+from eos import *
+from eos.const.eve import Attribute
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -29,271 +28,247 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mixin = self.instantiate_mixin(BufferTankingMixin, type_id=None)
-        self.mixin.hp = Mock()
-        self.mixin.resistances = Mock()
-        self.mixin.attributes = {}
+        self.ch.attribute(attribute_id=Attribute.hp)
+        self.ch.attribute(attribute_id=Attribute.em_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.thermal_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.kinetic_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.explosive_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.armor_hp)
+        self.ch.attribute(attribute_id=Attribute.armor_em_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.armor_thermal_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.armor_kinetic_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.armor_explosive_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.shield_capacity)
+        self.ch.attribute(attribute_id=Attribute.shield_em_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.shield_thermal_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.shield_kinetic_damage_resonance)
+        self.ch.attribute(attribute_id=Attribute.shield_explosive_damage_resonance)
 
     def test_uniform(self):
-        mixin = self.mixin
-        mixin.hp.hull = 1
-        mixin.hp.armor = 10
-        mixin.hp.shield = 100
-        mixin.resistances.hull.em = 0.2
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.2
-        mixin.resistances.hull.explosive = 0.2
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.6
-        mixin.resistances.armor.kinetic = 0.6
-        mixin.resistances.armor.explosive = 0.6
-        mixin.resistances.shield.em = 0.8
-        mixin.resistances.shield.thermal = 0.8
-        mixin.resistances.shield.kinetic = 0.8
-        mixin.resistances.shield.explosive = 0.8
-        profile = Mock(em=1, thermal=1, kinetic=1, explosive=1)
-        results = mixin.get_ehp(profile)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 1,
+            Attribute.em_damage_resonance: 0.8, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.8, Attribute.explosive_damage_resonance: 0.8,
+            Attribute.armor_hp: 10,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.4,
+            Attribute.armor_kinetic_damage_resonance: 0.4, Attribute.armor_explosive_damage_resonance: 0.4,
+            Attribute.shield_capacity: 100,
+            Attribute.shield_em_damage_resonance: 0.2, Attribute.shield_thermal_damage_resonance: 0.2,
+            Attribute.shield_kinetic_damage_resonance: 0.2, Attribute.shield_explosive_damage_resonance: 0.2
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=1, thermal=1, kinetic=1, explosive=1))
         self.assertAlmostEqual(results.hull, 1.25)
         self.assertAlmostEqual(results.armor, 25)
         self.assertAlmostEqual(results.shield, 500)
         self.assertAlmostEqual(results.total, 526.25)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_non_uniform(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = 50
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 11.956505628)
-        self.assertAlmostEqual(results.armor, 95.2760034772)
-        self.assertAlmostEqual(results.shield, 685.5506263491)
-        self.assertAlmostEqual(results.total, 792.7831354543)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_capacity: 600,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.957, places=3)
+        self.assertAlmostEqual(results.armor, 95.276, places=3)
+        self.assertAlmostEqual(results.shield, 685.551, places=3)
+        self.assertAlmostEqual(results.total, 792.783, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_hp_hull(self):
-        mixin = self.mixin
-        mixin.hp.hull = None
-        mixin.hp.armor = 50
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_capacity: 600,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
         self.assertIsNone(results.hull)
-        self.assertAlmostEqual(results.armor, 95.2760034772)
-        self.assertAlmostEqual(results.shield, 685.5506263491)
-        self.assertAlmostEqual(results.total, 780.8266298263)
+        self.assertAlmostEqual(results.armor, 95.276, places=3)
+        self.assertAlmostEqual(results.shield, 685.551, places=3)
+        self.assertAlmostEqual(results.total, 780.827, places=3)
 
     def test_none_hp_armor(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = None
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 11.956505628)
-        self.assertIsNone(results.armor, 95.2760034772)
-        self.assertAlmostEqual(results.shield, 685.5506263491)
-        self.assertAlmostEqual(results.total, 697.5071319771)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_capacity: 600,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.957, places=3)
+        self.assertIsNone(results.armor)
+        self.assertAlmostEqual(results.shield, 685.551, places=3)
+        self.assertAlmostEqual(results.total, 697.507, places=3)
 
     def test_none_hp_shield(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = 50
-        mixin.hp.shield = None
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 11.956505628)
-        self.assertAlmostEqual(results.armor, 95.2760034772)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.957, places=3)
+        self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertIsNone(results.shield)
-        self.assertAlmostEqual(results.total, 107.2325091052)
+        self.assertAlmostEqual(results.total, 107.233, places=3)
 
     def test_none_hp_all(self):
-        mixin = self.mixin
-        mixin.hp.hull = None
-        mixin.hp.armor = None
-        mixin.hp.shield = None
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
         self.assertIsNone(results.hull)
         self.assertIsNone(results.armor)
         self.assertIsNone(results.shield)
         self.assertIsNone(results.total)
 
     def test_none_resistance_em(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = 50
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = None
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 11.956505628)
-        self.assertAlmostEqual(results.armor, 55.76031897)
-        self.assertAlmostEqual(results.shield, 685.5506263491)
-        self.assertAlmostEqual(results.total, 753.2674509472)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_thermal_damage_resonance: 0.6, Attribute.armor_kinetic_damage_resonance: 0.8,
+            Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_capacity: 600,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.957, places=3)
+        self.assertAlmostEqual(results.armor, 55.760, places=3)
+        self.assertAlmostEqual(results.shield, 685.551, places=3)
+        self.assertAlmostEqual(results.total, 753.267, places=3)
 
     def test_none_resistance_thermal(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = 50
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = None
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 11.956505628)
-        self.assertAlmostEqual(results.armor, 95.2760034772)
-        self.assertAlmostEqual(results.shield, 663.0118521197)
-        self.assertAlmostEqual(results.total, 770.2443612249)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_capacity: 600,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_kinetic_damage_resonance: 0.6,
+            Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.957, places=3)
+        self.assertAlmostEqual(results.armor, 95.276, places=3)
+        self.assertAlmostEqual(results.shield, 663.012, places=3)
+        self.assertAlmostEqual(results.total, 770.244, places=3)
 
     def test_none_resistance_kinetic(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = 50
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.9
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 14.0370232448)
-        self.assertAlmostEqual(results.armor, 95.2760034772)
-        self.assertAlmostEqual(results.shield, 685.5506263491)
-        self.assertAlmostEqual(results.total, 794.8636530711)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_capacity: 600,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.132, places=3)
+        self.assertAlmostEqual(results.armor, 95.276, places=3)
+        self.assertAlmostEqual(results.shield, 685.551, places=3)
+        self.assertAlmostEqual(results.total, 791.958, places=3)
 
     def test_none_resistance_explosive(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = 50
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.67
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = 0
-        mixin.resistances.shield.thermal = 0.2
-        mixin.resistances.shield.kinetic = 0.4
-        mixin.resistances.shield.explosive = 0.5
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 12.0529777575)
-        self.assertAlmostEqual(results.armor, 95.2760034772)
-        self.assertAlmostEqual(results.shield, 685.5506263491)
-        self.assertAlmostEqual(results.total, 792.8796075839)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8,
+            Attribute.shield_capacity: 600,
+            Attribute.shield_em_damage_resonance: 1.0, Attribute.shield_thermal_damage_resonance: 0.8,
+            Attribute.shield_kinetic_damage_resonance: 0.6, Attribute.shield_explosive_damage_resonance: 0.5
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.957, places=3)
+        self.assertAlmostEqual(results.armor, 94.828, places=3)
+        self.assertAlmostEqual(results.shield, 685.551, places=3)
+        self.assertAlmostEqual(results.total, 792.335, places=3)
 
     def test_none_resistance_all(self):
-        mixin = self.mixin
-        mixin.hp.hull = 10
-        mixin.hp.armor = 50
-        mixin.hp.shield = 600
-        mixin.resistances.hull.em = 0.1
-        mixin.resistances.hull.thermal = 0.2
-        mixin.resistances.hull.kinetic = 0.3
-        mixin.resistances.hull.explosive = 0.4
-        mixin.resistances.armor.em = 0.6
-        mixin.resistances.armor.thermal = 0.4
-        mixin.resistances.armor.kinetic = 0.2
-        mixin.resistances.armor.explosive = 0.1
-        mixin.resistances.shield.em = None
-        mixin.resistances.shield.thermal = None
-        mixin.resistances.shield.kinetic = None
-        mixin.resistances.shield.explosive = None
-        profile = Mock(em=25, thermal=6, kinetic=8.333, explosive=1)
-        results = mixin.get_ehp(profile)
-        self.assertAlmostEqual(results.hull, 11.956505628)
-        self.assertAlmostEqual(results.armor, 95.2760034772)
-        self.assertAlmostEqual(results.shield, 600)
-        self.assertAlmostEqual(results.total, 707.2325091052)
+        fit = Fit()
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.9, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.7, Attribute.explosive_damage_resonance: 0.6,
+            Attribute.armor_hp: 50,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.6,
+            Attribute.armor_kinetic_damage_resonance: 0.8, Attribute.armor_explosive_damage_resonance: 0.9,
+            Attribute.shield_capacity: 600
+        }).id)
+        fit.ship = item
+        # Verification
+        results = item.get_ehp(DamageProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        self.assertAlmostEqual(results.hull, 11.957, places=3)
+        self.assertAlmostEqual(results.armor, 95.276, places=3)
+        self.assertAlmostEqual(results.shield, 600, places=3)
+        self.assertAlmostEqual(results.total, 707.233, places=3)
