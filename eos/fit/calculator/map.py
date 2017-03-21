@@ -103,7 +103,7 @@ LIMITED_PRECISION = (
 )
 
 # List of exceptions calculate method may throw
-CALCULATE_EXCEPTIONS = (NoSourceError, AttributeMetaError, BaseValueError)
+CALCULATE_RAISABLE_EXCEPTIONS = (NoSourceError, AttributeMetaError, BaseValueError)
 
 
 class MutableAttributeMap:
@@ -140,7 +140,7 @@ class MutableAttributeMap:
         except KeyError:
             try:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
-            except CALCULATE_EXCEPTIONS as e:
+            except CALCULATE_RAISABLE_EXCEPTIONS as e:
                 raise KeyError(attr) from e
         return val
 
@@ -161,10 +161,11 @@ class MutableAttributeMap:
         # Do nothing if it wasn't calculated
         except KeyError:
             return
-        # And make sure services are aware of changed value if it
-        # actually was changed
+        # Launch message which notifies that attribute value may change (normally calculated
+        # values are removed if their dependencies change)
         else:
-            # Special message type if modified attribute is masked by override
+            # Special message type if modified attribute is masked by override. While
+            # exposed value cannot change in this case, underlying modified value can
             if self.__override_callbacks is not None and attr in self.__override_callbacks:
                 self.__publish(InstrAttrValueChangedMasked(item=self.__item, attr=attr))
             else:
@@ -182,7 +183,7 @@ class MutableAttributeMap:
         except KeyError:
             try:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
-            except CALCULATE_EXCEPTIONS:
+            except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
         return val
 
@@ -362,6 +363,7 @@ class MutableAttributeMap:
         if self.__override_callbacks.get(attr) == callback:
             return
         self.__override_callbacks[attr] = callback
+        # Exposed attribute value may change after setting/resetting override
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def _del_override_callback(self, attr):
@@ -373,6 +375,7 @@ class MutableAttributeMap:
         # Set overrides map to None if there're none left to save some memory
         if len(overrides) == 0:
             self.__override_callbacks = None
+        # Exposed attribute value may change after removing override
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
 
     def _override_value_may_change(self, attr):
@@ -385,13 +388,13 @@ class MutableAttributeMap:
 
     def _get_without_overrides(self, attr, default=None):
         """Get attribute value without using overrides"""
-        # Partially borrowed from get method
+        # Partially borrowed from get() method
         try:
             val = self.__modified_attributes[attr]
         except KeyError:
             try:
                 val = self.__modified_attributes[attr] = self.__calculate(attr)
-            except CALCULATE_EXCEPTIONS:
+            except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
         return val
 
