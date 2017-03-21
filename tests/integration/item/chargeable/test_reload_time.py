@@ -19,10 +19,8 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eve import Attribute, Effect
-from eos.fit.item import ModuleHigh
+from eos import *
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -30,36 +28,65 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.item = ModuleHigh(type_id=None)
-        self.item._eve_type = Mock()
-        self.item._clear_volatile_attrs = Mock()
-        self.item.attributes = {}
+        self.ch.attribute(attribute_id=Attribute.reload_time)
 
     def test_generic(self):
-        self.item.attributes[Attribute.reload_time] = 5000.0
-        self.item._eve_type.default_effect.id = 1008
-        self.assertEqual(self.item.reload_time, 5.0)
+        fit = Fit()
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+        ).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.reload_time, 5.0)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_generic_no_attribute(self):
-        self.item._eve_type.default_effect.id = 1008
-        self.assertIsNone(self.item.reload_time)
-
-    def test_generic_no_eve_type(self):
-        self.item.attributes[Attribute.reload_time] = 5000.0
-        self.item._eve_type = None
-        self.assertEqual(self.item.reload_time, 5.0)
+        fit = Fit()
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.reload_time)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_generic_no_default_effect(self):
-        self.item.attributes[Attribute.reload_time] = 5000.0
-        self.item._eve_type.default_effect = None
-        self.assertEqual(self.item.reload_time, 5.0)
+        fit = Fit()
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.reload_time: 5000.0}, effects=[effect]).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.reload_time, 5.0)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_combat_combat_laser(self):
-        self.item.attributes[Attribute.reload_time] = 5000.0
-        self.item._eve_type.default_effect.id = Effect.target_attack
-        self.assertEqual(self.item.reload_time, 1.0)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+        ).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.reload_time, 1.0)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_combat_mining_laser(self):
-        self.item.attributes[Attribute.reload_time] = 5000.0
-        self.item._eve_type.default_effect.id = Effect.mining_laser
-        self.assertEqual(self.item.reload_time, 1.0)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.mining_laser, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+        ).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.reload_time, 1.0)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

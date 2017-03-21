@@ -19,10 +19,8 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eve import Attribute, Effect
-from eos.fit.item import ModuleHigh, Charge
+from eos import *
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -30,129 +28,165 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.item = ModuleHigh(type_id=None)
-        self.item._eve_type = Mock()
-        self.item._eve_type.attributes = {}
-        self.item.attributes = {}
-        self.charge = Charge(type_id=None)
-        self.charge._eve_type = Mock()
-        self.charge._eve_type.attributes = {}
-        self.charge.attributes = {}
-        self.item.charge = self.charge
+        self.ch.attribute(attribute_id=Attribute.capacity)
+        self.ch.attribute(attribute_id=Attribute.volume)
+        self.ch.attribute(attribute_id=Attribute.charge_rate)
+        self.ch.attribute(attribute_id=Attribute.hp)
+        self.ch.attribute(attribute_id=Attribute.crystals_get_damaged)
+        self.ch.attribute(attribute_id=Attribute.crystal_volatility_chance)
+        self.ch.attribute(attribute_id=Attribute.crystal_volatility_damage)
 
     def test_ammo_generic(self):
-        self.item.attributes[Attribute.capacity] = 100.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.item._eve_type.attributes[Attribute.charge_rate] = 1.0
-        self.item.attributes[Attribute.charge_rate] = 2.0
-        self.assertEqual(self.item.charged_cycles, 25)
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={Attribute.capacity: 100.0, Attribute.charge_rate: 2.0}).id)
+        item.charge = Charge(self.ch.type(attributes={Attribute.volume: 2.0}).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertEqual(item.charged_cycles, 25)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_ammo_round_down(self):
-        self.item.attributes[Attribute.capacity] = 22.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.item._eve_type.attributes[Attribute.charge_rate] = 1.0
-        self.item.attributes[Attribute.charge_rate] = 4.0
-        self.assertEqual(self.item.charged_cycles, 2)
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={Attribute.capacity: 22.0, Attribute.charge_rate: 4.0}).id)
+        item.charge = Charge(self.ch.type(attributes={Attribute.volume: 2.0}).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertEqual(item.charged_cycles, 2)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_ammo_no_quantity(self):
-        self.item._eve_type.attributes[Attribute.charge_rate] = 1.0
-        self.item.attributes[Attribute.charge_rate] = 4.0
-        self.assertIsNone(self.item.charged_cycles)
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={Attribute.charge_rate: 4.0}).id)
+        item.charge = Charge(self.ch.type().id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.charged_cycles)
+        # Cleanup
+        # Attempts to fetch volume and capacity cause log entries to appear
+        self.assertEqual(len(self.log), 2)
+        self.assert_fit_buffers_empty(fit)
 
     def test_laser_combat(self):
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
-        self.charge.attributes[Attribute.hp] = 2.2
-        self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.item._eve_type.default_effect.id = Effect.target_attack
-        self.assertEqual(self.item.charged_cycles, 4400)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.capacity: 4.0}, effects=[effect], default_effect=effect
+        ).id)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 2.0, Attribute.crystals_get_damaged: 1.0, Attribute.hp: 2.2,
+            Attribute.crystal_volatility_chance: 0.1, Attribute.crystal_volatility_damage: 0.01
+        }).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertEqual(item.charged_cycles, 4400)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_laser_mining(self):
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
-        self.charge.attributes[Attribute.hp] = 2.2
-        self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.item._eve_type.default_effect.id = Effect.mining_laser
-        self.assertEqual(self.item.charged_cycles, 4400)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.mining_laser, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.capacity: 4.0}, effects=[effect], default_effect=effect
+        ).id)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 2.0, Attribute.crystals_get_damaged: 1.0, Attribute.hp: 2.2,
+            Attribute.crystal_volatility_chance: 0.1, Attribute.crystal_volatility_damage: 0.01
+        }).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertEqual(item.charged_cycles, 4400)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_laser_not_damageable(self):
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.hp] = 2.2
-        self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.item._eve_type.default_effect.id = Effect.target_attack
-        self.assertIsNone(self.item.charged_cycles)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.capacity: 4.0}, effects=[effect], default_effect=effect
+        ).id)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 2.0, Attribute.hp: 2.2, Attribute.crystal_volatility_chance: 0.1,
+            Attribute.crystal_volatility_damage: 0.01
+        }).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.charged_cycles)
+        # Cleanup
+        # Attempt to fetch get_damaged attribute
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_laser_no_hp(self):
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
-        self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.item._eve_type.default_effect.id = Effect.target_attack
-        self.assertIsNone(self.item.charged_cycles)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.capacity: 4.0}, effects=[effect], default_effect=effect
+        ).id)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 2.0, Attribute.crystals_get_damaged: 1.0,
+            Attribute.crystal_volatility_chance: 0.1, Attribute.crystal_volatility_damage: 0.01
+        }).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.charged_cycles)
+        # Cleanup
+        # Attempt to fetch hp attribute
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_laser_no_chance(self):
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
-        self.charge.attributes[Attribute.hp] = 2.2
-        self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.item._eve_type.default_effect.id = Effect.target_attack
-        self.assertIsNone(self.item.charged_cycles)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.capacity: 4.0}, effects=[effect], default_effect=effect
+        ).id)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 2.0, Attribute.crystals_get_damaged: 1.0, Attribute.hp: 2.2,
+            Attribute.crystal_volatility_damage: 0.01
+        }).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.charged_cycles)
+        # Cleanup
+        # Attempt to fetch chance attribute
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_laser_no_damage(self):
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
-        self.charge.attributes[Attribute.hp] = 2.2
-        self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.item._eve_type.default_effect.id = Effect.target_attack
-        self.assertIsNone(self.item.charged_cycles)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.capacity: 4.0}, effects=[effect], default_effect=effect
+        ).id)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 2.0, Attribute.crystals_get_damaged: 1.0, Attribute.hp: 2.2,
+            Attribute.crystal_volatility_chance: 0.1
+        }).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.charged_cycles)
+        # Cleanup
+        # Attempt to fetch damage attribute
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_no_default_effect(self):
-        self.item.attributes[Attribute.capacity] = 100.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.item._eve_type.default_effect = None
-        self.item.attributes[Attribute.charge_rate] = 2.0
-        self.assertIsNone(self.item.charged_cycles)
-
-    def test_cache(self):
-        self.item.attributes[Attribute.capacity] = 100.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.item._eve_type.attributes[Attribute.charge_rate] = 1.0
-        self.item.attributes[Attribute.charge_rate] = 2.0
-        self.assertEqual(self.item.charged_cycles, 25)
-        del self.item._eve_type.attributes[Attribute.charge_rate]
-        del self.item.attributes[Attribute.charge_rate]
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
-        self.charge.attributes[Attribute.hp] = 2.2
-        self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.item._eve_type._effect_ids = (Effect.target_attack,)
-        self.assertEqual(self.item.charged_cycles, 25)
-
-    def test_cache_volatility(self):
-        self.item.attributes[Attribute.capacity] = 100.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.item._eve_type.attributes[Attribute.charge_rate] = 1.0
-        self.item.attributes[Attribute.charge_rate] = 2.0
-        self.assertEqual(self.item.charged_cycles, 25)
-        self.item._clear_volatile_attrs()
-        del self.item._eve_type.attributes[Attribute.charge_rate]
-        del self.item.attributes[Attribute.charge_rate]
-        self.item.attributes[Attribute.capacity] = 4.0
-        self.charge.attributes[Attribute.volume] = 2.0
-        self.charge.attributes[Attribute.crystals_get_damaged] = 1.0
-        self.charge.attributes[Attribute.hp] = 2.2
-        self.charge.attributes[Attribute.crystal_volatility_chance] = 0.1
-        self.charge.attributes[Attribute.crystal_volatility_damage] = 0.01
-        self.item._eve_type.default_effect.id = Effect.target_attack
-        self.assertEqual(self.item.charged_cycles, 4400)
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.capacity: 4.0}, effects=[effect]).id)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 2.0, Attribute.crystals_get_damaged: 1.0, Attribute.hp: 2.2,
+            Attribute.crystal_volatility_chance: 0.1, Attribute.crystal_volatility_damage: 0.01
+        }).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.charged_cycles)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

@@ -63,6 +63,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertIs(side_effect2.effect, effect2)
         self.assertAlmostEqual(side_effect2.chance, 0.075)
         self.assertIs(side_effect2.status, False)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_persistence(self):
         # Here we check that when item._eve_type doesn't have effect
@@ -134,6 +137,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertIs(side_effect3.effect, effect3_src1)
         self.assertAlmostEqual(side_effect3.chance, 0.4)
         self.assertIs(side_effect3.status, False)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_disabling_attached(self):
         # Setup
@@ -161,6 +167,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # Verification
         self.assertIs(item.side_effects[effect.id].status, False)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_disabling_detached(self):
         # Setup
@@ -187,6 +196,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # Verification
         self.assertIs(item.side_effects[effect.id].status, False)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_enabling_attached(self):
         # Setup
@@ -215,6 +227,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # Verification
         self.assertIs(item.side_effects[effect.id].status, True)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_enabling_detached(self):
         # Setup
@@ -242,3 +257,6 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # Verification
         self.assertIs(item.side_effects[effect.id].status, True)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
