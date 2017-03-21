@@ -111,6 +111,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
         self.assertAlmostEqual(results.total, 780.827, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_hp_armor(self):
         fit = Fit()
@@ -131,6 +134,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertIsNone(results.armor)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
         self.assertAlmostEqual(results.total, 697.507, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_hp_shield(self):
         fit = Fit()
@@ -151,6 +157,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertIsNone(results.shield)
         self.assertAlmostEqual(results.total, 107.233, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_hp_all(self):
         fit = Fit()
@@ -169,6 +178,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertIsNone(results.armor)
         self.assertIsNone(results.shield)
         self.assertIsNone(results.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 3)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_resistance_em(self):
         fit = Fit()
@@ -190,6 +202,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.armor, 55.760, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
         self.assertAlmostEqual(results.total, 753.267, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_resistance_thermal(self):
         fit = Fit()
@@ -211,6 +226,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 663.012, places=3)
         self.assertAlmostEqual(results.total, 770.244, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_resistance_kinetic(self):
         fit = Fit()
@@ -232,6 +250,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
         self.assertAlmostEqual(results.total, 791.958, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_resistance_explosive(self):
         fit = Fit()
@@ -253,6 +274,9 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.armor, 94.828, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
         self.assertAlmostEqual(results.total, 792.335, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
 
     def test_none_resistance_all(self):
         fit = Fit()
@@ -272,3 +296,6 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 600, places=3)
         self.assertAlmostEqual(results.total, 707.233, places=3)
+        # Cleanup
+        self.assertEqual(len(self.log), 4)
+        self.assert_fit_buffers_empty(fit)

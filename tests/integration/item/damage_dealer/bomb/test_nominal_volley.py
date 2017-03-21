@@ -19,11 +19,8 @@
 # ===============================================================================
 
 
-from unittest.mock import Mock
-
-from eos.const.eos import State
-from eos.const.eve import Attribute, Effect
-from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
+from eos import *
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -31,143 +28,106 @@ class TestItemMixinDamageBombNominalVolley(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        mixin = self.instantiate_mixin(DamageDealerMixin, type_id=None)
-        mixin._eve_type = Mock()
-        mixin._eve_type.default_effect.id = Effect.use_missiles
-        mixin._eve_type.default_effect._state = State.active
-        mixin._eve_type.default_effect.duration_attribute = 1
-        mixin.attributes = {1: 500}
-        mixin.state = State.active
-        mixin.reactivation_delay = 1.5
-        mixin.charge = Mock()
-        mixin.charge._eve_type.default_effect.id = Effect.bomb_launching
-        mixin.charge.attributes = {}
-        mixin.charged_cycles = 2
-        mixin.reload_time = 10
-        self.mixin = mixin
+        self.ch.attribute(attribute_id=Attribute.capacity)
+        self.ch.attribute(attribute_id=Attribute.volume)
+        self.ch.attribute(attribute_id=Attribute.charge_rate)
+        self.ch.attribute(attribute_id=Attribute.reload_time)
+        self.ch.attribute(attribute_id=Attribute.module_reactivation_delay)
+        self.ch.attribute(attribute_id=Attribute.em_damage)
+        self.ch.attribute(attribute_id=Attribute.thermal_damage)
+        self.ch.attribute(attribute_id=Attribute.kinetic_damage)
+        self.ch.attribute(attribute_id=Attribute.explosive_damage)
+        self.cycle_attr = self.ch.attribute()
+        self.effect_launcher = self.ch.effect(
+            effect_id=Effect.use_missiles, category=EffectCategory.active, duration_attribute=self.cycle_attr.id
+        )
+        self.effect_bomb = self.ch.effect(effect_id=Effect.bomb_launching, category=EffectCategory.active)
 
     def test_generic(self):
-        mixin = self.mixin
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        volley = mixin.get_nominal_volley()
+        fit = Fit()
+        launcher = ModuleHigh(self.ch.type(attributes={
+            Attribute.capacity: 60.0, self.cycle_attr: 5000, Attribute.charge_rate: 1.0,
+            Attribute.reload_time: 10000, Attribute.module_reactivation_delay: 120000
+        }, effects=[self.effect_launcher], default_effect=self.effect_launcher).id, state=State.active)
+        bomb = Charge(self.ch.type(attributes={
+            Attribute.volume: 30.0, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
+            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
+        }, effects=[self.effect_bomb], default_effect=self.effect_bomb).id)
+        launcher.charge = bomb
+        fit.modules.high.append(launcher)
+        # Verification
+        volley = launcher.get_nominal_volley()
         self.assertAlmostEqual(volley.em, 5.2)
         self.assertAlmostEqual(volley.thermal, 6.3)
         self.assertAlmostEqual(volley.kinetic, 7.4)
         self.assertAlmostEqual(volley.explosive, 8.5)
         self.assertAlmostEqual(volley.total, 27.4)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_multiplier(self):
-        mixin = self.mixin
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        mixin.attributes[Attribute.damage_multiplier] = 5.5
-        volley = mixin.get_nominal_volley()
+        self.ch.attribute(attribute_id=Attribute.damage_multiplier)
+        fit = Fit()
+        launcher = ModuleHigh(self.ch.type(attributes={
+            Attribute.capacity: 60.0, self.cycle_attr: 5000, Attribute.charge_rate: 1.0,
+            Attribute.reload_time: 10000, Attribute.module_reactivation_delay: 120000,
+            Attribute.damage_multiplier: 5.5
+        }, effects=[self.effect_launcher], default_effect=self.effect_launcher).id, state=State.active)
+        bomb = Charge(self.ch.type(attributes={
+            Attribute.volume: 30.0, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
+            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
+        }, effects=[self.effect_bomb], default_effect=self.effect_bomb).id)
+        launcher.charge = bomb
+        fit.modules.high.append(launcher)
+        # Verification
+        volley = launcher.get_nominal_volley()
         self.assertAlmostEqual(volley.em, 5.2)
         self.assertAlmostEqual(volley.thermal, 6.3)
         self.assertAlmostEqual(volley.kinetic, 7.4)
         self.assertAlmostEqual(volley.explosive, 8.5)
         self.assertAlmostEqual(volley.total, 27.4)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_insufficient_state(self):
-        mixin = self.mixin
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        mixin.state = State.online
-        volley = mixin.get_nominal_volley()
+        fit = Fit()
+        launcher = ModuleHigh(self.ch.type(attributes={
+            Attribute.capacity: 60.0, self.cycle_attr: 5000, Attribute.charge_rate: 1.0,
+            Attribute.reload_time: 10000, Attribute.module_reactivation_delay: 120000
+        }, effects=[self.effect_launcher], default_effect=self.effect_launcher).id, state=State.online)
+        bomb = Charge(self.ch.type(attributes={
+            Attribute.volume: 30.0, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
+            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
+        }, effects=[self.effect_bomb], default_effect=self.effect_bomb).id)
+        launcher.charge = bomb
+        fit.modules.high.append(launcher)
+        # Verification
+        volley = launcher.get_nominal_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
 
     def test_no_charge(self):
-        mixin = self.mixin
-        mixin.charge = None
-        volley = mixin.get_nominal_volley()
+        fit = Fit()
+        launcher = ModuleHigh(self.ch.type(attributes={
+            Attribute.capacity: 60.0, self.cycle_attr: 5000, Attribute.charge_rate: 1.0,
+            Attribute.reload_time: 10000, Attribute.module_reactivation_delay: 120000
+        }, effects=[self.effect_launcher], default_effect=self.effect_launcher).id, state=State.active)
+        fit.modules.high.append(launcher)
+        # Verification
+        volley = launcher.get_nominal_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
-
-    def test_cache(self):
-        mixin = self.mixin
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
-        self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 27.4)
-        profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 4.16)
-        self.assertAlmostEqual(volley.thermal, 5.04)
-        self.assertAlmostEqual(volley.kinetic, 1.48)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 10.68)
-        mixin.charge.attributes[Attribute.em_damage] = 52
-        mixin.charge.attributes[Attribute.thermal_damage] = 63
-        mixin.charge.attributes[Attribute.kinetic_damage] = 74
-        mixin.charge.attributes[Attribute.explosive_damage] = 85
-        volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
-        self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 27.4)
-        profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 4.16)
-        self.assertAlmostEqual(volley.thermal, 5.04)
-        self.assertAlmostEqual(volley.kinetic, 1.48)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 10.68)
-
-    def test_volatility(self):
-        mixin = self.mixin
-        mixin.charge.attributes[Attribute.em_damage] = 5.2
-        mixin.charge.attributes[Attribute.thermal_damage] = 6.3
-        mixin.charge.attributes[Attribute.kinetic_damage] = 7.4
-        mixin.charge.attributes[Attribute.explosive_damage] = 8.5
-        volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 5.2)
-        self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertAlmostEqual(volley.explosive, 8.5)
-        self.assertAlmostEqual(volley.total, 27.4)
-        profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 4.16)
-        self.assertAlmostEqual(volley.thermal, 5.04)
-        self.assertAlmostEqual(volley.kinetic, 1.48)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 10.68)
-        mixin._clear_volatile_attrs()
-        mixin.charge.attributes[Attribute.em_damage] = 52
-        mixin.charge.attributes[Attribute.thermal_damage] = 63
-        mixin.charge.attributes[Attribute.kinetic_damage] = 74
-        mixin.charge.attributes[Attribute.explosive_damage] = 85
-        volley = mixin.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 52)
-        self.assertAlmostEqual(volley.thermal, 63)
-        self.assertAlmostEqual(volley.kinetic, 74)
-        self.assertAlmostEqual(volley.explosive, 85)
-        self.assertAlmostEqual(volley.total, 274)
-        profile = Mock(em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = mixin.get_nominal_volley(target_resistances=profile)
-        self.assertAlmostEqual(volley.em, 41.6)
-        self.assertAlmostEqual(volley.thermal, 50.4)
-        self.assertAlmostEqual(volley.kinetic, 14.8)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 106.8)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
