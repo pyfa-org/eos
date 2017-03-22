@@ -77,7 +77,7 @@ def test_add_processes_with_data_version_none(mock_data_handler, mock_cache_hand
     SourceManager.add('test', mock_data_handler, mock_cache_handler)
 
     assert mock_cache_handler.update_cache.called
-    assert 'data version is None, updating cache' in caplog.text()
+    assert 'data version is None, updating cache' in caplog.text
 
 
 def test_add_fingerprint_mismatch(mock_data_handler, mock_cache_handler, caplog):
@@ -87,7 +87,7 @@ def test_add_fingerprint_mismatch(mock_data_handler, mock_cache_handler, caplog)
 
     log_msg = 'fingerprint mismatch: cache "cache_fingerprint", data "dh_version_0.0.0.dev10", updating cache'
 
-    assert log_msg in caplog.text()
+    assert log_msg in caplog.text
 
 
 def test_removing_known_source(mock_data_handler, mock_cache_handler):
