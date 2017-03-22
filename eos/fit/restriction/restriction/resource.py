@@ -82,7 +82,7 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
         return self.__restriction_type
 
 
-class CpuRegister(ResourceRestrictionRegister):
+class CpuRestrictionRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     CPU usage by items should not exceed ship CPU output.
@@ -96,7 +96,7 @@ class CpuRegister(ResourceRestrictionRegister):
             self, fit, 'cpu', Attribute.cpu, Restriction.cpu)
 
 
-class PowerGridRegister(ResourceRestrictionRegister):
+class PowerGridRestrictionRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Power grid usage by items should not exceed ship
@@ -111,7 +111,7 @@ class PowerGridRegister(ResourceRestrictionRegister):
             self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
 
 
-class CalibrationRegister(ResourceRestrictionRegister):
+class CalibrationRestrictionRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Calibration usage by items should not exceed ship
@@ -126,7 +126,7 @@ class CalibrationRegister(ResourceRestrictionRegister):
             self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
 
 
-class DroneBayVolumeRegister(ResourceRestrictionRegister):
+class DroneBayVolumeRestrictionRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Drone bay volume usage by items should not exceed ship
@@ -146,7 +146,7 @@ class DroneBayVolumeRegister(ResourceRestrictionRegister):
             ResourceRestrictionRegister.register_item(self, item)
 
 
-class DroneBandwidthRegister(ResourceRestrictionRegister):
+class DroneBandwidthRestrictionRegister(ResourceRestrictionRegister):
     """
     Implements restriction:
     Drone bandwidth usage by items should not exceed ship

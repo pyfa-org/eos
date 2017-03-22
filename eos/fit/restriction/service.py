@@ -55,22 +55,22 @@ class RestrictionService(BaseSubscriber):
         # are always tracked by these, regardless of state
         # Format: (registers,)
         self.__rest_regs_stateless = (
-            BoosterIndexRegister(),
-            CalibrationRegister(fit),
+            BoosterIndexRestrictionRegister(),
+            CalibrationRestrictionRegister(fit),
             CapitalItemRestrictionRegister(fit),
             ChargeGroupRestrictionRegister(),
             ChargeSizeRestrictionRegister(),
             ChargeVolumeRestrictionRegister(),
-            DroneBayVolumeRegister(fit),
-            ImplantIndexRegister(),
+            DroneBayVolumeRestrictionRegister(fit),
+            ImplantIndexRestrictionRegister(),
             ItemClassRestrictionRegister(),
             LauncherSlotRestrictionRegister(fit),
-            MaxGroupFittedRegister(),
+            MaxGroupFittedRestrictionRegister(),
             RigSizeRestrictionRegister(fit),
             ShipTypeGroupRestrictionRegister(fit),
             SkillRequirementRestrictionRegister(fit),
             StateRestrictionRegister(),
-            SubsystemIndexRegister(),
+            SubsystemIndexRestrictionRegister(),
             TurretSlotRestrictionRegister(fit)
         )
         # Dictionary with 'stateful' restriction registers. When
@@ -79,14 +79,14 @@ class RestrictionService(BaseSubscriber):
         # Format: {triggering state: {registers}}
         self.__rest_regs_stateful = {
             State.online: (
-                CpuRegister(fit),
-                DroneBandwidthRegister(fit),
+                CpuRestrictionRegister(fit),
+                DroneBandwidthRestrictionRegister(fit),
                 LaunchedDroneRestrictionRegister(fit),
-                MaxGroupOnlineRegister(),
-                PowerGridRegister(fit)
+                MaxGroupOnlineRestrictionRegister(),
+                PowerGridRestrictionRegister(fit)
             ),
             State.active: (
-                MaxGroupActiveRegister(),
+                MaxGroupActiveRestrictionRegister(),
             )
         }
         fit._subscribe(self, self._handler_map.keys())

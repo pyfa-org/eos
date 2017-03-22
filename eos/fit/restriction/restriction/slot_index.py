@@ -79,7 +79,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         return self.__restriction_type
 
 
-class SubsystemIndexRegister(SlotIndexRestrictionRegister):
+class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple subsystems can't be added into the same subsystem slot.
@@ -92,7 +92,7 @@ class SubsystemIndexRegister(SlotIndexRestrictionRegister):
         SlotIndexRestrictionRegister.__init__(self, Attribute.subsystem_slot, Restriction.subsystem_index)
 
 
-class ImplantIndexRegister(SlotIndexRestrictionRegister):
+class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple implants can't be added into the same implant slot.
@@ -105,7 +105,7 @@ class ImplantIndexRegister(SlotIndexRestrictionRegister):
         SlotIndexRestrictionRegister.__init__(self, Attribute.implantness, Restriction.implant_index)
 
 
-class BoosterIndexRegister(SlotIndexRestrictionRegister):
+class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple boosters can't be added into the same booster slot.

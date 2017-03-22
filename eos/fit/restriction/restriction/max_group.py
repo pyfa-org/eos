@@ -106,7 +106,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         return self.__restriction_type
 
 
-class MaxGroupFittedRegister(MaxGroupRestrictionRegister):
+class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
     If item has max group fitted restriction, number of fitted
@@ -122,7 +122,7 @@ class MaxGroupFittedRegister(MaxGroupRestrictionRegister):
         MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_fitted, Restriction.max_group_fitted)
 
 
-class MaxGroupOnlineRegister(MaxGroupRestrictionRegister):
+class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
     If item has max group online restriction, number of online
@@ -138,7 +138,7 @@ class MaxGroupOnlineRegister(MaxGroupRestrictionRegister):
         MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_online, Restriction.max_group_online)
 
 
-class MaxGroupActiveRegister(MaxGroupRestrictionRegister):
+class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     """
     Implements restriction:
     If item has max group active restriction, number of active
