@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, EosEveTypes
+from eos.const.eos import EffectBuildStatus, EosType
 from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -69,7 +69,7 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter_extra_arg, EosEveTypes.current_self)
+        self.assertEqual(modifier.tgt_filter_extra_arg, EosType.current_self)
         self.assertEqual(len(self.log), 0)
 
     def test_mod_owner_skillrq(self):
@@ -78,5 +78,5 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter_extra_arg, EosEveTypes.current_self)
+        self.assertEqual(modifier.tgt_filter_extra_arg, EosType.current_self)
         self.assertEqual(len(self.log), 0)

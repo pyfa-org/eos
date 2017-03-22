@@ -22,7 +22,7 @@
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, EosEveTypes
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, EosType
 from eos.util.keyed_set import KeyedSet
 from .exception import UnexpectedDomainError, UnknownTargetFilterError
 
@@ -136,13 +136,13 @@ class AffectionRegister:
     def __affectee_getter_domain_skillrq(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosEveTypes.current_self:
+        if skill == EosType.current_self:
             skill = affector.carrier_item._eve_type_id
         return self.__affectee_domain_skillrq.get((domain, skill), ())
 
     def __affectee_getter_owner_skillrq(self, affector):
         skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosEveTypes.current_self:
+        if skill == EosType.current_self:
             skill = affector.carrier_item._eve_type_id
         return self.__affectee_owner_skillrq.get(skill, ())
 
@@ -371,13 +371,13 @@ class AffectionRegister:
     def __affector_map_getter_domain_skillrq(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosEveTypes.current_self:
+        if skill == EosType.current_self:
             skill = affector.carrier_item._eve_type_id
         return (domain, skill), self.__affector_domain_skillrq
 
     def __affector_map_getter_owner_skillrq(self, affector):
         skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosEveTypes.current_self:
+        if skill == EosType.current_self:
             skill = affector.carrier_item._eve_type_id
         return skill, self.__affector_owner_skillrq
 

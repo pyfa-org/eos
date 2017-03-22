@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosEveTypes
+from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosType
 from eos.const.eve import Operand
 from eos.data.cache_object import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
@@ -173,7 +173,7 @@ class ExpressionTreeConverter:
         # typeID of this domain should be taken when needed
         elif operand == Operand.get_type:
             conversion_map = {
-                ModifierDomain.self: EosEveTypes.current_self
+                ModifierDomain.self: EosType.current_self
             }
             domain = self._get_domain(expression.arg1)
             return conversion_map[domain]

@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, EosEveEffects, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import EffectBuildStatus, EosEffect, ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Attribute, Type, EffectCategory
 from eos.data.cache_object import Effect, DogmaModifier
 
@@ -43,7 +43,7 @@ def add_character_missile_damage_multiplier(eve_type):
             operator=ModifierOperator.pre_mul, src_attr=Attribute.missile_damage_multiplier
         ))
     effect = Effect(
-        effect_id=EosEveEffects.char_missile_dmg,
+        effect_id=EosEffect.char_missile_dmg,
         category=EffectCategory.passive,
         is_offensive=False,
         is_assistance=False,

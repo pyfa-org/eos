@@ -132,7 +132,7 @@ class Restriction(IntEnum):
 
 
 @unique
-class EosEveTypes(IntEnum):
+class EosType(IntEnum):
     """
     Container for Eos-specific type IDs. Any values defined
     here must not overlap with regular eve type IDs.
@@ -141,7 +141,7 @@ class EosEveTypes(IntEnum):
 
 
 @unique
-class EosEveEffects(IntEnum):
+class EosEffect(IntEnum):
     """
     Container for Eos-specific effect IDs. Any values defined
     here must not overlap with regular eve effect IDs.
