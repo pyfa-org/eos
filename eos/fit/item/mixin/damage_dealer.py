@@ -34,6 +34,7 @@ class WeaponType(IntEnum):
     turret = 1
     # All regular missiles
     guided_missile = 2
+    # TODO: instant missile was assigned just to fighter bombers
     # Fighter-bomber missiles
     instant_missile = 3
     # Free-aiming bombs, launched towards ship vector
@@ -48,6 +49,7 @@ SIMPLE_EFFECT_WEAPON_MAP = {
     Effect.target_attack: WeaponType.turret,
     Effect.projectile_fired: WeaponType.turret,
     Effect.emp_wave: WeaponType.untargeted_aoe,
+    # TODO: instant missile was assigned just to fighter bombers
     Effect.fighter_missile: WeaponType.instant_missile,
     Effect.super_weapon_amarr: WeaponType.direct,
     Effect.super_weapon_caldari: WeaponType.direct,
