@@ -69,7 +69,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effects_activability((self.effect1.id,), False)
+        self.item._set_effects_activability({self.effect1.id: False})
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
         # Cleanup
@@ -81,7 +81,9 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effects_activability((self.effect1.id, self.effect2.id, self.effect_active.id), False)
+        self.item._set_effects_activability({
+            self.effect1.id: False, self.effect2.id: False, self.effect_active.id: False
+        })
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
         # Cleanup
@@ -91,10 +93,10 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling(self):
         # Setup
         self.item.state = State.offline
-        self.item._set_effects_activability((self.effect1.id,), False)
+        self.item._set_effects_activability({self.effect1.id: False})
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effects_activability((self.effect1.id,), True)
+        self.item._set_effects_activability({self.effect1.id: True})
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
@@ -104,10 +106,12 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling_multiple(self):
         # Setup
         self.item.state = State.offline
-        self.item._set_effects_activability((self.effect1.id, self.effect2.id), False)
+        self.item._set_effects_activability({self.effect1.id: False, self.effect2.id: False})
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effects_activability((self.effect1.id, self.effect2.id, self.effect_active.id), True)
+        self.item._set_effects_activability({
+            self.effect1.id: True, self.effect2.id: True, self.effect_active.id: True
+        })
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup

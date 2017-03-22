@@ -127,7 +127,7 @@ class TestBoosterEffect(RestrictionTestCase):
         fit = Fit()
         item = Implant(self.booster_type_id)
         fit.implants.add(item)
-        item._set_effects_activability((self.effect3_id, self.effect4_id), False)
+        item._set_effects_activability({self.effect3_id: True, self.effect4_id: False})
         fit.source = 'src2'
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.booster_effect)

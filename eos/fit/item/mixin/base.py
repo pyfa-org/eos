@@ -108,30 +108,27 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             data[effect.id] = EffectData(effect, chance, activable)
         return data
 
-    def _set_effects_activability(self, effect_ids, activable):
+    def _set_effects_activability(self, effect_activability):
         """
         Set activability of effects for this item.
 
         Required arguments:
-        effect_ids -- iterable with effect IDs, for which we're
-            setting activability flag
-        activable -- True if effect should be activable, False
-            if effect should be blocked
+        effect_activability -- dictionary in the form of {effect ID:
+            activability flag}. Activability flag controls if effect
+            should be set as activable or blocked.
         """
-        if activable:
-            to_unblock_ids = self.__blocked_effect_ids.intersection(effect_ids)
-            if len(to_unblock_ids) == 0:
-                return
-            self.__blocked_effect_ids.difference_update(to_unblock_ids)
-            if self.__fit is not None:
-                self.__fit._publish(InputEffectsStatusChanged(self, {eid: True for eid in to_unblock_ids}))
-        else:
-            to_block_ids = set(effect_ids).difference(self.__blocked_effect_ids)
-            if len(to_block_ids) == 0:
-                return
-            if self.__fit is not None:
-                self.__fit._publish(InputEffectsStatusChanged(self, {eid: False for eid in to_block_ids}))
-            self.__blocked_effect_ids.update(to_block_ids)
+        changes = {}
+        for effect_id, activability in effect_activability.items():
+            if activability and effect_id in self.__blocked_effect_ids:
+                changes[effect_id] = activability
+                self.__blocked_effect_ids.remove(effect_id)
+            elif not activability and effect_id not in self.__blocked_effect_ids:
+                changes[effect_id] = activability
+                self.__blocked_effect_ids.add(effect_id)
+        if len(changes) == 0:
+            return
+        if self.__fit is not None:
+            self.__fit._publish(InputEffectsStatusChanged(self, changes))
 
     def _randomize_effects_status(self, effect_filter=None):
         """
@@ -143,22 +140,20 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             are in this iterable. When None, randomize all\
             effects. Default is None.
         """
-        to_enable = set()
-        to_disable = set()
+        effect_activability = {}
         for effect_id, data in self._effects_data.items():
             if effect_filter is not None and effect_id not in effect_filter:
                 continue
             # If effect is not chance-based, it always gets run
             if data.chance is None:
-                to_enable.add(effect_id)
+                effect_activability[effect_id] = True
                 continue
             # If it is, roll the floating dice
             if random() < data.chance:
-                to_enable.add(effect_id)
+                effect_activability[effect_id] = True
             else:
-                to_disable.add(effect_id)
-        self._set_effects_activability(to_enable, True)
-        self._set_effects_activability(to_disable, False)
+                effect_activability[effect_id] = False
+        self._set_effects_activability(effect_activability)
 
     @property
     def _activable_effects(self):

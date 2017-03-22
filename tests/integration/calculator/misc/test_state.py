@@ -83,7 +83,7 @@ class TestStateSwitching(CalculatorTestCase):
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
             }
         ).id)
-        self.item._set_effects_activability((effect_disabled.id,), False)
+        self.item._set_effects_activability({effect_disabled.id: False})
 
     def test_fit_offline(self):
         # Setup
