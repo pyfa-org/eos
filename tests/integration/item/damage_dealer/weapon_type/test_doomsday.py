@@ -19,7 +19,6 @@
 # ===============================================================================
 
 
-
 from eos import *
 from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase

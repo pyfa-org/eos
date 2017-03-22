@@ -127,4 +127,3 @@ class TestItemDamageDrone(ItemMixinTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
-
