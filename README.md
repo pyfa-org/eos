@@ -7,7 +7,7 @@ Currently you can use engine following way:
 -------------------------------------------------------------------------------
 
     from eos import *
-    from eos.holder_filter import *
+    from eos.item_filter import *
 
 
     data_handler = JsonDataHandler('data_folder/phobos/')  # Folder with Phobos data dump

@@ -205,3 +205,15 @@ class InstrEffectsDeactivate(BaseInstructionMessage):
     def __repr__(self):
         spec = ['item', 'effects']
         return make_repr_str(self, spec)
+
+
+class InstrItemPositionChanged(BaseInstructionMessage):
+
+    def __init__(self, item, old, new):
+        self.item = item
+        self.old = old
+        self.new = new
+
+    def __repr__(self):
+        spec = ['item', 'old', 'new']
+        return make_repr_str(self, spec)

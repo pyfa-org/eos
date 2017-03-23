@@ -21,6 +21,7 @@
 
 from numbers import Integral
 
+from eos.fit.pubsub.message import InstrItemPositionChanged
 from .base import ItemContainerBase
 from .exception import ItemAlreadyAssignedError, SlotTakenError
 
@@ -67,6 +68,8 @@ class ItemList(ItemContainerBase):
                 del self.__list[index]
                 self._cleanup()
                 raise ValueError(*e.args) from e
+        if value is not None:
+            self.__fit._publish(InstrItemPositionChanged(item=value, old=None, new=index))
 
     def append(self, item):
         """
@@ -85,6 +88,7 @@ class ItemList(ItemContainerBase):
         except ItemAlreadyAssignedError as e:
             del self.__list[-1]
             raise ValueError(*e.args) from e
+        self.__fit._publish(InstrItemPositionChanged(item=item, old=None, new=self.__list.index(item)))
 
     def place(self, index, item):
         """
@@ -115,6 +119,7 @@ class ItemList(ItemContainerBase):
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
+        self.__fit._publish(InstrItemPositionChanged(item=item, old=None, new=index))
 
     def equip(self, item):
         """
@@ -142,6 +147,7 @@ class ItemList(ItemContainerBase):
             self.__list[index] = None
             self._cleanup()
             raise ValueError(*e.args) from e
+        self.__fit._publish(InstrItemPositionChanged(item=item, old=None, new=self.__list.index(item)))
 
     def remove(self, value):
         """
@@ -163,6 +169,8 @@ class ItemList(ItemContainerBase):
             self._handle_item_removal(self.__fit, item)
         del self.__list[index]
         self._cleanup()
+        if item is not None:
+            self.__fit._publish(InstrItemPositionChanged(item=item, old=index, new=None))
 
     def free(self, value):
         """
@@ -185,6 +193,8 @@ class ItemList(ItemContainerBase):
         self._handle_item_removal(self.__fit, item)
         self.__list[index] = None
         self._cleanup()
+        if item is not None:
+            self.__fit._publish(InstrItemPositionChanged(item=item, old=index, new=None))
 
     def items(self):
         """Return view over container with just items."""
@@ -195,6 +205,7 @@ class ItemList(ItemContainerBase):
         for item in self.__list:
             if item is not None:
                 self._handle_item_removal(self.__fit, item)
+                self.__fit._publish(InstrItemPositionChanged(item=item, old=self.__list.index(item), new=None))
         self.__list.clear()
 
     def __getitem__(self, index):
