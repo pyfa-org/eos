@@ -23,14 +23,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 RigSizeErrorData = namedtuple('RigSizeErrorData', ('item_size', 'allowed_size'))
 
 
-class RigSizeRestrictionRegister(BaseRestrictionRegister):
+class RigSizeRestriction(BaseRestriction):
     """
     Implements restriction:
     If ship requires rigs of certain size, rigs of other size cannot
@@ -80,8 +80,8 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
                     allowed_size=allowed_rig_size
                 )
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.rig_size

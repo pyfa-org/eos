@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
@@ -33,13 +33,14 @@ class TestCpu(RestrictionTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.cpu)
         self.ch.attribute(attribute_id=Attribute.cpu_output)
+        self.effect = self.ch.effect(effect_id=Effect.online)
 
     def test_fail_excess_single(self):
         # When ship provides cpu output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 40}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}).id, state=State.online)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
@@ -56,7 +57,7 @@ class TestCpu(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 5}).id, state=State.online)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 5}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)
@@ -75,9 +76,9 @@ class TestCpu(RestrictionTestCase):
         # be erroneous situation
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 40}).id)
-        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 25}).id, state=State.online)
+        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 25}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 20}).id, state=State.online)
+        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 20}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.cpu)
@@ -109,9 +110,9 @@ class TestCpu(RestrictionTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         item = ModuleHigh(self.ch.type(
-            effects=[effect], attributes={Attribute.cpu: 50, src_attr.id: 2}
+            effects=(self.effect, mod_effect), attributes={Attribute.cpu: 50, src_attr.id: 2}
         ).id, state=State.online)
         fit.modules.high.append(item)
         # Action
@@ -131,9 +132,9 @@ class TestCpu(RestrictionTestCase):
         # zero usage
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 50}).id)
-        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 100}).id, state=State.online)
+        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 100}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 0}).id, state=State.online)
+        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 0}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.cpu)
@@ -155,9 +156,9 @@ class TestCpu(RestrictionTestCase):
         # no errors should be raised
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 50}).id)
-        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 25}).id, state=State.online)
+        item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 25}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 20}).id, state=State.online)
+        item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 20}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.cpu)
@@ -175,7 +176,7 @@ class TestCpu(RestrictionTestCase):
         # When item isn't online, it shouldn't consume anything
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.cpu_output: 40}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}).id, state=State.offline)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}, effects=[self.effect]).id, state=State.offline)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.cpu)

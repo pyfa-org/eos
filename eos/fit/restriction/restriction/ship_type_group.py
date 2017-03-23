@@ -24,8 +24,8 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
@@ -78,7 +78,7 @@ ShipTypeGroupErrorData = namedtuple(
 AllowedData = namedtuple('AllowedData', ('types', 'groups'))
 
 
-class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
+class ShipTypeGroupRestriction(BaseRestriction):
     """
     Implements restriction:
     Items, which have certain fittable ship types or ship groups
@@ -164,8 +164,8 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
                 )
         # Raise error if there're any tainted items
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.ship_type_group

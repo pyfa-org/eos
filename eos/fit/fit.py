@@ -67,8 +67,8 @@ class Fit(FitMessageBroker, BaseSubscriber):
         # (module racks, implant set) even during initialization, thus
         # they have to be initialized after item containers
         self._calculator = CalculationService(self)
-        self._restriction = RestrictionService(self)
         self.stats = StatService(self)
+        self._restriction = RestrictionService(self)
         self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
@@ -140,13 +140,6 @@ class Fit(FitMessageBroker, BaseSubscriber):
         InputItemAdded: _handle_item_addition,
         InputItemRemoved: _handle_item_removal
     }
-
-    def _notify(self, message):
-        try:
-            handler = self._handler_map[type(message)]
-        except KeyError:
-            return
-        handler(self, message)
 
     # Auxiliary methods
     def __repr__(self):

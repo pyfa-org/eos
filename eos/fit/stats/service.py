@@ -260,7 +260,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         for register in self.__regs_stateless:
             register.unregister_item(message.item)
 
-    def _handle_item_states_activate(self, message):
+    def _handle_item_states_activation(self, message):
         for state in message.states:
             # Not all states have corresponding registers,
             # just skip those which don't
@@ -271,7 +271,7 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             for register in registers:
                 register.register_item(message.item)
 
-    def _handle_item_states_deactivate(self, message):
+    def _handle_item_states_deactivation(self, message):
         for state in message.states:
             try:
                 registers = self.__regs_stateful[state]
@@ -283,14 +283,6 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
-        InstrStatesActivate: _handle_item_states_activate,
-        InstrStatesDeactivate: _handle_item_states_deactivate
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
     }
-
-    def _notify(self, message):
-
-        try:
-            handler = self._handler_map[type(message)]
-        except KeyError:
-            return
-        handler(self, message)

@@ -22,8 +22,10 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
+from eos.fit.item import Booster
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestriction
-from ..exception import RegisterValidationError
+from ..exception import RestrictionValidationError
 
 
 BoosterEffectErrorData = namedtuple('BoosterEffectErrorData', ('illegally_disabled', 'disablable'))
@@ -46,11 +48,24 @@ class BoosterEffectRestriction(BaseRestriction):
     """
 
     def __init__(self, fit):
-        self.__fit = fit
+        self.__boosters = set()
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_addition(self, message):
+        if isinstance(message.item, Booster):
+            self.__boosters.add(message.item)
+
+    def _handle_item_removal(self, message):
+        self.__boosters.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}
-        for booster in self.__fit.boosters:
+        for booster in self.__boosters:
             # Check if any disabled effects cannot be found in
             # side-effect list
             disablable = set(booster.side_effects)
@@ -67,8 +82,8 @@ class BoosterEffectRestriction(BaseRestriction):
                 disablable=disablable
             )
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.booster_effect

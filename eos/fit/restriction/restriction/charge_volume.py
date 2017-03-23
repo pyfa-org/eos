@@ -23,14 +23,15 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 ChargeVolumeErrorData = namedtuple('ChargeVolumeErrorData', ('item_volume', 'max_allowed_volume'))
 
 
-class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
+class ChargeVolumeRestriction(BaseRestriction):
     """
     Implements restriction:
     Volume of single charge loaded into container should not
@@ -43,17 +44,23 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
         to be 0.
     """
 
-    def __init__(self):
+    def __init__(self, fit):
         self.__containers = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
+    def _handle_item_addition(self, message):
         # Ignore container items without charge attribute
-        if not hasattr(item, 'charge'):
+        if not hasattr(message.item, 'charge'):
             return
-        self.__containers.add(item)
+        self.__containers.add(message.item)
 
-    def unregister_item(self, item):
-        self.__containers.discard(item)
+    def _handle_item_removal(self, message):
+        self.__containers.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}
@@ -71,8 +78,8 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
                     max_allowed_volume=container_capacity
                 )
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.charge_volume

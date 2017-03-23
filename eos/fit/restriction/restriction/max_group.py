@@ -21,12 +21,13 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction
+from eos.const.eos import State, Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
 from eos.util.keyed_set import KeyedSet
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
@@ -35,7 +36,7 @@ TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('item_group', 'max_group', 'group_items'))
 
 
-class MaxGroupRestrictionRegister(BaseRestrictionRegister):
+class MaxGroupRestriction(BaseRestriction):
     """
     Class which implements common functionality for all
     registers, which track maximum number of modules in
@@ -43,20 +44,18 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     """
 
     def __init__(self, max_group_attr, restriction_type):
-        # Attribute ID whose value contains group restriction
-        # of item
+        # Attribute ID whose value contains group restriction of item
         self.__max_group_attr = max_group_attr
         self.__restriction_type = restriction_type
-        # Container for all tracked items, keyed
-        # by their group ID
+        # Container for all tracked items, keyed by their group ID
         # Format: {group ID: {items}}
         self.__group_all = KeyedSet()
-        # Container for items, which have max group
-        # restriction to become operational
+        # Container for items, which have max group restriction
+        # to become operational
         # Format: {items}
         self.__group_restricted = set()
 
-    def register_item(self, item):
+    def _register_item(self, item):
         if not isinstance(item, TRACKED_ITEM_CLASSES):
             return
         group = item._eve_type.group
@@ -73,7 +72,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             return
         self.__group_restricted.add(item)
 
-    def unregister_item(self, item):
+    def _unregister_item(self, item):
         # Just clear data containers
         group = item._eve_type.group
         self.__group_all.rm_data(group, item)
@@ -99,14 +98,14 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
                 )
         # Raise error if we detected any tainted items
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return self.__restriction_type
 
 
-class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
+class MaxGroupFittedRestriction(MaxGroupRestriction):
     """
     Implements restriction:
     If item has max group fitted restriction, number of fitted
@@ -118,11 +117,23 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
     For validation, modified value of restriction attribute is taken.
     """
 
-    def __init__(self):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_fitted, Restriction.max_group_fitted)
+    def __init__(self, fit):
+        MaxGroupRestriction.__init__(self, Attribute.max_group_fitted, Restriction.max_group_fitted)
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_addition(self, message):
+        MaxGroupRestriction._register_item(self, message.item)
+
+    def _handle_item_removal(self, message):
+        MaxGroupRestriction._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
 
-class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
+class MaxGroupOnlineRestriction(MaxGroupRestriction):
     """
     Implements restriction:
     If item has max group online restriction, number of online
@@ -134,11 +145,25 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
     For validation, modified value of restriction attribute is taken.
     """
 
-    def __init__(self):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_online, Restriction.max_group_online)
+    def __init__(self, fit):
+        MaxGroupRestriction.__init__(self, Attribute.max_group_online, Restriction.max_group_online)
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_states_activation(self, message):
+        if State.online in message.states:
+            MaxGroupRestriction._register_item(self, message.item)
+
+    def _handle_item_states_deactivation(self, message):
+        if State.online in message.states:
+            MaxGroupRestriction._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
+    }
 
 
-class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
+class MaxGroupActiveRestriction(MaxGroupRestriction):
     """
     Implements restriction:
     If item has max group active restriction, number of active
@@ -150,5 +175,19 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     For validation, modified value of restriction attribute is taken.
     """
 
-    def __init__(self):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_active, Restriction.max_group_active)
+    def __init__(self, fit):
+        MaxGroupRestriction.__init__(self, Attribute.max_group_active, Restriction.max_group_active)
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_states_activation(self, message):
+        if State.active in message.states:
+            MaxGroupRestriction._register_item(self, message.item)
+
+    def _handle_item_states_deactivation(self, message):
+        if State.active in message.states:
+            MaxGroupRestriction._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
+    }

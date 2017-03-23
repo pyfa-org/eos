@@ -28,6 +28,14 @@ class BaseSubscriber(metaclass=ABCMeta):
     implement methods all subscribers should have.
     """
 
+    @property
     @abstractmethod
-    def _notify(self, message):
+    def _handler_map(self):
         ...
+
+    def _notify(self, message):
+        try:
+            handler = self._handler_map[type(message)]
+        except KeyError:
+            return
+        handler(self, message)

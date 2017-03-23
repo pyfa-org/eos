@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.util.keyed_set import KeyedSet
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('item_slot_index',))
 
 
-class SlotIndexRestrictionRegister(BaseRestrictionRegister):
+class SlotIndexRestriction(BaseRestriction):
     """
     Class which implements common functionality for all
     registers, which track indices of occupied slots and
@@ -72,14 +72,14 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
                 for item in slot_index_items:
                     tainted_items[item] = SlotIndexErrorData(item_slot_index=slot_index)
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return self.__restriction_type
 
 
-class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
+class SubsystemIndexRestriction(SlotIndexRestriction):
     """
     Implements restriction:
     Multiple subsystems can't be added into the same subsystem slot.
@@ -89,10 +89,10 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
 
     def __init__(self):
-        SlotIndexRestrictionRegister.__init__(self, Attribute.subsystem_slot, Restriction.subsystem_index)
+        SlotIndexRestriction.__init__(self, Attribute.subsystem_slot, Restriction.subsystem_index)
 
 
-class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
+class ImplantIndexRestriction(SlotIndexRestriction):
     """
     Implements restriction:
     Multiple implants can't be added into the same implant slot.
@@ -102,10 +102,10 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
 
     def __init__(self):
-        SlotIndexRestrictionRegister.__init__(self, Attribute.implantness, Restriction.implant_index)
+        SlotIndexRestriction.__init__(self, Attribute.implantness, Restriction.implant_index)
 
 
-class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
+class BoosterIndexRestriction(SlotIndexRestriction):
     """
     Implements restriction:
     Multiple boosters can't be added into the same booster slot.
@@ -115,4 +115,4 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
 
     def __init__(self):
-        SlotIndexRestrictionRegister.__init__(self, Attribute.boosterness, Restriction.booster_index)
+        SlotIndexRestriction.__init__(self, Attribute.boosterness, Restriction.booster_index)

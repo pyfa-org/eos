@@ -19,16 +19,13 @@
 # ===============================================================================
 
 
-from itertools import chain
-
 from eos.const.eos import State
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
 from eos.fit.pubsub.subscriber import BaseSubscriber
-from .exception import RegisterValidationError, ValidationError
+from .exception import RestrictionValidationError, ValidationError
 from .restriction import *
 
 
-class RestrictionService(BaseSubscriber):
+class RestrictionService:
     """
     Track all restrictions applied to fitting and expose functionality
     to validate against various criteria. Actually works as middle-layer
@@ -40,56 +37,39 @@ class RestrictionService(BaseSubscriber):
     """
 
     def __init__(self, fit):
-        # Set of restrictions which do not need
-        # item registration
-        self.__rests = (
+        # Container for all restrictions
+        self.__restrictions = {
             BoosterEffectRestriction(fit),
+            # BoosterIndexRestriction(),
+            # CalibrationRestriction(fit),
+            CapitalItemRestriction(fit),
+            ChargeGroupRestriction(fit),
+            ChargeSizeRestriction(fit),
+            ChargeVolumeRestriction(fit),
+            CpuRestriction(fit),
+            # DroneBandwidthRestriction(fit),
+            # DroneBayVolumeRestriction(fit),
             DroneGroupRestriction(fit),
-            HighSlotRestriction(fit),
-            LowSlotRestriction(fit),
-            MediumSlotRestriction(fit),
-            RigSlotRestriction(fit),
-            SubsystemSlotRestriction(fit)
-        )
-        # Set with 'stateless' restriction registers. Items
-        # are always tracked by these, regardless of state
-        # Format: (registers,)
-        self.__rest_regs_stateless = (
-            BoosterIndexRestrictionRegister(),
-            CalibrationRestrictionRegister(fit),
-            CapitalItemRestrictionRegister(fit),
-            ChargeGroupRestrictionRegister(),
-            ChargeSizeRestrictionRegister(),
-            ChargeVolumeRestrictionRegister(),
-            DroneBayVolumeRestrictionRegister(fit),
-            ImplantIndexRestrictionRegister(),
-            ItemClassRestrictionRegister(),
-            LauncherSlotRestrictionRegister(fit),
-            MaxGroupFittedRestrictionRegister(),
-            RigSizeRestrictionRegister(fit),
-            ShipTypeGroupRestrictionRegister(fit),
-            SkillRequirementRestrictionRegister(fit),
-            StateRestrictionRegister(),
-            SubsystemIndexRestrictionRegister(),
-            TurretSlotRestrictionRegister(fit)
-        )
-        # Dictionary with 'stateful' restriction registers. When
-        # item is in corresponding state or above, register tracks
-        # such item and may raise restriction violations
-        # Format: {triggering state: {registers}}
-        self.__rest_regs_stateful = {
-            State.online: (
-                CpuRestrictionRegister(fit),
-                DroneBandwidthRestrictionRegister(fit),
-                LaunchedDroneRestrictionRegister(fit),
-                MaxGroupOnlineRestrictionRegister(),
-                PowerGridRestrictionRegister(fit)
-            ),
-            State.active: (
-                MaxGroupActiveRestrictionRegister(),
-            )
+            # HighSlotRestriction(fit),
+            # ImplantIndexRestriction(),
+            ItemClassRestriction(fit),
+            # LaunchedDroneRestriction(fit),
+            # LauncherSlotRestriction(fit),
+            # LowSlotRestriction(fit),
+            MaxGroupActiveRestriction(fit),
+            MaxGroupFittedRestriction(fit),
+            MaxGroupOnlineRestriction(fit),
+            # MediumSlotRestriction(fit),
+            # PowerGridRestriction(fit),
+            # RigSizeRestriction(fit),
+            # RigSlotRestriction(fit),
+            # ShipTypeGroupRestriction(fit),
+            # SkillRequirementRestriction(fit),
+            # StateRestriction(),
+            # SubsystemIndexRestriction(),
+            # SubsystemSlotRestriction(fit),
+            # TurretSlotRestriction(fit)
         }
-        fit._subscribe(self, self._handler_map.keys())
 
     def validate(self, skip_checks):
         """
@@ -108,20 +88,17 @@ class RestrictionService(BaseSubscriber):
         # Format: {item: {error type: error data}}
         invalid_items = {}
         # Go through all known registers
-        for register in chain(
-            self.__rests, self.__rest_regs_stateless,
-            *self.__rest_regs_stateful.values()
-        ):
+        for restriction in self.__restrictions:
             # Skip check if we're told to do so, based
             # on exception class assigned to register
-            restriction_type = register.restriction_type
+            restriction_type = restriction.type
             if restriction_type in skip_checks:
                 continue
             # Run validation for current register, if validation
             # failure exception is raised - add it to container
             try:
-                register.validate()
-            except RegisterValidationError as e:
+                restriction.validate()
+            except RestrictionValidationError as e:
                 # All erroneous items should be in 1st argument
                 # of raised exception
                 exception_data = e.args[0]
@@ -133,46 +110,3 @@ class RestrictionService(BaseSubscriber):
         # failures
         if invalid_items:
             raise ValidationError(invalid_items)
-
-    # Message handling
-    def _handle_item_addition(self, message):
-        for register in self.__rest_regs_stateless:
-            register.register_item(message.item)
-
-    def _handle_item_removal(self, message):
-        for register in self.__rest_regs_stateless:
-            register.unregister_item(message.item)
-
-    def _handle_item_states_activate(self, message):
-        for state in message.states:
-            # Not all states have corresponding registers,
-            # just skip those which don't
-            try:
-                registers = self.__rest_regs_stateful[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.register_item(message.item)
-
-    def _handle_item_states_deactivate(self, message):
-        for state in message.states:
-            try:
-                registers = self.__rest_regs_stateful[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.unregister_item(message.item)
-
-    _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal,
-        InstrStatesActivate: _handle_item_states_activate,
-        InstrStatesDeactivate: _handle_item_states_deactivate
-    }
-
-    def _notify(self, message):
-        try:
-            handler = self._handler_map[type(message)]
-        except KeyError:
-            return
-        handler(self, message)

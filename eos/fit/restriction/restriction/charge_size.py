@@ -23,14 +23,15 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('item_size', 'allowed_size'))
 
 
-class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
+class ChargeSizeRestriction(BaseRestriction):
     """
     Implements restriction:
     If item can fit charges and specifies size of charges it
@@ -45,20 +46,26 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         are used.
     """
 
-    def __init__(self):
+    def __init__(self, fit):
         self.__restricted_containers = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
+    def _handle_item_addition(self, message):
         # Ignore container items without charge attribute
-        if not hasattr(item, 'charge'):
+        if not hasattr(message.item, 'charge'):
             return
         # And without size specification
-        if Attribute.charge_size not in item._eve_type.attributes:
+        if Attribute.charge_size not in message.item._eve_type.attributes:
             return
-        self.__restricted_containers.add(item)
+        self.__restricted_containers.add(message.item)
 
-    def unregister_item(self, item):
-        self.__restricted_containers.discard(item)
+    def _handle_item_removal(self, message):
+        self.__restricted_containers.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}
@@ -76,8 +83,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
                     allowed_size=container_size
                 )
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.charge_size

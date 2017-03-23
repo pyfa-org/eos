@@ -149,12 +149,7 @@ class CalculationService(BaseSubscriber):
     }
 
     def _notify(self, message):
-        try:
-            handler = self._handler_map[type(message)]
-        except KeyError:
-            pass
-        else:
-            handler(self, message)
+        BaseSubscriber._notify(self, message)
         # Relay all messages to python modifiers, as in case of python
         # modifiers any message may result in deleting dependent attrs
         self._revise_python_attrib_dependents(message)

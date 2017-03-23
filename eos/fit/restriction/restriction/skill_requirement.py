@@ -23,8 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.fit.item import Rig
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 SkillRequirementErrorData = namedtuple('SkillRequirementErrorData', ('skill', 'level', 'required_level'))
@@ -32,7 +32,7 @@ SkillRequirementErrorData = namedtuple('SkillRequirementErrorData', ('skill', 'l
 EXCEPTIONS = (Rig,)
 
 
-class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
+class SkillRequirementRestriction(BaseRestriction):
     """
     Implements restriction:
     To use item, all its skill requirements must be met.
@@ -91,8 +91,8 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
             if skill_requirement_errors:
                 tainted_items[item] = tuple(skill_requirement_errors)
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.skill_requirement

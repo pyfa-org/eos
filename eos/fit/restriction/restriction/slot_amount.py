@@ -24,8 +24,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
 from eos.fit.item import Drone
-from .base import BaseRestriction, BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from .base import BaseRestriction, BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
@@ -35,7 +35,7 @@ class SlotAmountRestriction(BaseRestriction, metaclass=ABCMeta):
     """Base class for all slot amount restrictions"""
 
     def __init__(self, fit, stat_name, restriction_type):
-        self.__restrictionType = restriction_type
+        self.__restriction_type = restriction_type
         self._fit = fit
         # Use this stat name to get numbers from stats service
         self.__stat_name = stat_name
@@ -56,18 +56,18 @@ class SlotAmountRestriction(BaseRestriction, metaclass=ABCMeta):
                     slots_used=slots_used,
                     slots_max_allowed=slots_max
                 )
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @abstractmethod
     def _get_tainted_items(self, slots_max):
         ...
 
     @property
-    def restriction_type(self):
-        return self.__restrictionType
+    def type(self):
+        return self.__restriction_type
 
 
-class SlotAmountRestrictionRegister(SlotAmountRestriction, BaseRestrictionRegister):
+class SlotAmountRestriction(SlotAmountRestriction, BaseRestriction):
     """Base class for all slot amount restriction registers"""
 
     def __init__(self, fit, stat_name, restriction_type):
@@ -174,7 +174,7 @@ class SubsystemSlotRestriction(SlotAmountRestriction):
         return self._fit.subsystems
 
 
-class TurretSlotRestrictionRegister(SlotAmountRestrictionRegister, BaseRestrictionRegister):
+class TurretSlotRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of turret-slot items should not exceed number of
@@ -186,14 +186,14 @@ class TurretSlotRestrictionRegister(SlotAmountRestrictionRegister, BaseRestricti
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'turret_slots', Restriction.turret_slot)
+        SlotAmountRestriction.__init__(self, fit, 'turret_slots', Restriction.turret_slot)
 
     def register_item(self, item):
         if Slot.turret in item._eve_type.slots:
-            SlotAmountRestrictionRegister.register_item(self, item)
+            SlotAmountRestriction.register_item(self, item)
 
 
-class LauncherSlotRestrictionRegister(SlotAmountRestrictionRegister):
+class LauncherSlotRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of launcher-slot items should not exceed number of
@@ -205,14 +205,14 @@ class LauncherSlotRestrictionRegister(SlotAmountRestrictionRegister):
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'launcher_slots', Restriction.launcher_slot)
+        SlotAmountRestriction.__init__(self, fit, 'launcher_slots', Restriction.launcher_slot)
 
     def register_item(self, item):
         if Slot.launcher in item._eve_type.slots:
-            SlotAmountRestrictionRegister.register_item(self, item)
+            SlotAmountRestriction.register_item(self, item)
 
 
-class LaunchedDroneRestrictionRegister(SlotAmountRestrictionRegister):
+class LaunchedDroneRestriction(SlotAmountRestriction):
     """
     Implements restriction:
     Number of launched drones should not exceed number of
@@ -224,8 +224,8 @@ class LaunchedDroneRestrictionRegister(SlotAmountRestrictionRegister):
     """
 
     def __init__(self, fit):
-        SlotAmountRestrictionRegister.__init__(self, fit, 'launched_drones', Restriction.launched_drone)
+        SlotAmountRestriction.__init__(self, fit, 'launched_drones', Restriction.launched_drone)
 
     def register_item(self, item):
         if isinstance(item, Drone):
-            SlotAmountRestrictionRegister.register_item(self, item)
+            SlotAmountRestriction.register_item(self, item)

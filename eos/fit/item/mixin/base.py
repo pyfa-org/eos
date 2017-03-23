@@ -172,13 +172,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         InstrRefreshSource: _handle_refresh_source
     }
 
-    def _notify(self, message):
-        try:
-            handler = self._handler_map[type(message)]
-        except KeyError:
-            return
-        handler(self, message)
-
     # Private methods for message handlers
     def __refresh_source(self):
         """

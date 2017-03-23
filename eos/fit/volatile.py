@@ -23,10 +23,11 @@ from .pubsub.message import (
     InputItemAdded, InputItemRemoved, InputStateChanged, InputEffectsStatusChanged,
     InputSkillLevelChanged, InputSourceChanged, InputDefaultIncomingDamageChanged
 )
+from .pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
 
 
-class FitVolatileManager:
+class FitVolatileManager(BaseSubscriber):
     """
     Class which tracks on-fit objects with volatile
     data and clears this data when requested.
@@ -68,13 +69,6 @@ class FitVolatileManager:
         InputSourceChanged: _handle_other_changes,
         InputDefaultIncomingDamageChanged: _handle_other_changes
     }
-
-    def _notify(self, message):
-        try:
-            handler = self._handler_map[type(message)]
-        except KeyError:
-            return
-        handler(self, message)
 
     # Private methods for message handlers
     def __add_volatile_object(self, object):

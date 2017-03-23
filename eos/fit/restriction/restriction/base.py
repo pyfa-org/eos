@@ -21,8 +21,10 @@
 
 from abc import ABCMeta, abstractmethod
 
+from eos.fit.pubsub.subscriber import BaseSubscriber
 
-class BaseRestriction(metaclass=ABCMeta):
+
+class BaseRestriction(BaseSubscriber, metaclass=ABCMeta):
     """Base class for all restrictions"""
 
     @abstractmethod
@@ -35,34 +37,8 @@ class BaseRestriction(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def restriction_type(self):
+    def type(self):
         """
         Get restriction type this register is dealing with.
-        """
-        ...
-
-
-class BaseRestrictionRegister(BaseRestriction, metaclass=ABCMeta):
-    """Base class for all restrictions which register items"""
-
-    @abstractmethod
-    def register_item(self, item):
-        """
-        Perform registration jobs upon item. Only immutable
-        item properties should be used during process.
-
-        Posiitional arguments:
-        item -- item to register
-        """
-        ...
-
-    @abstractmethod
-    def unregister_item(self, item):
-        """
-        Perform unregistration jobs upon item. Only immutable
-        item properties should be used during process.
-
-        Posiitional arguments:
-        item -- item to unregister
         """
         ...

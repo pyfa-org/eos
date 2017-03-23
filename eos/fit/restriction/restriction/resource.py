@@ -22,41 +22,42 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import Attribute, Effect
 from eos.fit.item import Drone
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from eos.fit.pubsub.message import InstrEffectsActivate, InstrEffectsDeactivate
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'item_use'))
 
 
-class ResourceRestrictionRegister(BaseRestrictionRegister):
+class ResourceRestriction(BaseRestriction):
     """
     Class which implements common functionality for all
     registers, which track amount of resource, which is
     used by various fit items.
     """
 
-    def __init__(self, fit, stat_name, usage_attr, restriction_type):
+    def __init__(self, stats, stat_name, usage_attr, restriction_type):
         self.__restriction_type = restriction_type
-        self.__fit = fit
+        self.__stats = stats
         # Use this stat name to get numbers from stats service
         self.__stat_name = stat_name
         self.__usage_attr = usage_attr
         self.__resource_users = set()
 
-    def register_item(self, item):
+    def _register_item(self, item):
         if self.__usage_attr not in item._eve_type.attributes:
             return
         self.__resource_users.add(item)
 
-    def unregister_item(self, item):
+    def _unregister_item(self, item):
         self.__resource_users.discard(item)
 
     def validate(self):
         # Use stats module to get resource use and output
-        stats = getattr(self.__fit.stats, self.__stat_name)
+        stats = getattr(self.__stats, self.__stat_name)
         total_use = stats.used
         # Can be None, so fall back to 0 in this case
         output = stats.output or 0
@@ -75,14 +76,14 @@ class ResourceRestrictionRegister(BaseRestrictionRegister):
                 output=output,
                 item_use=resource_use
             )
-        raise RegisterValidationError(tainted_items)
+        raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return self.__restriction_type
 
 
-class CpuRestrictionRegister(ResourceRestrictionRegister):
+class CpuRestriction(ResourceRestriction):
     """
     Implements restriction:
     CPU usage by items should not exceed ship CPU output.
@@ -92,11 +93,24 @@ class CpuRestrictionRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(
-            self, fit, 'cpu', Attribute.cpu, Restriction.cpu)
+        ResourceRestriction.__init__(self, fit.stats, 'cpu', Attribute.cpu, Restriction.cpu)
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.online in message.effects:
+            ResourceRestriction._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.online in message.effects:
+            ResourceRestriction._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
-class PowerGridRestrictionRegister(ResourceRestrictionRegister):
+class PowerGridRestriction(ResourceRestriction):
     """
     Implements restriction:
     Power grid usage by items should not exceed ship
@@ -107,11 +121,10 @@ class PowerGridRestrictionRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(
-            self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
+        ResourceRestriction.__init__(self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
 
 
-class CalibrationRestrictionRegister(ResourceRestrictionRegister):
+class CalibrationRestriction(ResourceRestriction):
     """
     Implements restriction:
     Calibration usage by items should not exceed ship
@@ -122,11 +135,10 @@ class CalibrationRestrictionRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(
-            self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
+        ResourceRestriction.__init__(self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
 
 
-class DroneBayVolumeRestrictionRegister(ResourceRestrictionRegister):
+class DroneBayVolumeRestriction(ResourceRestriction):
     """
     Implements restriction:
     Drone bay volume usage by items should not exceed ship
@@ -138,15 +150,14 @@ class DroneBayVolumeRestrictionRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(
-            self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
+        ResourceRestriction.__init__(self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
 
     def register_item(self, item):
         if isinstance(item, Drone):
-            ResourceRestrictionRegister.register_item(self, item)
+            ResourceRestriction._register_item(self, item)
 
 
-class DroneBandwidthRestrictionRegister(ResourceRestrictionRegister):
+class DroneBandwidthRestriction(ResourceRestriction):
     """
     Implements restriction:
     Drone bandwidth usage by items should not exceed ship
@@ -157,5 +168,6 @@ class DroneBandwidthRestrictionRegister(ResourceRestrictionRegister):
     """
 
     def __init__(self, fit):
-        ResourceRestrictionRegister.__init__(
-            self, fit, 'drone_bandwidth', Attribute.drone_bandwidth_used, Restriction.drone_bandwidth)
+        ResourceRestriction.__init__(
+            self, fit, 'drone_bandwidth', Attribute.drone_bandwidth_used, Restriction.drone_bandwidth
+        )

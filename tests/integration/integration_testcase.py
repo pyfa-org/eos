@@ -89,11 +89,7 @@ class IntegrationTestCase(EosTestCase):
         entry_num += self._get_object_buffer_entry_amount(fit._calculator._CalculationService__affections)
         entry_num += len(fit._calculator._CalculationService__subscribed_affectors)
         # Restriction service
-        for restriction in chain(
-            fit._restriction._RestrictionService__rests,
-            fit._restriction._RestrictionService__rest_regs_stateless,
-            *fit._restriction._RestrictionService__rest_regs_stateful.values()
-        ):
+        for restriction in fit._restriction._RestrictionService__restrictions:
             entry_num += self._get_object_buffer_entry_amount(restriction)
         # Stats service
         for register in chain(

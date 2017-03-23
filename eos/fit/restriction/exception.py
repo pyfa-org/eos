@@ -29,10 +29,10 @@ class RestrictionServiceError(EosError):
     ...
 
 
-class RegisterValidationError(RestrictionServiceError):
+class RestrictionValidationError(RestrictionServiceError):
     """
-    All errors raised during validation process on register level
-    are instances of this class.
+    All errors raised during validation process on restriction
+    level are instances of this class.
     """
     ...
 

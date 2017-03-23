@@ -23,8 +23,9 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 RESTRICTION_ATTRS = (
@@ -39,7 +40,7 @@ RESTRICTION_ATTRS = (
 ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('charge_group', 'allowed_groups'))
 
 
-class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
+class ChargeGroupRestriction(BaseRestriction):
     """
     Implements restriction:
     If item can fit charges and specifies group of charges it
@@ -50,21 +51,22 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
     eve type are taken.
     """
 
-    def __init__(self):
+    def __init__(self, fit):
         # Format: {container item: (allowed groups)}
         self.__restricted_containers = {}
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
+    def _handle_item_addition(self, message):
         # We're going to track containers, not charges;
         # ignore all items which can't fit a charge
-        if not hasattr(item, 'charge'):
+        if not hasattr(message.item, 'charge'):
             return
         # Compose set of charge groups this container
         # is able to fit
         allowed_groups = set()
         for restriction_attr in RESTRICTION_ATTRS:
             try:
-                restriction_value = item._eve_type.attributes[restriction_attr]
+                restriction_value = message.item._eve_type.attributes[restriction_attr]
             except KeyError:
                 continue
             else:
@@ -72,11 +74,16 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         # Only if groups were specified, consider
         # restriction enabled
         if allowed_groups:
-            self.__restricted_containers[item] = tuple(allowed_groups)
+            self.__restricted_containers[message.item] = tuple(allowed_groups)
 
-    def unregister_item(self, item):
-        if item in self.__restricted_containers:
-            del self.__restricted_containers[item]
+    def _handle_item_removal(self, message):
+        if message.item in self.__restricted_containers:
+            del self.__restricted_containers[message.item]
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}
@@ -92,8 +99,8 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
                     allowed_groups=allowed_groups
                 )
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.charge_group

@@ -21,63 +21,56 @@
 
 __all__ = [
     'BoosterEffectRestriction',
-    'BoosterIndexRestrictionRegister',
-    'CalibrationRestrictionRegister',
-    'CapitalItemRestrictionRegister',
-    'CpuRestrictionRegister',
-    'ChargeGroupRestrictionRegister',
-    'ChargeSizeRestrictionRegister',
-    'ChargeVolumeRestrictionRegister',
-    'DroneBandwidthRestrictionRegister',
-    'DroneBayVolumeRestrictionRegister',
+    'BoosterIndexRestriction',
+    'CalibrationRestriction',
+    'CapitalItemRestriction',
+    'CpuRestriction',
+    'ChargeGroupRestriction',
+    'ChargeSizeRestriction',
+    'ChargeVolumeRestriction',
+    'DroneBandwidthRestriction',
+    'DroneBayVolumeRestriction',
     'DroneGroupRestriction',
     'HighSlotRestriction',
-    'ImplantIndexRestrictionRegister',
-    'ItemClassRestrictionRegister',
-    'LaunchedDroneRestrictionRegister',
-    'LauncherSlotRestrictionRegister',
+    'ImplantIndexRestriction',
+    'ItemClassRestriction',
+    'LaunchedDroneRestriction',
+    'LauncherSlotRestriction',
     'LowSlotRestriction',
-    'MaxGroupActiveRestrictionRegister',
-    'MaxGroupFittedRestrictionRegister',
-    'MaxGroupOnlineRestrictionRegister',
+    'MaxGroupActiveRestriction',
+    'MaxGroupFittedRestriction',
+    'MaxGroupOnlineRestriction',
     'MediumSlotRestriction',
-    'PowerGridRestrictionRegister',
-    'RigSizeRestrictionRegister',
+    'PowerGridRestriction',
+    'RigSizeRestriction',
     'RigSlotRestriction',
-    'ShipTypeGroupRestrictionRegister',
-    'SkillRequirementRestrictionRegister',
-    'StateRestrictionRegister',
-    'SubsystemIndexRestrictionRegister',
+    'ShipTypeGroupRestriction',
+    'SkillRequirementRestriction',
+    'StateRestriction',
+    'SubsystemIndexRestriction',
     'SubsystemSlotRestriction',
-    'TurretSlotRestrictionRegister'
+    'TurretSlotRestriction'
 ]
 
 
 from .booster_effect import BoosterEffectRestriction
-from .capital_item import CapitalItemRestrictionRegister
-from .charge_group import ChargeGroupRestrictionRegister
-from .charge_size import ChargeSizeRestrictionRegister
-from .charge_volume import ChargeVolumeRestrictionRegister
+from .capital_item import CapitalItemRestriction
+from .charge_group import ChargeGroupRestriction
+from .charge_size import ChargeSizeRestriction
+from .charge_volume import ChargeVolumeRestriction
 from .drone_group import DroneGroupRestriction
-from .item_class import ItemClassRestrictionRegister
-from .max_group import (
-    MaxGroupFittedRestrictionRegister, MaxGroupOnlineRestrictionRegister,
-    MaxGroupActiveRestrictionRegister
-)
+from .item_class import ItemClassRestriction
+from .max_group import MaxGroupFittedRestriction, MaxGroupOnlineRestriction, MaxGroupActiveRestriction
 from .resource import (
-    CpuRestrictionRegister, PowerGridRestrictionRegister, CalibrationRestrictionRegister,
-    DroneBayVolumeRestrictionRegister, DroneBandwidthRestrictionRegister
+    CpuRestriction, PowerGridRestriction, CalibrationRestriction, DroneBayVolumeRestriction,
+    DroneBandwidthRestriction
 )
-from .rig_size import RigSizeRestrictionRegister
-from .ship_type_group import ShipTypeGroupRestrictionRegister
-from .skill_requirement import SkillRequirementRestrictionRegister
-from .slot_index import (
-    SubsystemIndexRestrictionRegister, ImplantIndexRestrictionRegister,
-    BoosterIndexRestrictionRegister
-)
+from .rig_size import RigSizeRestriction
+from .ship_type_group import ShipTypeGroupRestriction
+from .skill_requirement import SkillRequirementRestriction
+from .slot_index import SubsystemIndexRestriction, ImplantIndexRestriction, BoosterIndexRestriction
 from .slot_amount import (
-    HighSlotRestriction, MediumSlotRestriction, LowSlotRestriction, RigSlotRestriction,
-    SubsystemSlotRestriction, TurretSlotRestrictionRegister, LauncherSlotRestrictionRegister,
-    LaunchedDroneRestrictionRegister
+    HighSlotRestriction, MediumSlotRestriction, LowSlotRestriction, RigSlotRestriction, SubsystemSlotRestriction,
+    TurretSlotRestriction, LauncherSlotRestriction, LaunchedDroneRestriction
 )
-from .state import StateRestrictionRegister
+from .state import StateRestriction

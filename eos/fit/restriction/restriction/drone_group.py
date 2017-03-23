@@ -23,8 +23,10 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
+from eos.fit.item import Ship, Drone
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestriction
-from ..exception import RegisterValidationError
+from ..exception import RestrictionValidationError
 
 
 RESTRICTION_ATTRS = (
@@ -51,13 +53,30 @@ class DroneGroupRestriction(BaseRestriction):
     """
 
     def __init__(self, fit):
-        self.__fit = fit
+        self.__current_ship = None
+        self.__drones = set()
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_addition(self, message):
+        if isinstance(message.item, Ship):
+            self.__current_ship = message.item
+        if isinstance(message.item, Drone):
+            self.__drones.add(message.item)
+
+    def _handle_item_removal(self, message):
+        if isinstance(message.item, Ship):
+            self.__current_ship = None
+        self.__drones.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
-        ship_item = self.__fit.ship
         # No ship - no restriction
         try:
-            ship_eve_type = ship_item._eve_type
+            ship_eve_type = self.__current_ship._eve_type
         except AttributeError:
             return
         # Set with allowed groups
@@ -78,7 +97,7 @@ class DroneGroupRestriction(BaseRestriction):
         # multiple times in error data, making sure that
         # it can't be modified by validation caller
         allowed_groups = tuple(allowed_groups)
-        for drone in self.__fit.drones:
+        for drone in self.__drones:
             # Taint items, whose group is not allowed
             drone_group = drone._eve_type.group
             if drone_group not in allowed_groups:
@@ -87,8 +106,8 @@ class DroneGroupRestriction(BaseRestriction):
                     allowed_groups=allowed_groups
                 )
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.drone_group

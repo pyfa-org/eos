@@ -24,8 +24,9 @@ from collections import namedtuple
 from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.item import *
-from .base import BaseRestrictionRegister
-from ..exception import RegisterValidationError
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from .base import BaseRestriction
+from ..exception import RestrictionValidationError
 
 
 ItemClassErrorData = namedtuple('ItemClassErrorData', ('item_class', 'expected_classes'))
@@ -70,7 +71,7 @@ CLASS_VALIDATORS = {
 }
 
 
-class ItemClassRestrictionRegister(BaseRestrictionRegister):
+class ItemClassRestriction(BaseRestriction):
     """
     Implements restriction:
     Check that eve type is wrapped by corresponding item class
@@ -82,14 +83,20 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
     attributes are used.
     """
 
-    def __init__(self):
+    def __init__(self, fit):
         self.__items = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        self.__items.add(item)
+    def _handle_item_addition(self, message):
+        self.__items.add(message.item)
 
-    def unregister_item(self, item):
-        self.__items.discard(item)
+    def _handle_item_removal(self, message):
+        self.__items.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}
@@ -105,7 +112,7 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
                 if validator_func(item._eve_type) is not True:
                     tainted_items[item] = self.__get_error_data(item)
         if tainted_items:
-            raise RegisterValidationError(tainted_items)
+            raise RestrictionValidationError(tainted_items)
 
     def __get_error_data(self, item):
         expected_classes = []
@@ -121,5 +128,5 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
         return error_data
 
     @property
-    def restriction_type(self):
+    def type(self):
         return Restriction.item_class
