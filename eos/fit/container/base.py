@@ -40,7 +40,7 @@ class ItemContainerBase:
     def __init__(self, item_class):
         self.__item_class = item_class
 
-    def _handle_item_addition(self, fit, item):
+    def _handle_item_addition(self, fit, item, position=None):
         """
         Do all the generic work to add item to container.
         Must be called after item has been assigned to
@@ -61,7 +61,7 @@ class ItemContainerBase:
         charge = getattr(item, 'charge', None)
         if charge is not None:
             self._handle_item_addition(fit, charge)
-        fit._publish(InputItemAdded(item))
+        fit._publish(InputItemAdded(item, position))
 
     def _handle_item_removal(self, fit, item):
         """

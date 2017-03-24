@@ -26,8 +26,9 @@ from .base import BaseInputMessage, BaseInstructionMessage
 
 class InputItemAdded(BaseInputMessage):
 
-    def __init__(self, item):
+    def __init__(self, item, position):
         self.item = item
+        self.position = position
 
     def get_instructions(self):
         # Do nothing if fit doesn't have source
@@ -35,7 +36,7 @@ class InputItemAdded(BaseInputMessage):
             return ()
         instructions = []
         # Handle item addition
-        instructions.append(InstrItemAdd(self.item))
+        instructions.append(InstrItemAdd(self.item, self.position))
         # Handle state activation
         states = {s for s in State if s <= self.item.state}
         instructions.append(InstrStatesActivate(self.item, states))
@@ -46,7 +47,7 @@ class InputItemAdded(BaseInputMessage):
         return instructions
 
     def __repr__(self):
-        spec = ['item']
+        spec = ['item', 'position']
         return make_repr_str(self, spec)
 
 
@@ -139,13 +140,34 @@ class InputEffectsStatusChanged(BaseInputMessage):
         return make_repr_str(self, spec)
 
 
-class InstrItemAdd(BaseInstructionMessage):
+class InputItemsPositionChanged(BaseInputMessage):
 
-    def __init__(self, item):
-        self.item = item
+    def __init__(self, positions):
+        # Format: {item: new position}
+        self.positions = positions
+
+    def get_instructions(self):
+        instructions = []
+        for item, position in self.positions.items():
+            # Do nothing if item's fit doesn't have source
+            if item._fit.source is None:
+                return ()
+            instructions.append(InstrItemPositionChanged(item, position))
+        return instructions
 
     def __repr__(self):
-        spec = ['item']
+        spec = ['positions']
+        return make_repr_str(self, spec)
+
+
+class InstrItemAdd(BaseInstructionMessage):
+
+    def __init__(self, item, position):
+        self.item = item
+        self.position = position
+
+    def __repr__(self):
+        spec = ['item', 'position']
         return make_repr_str(self, spec)
 
 
@@ -209,11 +231,10 @@ class InstrEffectsDeactivate(BaseInstructionMessage):
 
 class InstrItemPositionChanged(BaseInstructionMessage):
 
-    def __init__(self, item, old, new):
+    def __init__(self, item, position):
         self.item = item
-        self.old = old
-        self.new = new
+        self.position = position
 
     def __repr__(self):
-        spec = ['item', 'old', 'new']
+        spec = ['item', 'position']
         return make_repr_str(self, spec)

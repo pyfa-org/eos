@@ -22,8 +22,9 @@
 from .attribute import InstrAttrValueChanged, InstrAttrValueChangedMasked
 from .item import (
     InputItemAdded, InputItemRemoved, InputStateChanged, InputEffectsStatusChanged,
-    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate,
-    InstrEffectsActivate, InstrEffectsDeactivate, InstrItemPositionChanged
+    InputItemsPositionChanged, InstrItemAdd, InstrItemRemove, InstrStatesActivate,
+    InstrStatesDeactivate, InstrEffectsActivate, InstrEffectsDeactivate,
+    InstrItemPositionChanged
 )
 from .misc import InputSkillLevelChanged, InputDefaultIncomingDamageChanged
 from .source import InputSourceChanged, InstrRefreshSource
