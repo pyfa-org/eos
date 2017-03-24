@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.stats.stat_testcase import StatTestCase
 
@@ -33,6 +33,7 @@ class TestCpu(StatTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.cpu_output)
         self.ch.attribute(attribute_id=Attribute.cpu)
+        self.online_effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -44,9 +45,9 @@ class TestCpu(StatTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         fit = Fit()
-        fit.ship = Ship(self.ch.type(effects=[effect], attributes={Attribute.cpu_output: 200, src_attr.id: 2}).id)
+        fit.ship = Ship(self.ch.type(effects=[mod_effect], attributes={Attribute.cpu_output: 200, src_attr.id: 2}).id)
         # Verification
         self.assertAlmostEqual(fit.stats.cpu.output, 400)
         # Cleanup
@@ -83,10 +84,10 @@ class TestCpu(StatTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         fit = Fit()
         fit.modules.high.append(ModuleHigh(self.ch.type(
-            effects=[effect], attributes={Attribute.cpu: 100, src_attr.id: 0.5}
+            attributes={Attribute.cpu: 100, src_attr.id: 0.5}, effects=(self.online_effect, mod_effect)
         ).id, state=State.online))
         # Verification
         self.assertAlmostEqual(fit.stats.cpu.used, 50)
@@ -97,7 +98,7 @@ class TestCpu(StatTestCase):
     def test_use_single_rounding(self):
         fit = Fit()
         fit.modules.high.append(ModuleHigh(self.ch.type(
-            attributes={Attribute.cpu: 55.5555555555}
+            attributes={Attribute.cpu: 55.5555555555}, effects=[self.online_effect]
         ).id, state=State.online))
         # Verification
         self.assertAlmostEqual(fit.stats.cpu.used, 55.56)
@@ -107,8 +108,12 @@ class TestCpu(StatTestCase):
 
     def test_use_multiple(self):
         fit = Fit()
-        fit.modules.high.append(ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}).id, state=State.online))
-        fit.modules.high.append(ModuleHigh(self.ch.type(attributes={Attribute.cpu: 30}).id, state=State.online))
+        fit.modules.high.append(ModuleHigh(self.ch.type(
+            attributes={Attribute.cpu: 50}, effects=[self.online_effect]
+        ).id, state=State.online))
+        fit.modules.high.append(ModuleHigh(self.ch.type(
+            attributes={Attribute.cpu: 30}, effects=[self.online_effect]
+        ).id, state=State.online))
         # Verification
         self.assertAlmostEqual(fit.stats.cpu.used, 80)
         # Cleanup
@@ -117,8 +122,12 @@ class TestCpu(StatTestCase):
 
     def test_use_state(self):
         fit = Fit()
-        fit.modules.high.append(ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}).id, state=State.online))
-        fit.modules.high.append(ModuleHigh(self.ch.type(attributes={Attribute.cpu: 30}).id, state=State.offline))
+        fit.modules.high.append(ModuleHigh(self.ch.type(
+            attributes={Attribute.cpu: 50}, effects=[self.online_effect]
+        ).id, state=State.online))
+        fit.modules.high.append(ModuleHigh(self.ch.type(
+            attributes={Attribute.cpu: 30}, effects=[self.online_effect]
+        ).id, state=State.offline))
         # Verification
         self.assertAlmostEqual(fit.stats.cpu.used, 50)
         # Cleanup

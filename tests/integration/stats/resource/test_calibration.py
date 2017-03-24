@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -31,6 +31,7 @@ class TestCalibration(StatTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.upgrade_capacity)
         self.ch.attribute(attribute_id=Attribute.upgrade_cost)
+        self.rig_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -64,7 +65,9 @@ class TestCalibration(StatTestCase):
 
     def test_use_single_no_rounding(self):
         fit = Fit()
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 55.5555555555}).id))
+        fit.rigs.add(Rig(self.ch.type(
+            attributes={Attribute.upgrade_cost: 55.5555555555}, effects=[self.rig_effect]
+        ).id))
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 55.5555555555)
         # Cleanup
@@ -73,8 +76,8 @@ class TestCalibration(StatTestCase):
 
     def test_use_multiple(self):
         fit = Fit()
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}).id))
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.rig_effect]).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.rig_effect]).id))
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 80)
         # Cleanup

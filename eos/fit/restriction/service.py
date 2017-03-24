@@ -19,8 +19,6 @@
 # ===============================================================================
 
 
-from eos.const.eos import State
-from eos.fit.pubsub.subscriber import BaseSubscriber
 from .exception import RestrictionValidationError, ValidationError
 from .restriction import *
 

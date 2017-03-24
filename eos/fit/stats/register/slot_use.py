@@ -19,8 +19,12 @@
 # ===============================================================================
 
 
-from eos.const.eos import Slot
+from eos.const.eos import State
+from eos.const.eve import Effect
 from eos.fit.item import Drone
+from eos.fit.pubsub.message import (
+    InstrStatesActivate, InstrStatesDeactivate, InstrEffectsActivate, InstrEffectsDeactivate
+)
 from .base import BaseStatRegister
 
 
@@ -32,13 +36,13 @@ class SlotUseRegister(BaseStatRegister):
     """
 
     def __init__(self, fit):
-        self._fit = fit
         self.__slot_users = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
+    def _register_item(self, item):
         self.__slot_users.add(item)
 
-    def unregister_item(self, item):
+    def _unregister_item(self, item):
         self.__slot_users.discard(item)
 
     def __len__(self):
@@ -50,9 +54,18 @@ class TurretUseRegister(SlotUseRegister):
     Assist with calculation of amount of used turret slots.
     """
 
-    def register_item(self, item):
-        if Slot.turret in item._eve_type.slots:
-            SlotUseRegister.register_item(self, item)
+    def _handle_item_effects_activation(self, message):
+        if Effect.turret_fitted in message.effects:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.turret_fitted in message.effects:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
 class LauncherUseRegister(SlotUseRegister):
@@ -60,9 +73,18 @@ class LauncherUseRegister(SlotUseRegister):
     Assist with calculation of amount of used launcher slots.
     """
 
-    def register_item(self, item):
-        if Slot.launcher in item._eve_type.slots:
-            SlotUseRegister.register_item(self, item)
+    def _handle_item_effects_activation(self, message):
+        if Effect.launcher_fitted in message.effects:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.launcher_fitted in message.effects:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
 class LaunchedDroneRegister(SlotUseRegister):
@@ -70,6 +92,15 @@ class LaunchedDroneRegister(SlotUseRegister):
     Assist with calculation of amount of launched drones.
     """
 
-    def register_item(self, item):
-        if isinstance(item, Drone):
-            SlotUseRegister.register_item(self, item)
+    def _handle_item_states_activation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_states_deactivation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
+    }

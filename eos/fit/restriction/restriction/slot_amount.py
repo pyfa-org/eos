@@ -24,7 +24,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, Slot
 from eos.fit.item import Drone
-from .base import BaseRestriction, BaseRestriction
+from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
 

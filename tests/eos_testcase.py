@@ -19,6 +19,7 @@
 # ===============================================================================
 
 
+from collections import Iterable
 from copy import deepcopy
 from logging import getLogger, DEBUG
 from logging.handlers import BufferingHandler
@@ -95,27 +96,63 @@ class EosTestCase(TestCase):
     def _make_cache_handler(self):
         return CacheHandler()
 
-    def assert_object_buffers_empty(self, object_, ignore=()):
-        entry_num = self._get_object_buffer_entry_amount(object_, ignore=ignore)
+    def assert_object_buffers_empty(self, object_, ignore_objects=(), ignore_attrs=()):
+        entry_num = self._get_object_buffer_entry_amount(object_, ignore_objects, ignore_attrs)
         # Raise error if we found any data in any attached storage
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(entry_num, plu)
             self.fail(msg=msg)
 
-    def _get_object_buffer_entry_amount(self, object_, ignore=()):
+    def _get_object_buffer_entry_amount(self, object_, ignore_objects=(), ignore_attrs=(), checked_objects=None):
         """
-        Returns amount of entries stored on this instance,
-        useful to detect memory leaks.
+        Returns amount of entries stored on this instance, useful to detect memory leaks.
         """
-        entry_num = 0
-        for attr_name, attr_val in vars(object_).items():
-            if attr_name in ignore:
+        entry_amt = 0
+        # Initialize variables for initial call
+        if checked_objects is None:
+            checked_objects = set()
+        # Fetch attributes of the passed instance and check all of them
+        try:
+            object_vars = tuple(vars(object_).items())
+        # If we cannot get attributes of an instance, try just iterating over it
+        except TypeError:
+            # Anything iterable but string
+            if isinstance(object_, Iterable) and not isinstance(object_, str):
+                object_vars = []
+                # Get list of values this object exposes through iteration
+                available_values = list(value for value in object_)
+                # Try to find names for them and put named attribs to the list
+                for attr_name in dir(object_):
+                    attr_value = getattr(object_, attr_name)
+                    if attr_value not in available_values:
+                        continue
+                    object_vars.append((attr_name, attr_value))
+                    available_values.remove(attr_value)
+                # For values without names, use None as name
+                for remaining_value in available_values:
+                    object_vars.append((None, remaining_value))
+            # Do nothing if we have no idea what to do with object attribs
+            else:
+                return entry_amt
+        obj_classname = type(object_).__name__
+        for attr_name, attr_val in object_vars:
+            # Skip internal python attributes
+            if attr_name.startswith('__') and attr_name.endswith('__'):
                 continue
-            attr_val = getattr(object_, attr_name)
-            # Ignore strings, as Eos doesn't deal with them -
-            # they are mostly used to refer various attributes
-            # and are stored on object permanently
+            # Skip attributes with values we've already investigated
+            if id(attr_val) in checked_objects:
+                continue
+            # Skip attributes with names we should ignore
+            if (obj_classname, attr_name) in ignore_attrs:
+                continue
+            # Skip attributes with values we should ignore
+            if attr_val in ignore_objects:
+                continue
+            # From here we consider that we're checking this attribute
+            checked_objects.add(id(attr_val))
+            # Ignore strings, as Eos doesn't deal with them - they are mostly used to refer
+            # various attributes and are stored on object permanently
             if isinstance(attr_val, str):
                 continue
             try:
@@ -123,8 +160,15 @@ class EosTestCase(TestCase):
             except TypeError:
                 pass
             else:
-                entry_num += attr_len
-        return entry_num
+                entry_amt += attr_len
+            # Recursively check children if value we're checking is defined within eos
+            attr_val_module = type(attr_val).__module__
+            if attr_val_module == 'eos' or attr_val_module.startswith('eos.') or isinstance(attr_val, Iterable):
+                entry_amt += self._get_object_buffer_entry_amount(
+                    attr_val, ignore_objects=ignore_objects, ignore_attrs=ignore_attrs,
+                    checked_objects=checked_objects
+                )
+        return entry_amt
 
     def _setup_args_capture(self, mock_obj, arg_list):
         """

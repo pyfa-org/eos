@@ -21,6 +21,7 @@
 
 from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
 from eos.fit.helper import DamageTypesTotal
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseStatRegister
 
 
@@ -31,15 +32,21 @@ class DamageDealerRegister(BaseStatRegister):
     useful data.
     """
 
-    def __init__(self):
+    def __init__(self, fit):
         self.__dealers = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        if isinstance(item, DamageDealerMixin):
-            self.__dealers.add(item)
+    def _handle_item_addition(self, message):
+        if isinstance(message.item, DamageDealerMixin):
+            self.__dealers.add(message.item)
 
-    def unregister_item(self, item):
-        self.__dealers.discard(item)
+    def _handle_item_removal(self, message):
+        self.__dealers.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def _collect_damage_stats(self, item_filter, method_name, *args, **kwargs):
         """

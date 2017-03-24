@@ -33,6 +33,8 @@ __all__ = [
 
 
 from .damage_dealer import DamageDealerRegister
-from .resource_use import (CpuUseRegister, PowerGridUseRegister, CalibrationUseRegister,
-    DroneBayVolumeUseRegister, DroneBandwidthUseRegister)
+from .resource_use import (
+    CpuUseRegister, PowerGridUseRegister, CalibrationUseRegister,
+    DroneBayVolumeUseRegister, DroneBandwidthUseRegister
+)
 from .slot_use import TurretUseRegister, LauncherUseRegister, LaunchedDroneRegister

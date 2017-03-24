@@ -21,17 +21,14 @@
 
 import math
 
-from eos.const.eos import State
 from eos.const.eve import Attribute
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
-from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .container import *
 from .register import *
 
 
-class StatService(InheritableVolatileMixin, BaseSubscriber):
+class StatService(InheritableVolatileMixin):
     """
     Object which is used as access points for all
     fit statistics.
@@ -42,54 +39,22 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
 
     def __init__(self, fit):
         InheritableVolatileMixin.__init__(self)
-        BaseSubscriber.__init__(self)
         self._fit = fit
-        # Initialize registers
-        cpu_reg = CpuUseRegister()
-        powergrid_reg = PowerGridUseRegister()
-        calibration_reg = CalibrationUseRegister()
-        dronebay_reg = DroneBayVolumeUseRegister()
-        drone_bandwidth_reg = DroneBandwidthUseRegister()
-        turret_reg = TurretUseRegister(fit)
-        launcher_reg = LauncherUseRegister(fit)
-        launched_drone_reg = LaunchedDroneRegister(fit)
-        self._dd_reg = DamageDealerRegister()
-        # List of registers which do not rely on item state
-        # Format: (register,)
-        self.__regs_stateless = (
-            calibration_reg,
-            dronebay_reg,
-            turret_reg,
-            launcher_reg
-        )
-        # Dictionary which keeps stat registers which
-        # use item state as some input/condition
-        # Format: {triggering state: {registers}}
-        self.__regs_stateful = {
-            State.offline: (
-                self._dd_reg,
-            ),
-            State.online: (
-                cpu_reg,
-                powergrid_reg,
-                drone_bandwidth_reg,
-                launched_drone_reg
-            )
-        }
+        self._dd_reg = DamageDealerRegister(fit)
         # Initialize sub-containers
-        self.cpu = ShipResource(fit, cpu_reg, Attribute.cpu_output)
-        self.powergrid = ShipResource(fit, powergrid_reg, Attribute.power_output)
-        self.calibration = ShipResource(fit, calibration_reg, Attribute.upgrade_capacity)
-        self.dronebay = ShipResource(fit, dronebay_reg, Attribute.drone_capacity)
-        self.drone_bandwidth = ShipResource(fit, drone_bandwidth_reg, Attribute.drone_bandwidth)
+        self.cpu = ShipResource(fit, CpuUseRegister(fit), Attribute.cpu_output)
+        self.powergrid = ShipResource(fit, PowerGridUseRegister(fit), Attribute.power_output)
+        self.calibration = ShipResource(fit, CalibrationUseRegister(fit), Attribute.upgrade_capacity)
+        self.dronebay = ShipResource(fit, DroneBayVolumeUseRegister(fit), Attribute.drone_capacity)
+        self.drone_bandwidth = ShipResource(fit, DroneBandwidthUseRegister(fit), Attribute.drone_bandwidth)
         self.high_slots = ShipSlots(fit, fit.modules.high, Attribute.hi_slots)
         self.med_slots = ShipSlots(fit, fit.modules.med, Attribute.med_slots)
         self.low_slots = ShipSlots(fit, fit.modules.low, Attribute.low_slots)
         self.rig_slots = ShipSlots(fit, fit.rigs, Attribute.rig_slots)
         self.subsystem_slots = ShipSlots(fit, fit.subsystems, Attribute.max_subsystems)
-        self.turret_slots = ShipSlots(fit, turret_reg, Attribute.turret_slots_left)
-        self.launcher_slots = ShipSlots(fit, launcher_reg, Attribute.launcher_slots_left)
-        self.launched_drones = CharSlots(fit, launched_drone_reg, Attribute.max_active_drones)
+        self.turret_slots = ShipSlots(fit, TurretUseRegister(fit), Attribute.turret_slots_left)
+        self.launcher_slots = ShipSlots(fit, LauncherUseRegister(fit), Attribute.launcher_slots_left)
+        self.launched_drones = CharSlots(fit, LaunchedDroneRegister(fit), Attribute.max_active_drones)
         self._volatile_containers = (
             self.cpu,
             self.powergrid,
@@ -105,7 +70,6 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
             self.launcher_slots,
             self.launched_drones
         )
-        fit._subscribe(self, self._handler_map.keys())
 
     @volatile_property
     def hp(self):
@@ -250,39 +214,3 @@ class StatService(InheritableVolatileMixin, BaseSubscriber):
         for container in self._volatile_containers:
             container._clear_volatile_attrs()
         InheritableVolatileMixin._clear_volatile_attrs(self)
-
-    # Message handling
-    def _handle_item_addition(self, message):
-        for register in self.__regs_stateless:
-            register.register_item(message.item)
-
-    def _handle_item_removal(self, message):
-        for register in self.__regs_stateless:
-            register.unregister_item(message.item)
-
-    def _handle_item_states_activation(self, message):
-        for state in message.states:
-            # Not all states have corresponding registers,
-            # just skip those which don't
-            try:
-                registers = self.__regs_stateful[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.register_item(message.item)
-
-    def _handle_item_states_deactivation(self, message):
-        for state in message.states:
-            try:
-                registers = self.__regs_stateful[state]
-            except KeyError:
-                continue
-            for register in registers:
-                register.unregister_item(message.item)
-
-    _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal,
-        InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation
-    }

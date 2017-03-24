@@ -24,7 +24,7 @@ from .item import (
     InputItemAdded, InputItemRemoved, InputStateChanged, InputEffectsStatusChanged,
     InputItemsPositionChanged, InstrItemAdd, InstrItemRemove, InstrStatesActivate,
     InstrStatesDeactivate, InstrEffectsActivate, InstrEffectsDeactivate,
-    InstrItemPositionChanged
+    InstrItemPositionChange
 )
 from .misc import InputSkillLevelChanged, InputDefaultIncomingDamageChanged
 from .source import InputSourceChanged, InstrRefreshSource

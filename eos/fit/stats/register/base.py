@@ -19,30 +19,9 @@
 # ===============================================================================
 
 
-from abc import ABCMeta, abstractmethod
+from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
-class BaseStatRegister(metaclass=ABCMeta):
+class BaseStatRegister(BaseSubscriber):
     """Base class for all statistics registers."""
-
-    @abstractmethod
-    def register_item(self, item):
-        """
-        Perform registration jobs upon item. Only immutable
-        item properties should be used during process.
-
-        Posiitional arguments:
-        item -- item to register
-        """
-        ...
-
-    @abstractmethod
-    def unregister_item(self, item):
-        """
-        Perform unregistration jobs upon item. Only immutable
-        item properties should be used during process.
-
-        Posiitional arguments:
-        item -- item to unregister
-        """
-        ...
+    ...

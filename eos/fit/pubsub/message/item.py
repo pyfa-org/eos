@@ -152,7 +152,7 @@ class InputItemsPositionChanged(BaseInputMessage):
             # Do nothing if item's fit doesn't have source
             if item._fit.source is None:
                 return ()
-            instructions.append(InstrItemPositionChanged(item, position))
+            instructions.append(InstrItemPositionChange(item, position))
         return instructions
 
     def __repr__(self):
@@ -229,7 +229,7 @@ class InstrEffectsDeactivate(BaseInstructionMessage):
         return make_repr_str(self, spec)
 
 
-class InstrItemPositionChanged(BaseInstructionMessage):
+class InstrItemPositionChange(BaseInstructionMessage):
 
     def __init__(self, item, position):
         self.item = item

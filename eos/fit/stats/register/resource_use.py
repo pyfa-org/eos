@@ -19,8 +19,13 @@
 # ===============================================================================
 
 
-from eos.const.eve import Attribute
+from eos.const.eos import State
+from eos.const.eve import Attribute, Effect
 from eos.fit.item import Drone
+from eos.fit.pubsub.message import (
+    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate,
+    InstrEffectsActivate, InstrEffectsDeactivate
+)
 from .base import BaseStatRegister
 
 
@@ -31,62 +36,143 @@ class ResourceUseRegister(BaseStatRegister):
     resource used.
     """
 
-    def __init__(self, usage_attr):
+    def __init__(self, fit, usage_attr):
         self.__usage_attr = usage_attr
         self.__resource_users = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
+    def _register_item(self, item):
         if self.__usage_attr not in item._eve_type.attributes:
             return
         self.__resource_users.add(item)
 
-    def unregister_item(self, item):
+    def _unregister_item(self, item):
         self.__resource_users.discard(item)
 
     def get_resource_use(self):
         # Calculate resource consumption of all items on ship
-        return sum(h.attributes[self.__usage_attr] for h in self.__resource_users)
+        return sum(item.attributes[self.__usage_attr] for item in self.__resource_users)
 
 
 class CpuUseRegister(ResourceUseRegister):
+    """
+    Details:
+    Only items with online effect active and cpu attribute
+    on eve item are tracked.
+    """
 
-    def __init__(self):
-        ResourceUseRegister.__init__(self, Attribute.cpu)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.cpu)
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.online in message.effects:
+            ResourceUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.online in message.effects:
+            ResourceUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
     def get_resource_use(self):
         return round(ResourceUseRegister.get_resource_use(self), 2)
 
 
 class PowerGridUseRegister(ResourceUseRegister):
+    """
+    Details:
+    Only items with online effect active and power attribute
+    on eve item are tracked.
+    """
 
-    def __init__(self):
-        ResourceUseRegister.__init__(self, Attribute.power)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.power)
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.online in message.effects:
+            ResourceUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.online in message.effects:
+            ResourceUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
     def get_resource_use(self):
         return round(ResourceUseRegister.get_resource_use(self), 2)
 
 
 class CalibrationUseRegister(ResourceUseRegister):
+    """
+    Details:
+    Only items with rig slot effect active and upgrade cost attribute
+    on eve item are tracked.
+    """
 
-    def __init__(self):
-        ResourceUseRegister.__init__(self, Attribute.upgrade_cost)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.upgrade_cost)
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.rig_slot in message.effects:
+            ResourceUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.rig_slot in message.effects:
+            ResourceUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
 class DroneBayVolumeUseRegister(ResourceUseRegister):
     """
     Details:
-    Only items of Drone class are tracked.
+    Only items of Drone class with volume attribute on eve type are tracked.
     """
 
-    def __init__(self):
-        ResourceUseRegister.__init__(self, Attribute.volume)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.volume)
 
-    def register_item(self, item):
-        if isinstance(item, Drone):
-            ResourceUseRegister.register_item(self, item)
+    def _handle_item_addition(self, message):
+        if isinstance(message.item, Drone):
+            ResourceUseRegister._register_item(self, message.item)
+
+    def _handle_item_removal(self, message):
+        if isinstance(message.item, Drone):
+            ResourceUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
 
 class DroneBandwidthUseRegister(ResourceUseRegister):
+    """
+    Details:
+    Only items of Drone class with bandwidth attribute on eve type are tracked.
+    """
 
-    def __init__(self):
-        ResourceUseRegister.__init__(self, Attribute.drone_bandwidth_used)
+    def __init__(self, fit):
+        ResourceUseRegister.__init__(self, fit, Attribute.drone_bandwidth_used)
+
+    def _handle_item_states_activation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            ResourceUseRegister._register_item(self, message.item)
+
+    def _handle_item_states_deactivation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            ResourceUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
+    }

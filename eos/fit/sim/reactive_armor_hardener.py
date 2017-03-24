@@ -412,6 +412,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         InputDefaultIncomingDamageChanged: _handle_changed_damage_profile
     }
 
+    def _notify(self, message):
+        # Do not react to messages while sim is running
+        if self.__running is True:
+            return
+        BaseSubscriber._notify(self, message)
+
     # Auxiliary message handling methods
     def __get_duration_attr_id(self, item):
         """Get ID of an attribute which stores cycle time for this module"""
