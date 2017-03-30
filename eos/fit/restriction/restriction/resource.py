@@ -21,10 +21,13 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction
+from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute, Effect
 from eos.fit.item import Drone
-from eos.fit.pubsub.message import InstrEffectsActivate, InstrEffectsDeactivate
+from eos.fit.pubsub.message import (
+    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate,
+    InstrEffectsActivate, InstrEffectsDeactivate
+)
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -98,11 +101,11 @@ class CpuRestriction(ResourceRestriction):
 
     def _handle_item_effects_activation(self, message):
         if Effect.online in message.effects:
-            ResourceRestriction._register_item(self, message.item)
+            self._register_item(message.item)
 
     def _handle_item_effects_deactivation(self, message):
         if Effect.online in message.effects:
-            ResourceRestriction._unregister_item(self, message.item)
+            self._unregister_item(message.item)
 
     _handler_map = {
         InstrEffectsActivate: _handle_item_effects_activation,
@@ -121,7 +124,21 @@ class PowerGridRestriction(ResourceRestriction):
     """
 
     def __init__(self, fit):
-        ResourceRestriction.__init__(self, fit, 'powergrid', Attribute.power, Restriction.powergrid)
+        ResourceRestriction.__init__(self, fit.stats, 'powergrid', Attribute.power, Restriction.powergrid)
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.online in message.effects:
+            self._register_item(message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.online in message.effects:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
 class CalibrationRestriction(ResourceRestriction):
@@ -135,7 +152,21 @@ class CalibrationRestriction(ResourceRestriction):
     """
 
     def __init__(self, fit):
-        ResourceRestriction.__init__(self, fit, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
+        ResourceRestriction.__init__(self, fit.stats, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.rig_slot in message.effects:
+            self._register_item(message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.rig_slot in message.effects:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
 class DroneBayVolumeRestriction(ResourceRestriction):
@@ -150,11 +181,21 @@ class DroneBayVolumeRestriction(ResourceRestriction):
     """
 
     def __init__(self, fit):
-        ResourceRestriction.__init__(self, fit, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
+        ResourceRestriction.__init__(self, fit.stats, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        if isinstance(item, Drone):
-            ResourceRestriction._register_item(self, item)
+    def _handle_item_addition(self, message):
+        if isinstance(message.item, Drone):
+            self._register_item(message.item)
+
+    def _handle_item_removal(self, message):
+        if isinstance(message.item, Drone):
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
 
 class DroneBandwidthRestriction(ResourceRestriction):
@@ -169,5 +210,19 @@ class DroneBandwidthRestriction(ResourceRestriction):
 
     def __init__(self, fit):
         ResourceRestriction.__init__(
-            self, fit, 'drone_bandwidth', Attribute.drone_bandwidth_used, Restriction.drone_bandwidth
+            self, fit.stats, 'drone_bandwidth', Attribute.drone_bandwidth_used, Restriction.drone_bandwidth
         )
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_states_activation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            self._register_item(message.item)
+
+    def _handle_item_states_deactivation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
+    }

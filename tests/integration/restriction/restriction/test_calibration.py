@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
@@ -33,13 +33,14 @@ class TestCalibration(RestrictionTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.upgrade_cost)
         self.ch.attribute(attribute_id=Attribute.upgrade_capacity)
+        self.effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
 
     def test_fail_excess_single(self):
         # When ship provides calibration output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 40}).id)
-        item = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}).id)
+        item = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.calibration)
@@ -56,7 +57,7 @@ class TestCalibration(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         fit = Fit()
-        item = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 5}).id)
+        item = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 5}, effects=[self.effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.calibration)
@@ -75,9 +76,9 @@ class TestCalibration(RestrictionTestCase):
         # be erroneous situation
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 40}).id)
-        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 25}).id)
+        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 25}, effects=[self.effect]).id)
         fit.rigs.add(item1)
-        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 20}).id)
+        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 20}, effects=[self.effect]).id)
         fit.rigs.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.calibration)
@@ -109,8 +110,10 @@ class TestCalibration(RestrictionTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        item = Rig(self.ch.type(effects=[effect], attributes={Attribute.upgrade_cost: 50, src_attr.id: 2}).id)
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        item = Rig(self.ch.type(
+            attributes={Attribute.upgrade_cost: 50, src_attr.id: 2}, effects=(self.effect, mod_effect)
+        ).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.calibration)
@@ -129,9 +132,9 @@ class TestCalibration(RestrictionTestCase):
         # zero usage
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 50}).id)
-        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 100}).id)
+        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 100}, effects=[self.effect]).id)
         fit.rigs.add(item1)
-        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 0}).id)
+        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 0}, effects=[self.effect]).id)
         fit.rigs.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.calibration)
@@ -153,9 +156,9 @@ class TestCalibration(RestrictionTestCase):
         # no errors should be raised
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 50}).id)
-        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 25}).id)
+        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 25}, effects=[self.effect]).id)
         fit.rigs.add(item1)
-        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 20}).id)
+        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 20}, effects=[self.effect]).id)
         fit.rigs.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.calibration)

@@ -30,14 +30,14 @@ class TestLauncherSlot(RestrictionTestCase):
     def setUp(self):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.launcher_slots_left)
-        self.slot_effect = self.ch.effect(effect_id=Effect.launcher_fitted, category=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=Effect.launcher_fitted, category=EffectCategory.passive)
 
     def test_fail_excess_single(self):
         # Check that error is raised when number of used
         # slots exceeds slot amount provided by ship
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.launcher_slots_left: 0}).id)
-        item = ModuleHigh(self.ch.type(effects=(self.slot_effect,)).id)
+        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.launcher_slot)
@@ -53,7 +53,7 @@ class TestLauncherSlot(RestrictionTestCase):
         # When stats module does not specify total slot amount,
         # make sure it's assumed to be 0
         fit = Fit()
-        item = ModuleHigh(self.ch.type(effects=(self.slot_effect,)).id)
+        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.launcher_slot)
@@ -69,7 +69,7 @@ class TestLauncherSlot(RestrictionTestCase):
         # Check that error works for multiple items
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.launcher_slots_left: 1}).id)
-        eve_type = self.ch.type(effects=(self.slot_effect,))
+        eve_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(eve_type.id)
         item2 = ModuleHigh(eve_type.id)
         fit.modules.high.append(item1)
@@ -93,7 +93,7 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_pass_equal(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.launcher_slots_left: 2}).id)
-        eve_type = self.ch.type(effects=(self.slot_effect,))
+        eve_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(eve_type.id)
         item2 = ModuleHigh(eve_type.id)
         fit.modules.high.append(item1)
@@ -113,7 +113,7 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_pass_greater(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.launcher_slots_left: 5}).id)
-        eve_type = self.ch.type(effects=(self.slot_effect,))
+        eve_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(eve_type.id)
         item2 = ModuleHigh(eve_type.id)
         fit.modules.high.append(item1)

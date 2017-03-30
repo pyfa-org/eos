@@ -395,9 +395,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     def _handle_attr_change_masked(self, message):
         # We've set up overrides on RAHs' resonance attributes, but when
-        # base (not modified by simulator) values of these attributes changes,
-        # we should re-run simulator - as now we have different resonance value
-        # to base sim results off
+        # base (not modified by simulator) values of these attributes change,
+        # we should re-run simulator - as now we have different resonance
+        # value to base sim results off
         if message.item in self.__data and message.attr in res_attrs:
             self.__clear_results()
 

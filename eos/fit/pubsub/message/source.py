@@ -55,7 +55,7 @@ class InputSourceChanged(BaseInputMessage):
         if self.new is not None:
             for item in self.items:
                 # Handle item addition
-                instructions.append(InstrItemAdd(item))
+                instructions.append(InstrItemAdd(item, position=None))
                 # Handle state activation
                 states = {s for s in State if s <= item.state}
                 instructions.append(InstrStatesActivate(item, states))

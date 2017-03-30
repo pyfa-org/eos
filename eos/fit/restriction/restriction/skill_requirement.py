@@ -23,6 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.fit.item import Rig
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -53,15 +54,21 @@ class SkillRequirementRestriction(BaseRestriction):
         # Set with items which have any skill requirements
         # Format: {items}
         self.__restricted_items = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
+    def _handle_item_addition(self, message):
         # Items which are not exceptions and which have any
         # skill requirement are tracked
-        if item._eve_type.required_skills and not isinstance(item, EXCEPTIONS):
-            self.__restricted_items.add(item)
+        if message.item._eve_type.required_skills and not isinstance(message.item, EXCEPTIONS):
+            self.__restricted_items.add(message.item)
 
-    def unregister_item(self, item):
-        self.__restricted_items.discard(item)
+    def _handle_item_removal(self, message):
+        self.__restricted_items.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}

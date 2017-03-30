@@ -22,8 +22,12 @@
 from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 
-from eos.const.eos import Restriction, Slot
+from eos.const.eos import Restriction, State
+from eos.const.eve import Effect
 from eos.fit.item import Drone
+from eos.fit.pubsub.message import (
+    InstrStatesActivate, InstrStatesDeactivate, InstrEffectsActivate, InstrEffectsDeactivate
+)
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -31,7 +35,7 @@ from ..exception import RestrictionValidationError
 SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
 
 
-class SlotAmountRestriction(BaseRestriction, metaclass=ABCMeta):
+class SlotAmountRestrictionOrdered(BaseRestriction, metaclass=ABCMeta):
     """Base class for all slot amount restrictions"""
 
     def __init__(self, fit, stat_name, restriction_type):
@@ -67,24 +71,24 @@ class SlotAmountRestriction(BaseRestriction, metaclass=ABCMeta):
         return self.__restriction_type
 
 
-class SlotAmountRestriction(SlotAmountRestriction, BaseRestriction):
+class SlotAmountRestrictionUnordered(SlotAmountRestrictionOrdered, BaseRestriction):
     """Base class for all slot amount restriction registers"""
 
     def __init__(self, fit, stat_name, restriction_type):
-        SlotAmountRestriction.__init__(self, fit, stat_name, restriction_type)
-        self._slot_consumers = set()
+        SlotAmountRestrictionOrdered.__init__(self, fit, stat_name, restriction_type)
+        self.__slot_consumers = set()
 
-    def register_item(self, item):
-        self._slot_consumers.add(item)
+    def _register_item(self, item):
+        self.__slot_consumers.add(item)
 
-    def unregister_item(self, item):
-        self._slot_consumers.discard(item)
+    def _unregister_item(self, item):
+        self.__slot_consumers.discard(item)
 
     def _get_tainted_items(self, _):
-        return self._slot_consumers
+        return self.__slot_consumers
 
 
-class HighSlotRestriction(SlotAmountRestriction):
+class HighSlotRestriction(SlotAmountRestrictionOrdered):
     """
     Implements restriction:
     Number of high-slot items should not exceed number of
@@ -96,13 +100,16 @@ class HighSlotRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'high_slots', Restriction.high_slot)
+        SlotAmountRestrictionOrdered.__init__(self, fit, 'high_slots', Restriction.high_slot)
+        fit._subscribe(self, self._handler_map.keys())
 
     def _get_tainted_items(self, slots_max):
         return self._fit.modules.high[slots_max:]
 
+    _handler_map = {}
 
-class MediumSlotRestriction(SlotAmountRestriction):
+
+class MediumSlotRestriction(SlotAmountRestrictionOrdered):
     """
     Implements restriction:
     Number of medium-slot items should not exceed number of
@@ -114,13 +121,16 @@ class MediumSlotRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'med_slots', Restriction.medium_slot)
+        SlotAmountRestrictionOrdered.__init__(self, fit, 'med_slots', Restriction.medium_slot)
+        fit._subscribe(self, self._handler_map.keys())
 
     def _get_tainted_items(self, slots_max):
         return self._fit.modules.med[slots_max:]
 
+    _handler_map = {}
 
-class LowSlotRestriction(SlotAmountRestriction):
+
+class LowSlotRestriction(SlotAmountRestrictionOrdered):
     """
     Implements restriction:
     Number of low-slot items should not exceed number of
@@ -132,13 +142,16 @@ class LowSlotRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'low_slots', Restriction.low_slot)
+        SlotAmountRestrictionOrdered.__init__(self, fit, 'low_slots', Restriction.low_slot)
+        fit._subscribe(self, self._handler_map.keys())
 
     def _get_tainted_items(self, slots_max):
         return self._fit.modules.low[slots_max:]
 
+    _handler_map = {}
 
-class RigSlotRestriction(SlotAmountRestriction):
+
+class RigSlotRestriction(SlotAmountRestrictionUnordered):
     """
     Implements restriction:
     Number of rig-slot items should not exceed number of
@@ -150,13 +163,24 @@ class RigSlotRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'rig_slots', Restriction.rig_slot)
+        SlotAmountRestrictionUnordered.__init__(self, fit, 'rig_slots', Restriction.rig_slot)
+        fit._subscribe(self, self._handler_map.keys())
 
-    def _get_tainted_items(self, _):
-        return self._fit.rigs
+    def _handle_item_effects_activation(self, message):
+        if Effect.rig_slot in message.effects:
+            self._register_item(message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.rig_slot in message.effects:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
-class SubsystemSlotRestriction(SlotAmountRestriction):
+class SubsystemSlotRestriction(SlotAmountRestrictionUnordered):
     """
     Implements restriction:
     Number of subsystem-slot items should not exceed number of
@@ -168,13 +192,24 @@ class SubsystemSlotRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'subsystem_slots', Restriction.subsystem_slot)
+        SlotAmountRestrictionUnordered.__init__(self, fit, 'subsystem_slots', Restriction.subsystem_slot)
+        fit._subscribe(self, self._handler_map.keys())
 
-    def _get_tainted_items(self, _):
-        return self._fit.subsystems
+    def _handle_item_effects_activation(self, message):
+        if Effect.subsystem in message.effects:
+            self._register_item(message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.subsystem in message.effects:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
-class TurretSlotRestriction(SlotAmountRestriction):
+class TurretSlotRestriction(SlotAmountRestrictionUnordered):
     """
     Implements restriction:
     Number of turret-slot items should not exceed number of
@@ -186,14 +221,24 @@ class TurretSlotRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'turret_slots', Restriction.turret_slot)
+        SlotAmountRestrictionUnordered.__init__(self, fit, 'turret_slots', Restriction.turret_slot)
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        if Slot.turret in item._eve_type.slots:
-            SlotAmountRestriction.register_item(self, item)
+    def _handle_item_effects_activation(self, message):
+        if Effect.turret_fitted in message.effects:
+            self._register_item(message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.turret_fitted in message.effects:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
-class LauncherSlotRestriction(SlotAmountRestriction):
+class LauncherSlotRestriction(SlotAmountRestrictionUnordered):
     """
     Implements restriction:
     Number of launcher-slot items should not exceed number of
@@ -205,14 +250,24 @@ class LauncherSlotRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'launcher_slots', Restriction.launcher_slot)
+        SlotAmountRestrictionUnordered.__init__(self, fit, 'launcher_slots', Restriction.launcher_slot)
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        if Slot.launcher in item._eve_type.slots:
-            SlotAmountRestriction.register_item(self, item)
+    def _handle_item_effects_activation(self, message):
+        if Effect.launcher_fitted in message.effects:
+            self._register_item(message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.launcher_fitted in message.effects:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
 
-class LaunchedDroneRestriction(SlotAmountRestriction):
+class LaunchedDroneRestriction(SlotAmountRestrictionUnordered):
     """
     Implements restriction:
     Number of launched drones should not exceed number of
@@ -224,8 +279,18 @@ class LaunchedDroneRestriction(SlotAmountRestriction):
     """
 
     def __init__(self, fit):
-        SlotAmountRestriction.__init__(self, fit, 'launched_drones', Restriction.launched_drone)
+        SlotAmountRestrictionUnordered.__init__(self, fit, 'launched_drones', Restriction.launched_drone)
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        if isinstance(item, Drone):
-            SlotAmountRestriction.register_item(self, item)
+    def _handle_item_states_activation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            self._register_item(message.item)
+
+    def _handle_item_states_deactivation(self, message):
+        if isinstance(message.item, Drone) and State.online in message.states:
+            self._unregister_item(message.item)
+
+    _handler_map = {
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
+    }

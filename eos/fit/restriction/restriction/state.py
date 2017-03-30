@@ -22,6 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -38,14 +39,20 @@ class StateRestriction(BaseRestriction):
     and so on).
     """
 
-    def __init__(self):
+    def __init__(self, fit):
         self.__items = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        self.__items.add(item)
+    def _handle_item_addition(self, message):
+        self.__items.add(message.item)
 
-    def unregister_item(self, item):
-        self.__items.discard(item)
+    def _handle_item_removal(self, message):
+        self.__items.discard(message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}

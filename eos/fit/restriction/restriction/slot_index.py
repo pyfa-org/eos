@@ -23,6 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from eos.util.keyed_set import KeyedSet
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
@@ -39,7 +40,7 @@ class SlotIndexRestriction(BaseRestriction):
     same index.
     """
 
-    def __init__(self, slot_index_attr, restriction_type):
+    def __init__(self, fit, slot_index_attr, restriction_type):
         # This attribute's value on item
         # represents their index of slot
         self.__slot_index_attr = slot_index_attr
@@ -48,19 +49,25 @@ class SlotIndexRestriction(BaseRestriction):
         # are stored in this container
         # Format: {slot index: {items}}
         self.__slotted_items = KeyedSet()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
+    def _handle_item_addition(self, message):
         # Skip items which don't have index specified
-        slot_index = item._eve_type.attributes.get(self.__slot_index_attr)
+        slot_index = message.item._eve_type.attributes.get(self.__slot_index_attr)
         if slot_index is None:
             return
-        self.__slotted_items.add_data(slot_index, item)
+        self.__slotted_items.add_data(slot_index, message.item)
 
-    def unregister_item(self, item):
-        slot_index = item._eve_type.attributes.get(self.__slot_index_attr)
+    def _handle_item_removal(self, message):
+        slot_index = message.item._eve_type.attributes.get(self.__slot_index_attr)
         if slot_index is None:
             return
-        self.__slotted_items.rm_data(slot_index, item)
+        self.__slotted_items.rm_data(slot_index, message.item)
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         tainted_items = {}
@@ -88,8 +95,8 @@ class SubsystemIndexRestriction(SlotIndexRestriction):
     Slot to occupy is determined by eve type attributes.
     """
 
-    def __init__(self):
-        SlotIndexRestriction.__init__(self, Attribute.subsystem_slot, Restriction.subsystem_index)
+    def __init__(self, fit):
+        SlotIndexRestriction.__init__(self, fit, Attribute.subsystem_slot, Restriction.subsystem_index)
 
 
 class ImplantIndexRestriction(SlotIndexRestriction):
@@ -101,8 +108,8 @@ class ImplantIndexRestriction(SlotIndexRestriction):
     Slot to occupy is determined by eve type attributes.
     """
 
-    def __init__(self):
-        SlotIndexRestriction.__init__(self, Attribute.implantness, Restriction.implant_index)
+    def __init__(self, fit):
+        SlotIndexRestriction.__init__(self, fit, Attribute.implantness, Restriction.implant_index)
 
 
 class BoosterIndexRestriction(SlotIndexRestriction):
@@ -114,5 +121,5 @@ class BoosterIndexRestriction(SlotIndexRestriction):
     Slot to occupy is determined by eve type attributes.
     """
 
-    def __init__(self):
-        SlotIndexRestriction.__init__(self, Attribute.boosterness, Restriction.booster_index)
+    def __init__(self, fit):
+        SlotIndexRestriction.__init__(self, fit, Attribute.boosterness, Restriction.booster_index)

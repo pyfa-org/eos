@@ -24,6 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -102,9 +103,10 @@ class ShipTypeGroupRestriction(BaseRestriction):
         # ship type/group restriction
         # Format: {item: allowed data}
         self.__restricted_items = {}
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        if not isinstance(item, TRACKED_ITEM_CLASSES):
+    def _handle_item_addition(self, message):
+        if not isinstance(message.item, TRACKED_ITEM_CLASSES):
             return
         # Containers for type IDs and group IDs of ships, to
         # which item is allowed to fit
@@ -117,7 +119,7 @@ class ShipTypeGroupRestriction(BaseRestriction):
             # Cycle through IDs of known restriction attributes
             for restriction_attr in restriction_attrs:
                 try:
-                    restriction_value = item._eve_type.attributes[restriction_attr]
+                    restriction_value = message.item._eve_type.attributes[restriction_attr]
                 except KeyError:
                     continue
                 else:
@@ -126,14 +128,19 @@ class ShipTypeGroupRestriction(BaseRestriction):
         if not allowed_types and not allowed_groups:
             return
         # Finally, register items which made it into here
-        self.__restricted_items[item] = AllowedData(
+        self.__restricted_items[message.item] = AllowedData(
             types=tuple(allowed_types),
             groups=tuple(allowed_groups)
         )
 
-    def unregister_item(self, item):
-        if item in self.__restricted_items:
-            del self.__restricted_items[item]
+    def _handle_item_removal(self, message):
+        if message.item in self.__restricted_items:
+            del self.__restricted_items[message.item]
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }
 
     def validate(self):
         # Get type ID and group ID of ship, if no ship

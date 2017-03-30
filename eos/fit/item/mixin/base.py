@@ -49,11 +49,11 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     def __init__(self, type_id, **kwargs):
         self._eve_type_id = type_id
+        # Which fit this item is bound to
+        self.__fit = None
         # Special dictionary subclass that holds modified attributes
         # and data related to their calculation
         self.attributes = MutableAttributeMap(self)
-        # Which fit this item is bound to
-        self.__fit = None
         # Contains IDs of effects which are prohibited to be activated on this item.
         # IDs are stored here without actual effects because we want to keep blocked
         # effect info even when item's fit switches sources

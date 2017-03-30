@@ -22,7 +22,8 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import Attribute, Effect
+from eos.fit.pubsub.message import InstrEffectsActivate, InstrEffectsDeactivate
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -44,16 +45,20 @@ class RigSizeRestriction(BaseRestriction):
         self._fit = fit
         # Container for items which have rig size restriction
         self.__restricted_items = set()
+        fit._subscribe(self, self._handler_map.keys())
 
-    def register_item(self, item):
-        # Register only items which have attribute,
-        # which restricts rig size
-        if Attribute.rig_size not in item._eve_type.attributes:
-            return
-        self.__restricted_items.add(item)
+    def _handle_item_effects_activation(self, message):
+        if Effect.rig_slot in message.effects and Attribute.rig_size in message.item._eve_type.attributes:
+            self.__restricted_items.add(message.item)
 
-    def unregister_item(self, item):
-        self.__restricted_items.discard(item)
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.rig_slot in message.effects:
+            self.__restricted_items.discard(message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
 
     def validate(self):
         ship_item = self._fit.ship

@@ -20,19 +20,23 @@
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
 class TestRigSize(RestrictionTestCase):
     """Check functionality of rig size restriction"""
 
+    def setUp(self):
+        super().setUp()
+        self.effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+
     def test_fail_mismatch(self):
         # Error should be raised when mismatching rig size
         # is added to ship
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.rig_size: 6}).id)
-        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}).id)
+        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_size)
@@ -48,7 +52,7 @@ class TestRigSize(RestrictionTestCase):
         # When no ship is assigned, no restriction
         # should be applied to ships
         fit = Fit()
-        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}).id)
+        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_size)
@@ -63,7 +67,7 @@ class TestRigSize(RestrictionTestCase):
         # no restriction is applied onto rigs
         fit = Fit()
         fit.ship = Ship(self.ch.type().id)
-        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}).id)
+        item = Rig(self.ch.type(attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_size)

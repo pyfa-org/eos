@@ -33,7 +33,7 @@ class TestCpu(RestrictionTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.cpu)
         self.ch.attribute(attribute_id=Attribute.cpu_output)
-        self.effect = self.ch.effect(effect_id=Effect.online)
+        self.effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active)
 
     def test_fail_excess_single(self):
         # When ship provides cpu output, but single consumer
@@ -112,7 +112,7 @@ class TestCpu(RestrictionTestCase):
         )
         mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         item = ModuleHigh(self.ch.type(
-            effects=(self.effect, mod_effect), attributes={Attribute.cpu: 50, src_attr.id: 2}
+            attributes={Attribute.cpu: 50, src_attr.id: 2}, effects=(self.effect, mod_effect)
         ).id, state=State.online)
         fit.modules.high.append(item)
         # Action
