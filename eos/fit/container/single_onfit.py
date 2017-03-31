@@ -49,13 +49,13 @@ class ItemDescriptorOnFit(ItemContainerBase):
         attr_name = self.__attr_name
         old_item = getattr(instance, attr_name, None)
         if old_item is not None:
-            self._handle_item_removal(instance, old_item)
+            self._handle_item_removal(old_item)
         setattr(instance, attr_name, new_item)
         if new_item is not None:
             try:
-                self._handle_item_addition(instance, new_item)
+                self._handle_item_addition(new_item, instance)
             except ItemAlreadyAssignedError as e:
                 setattr(instance, attr_name, old_item)
                 if old_item is not None:
-                    self._handle_item_addition(instance, old_item)
+                    self._handle_item_addition(old_item, instance)
                 raise ValueError(*e.args) from e

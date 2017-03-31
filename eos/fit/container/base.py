@@ -19,20 +19,15 @@
 # ===============================================================================
 
 
-from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved
-from .exception import ItemAlreadyAssignedError, ItemFitMismatchError
+from .exception import ItemAlreadyAssignedError
 
 
 class ItemContainerBase:
     """
     Base class for any containers which are intended
-    to ease management of items. Hides fit-specific
-    logic under its hood, letting real containers (which
-    should inherit it) implement just container type-
-    specific logic.
+    to ease management of items.
 
     Required arguments:
-    fit -- fit, to which container is attached
     item_class -- class of items this container
         is allowed to contain
     """
@@ -40,46 +35,27 @@ class ItemContainerBase:
     def __init__(self, item_class):
         self.__item_class = item_class
 
-    def _handle_item_addition(self, fit, item, position=None):
+    def _handle_item_addition(self, item, container):
         """
         Do all the generic work to add item to container.
         Must be called after item has been assigned to
-        specific container.
+        specific container, so that presence checks during
+        addition pass.
         """
         # Make sure we're not adding item which already
-        # belongs to other fit
-        if item._fit is not None:
+        # belongs to other container
+        if item._container is not None:
             raise ItemAlreadyAssignedError(item)
-        # Finalize linking items before handling sub-items
-        # and firing an event. This way we ensure that all
-        # services  which may rely on fit/item links will
-        # work properly
-        item._fit = fit
-        # Do not check if charge has proper fit link, because
-        # consistency is kept by charge descriptor. We should
-        # never get an exception here
-        charge = getattr(item, 'charge', None)
-        if charge is not None:
-            self._handle_item_addition(fit, charge)
-        fit._publish(InputItemAdded(item, position))
+        item._container = container
 
-    def _handle_item_removal(self, fit, item):
+    def _handle_item_removal(self, item):
         """
         Do all the generic work to remove item to container.
         Must be called before item has been removed from
-        specific container.
+        specific container, so that presence checks during
+        removal should pass.
         """
-        # If everything is alright, this should never
-        # be raised regardless of user actions
-        if item._fit is not fit:
-            raise ItemFitMismatchError(item)
-        # Fire removal event before unlinking, same reason
-        # as in addition handling method
-        fit._publish(InputItemRemoved(item))
-        charge = getattr(item, 'charge', None)
-        if charge is not None:
-            self._handle_item_removal(fit, charge)
-        item._fit = None
+        item._container = None
 
     def _check_class(self, item, allow_none=False):
         """

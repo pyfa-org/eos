@@ -26,9 +26,8 @@ from .base import BaseInputMessage, BaseInstructionMessage
 
 class InputItemAdded(BaseInputMessage):
 
-    def __init__(self, item, position):
+    def __init__(self, item):
         self.item = item
-        self.position = position
 
     def get_instructions(self):
         # Do nothing if fit doesn't have source
@@ -36,7 +35,7 @@ class InputItemAdded(BaseInputMessage):
             return ()
         instructions = []
         # Handle item addition
-        instructions.append(InstrItemAdd(self.item, self.position))
+        instructions.append(InstrItemAdd(self.item))
         # Handle state activation
         states = {s for s in State if s <= self.item.state}
         instructions.append(InstrStatesActivate(self.item, states))
@@ -47,7 +46,7 @@ class InputItemAdded(BaseInputMessage):
         return instructions
 
     def __repr__(self):
-        spec = ['item', 'position']
+        spec = ['item']
         return make_repr_str(self, spec)
 
 
@@ -162,12 +161,11 @@ class InputItemsPositionChanged(BaseInputMessage):
 
 class InstrItemAdd(BaseInstructionMessage):
 
-    def __init__(self, item, position):
+    def __init__(self, item):
         self.item = item
-        self.position = position
 
     def __repr__(self):
-        spec = ['item', 'position']
+        spec = ['item']
         return make_repr_str(self, spec)
 
 

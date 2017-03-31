@@ -24,7 +24,7 @@ from collections import namedtuple
 from random import random
 
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.pubsub.message import InputEffectsStatusChanged, InstrRefreshSource
+from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsStatusChanged, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.fit.null_source import NullSourceItem
 
@@ -49,8 +49,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     def __init__(self, type_id, **kwargs):
         self._eve_type_id = type_id
-        # Which fit this item is bound to
-        self.__fit = None
+        # Which container this item is placed to
+        self.__container = None
         # Special dictionary subclass that holds modified attributes
         # and data related to their calculation
         self.attributes = MutableAttributeMap(self)
@@ -64,18 +64,42 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         super().__init__(**kwargs)
 
     @property
-    def _fit(self):
-        return self.__fit
+    def _container(self):
+        return self.__container
 
-    @_fit.setter
-    def _fit(self, new_fit):
-        old_fit = self.__fit
+    @_container.setter
+    def _container(self, new_container):
+        charge = getattr(self, 'charge', None)
+        old_fit = self._fit
         if old_fit is not None:
+            # Unlink fit and contained items first
+            if charge is not None:
+                old_fit._unsubscribe(charge, charge._handler_map.keys())
+                old_fit._publish(InputItemRemoved(charge))
+            # Then unlink fit and item itself
             old_fit._unsubscribe(self, self._handler_map.keys())
-        self.__fit = new_fit
-        self.__refresh_source()
+            old_fit._publish(InputItemRemoved(self))
+        self.__container = new_container
+        self._refresh_source()
+        if charge is not None:
+            charge._refresh_source()
+        # New fit
+        new_fit = self._fit
         if new_fit is not None:
+            # Link fit and item itself first
+            new_fit._publish(InputItemAdded(self))
             new_fit._subscribe(self, self._handler_map.keys())
+            # Then link fit and contained items
+            if charge is not None:
+                new_fit._publish(InputItemAdded(charge))
+                new_fit._subscribe(charge, charge._handler_map.keys())
+
+    @property
+    def _fit(self):
+        try:
+            return self._container._fit
+        except AttributeError:
+            return None
 
     # Properties used by attribute calculator
     @property
@@ -127,8 +151,9 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 self.__blocked_effect_ids.add(effect_id)
         if len(changes) == 0:
             return
-        if self.__fit is not None:
-            self.__fit._publish(InputEffectsStatusChanged(self, changes))
+        fit = self._fit
+        if fit is not None:
+            fit._publish(InputEffectsStatusChanged(self, changes))
 
     def _randomize_effects_status(self, effect_filter=None):
         """
@@ -166,14 +191,14 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     # Message handling
     def _handle_refresh_source(self, _):
-        self.__refresh_source()
+        self._refresh_source()
 
     _handler_map = {
         InstrRefreshSource: _handle_refresh_source
     }
 
     # Private methods for message handlers
-    def __refresh_source(self):
+    def _refresh_source(self):
         """
         Each time item's context is changed (the source it relies on,
         which may change when item switches fit or its fit switches

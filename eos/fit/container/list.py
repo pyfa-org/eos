@@ -41,6 +41,10 @@ class ItemList(ItemContainerBase):
         self.__fit = fit
         self.__list = []
 
+    @property
+    def _fit(self):
+        return self.__fit
+
     def insert(self, index, value):
         """
         Insert value to given position; if position is
@@ -63,7 +67,7 @@ class ItemList(ItemContainerBase):
             self._cleanup()
         else:
             try:
-                self._handle_item_addition(self.__fit, item=value, position=index)
+                self._handle_item_addition(value, self)
             except ItemAlreadyAssignedError as e:
                 del self.__list[index]
                 self._cleanup()
@@ -86,9 +90,8 @@ class ItemList(ItemContainerBase):
         """
         self._check_class(item)
         self.__list.append(item)
-        position = self.__list.index(item)
         try:
-            self._handle_item_addition(self.__fit, item=item, position=position)
+            self._handle_item_addition(item, self)
         except ItemAlreadyAssignedError as e:
             del self.__list[-1]
             raise ValueError(*e.args) from e
@@ -117,7 +120,7 @@ class ItemList(ItemContainerBase):
                 raise SlotTakenError(index)
         self.__list[index] = item
         try:
-            self._handle_item_addition(self.__fit, item=item, position=index)
+            self._handle_item_addition(item, self)
         except ItemAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
@@ -144,7 +147,7 @@ class ItemList(ItemContainerBase):
         else:
             self.__list[index] = item
         try:
-            self._handle_item_addition(self.__fit, item=item, position=index)
+            self._handle_item_addition(item, self)
         except ItemAlreadyAssignedError as e:
             self.__list[index] = None
             self._cleanup()
@@ -167,7 +170,7 @@ class ItemList(ItemContainerBase):
             item = value
             index = self.__list.index(item)
         if item is not None:
-            self._handle_item_removal(self.__fit, item=item)
+            self._handle_item_removal(item)
         del self.__list[index]
         self._cleanup()
         # After all the changes, if there're items on the index which
@@ -194,7 +197,7 @@ class ItemList(ItemContainerBase):
             index = self.__list.index(item)
         if item is None:
             return
-        self._handle_item_removal(self.__fit, item=item)
+        self._handle_item_removal(item)
         self.__list[index] = None
         self._cleanup()
 
@@ -206,7 +209,7 @@ class ItemList(ItemContainerBase):
         """Remove everything from container."""
         for item in self.__list:
             if item is not None:
-                self._handle_item_removal(self.__fit, item)
+                self._handle_item_removal(item)
         self.__list.clear()
 
     def __getitem__(self, index):

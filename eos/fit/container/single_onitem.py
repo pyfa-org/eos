@@ -20,6 +20,7 @@
 
 
 from .base import ItemContainerBase
+from .exception import ItemAlreadyAssignedError
 
 
 class ItemDescriptorOnItem(ItemContainerBase):
@@ -31,8 +32,7 @@ class ItemDescriptorOnItem(ItemContainerBase):
     direct_attr_name -- name of instance attribute which
         should be used to store data processed by descriptor
     reverse_attr_name -- name of attribute which will be
-        used to refer from contained item to container
-        item, can be None (no reference to container)
+        used to refer from contained item to container item
     item_class -- class of items this container
         is allowed to contain
     """
@@ -49,25 +49,23 @@ class ItemDescriptorOnItem(ItemContainerBase):
 
     def __set__(self, instance, new_item):
         self._check_class(new_item, allow_none=True)
-        # Check if passed item is attached to other fit already
-        # or not. We can't rely on fit._add_item to do it,
-        # because charge can be assigned when container is detached
-        # from fit, which breaks consistency - both items
-        # need to be assigned to the same fit
-        if new_item is not None and new_item._fit is not None:
-            raise ValueError(new_item)
-        fit = instance._fit
         direct_attr_name = self.__direct_attr_name
         reverse_attr_name = self.__reverse_attr_name
         old_item = getattr(instance, direct_attr_name, None)
         if old_item is not None:
-            if fit is not None:
-                self._handle_item_removal(fit, old_item)
-            if reverse_attr_name is not None:
-                setattr(old_item, reverse_attr_name, None)
+            self._handle_item_removal(old_item)
+            setattr(old_item, reverse_attr_name, None)
         setattr(instance, direct_attr_name, new_item)
         if new_item is not None:
-            if reverse_attr_name is not None:
-                setattr(new_item, reverse_attr_name, instance)
-            if fit is not None:
-                self._handle_item_addition(fit, new_item)
+            new_item_old_reverse = getattr(new_item, reverse_attr_name, None)
+            setattr(new_item, reverse_attr_name, instance)
+            try:
+                self._handle_item_addition(new_item, instance)
+            except ItemAlreadyAssignedError as e:
+                setattr(new_item, reverse_attr_name, new_item_old_reverse)
+                setattr(instance, direct_attr_name, old_item)
+                if old_item is not None:
+                    setattr(old_item, reverse_attr_name, instance)
+                    self._handle_item_addition(old_item, instance)
+                raise ValueError(*e.args) from e
+

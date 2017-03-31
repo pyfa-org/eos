@@ -22,31 +22,15 @@
 from eos.exception import EosError
 
 
-class ItemContainerError(EosError):
+class ItemAlreadyAssignedError(EosError):
     """
-    Custom exceptions thrown by item containers are based
-    on this class.
-    """
-    ...
-
-
-class ItemAlreadyAssignedError(ItemContainerError):
-    """
-    Raised on attempt to add item, when
-    it's already assigned to fit.
+    Raised on attempt to set item to container, when
+    it's already assigned to some container.
     """
     ...
 
 
-class ItemFitMismatchError(ItemContainerError):
-    """
-    Raised during removal of item, when item's fit reference
-    does not reference fit item being removed from.
-    """
-    ...
-
-
-class SlotTakenError(ItemContainerError):
+class SlotTakenError(EosError):
     """
     When attempt to overwrite another item in ordered container
     is detected, this exception is raised.

@@ -38,6 +38,10 @@ class ItemSet(ItemContainerBase):
         self.__fit = fit
         self.__set = set()
 
+    @property
+    def _fit(self):
+        return self.__fit
+
     def add(self, item):
         """
         Add item to container.
@@ -51,7 +55,7 @@ class ItemSet(ItemContainerBase):
         self._check_class(item)
         self.__set.add(item)
         try:
-            self._handle_item_addition(self.__fit, item)
+            self._handle_item_addition(item, self)
         except ItemAlreadyAssignedError as e:
             self.__set.remove(item)
             raise ValueError from e
@@ -66,13 +70,13 @@ class ItemSet(ItemContainerBase):
         """
         if item not in self.__set:
             raise KeyError(item)
-        self._handle_item_removal(self.__fit, item)
+        self._handle_item_removal(item)
         self.__set.remove(item)
 
     def clear(self):
         """Remove everything from container."""
         for item in self.__set:
-            self._handle_item_removal(self.__fit, item)
+            self._handle_item_removal(item)
         self.__set.clear()
 
     def __iter__(self):

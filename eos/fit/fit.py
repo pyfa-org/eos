@@ -129,6 +129,12 @@ class Fit(FitMessageBroker, BaseSubscriber):
         if new_profile != old_profile:
             self._publish(InputDefaultIncomingDamageChanged())
 
+    # This property is necessary to find fit for items
+    # which are stored directly on the fit
+    @property
+    def _fit(self):
+        return self
+
     # Message handling
     def _handle_item_addition(self, message):
         self.__items.add(message.item)
