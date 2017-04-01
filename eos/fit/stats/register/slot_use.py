@@ -19,6 +19,8 @@
 # ===============================================================================
 
 
+from abc import ABCMeta, abstractmethod
+
 from eos.const.eos import State
 from eos.const.eve import Effect
 from eos.fit.item import Drone
@@ -28,28 +30,119 @@ from eos.fit.pubsub.message import (
 from .base import BaseStatRegister
 
 
-class SlotUseRegister(BaseStatRegister):
-    """
-    Class which implements common functionality for all
-    registers, which are used to calculate amount of
-    resource used.
-    """
+class SlotUseRegister(BaseStatRegister, metaclass=ABCMeta):
 
     def __init__(self, fit):
-        self.__slot_users = set()
+        self._slot_users = set()
         fit._subscribe(self, self._handler_map.keys())
 
     def _register_item(self, item):
-        self.__slot_users.add(item)
+        self._slot_users.add(item)
 
     def _unregister_item(self, item):
-        self.__slot_users.discard(item)
+        self._slot_users.discard(item)
 
-    def __len__(self):
-        return len(self.__slot_users)
+    @property
+    @abstractmethod
+    def slots_used(self):
+        ...
 
 
-class TurretUseRegister(SlotUseRegister):
+class SlotUseUnorderedRegister(SlotUseRegister):
+
+    @property
+    def slots_used(self):
+        return len(self._slot_users)
+
+
+class SlotUseOrderedRegister(SlotUseRegister):
+
+    @property
+    def slots_used(self):
+        return max((i._container_position or 0 for i in self._slot_users), default=-1) + 1
+
+
+class HighSlotUseRegister(SlotUseOrderedRegister):
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.hi_power in message.effects:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.hi_power in message.effects:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
+
+
+class MediumSlotUseRegister(SlotUseOrderedRegister):
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.med_power in message.effects:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.med_power in message.effects:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
+
+
+class LowSlotUseRegister(SlotUseOrderedRegister):
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.lo_power in message.effects:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.lo_power in message.effects:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
+
+
+class RigUseRegister(SlotUseUnorderedRegister):
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.rig_slot in message.effects:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.rig_slot in message.effects:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
+
+
+class SubsystemUseRegister(SlotUseUnorderedRegister):
+
+    def _handle_item_effects_activation(self, message):
+        if Effect.subsystem in message.effects:
+            SlotUseRegister._register_item(self, message.item)
+
+    def _handle_item_effects_deactivation(self, message):
+        if Effect.subsystem in message.effects:
+            SlotUseRegister._unregister_item(self, message.item)
+
+    _handler_map = {
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
+    }
+
+
+class TurretUseRegister(SlotUseUnorderedRegister):
     """
     Assist with calculation of amount of used turret slots.
     """
@@ -68,7 +161,7 @@ class TurretUseRegister(SlotUseRegister):
     }
 
 
-class LauncherUseRegister(SlotUseRegister):
+class LauncherUseRegister(SlotUseUnorderedRegister):
     """
     Assist with calculation of amount of used launcher slots.
     """
@@ -87,7 +180,7 @@ class LauncherUseRegister(SlotUseRegister):
     }
 
 
-class LaunchedDroneRegister(SlotUseRegister):
+class LaunchedDroneRegister(SlotUseUnorderedRegister):
     """
     Assist with calculation of amount of launched drones.
     """

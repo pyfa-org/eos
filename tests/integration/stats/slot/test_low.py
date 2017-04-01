@@ -102,9 +102,9 @@ class TestLowSlot(StatTestCase):
 
     def test_use_other_item_class(self):
         fit = Fit()
-        fit.modules.high.append(ModuleHigh(self.ch.type(effects=[self.slot_effect]).id))
+        fit.modules.high.place(3, ModuleHigh(self.ch.type(effects=[self.slot_effect]).id))
         # Verification
-        self.assertEqual(fit.stats.low_slots.used, 0)
+        self.assertEqual(fit.stats.low_slots.used, 4)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

@@ -82,7 +82,7 @@ class TestSubsystem(StatTestCase):
         fit = Fit()
         fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
         # Verification
-        self.assertEqual(fit.stats.subsystem_slots.used, 0)
+        self.assertEqual(fit.stats.subsystem_slots.used, 1)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

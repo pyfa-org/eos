@@ -28,16 +28,16 @@ class EntitySlots(InheritableVolatileMixin):
     of used slots against provided slots
     """
 
-    def __init__(self, fit, container, slot_carrier, slot_attr):
+    def __init__(self, fit, consumption_register, slot_carrier, slot_attr):
         InheritableVolatileMixin.__init__(self)
         self._fit = fit
-        self.__container = container
+        self.__consumption_register = consumption_register
         self.__slot_carrier = slot_carrier
         self.__slot_attr = slot_attr
 
     @volatile_property
     def used(self):
-        return len(self.__container)
+        return self.__consumption_register.slots_used
 
     @volatile_property
     def total(self):

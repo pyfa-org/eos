@@ -95,17 +95,21 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 new_fit._subscribe(charge, charge._handler_map.keys())
 
     @property
-    def _fit(self):
+    def _container_position(self):
+        """
+        Index of the item within parent container. Should return
+        position only for ordered containers.
+        """
         try:
-            return self._container._fit
+            return self._container.index(self)
         except AttributeError:
             return None
 
     @property
-    def _other(self):
-        if isinstance(self._container, BaseItemMixin):
-            return self._container
-        else:
+    def _fit(self):
+        try:
+            return self._container._fit
+        except AttributeError:
             return None
 
     # Properties used by attribute calculator
@@ -118,6 +122,14 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     @abstractmethod
     def _owner_modifiable(self):
         ...
+
+    @property
+    def _other(self):
+        container = self._container
+        if isinstance(container, BaseItemMixin):
+            return container
+        else:
+            return None
 
     # Effect methods
     @property

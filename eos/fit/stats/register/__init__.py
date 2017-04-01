@@ -20,15 +20,20 @@
 
 
 __all__ = [
-    'DamageDealerRegister',
-    'CpuUseRegister',
-    'PowerGridUseRegister',
     'CalibrationUseRegister',
-    'DroneBayVolumeUseRegister',
+    'CpuUseRegister',
+    'DamageDealerRegister',
     'DroneBandwidthUseRegister',
-    'TurretUseRegister',
+    'DroneBayVolumeUseRegister',
+    'HighSlotUseRegister',
+    'LaunchedDroneRegister',
     'LauncherUseRegister',
-    'LaunchedDroneRegister'
+    'LowSlotUseRegister',
+    'MediumSlotUseRegister',
+    'PowerGridUseRegister',
+    'RigUseRegister',
+    'SubsystemUseRegister',
+    'TurretUseRegister'
 ]
 
 
@@ -37,4 +42,7 @@ from .resource_use import (
     CpuUseRegister, PowerGridUseRegister, CalibrationUseRegister,
     DroneBayVolumeUseRegister, DroneBandwidthUseRegister
 )
-from .slot_use import TurretUseRegister, LauncherUseRegister, LaunchedDroneRegister
+from .slot_use import (
+    HighSlotUseRegister, MediumSlotUseRegister, LowSlotUseRegister, RigUseRegister,
+    SubsystemUseRegister, TurretUseRegister, LauncherUseRegister, LaunchedDroneRegister
+)
