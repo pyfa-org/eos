@@ -91,7 +91,20 @@ class TestModuleCharge(ContainerTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit_other)
 
-    def test_detached_module_none_to_bound_charge(self):
+    def test_detached_module_none_to_partially_bound_charge(self):
+        module_eve_type = self.ch.type()
+        module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_other = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        charge_other = Charge(self.ch.type().id)
+        module_other.charge = charge_other
+        # Action
+        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        # Verification
+        self.assertIsNone(module.charge)
+        self.assertIs(module_other.charge, charge_other)
+        self.assertIs(charge_other.container, module_other)
+
+    def test_detached_module_none_to_fully_bound_charge(self):
         fit_other = Fit()
         module_eve_type = self.ch.type()
         module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
@@ -108,7 +121,22 @@ class TestModuleCharge(ContainerTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit_other)
 
-    def test_detached_module_charge_to_bound_charge(self):
+    def test_detached_module_charge_to_partially_bound_charge(self):
+        module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        charge = Charge(self.ch.type().id)
+        module_other = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        charge_other = Charge(self.ch.type().id)
+        module.charge = charge
+        module_other.charge = charge_other
+        # Action
+        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        # Verification
+        self.assertIs(module.charge, charge)
+        self.assertIs(charge.container, module)
+        self.assertIs(module_other.charge, charge_other)
+        self.assertIs(charge_other.container, module_other)
+
+    def test_detached_module_charge_to_fully_bound_charge(self):
         fit_other = Fit()
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
         charge = Charge(self.ch.type().id)
@@ -209,7 +237,24 @@ class TestModuleCharge(ContainerTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
-    def test_fit_none_to_bound_charge(self):
+    def test_fit_none_to_partially_bound_charge(self):
+        fit = Fit()
+        module_eve_type = self.ch.type()
+        module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_other = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        charge_other = Charge(self.ch.type().id)
+        module_other.charge = charge_other
+        fit.modules.high.append(module)
+        # Action
+        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        # Verification
+        self.assertIsNone(module.charge)
+        self.assertIs(module_other.charge, charge_other)
+        self.assertIs(charge_other.container, module_other)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+
+    def test_fit_none_to_fully_bound_charge(self):
         fit = Fit()
         fit_other = Fit()
         module_eve_type = self.ch.type()
@@ -229,7 +274,26 @@ class TestModuleCharge(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
-    def test_fit_charge_to_bound_charge(self):
+    def test_fit_charge_to_partially_bound_charge(self):
+        fit = Fit()
+        module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        charge = Charge(self.ch.type().id)
+        module_other = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        charge_other = Charge(self.ch.type().id)
+        fit.modules.high.append(module)
+        module.charge = charge
+        module_other.charge = charge_other
+        # Action
+        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        # Verification
+        self.assertIs(module.charge, charge)
+        self.assertIs(charge.container, module)
+        self.assertIs(module_other.charge, charge_other)
+        self.assertIs(charge_other.container, module_other)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+
+    def test_fit_charge_to_fully_bound_charge(self):
         fit = Fit()
         fit_other = Fit()
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
