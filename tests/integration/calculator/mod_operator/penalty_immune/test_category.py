@@ -47,10 +47,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_ship(self):
         influence_source1 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.ship, attributes={self.src_attr.id: 50}
+            effects=[self.effect], category=Category.ship, attributes={self.src_attr.id: 50}
         ).id)
         influence_source2 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.ship, attributes={self.src_attr.id: 100}
+            effects=[self.effect], category=Category.ship, attributes={self.src_attr.id: 100}
         ).id)
         self.fit.implants.add(influence_source1)
         self.fit.implants.add(influence_source2)
@@ -65,10 +65,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_charge(self):
         influence_source1 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 50}
+            effects=[self.effect], category=Category.charge, attributes={self.src_attr.id: 50}
         ).id)
         influence_source2 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 100}
+            effects=[self.effect], category=Category.charge, attributes={self.src_attr.id: 100}
         ).id)
         self.fit.implants.add(influence_source1)
         self.fit.implants.add(influence_source2)
@@ -83,10 +83,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_skill(self):
         influence_source1 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.skill, attributes={self.src_attr.id: 50}
+            effects=[self.effect], category=Category.skill, attributes={self.src_attr.id: 50}
         ).id)
         influence_source2 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.skill, attributes={self.src_attr.id: 100}
+            effects=[self.effect], category=Category.skill, attributes={self.src_attr.id: 100}
         ).id)
         self.fit.implants.add(influence_source1)
         self.fit.implants.add(influence_source2)
@@ -101,10 +101,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_implant(self):
         influence_source1 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.implant, attributes={self.src_attr.id: 50}
+            effects=[self.effect], category=Category.implant, attributes={self.src_attr.id: 50}
         ).id)
         influence_source2 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.implant, attributes={self.src_attr.id: 100}
+            effects=[self.effect], category=Category.implant, attributes={self.src_attr.id: 100}
         ).id)
         self.fit.implants.add(influence_source1)
         self.fit.implants.add(influence_source2)
@@ -119,10 +119,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_subsystem(self):
         influence_source1 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.subsystem, attributes={self.src_attr.id: 50}
+            effects=[self.effect], category=Category.subsystem, attributes={self.src_attr.id: 50}
         ).id)
         influence_source2 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.subsystem, attributes={self.src_attr.id: 100}
+            effects=[self.effect], category=Category.subsystem, attributes={self.src_attr.id: 100}
         ).id)
         self.fit.implants.add(influence_source1)
         self.fit.implants.add(influence_source2)
@@ -137,10 +137,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_mixed(self):
         influence_source1 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 50}
+            effects=[self.effect], category=Category.charge, attributes={self.src_attr.id: 50}
         ).id)
         influence_source2 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.implant, attributes={self.src_attr.id: 100}
+            effects=[self.effect], category=Category.implant, attributes={self.src_attr.id: 100}
         ).id)
         self.fit.implants.add(influence_source1)
         self.fit.implants.add(influence_source2)
@@ -155,10 +155,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def test_with_not_immune(self):
         influence_source1 = Implant(self.ch.type(
-            effects=(self.effect,), category=Category.charge, attributes={self.src_attr.id: 50}
+            effects=[self.effect], category=Category.charge, attributes={self.src_attr.id: 50}
         ).id)
         influence_source2 = Implant(self.ch.type(
-            effects=(self.effect,), category=None, attributes={self.src_attr.id: 100}
+            effects=[self.effect], category=None, attributes={self.src_attr.id: 100}
         ).id)
         self.fit.implants.add(influence_source1)
         self.fit.implants.add(influence_source2)

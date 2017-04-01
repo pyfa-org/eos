@@ -49,7 +49,7 @@ class TestCap(CalculatorTestCase):
         # Check that cap is applied properly when item
         # doesn't have base value of capping attribute
         item = Implant(self.ch.type(
-            effects=(self.effect,), attributes={self.capped_attr.id: 3, self.source_attr.id: 6}
+            effects=[self.effect], attributes={self.capped_attr.id: 3, self.source_attr.id: 6}
         ).id)
         self.fit.implants.add(item)
         # Verification
@@ -62,7 +62,7 @@ class TestCap(CalculatorTestCase):
         # Make sure that item's own specified attribute
         # value is taken as cap
         item = Implant(self.ch.type(
-            effects=(self.effect,),
+            effects=[self.effect],
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
         ).id)
         self.fit.implants.add(item)
@@ -100,7 +100,7 @@ class TestCap(CalculatorTestCase):
         # If cap updates, capped attributes should
         # be updated too
         item = Rig(self.ch.type(
-            effects=(self.effect,),
+            effects=[self.effect],
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
         ).id)
         self.fit.rigs.add(item)

@@ -42,7 +42,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
 
     def test_independent(self):
-        item = Ship(self.ch.type(effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}).id)
+        item = Ship(self.ch.type(effects=[self.effect], attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}).id)
         # Action
         self.fit.ship = item
         # Verification
@@ -53,7 +53,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
 
     def test_parent_domain_character(self):
         item = Implant(self.ch.type(
-            effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+            effects=[self.effect], attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ).id)
         # Action
         self.fit.implants.add(item)
@@ -65,7 +65,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
 
     def test_parent_domain_ship(self):
         item = Rig(self.ch.type(
-            effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+            effects=[self.effect], attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ).id)
         # Action
         self.fit.rigs.add(item)
@@ -81,7 +81,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # check another item which has character modifier domain to ensure
         # that items 'belonging' to self are not affected too
         influence_source = Character(self.ch.type(
-            effects=(self.effect,), attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+            effects=[self.effect], attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
         ).id)
         item = Implant(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(item)

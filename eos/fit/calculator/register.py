@@ -43,6 +43,10 @@ class AffectionRegister:
     def __init__(self, fit):
         self.__fit = fit
 
+        # All known items
+        # Format: {items}
+        self.__affectee = set()
+
         # Items belonging to certain domain
         # Format: {domain: set(target items)}
         self.__affectee_domain = KeyedSet()
@@ -170,11 +174,12 @@ class AffectionRegister:
 
     def register_affectee(self, target_item):
         """
-        Add passed target item to register's affectee maps. We track
-        affectees to efficiently update attributes when set of items
-        influencing them changes.
+        Add passed target item to register's affectee containers. We
+        track affectees to efficiently update attributes when set of
+        items influencing them changes.
         """
-        # Add item to all affectee maps
+        # Add item to all affectee containers
+        self.__affectee.add(target_item)
         for key, affectee_map in self.__get_affectee_maps(target_item):
             affectee_map.add_data(key, target_item)
         # Special handling for awaitable direct item affectors. Affector
@@ -186,9 +191,10 @@ class AffectionRegister:
 
     def unregister_affectee(self, target_item):
         """
-        Remove passed target item from register's affectee maps,
+        Remove passed target item from register's affectee containers,
         """
-        # Remove item from all affectee maps
+        # Remove item from all affectee containers
+        self.__affectee.discard(target_item)
         for key, affectee_map in self.__get_affectee_maps(target_item):
             affectee_map.rm_data(key, target_item)
         # Special handling for awaitable direct item affectors
@@ -223,13 +229,16 @@ class AffectionRegister:
         other_item = self.__get_other_linked_item(target_item)
         if other_item is not None:
             affectors_to_enable = self.__find_affectors_for_tgt_other(
-                chain(*self.__affector_item_awaiting.values()), other_item)
+                chain(*self.__affector_item_awaiting.values()), other_item
+            )
         elif target_item is self.__fit.ship:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
-                chain(*self.__affector_item_awaiting.values()), ModifierDomain.ship)
+                chain(*self.__affector_item_awaiting.values()), ModifierDomain.ship
+            )
         elif target_item is self.__fit.character:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
-                chain(*self.__affector_item_awaiting.values()), ModifierDomain.character)
+                chain(*self.__affector_item_awaiting.values()), ModifierDomain.character
+            )
         else:
             return
         # Enable them - move from awaiting map to enabled map
@@ -339,7 +348,7 @@ class AffectionRegister:
 
     def __affector_map_getter_item_other(self, affector):
         other_item = self.__get_other_linked_item(affector.carrier_item)
-        if other_item is not None:
+        if other_item is not None and other_item in self.__affectee:
             return other_item, self.__affector_item_active
         else:
             return affector.carrier_item, self.__affector_item_awaiting
