@@ -51,7 +51,11 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         super().__init__(**kwargs)
         self.charge = charge
 
-    charge = ItemDescriptorOnItem('_charge', 'container', Charge)
+    charge = ItemDescriptorOnItem('_charge', Charge)
+
+    @property
+    def _other(self):
+        return self.charge
 
     @volatile_property
     def charge_quantity(self):

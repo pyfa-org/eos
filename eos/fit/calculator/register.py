@@ -107,7 +107,7 @@ class AffectionRegister:
             return ()
 
     def __affectee_getter_item_other(self, affector):
-        other_item = self.__get_other_linked_item(affector.carrier_item)
+        other_item = affector.carrier_item._other
         if other_item is not None:
             return (other_item,)
         else:
@@ -226,7 +226,7 @@ class AffectionRegister:
     def __find_and_enable_awaitable_affectors(self, target_item):
         """Enable affectors which wait for passed item"""
         # Search for affectors
-        other_item = self.__get_other_linked_item(target_item)
+        other_item = target_item._other
         if other_item is not None:
             affectors_to_enable = self.__find_affectors_for_tgt_other(
                 chain(*self.__affector_item_awaiting.values()), other_item
@@ -347,7 +347,7 @@ class AffectionRegister:
             return affector.carrier_item, self.__affector_item_awaiting
 
     def __affector_map_getter_item_other(self, affector):
-        other_item = self.__get_other_linked_item(affector.carrier_item)
+        other_item = affector.carrier_item._other
         if other_item is not None and other_item in self.__affectee:
             return other_item, self.__affector_item_active
         else:
@@ -446,18 +446,6 @@ class AffectionRegister:
         # Raise error if domain is invalid
         else:
             raise UnexpectedDomainError(domain)
-
-    def __get_other_linked_item(self, item):
-        """
-        Attempt to get item linked via 'other' link, like charge's
-        module or module's charge, return None if nothing is found.
-        """
-        if hasattr(item, 'charge'):
-            return item.charge
-        elif hasattr(item, 'container'):
-            return item.container
-        else:
-            return None
 
     def __handle_affector_errors(self, error, affector):
         """

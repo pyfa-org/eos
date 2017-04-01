@@ -43,7 +43,6 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
 
     def test_detached_module_charge_to_free_charge(self):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
@@ -55,8 +54,6 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge2
         # Verification
         self.assertIs(module.charge, charge2)
-        self.assertIsNone(charge1.container)
-        self.assertIs(charge2.container, module)
 
     def test_detached_module_charge_to_none(self):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
@@ -66,7 +63,6 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = None
         # Verification
         self.assertIsNone(module.charge)
-        self.assertIsNone(charge.container)
 
     def test_detached_module_none_to_non_charge(self):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
@@ -86,7 +82,6 @@ class TestModuleCharge(ContainerTestCase):
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         fit_other.stance = non_charge
         # Cleanup
         self.assert_fit_buffers_empty(fit_other)
@@ -102,7 +97,6 @@ class TestModuleCharge(ContainerTestCase):
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
 
     def test_detached_module_none_to_fully_bound_charge(self):
         fit_other = Fit()
@@ -117,7 +111,6 @@ class TestModuleCharge(ContainerTestCase):
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
         # Cleanup
         self.assert_fit_buffers_empty(fit_other)
 
@@ -132,9 +125,7 @@ class TestModuleCharge(ContainerTestCase):
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
 
     def test_detached_module_charge_to_fully_bound_charge(self):
         fit_other = Fit()
@@ -149,9 +140,7 @@ class TestModuleCharge(ContainerTestCase):
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
         # Cleanup
         self.assert_fit_buffers_empty(fit_other)
 
@@ -175,7 +164,6 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
@@ -190,8 +178,6 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge2
         # Verification
         self.assertIs(module.charge, charge2)
-        self.assertIsNone(charge1.container)
-        self.assertIs(charge2.container, module)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
@@ -204,7 +190,6 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = None
         # Verification
         self.assertIsNone(module.charge)
-        self.assertIsNone(charge.container)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
@@ -232,7 +217,6 @@ class TestModuleCharge(ContainerTestCase):
         self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         fit.stance = non_charge
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -250,7 +234,6 @@ class TestModuleCharge(ContainerTestCase):
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
@@ -269,7 +252,6 @@ class TestModuleCharge(ContainerTestCase):
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
@@ -287,9 +269,7 @@ class TestModuleCharge(ContainerTestCase):
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
@@ -308,9 +288,7 @@ class TestModuleCharge(ContainerTestCase):
         self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
         # Verification
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         self.assertIs(module_other.charge, charge_other)
-        self.assertIs(charge_other.container, module_other)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
@@ -326,7 +304,6 @@ class TestModuleCharge(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], module)
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
 
@@ -341,6 +318,5 @@ class TestModuleCharge(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.modules.high), 0)
         self.assertIs(module.charge, charge)
-        self.assertIs(charge.container, module)
         # Cleanup
         self.assert_fit_buffers_empty(fit)

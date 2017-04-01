@@ -101,6 +101,13 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         except AttributeError:
             return None
 
+    @property
+    def _other(self):
+        if isinstance(self._container, BaseItemMixin):
+            return self._container
+        else:
+            return None
+
     # Properties used by attribute calculator
     @property
     @abstractmethod
