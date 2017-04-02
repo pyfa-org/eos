@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-__all__ = [
-    'ShipResource'
-]
-
-
-from .ship_resource import ShipResource
+from .launched_drone import LaunchedDroneStatRegister
+from .ship_ordered import HighSlotStatRegister, MediumSlotStatRegister, LowSlotStatRegister
+from .ship_unordered import (
+    RigSlotStatRegister, SubsystemSlotStatRegister,
+    TurretSlotStatRegister, LauncherSlotStatRegister
+)

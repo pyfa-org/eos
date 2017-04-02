@@ -19,9 +19,24 @@
 # ===============================================================================
 
 
-__all__ = [
-    'ShipResource'
-]
+from abc import ABCMeta, abstractmethod
+
+from ..base import BaseStatRegister
 
 
-from .ship_resource import ShipResource
+class BaseSlotStatRegister(BaseStatRegister, metaclass=ABCMeta):
+
+    @property
+    @abstractmethod
+    def used(self):
+        ...
+
+    @property
+    @abstractmethod
+    def total(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _users(self):
+        ...

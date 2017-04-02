@@ -47,14 +47,14 @@ class StatService(InheritableVolatileMixin):
         self.calibration = ShipResource(fit, CalibrationUseRegister(fit), Attribute.upgrade_capacity)
         self.dronebay = ShipResource(fit, DroneBayVolumeUseRegister(fit), Attribute.drone_capacity)
         self.drone_bandwidth = ShipResource(fit, DroneBandwidthUseRegister(fit), Attribute.drone_bandwidth)
-        self.high_slots = ShipSlots(fit, HighSlotUseRegister(fit), Attribute.hi_slots)
-        self.med_slots = ShipSlots(fit, MediumSlotUseRegister(fit), Attribute.med_slots)
-        self.low_slots = ShipSlots(fit, LowSlotUseRegister(fit), Attribute.low_slots)
-        self.rig_slots = ShipSlots(fit, RigUseRegister(fit), Attribute.rig_slots)
-        self.subsystem_slots = ShipSlots(fit, SubsystemUseRegister(fit), Attribute.max_subsystems)
-        self.turret_slots = ShipSlots(fit, TurretUseRegister(fit), Attribute.turret_slots_left)
-        self.launcher_slots = ShipSlots(fit, LauncherUseRegister(fit), Attribute.launcher_slots_left)
-        self.launched_drones = CharSlots(fit, LaunchedDroneRegister(fit), Attribute.max_active_drones)
+        self.high_slots = HighSlotStatRegister(fit)
+        self.med_slots = MediumSlotStatRegister(fit)
+        self.low_slots = LowSlotStatRegister(fit)
+        self.rig_slots = RigSlotStatRegister(fit)
+        self.subsystem_slots = SubsystemSlotStatRegister(fit)
+        self.turret_slots = TurretSlotStatRegister(fit)
+        self.launcher_slots = LauncherSlotStatRegister(fit)
+        self.launched_drones = LaunchedDroneStatRegister(fit)
         self._volatile_containers = (
             self.cpu,
             self.powergrid,

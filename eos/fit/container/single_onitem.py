@@ -61,4 +61,3 @@ class ItemDescriptorOnItem(ItemContainerBase):
                 if old_item is not None:
                     self._handle_item_addition(old_item, instance)
                 raise ValueError(*e.args) from e
-
