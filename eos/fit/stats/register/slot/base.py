@@ -21,6 +21,7 @@
 
 from abc import ABCMeta, abstractmethod
 
+from eos.util.repr import make_repr_str
 from ..base import BaseStatRegister
 
 
@@ -40,3 +41,7 @@ class BaseSlotStatRegister(BaseStatRegister, metaclass=ABCMeta):
     @abstractmethod
     def _users(self):
         ...
+
+    def __repr__(self):
+        spec = ['used', 'total']
+        return make_repr_str(self, spec)

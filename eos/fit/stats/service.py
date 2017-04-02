@@ -24,7 +24,6 @@ import math
 from eos.const.eve import Attribute
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
-from .container import *
 from .register import *
 
 
@@ -42,11 +41,11 @@ class StatService(InheritableVolatileMixin):
         self._fit = fit
         self._dd_reg = DamageDealerRegister(fit)
         # Initialize sub-containers
-        self.cpu = ShipResource(fit, CpuUseRegister(fit), Attribute.cpu_output)
-        self.powergrid = ShipResource(fit, PowerGridUseRegister(fit), Attribute.power_output)
-        self.calibration = ShipResource(fit, CalibrationUseRegister(fit), Attribute.upgrade_capacity)
-        self.dronebay = ShipResource(fit, DroneBayVolumeUseRegister(fit), Attribute.drone_capacity)
-        self.drone_bandwidth = ShipResource(fit, DroneBandwidthUseRegister(fit), Attribute.drone_bandwidth)
+        self.cpu = CpuStatRegister(fit)
+        self.powergrid = PowergridStatRegister(fit)
+        self.calibration = CalibrationStatRegister(fit)
+        self.dronebay = DronebayVolumeStatRegister(fit)
+        self.drone_bandwidth = DroneBandwidthStatRegister(fit)
         self.high_slots = HighSlotStatRegister(fit)
         self.med_slots = MediumSlotStatRegister(fit)
         self.low_slots = LowSlotStatRegister(fit)

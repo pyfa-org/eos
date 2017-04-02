@@ -19,31 +19,7 @@
 # ===============================================================================
 
 
-__all__ = [
-    'CalibrationStatRegister',
-    'CpuStatRegister',
-    'DamageDealerRegister',
-    'DroneBandwidthStatRegister',
-    'DronebayVolumeStatRegister',
-    'HighSlotStatRegister',
-    'LaunchedDroneStatRegister',
-    'LauncherSlotStatRegister',
-    'LowSlotStatRegister',
-    'MediumSlotStatRegister',
-    'PowergridStatRegister',
-    'RigSlotStatRegister',
-    'SubsystemSlotStatRegister',
-    'TurretSlotStatRegister'
-]
-
-
-from .damage_dealer import DamageDealerRegister
-from .resource import (
-    CpuStatRegister, PowergridStatRegister, CalibrationStatRegister,
-    DroneBandwidthStatRegister, DronebayVolumeStatRegister
-)
-from .slot import (
-    HighSlotStatRegister, MediumSlotStatRegister, LowSlotStatRegister, RigSlotStatRegister,
-    SubsystemSlotStatRegister, TurretSlotStatRegister, LauncherSlotStatRegister,
-    LaunchedDroneStatRegister
-)
+from .drone_bandwidth import DroneBandwidthStatRegister
+from .dronebay_volume import DronebayVolumeStatRegister
+from .rounded import CpuStatRegister, PowergridStatRegister
+from .unrounded import CalibrationStatRegister

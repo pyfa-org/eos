@@ -19,9 +19,29 @@
 # ===============================================================================
 
 
-__all__ = [
-    'ShipResource'
-]
+from abc import ABCMeta, abstractmethod
+
+from eos.util.repr import make_repr_str
+from ..base import BaseStatRegister
 
 
-from .ship_resource import ShipResource
+class BaseResourceStatRegister(BaseStatRegister, metaclass=ABCMeta):
+
+    @property
+    @abstractmethod
+    def used(self):
+        ...
+
+    @property
+    @abstractmethod
+    def output(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _users(self):
+        ...
+
+    def __repr__(self):
+        spec = ['used', 'total']
+        return make_repr_str(self, spec)
