@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import Slot, State
+from eos.const.eos import State
 from eos.const.eve import Attribute, Effect, EffectCategory
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
@@ -122,38 +122,6 @@ class Type:
                 targeted = True
                 break
         return targeted
-
-    # Format: {effect ID: slot ID}
-    __effect_slot_map = {
-        Effect.lo_power: Slot.module_low,
-        Effect.hi_power: Slot.module_high,
-        Effect.med_power: Slot.module_med,
-        Effect.launcher_fitted: Slot.launcher,
-        Effect.turret_fitted: Slot.turret,
-        Effect.rig_slot: Slot.rig,
-        Effect.subsystem: Slot.subsystem
-    }
-
-    @cached_property
-    def slots(self):
-        """
-        Get types of slots this type occupies.
-
-        Return value:
-        Set with slot types
-        """
-        # Container for slot types eve type uses
-        slots = set()
-        for effect in self.effects.values():
-            # Convert effect ID to slot type eve type takes
-            try:
-                slot = self.__effect_slot_map[effect.id]
-            # Silently skip effect if it's not in map
-            except KeyError:
-                pass
-            else:
-                slots.add(slot)
-        return slots
 
     def __repr__(self):
         spec = ['id']

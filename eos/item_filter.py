@@ -27,17 +27,12 @@ __all__ = [
 ]
 
 
-from eos.const.eos import Slot
-from eos.const.eve import Type, Category
+from eos.const.eve import Category, Effect, Type
 
 
 def turret_filter(item):
     """True for all items which occupy turret hardpoint"""
-    try:
-        slots = item._eve_type.slots
-    except AttributeError:
-        return False
-    if Slot.turret in slots:
+    if Effect.turret_fitted in item._active_effects:
         return True
     else:
         return False
@@ -45,11 +40,7 @@ def turret_filter(item):
 
 def missile_filter(item):
     """True for all items which occupy launcher hardpoint"""
-    try:
-        slots = item._eve_type.slots
-    except AttributeError:
-        return False
-    if Slot.turret in slots:
+    if Effect.launcher_fitted in item._active_effects:
         return True
     else:
         return False

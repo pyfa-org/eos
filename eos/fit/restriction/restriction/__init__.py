@@ -33,13 +33,13 @@ __all__ = [
     'DroneGroupRestrictionRegister',
     'HighSlotRestriction',
     'ImplantIndexRestriction',
-    'ItemClassRestriction',
+    'ItemClassRestrictionRegister',
     'LaunchedDroneRestriction',
     'LauncherSlotRestriction',
     'LowSlotRestriction',
-    'MaxGroupActiveRestriction',
-    'MaxGroupFittedRestriction',
-    'MaxGroupOnlineRestriction',
+    'MaxGroupActiveRestrictionRegister',
+    'MaxGroupFittedRestrictionRegister',
+    'MaxGroupOnlineRestrictionRegister',
     'MediumSlotRestriction',
     'PowerGridRestriction',
     'RigSizeRestriction',
@@ -59,8 +59,11 @@ from .charge_group import ChargeGroupRestrictionRegister
 from .charge_size import ChargeSizeRestrictionRegister
 from .charge_volume import ChargeVolumeRestrictionRegister
 from .drone_group import DroneGroupRestrictionRegister
-from .item_class import ItemClassRestriction
-from .max_group import MaxGroupFittedRestriction, MaxGroupOnlineRestriction, MaxGroupActiveRestriction
+from .item_class import ItemClassRestrictionRegister
+from .max_group import (
+    MaxGroupFittedRestrictionRegister, MaxGroupOnlineRestrictionRegister,
+    MaxGroupActiveRestrictionRegister
+)
 from .resource import (
     CpuRestriction, PowerGridRestriction, CalibrationRestriction, DroneBayVolumeRestriction,
     DroneBandwidthRestriction

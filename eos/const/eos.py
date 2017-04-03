@@ -46,17 +46,6 @@ class State(IntEnum):
 
 
 @unique
-class Slot(IntEnum):
-    module_high = 1
-    module_med = 2
-    module_low = 3
-    rig = 4
-    subsystem = 5
-    turret = 6
-    launcher = 7
-
-
-@unique
 class EffectBuildStatus(IntEnum):
     skipped = 1
     error = 2

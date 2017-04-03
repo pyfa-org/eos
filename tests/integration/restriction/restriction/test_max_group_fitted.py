@@ -136,3 +136,25 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        # Make sure error is raised for all items exceeding
+        # their group restriction
+        fit = Fit()
+        eve_type = self.ch.type(group=6, attributes={Attribute.max_group_fitted: 1})
+        item1 = ModuleHigh(eve_type.id)
+        fit.modules.high.append(item1)
+        item2 = ModuleHigh(eve_type.id)
+        fit.modules.high.append(item2)
+        fit.source = None
+        # Action
+        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.max_group_fitted)
+        # Verification
+        self.assertIsNone(restriction_error1)
+        # Action
+        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.max_group_fitted)
+        # Verification
+        self.assertIsNone(restriction_error2)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

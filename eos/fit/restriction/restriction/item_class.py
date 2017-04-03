@@ -21,8 +21,8 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction, Slot
-from eos.const.eve import Attribute, Group, Category
+from eos.const.eos import Restriction
+from eos.const.eve import Attribute, Category, Effect, Group
 from eos.fit.item import *
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
@@ -47,31 +47,31 @@ CLASS_VALIDATORS = {
     ),
     ModuleHigh: lambda eve_type: (
         eve_type.category == Category.module and
-        Slot.module_high in eve_type.slots
+        Effect.hi_power in eve_type.effects
     ),
     ModuleMed: lambda eve_type: (
         eve_type.category == Category.module and
-        Slot.module_med in eve_type.slots
+        Effect.med_power in eve_type.effects
     ),
     ModuleLow: lambda eve_type: (
         eve_type.category == Category.module and
-        Slot.module_low in eve_type.slots
+        Effect.lo_power in eve_type.effects
     ),
     Rig: lambda eve_type: (
         eve_type.category == Category.module and
-        Slot.rig in eve_type.slots
+        Effect.rig_slot in eve_type.effects
     ),
     Ship: lambda eve_type: eve_type.category == Category.ship,
     Skill: lambda eve_type: eve_type.category == Category.skill,
     Stance: lambda eve_type: eve_type.group == Group.ship_modifier,
     Subsystem: lambda eve_type: (
         eve_type.category == Category.subsystem and
-        Slot.subsystem in eve_type.slots
+        Effect.subsystem in eve_type.effects
     )
 }
 
 
-class ItemClassRestriction(BaseRestrictionRegister):
+class ItemClassRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Check that eve type is wrapped by corresponding item class
@@ -83,9 +83,9 @@ class ItemClassRestriction(BaseRestrictionRegister):
     attributes are used.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__items = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         self.__items.add(message.item)

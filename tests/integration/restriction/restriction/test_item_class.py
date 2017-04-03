@@ -27,6 +27,21 @@ from tests.integration.restriction.restriction_testcase import RestrictionTestCa
 class TestItemClass(RestrictionTestCase):
     """Check functionality of item class verification"""
 
+    def test_booster_pass_no_source(self):
+        # Make sure fit without a source doesn't cause
+        # any failures
+        fit = Fit()
+        item = Booster(self.ch.type(category=1008, attributes={Attribute.boosterness: 3}).id)
+        fit.boosters.add(item)
+        fit.source = None
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_booster_pass(self):
         fit = Fit()
         item = Booster(self.ch.type(category=Category.implant, attributes={Attribute.boosterness: 3}).id)
@@ -228,6 +243,22 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_module_high_pass_disabled_effect(self):
+        # Make sure disabled high slot effect doesn't prevent
+        # item from passingthecheck
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.hi_power, category=EffectCategory.passive)
+        item = ModuleHigh(self.ch.type(category=Category.module, effects=[effect]).id)
+        item._set_effect_activability(effect.id, False)
+        fit.modules.high.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_module_high_fail_category(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.hi_power, category=EffectCategory.passive)
@@ -242,7 +273,7 @@ class TestItemClass(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
 
-    def test_module_high_fail_slot(self):
+    def test_module_high_fail_effect(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
         item = ModuleHigh(self.ch.type(category=1008, effects=[effect]).id)
@@ -270,7 +301,21 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_module_med_fail_category(self):
+    def test_module_medium_pass_disabled_effect(self):
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
+        item = ModuleMed(self.ch.type(category=Category.module, effects=[effect]).id)
+        item._set_effect_activability(effect.id, False)
+        fit.modules.med.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_module_medium_fail_category(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
         item = ModuleMed(self.ch.type(category=1008, effects=[effect]).id)
@@ -285,7 +330,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_module_med_fail_slot(self):
+    def test_module_medium_fail_effect(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
         item = ModuleMed(self.ch.type(category=Category.module, effects=[effect]).id)
@@ -313,6 +358,20 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_module_low_pass_disabled_effect(self):
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.lo_power, category=EffectCategory.passive)
+        item = ModuleLow(self.ch.type(category=Category.module, effects=[effect]).id)
+        item._set_effect_activability(effect.id, False)
+        fit.modules.low.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_module_low_fail_category(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.lo_power, category=EffectCategory.passive)
@@ -328,7 +387,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_module_low_fail_slot(self):
+    def test_module_low_fail_effect(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
         item = ModuleLow(self.ch.type(category=Category.module, effects=[effect]).id)
@@ -356,6 +415,20 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_rig_pass_disabled_effect(self):
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+        item = Rig(self.ch.type(category=Category.module, effects=[effect]).id)
+        item._set_effect_activability(effect.id, False)
+        fit.rigs.add(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_rig_fail_category(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
@@ -371,7 +444,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_rig_fail_slot(self):
+    def test_rig_fail_effect(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
         item = Rig(self.ch.type(category=Category.module, effects=[effect]).id)
@@ -477,6 +550,20 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_subsystem_pass_disabled_effect(self):
+        fit = Fit()
+        effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
+        item = Subsystem(self.ch.type(category=Category.subsystem, effects=[effect]).id)
+        item._set_effect_activability(effect.id, False)
+        fit.subsystems.add(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_subsystem_fail_category(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
@@ -492,7 +579,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_subsystem_fail_slot(self):
+    def test_subsystem_fail_effect(self):
         fit = Fit()
         effect = self.ch.effect(effect_id=1008, category=EffectCategory.passive)
         item = Subsystem(self.ch.type(category=Category.subsystem, effects=[effect]).id)
