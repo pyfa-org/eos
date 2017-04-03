@@ -55,7 +55,7 @@ class SideEffectMixin(BaseItemMixin):
         effect_id -- ID of side-effect
         status -- True for enabling, False for disabling
         """
-        self._set_effects_activability({effect_id: status})
+        self._set_effect_activability(effect_id, status)
 
     def randomize_side_effects(self):
         """

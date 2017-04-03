@@ -151,7 +151,13 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             data[effect.id] = EffectData(effect, chance, activable)
         return data
 
-    def _set_effects_activability(self, effect_activability):
+    def _set_effect_activability(self, effect_id, activability):
+        """
+        Set activability of particular effect.
+        """
+        self.__set_effects_activability({effect_id: activability})
+
+    def __set_effects_activability(self, effect_activability):
         """
         Set activability of effects for this item.
 
@@ -197,7 +203,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 effect_activability[effect_id] = True
             else:
                 effect_activability[effect_id] = False
-        self._set_effects_activability(effect_activability)
+        self.__set_effects_activability(effect_activability)
 
     @property
     def _activable_effects(self):
