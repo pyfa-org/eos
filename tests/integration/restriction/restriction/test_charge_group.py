@@ -255,3 +255,22 @@ class TestChargeGroup(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        charge_item = Charge(self.ch.type(group=1008).id)
+        container_item = ModuleHigh(self.ch.type(attributes={Attribute.charge_group_1: 3}).id, state=State.offline)
+        container_item.charge = charge_item
+        fit.modules.high.append(container_item)
+        fit.source = None
+        # Action
+        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_group)
+        # Verification
+        self.assertIsNone(restriction_error1)
+        # Action
+        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_group)
+        # Verification
+        self.assertIsNone(restriction_error2)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

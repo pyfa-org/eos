@@ -38,7 +38,7 @@ RESTRICTION_ATTRS = (
 DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('drone_group', 'allowed_groups'))
 
 
-class DroneGroupRestriction(BaseRestrictionRegister):
+class DroneGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     If ship restricts drone group, items from groups which are not
@@ -52,19 +52,19 @@ class DroneGroupRestriction(BaseRestrictionRegister):
         and drone group doesn't match to restriction.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__current_ship = None
         self.__drones = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         if isinstance(message.item, Ship):
             self.__current_ship = message.item
-        if isinstance(message.item, Drone):
+        elif isinstance(message.item, Drone):
             self.__drones.add(message.item)
 
     def _handle_item_removal(self, message):
-        if isinstance(message.item, Ship):
+        if message.item is self.__current_ship:
             self.__current_ship = None
         self.__drones.discard(message.item)
 

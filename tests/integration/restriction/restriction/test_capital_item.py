@@ -147,3 +147,17 @@ class TestCapitalItem(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type().id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3501}).id, state=State.offline)
+        fit.modules.high.append(item)
+        fit.source = None
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

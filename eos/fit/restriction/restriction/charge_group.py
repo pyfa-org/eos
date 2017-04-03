@@ -40,7 +40,7 @@ RESTRICTION_ATTRS = (
 ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('charge_group', 'allowed_groups'))
 
 
-class ChargeGroupRestriction(BaseRestrictionRegister):
+class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     If item can fit charges and specifies group of charges it
@@ -51,10 +51,10 @@ class ChargeGroupRestriction(BaseRestrictionRegister):
     eve type are taken.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         # Format: {container item: (allowed groups)}
         self.__restricted_containers = {}
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         # We're going to track containers, not charges;
@@ -71,8 +71,7 @@ class ChargeGroupRestriction(BaseRestrictionRegister):
                 continue
             else:
                 allowed_groups.add(restriction_value)
-        # Only if groups were specified, consider
-        # restriction enabled
+        # Only if groups were specified, consider restriction enabled
         if allowed_groups:
             self.__restricted_containers[message.item] = tuple(allowed_groups)
 

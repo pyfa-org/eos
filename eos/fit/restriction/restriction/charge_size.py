@@ -31,7 +31,7 @@ from ..exception import RestrictionValidationError
 ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('item_size', 'allowed_size'))
 
 
-class ChargeSizeRestriction(BaseRestrictionRegister):
+class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     If item can fit charges and specifies size of charges it
@@ -46,9 +46,9 @@ class ChargeSizeRestriction(BaseRestrictionRegister):
         are used.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__restricted_containers = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         # Ignore container items without charge attribute

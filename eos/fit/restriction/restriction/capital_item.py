@@ -37,10 +37,10 @@ TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('item_volume', 'max_subcap_volume'))
 
 
-class CapitalItemRestriction(BaseRestrictionRegister):
+class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
-    To fit items with volume bigger than 4000, ship must
+    To fit items with volume bigger than 3500, ship must
     have IsCapitalShip attribute set to 1.
 
     Details:
@@ -49,10 +49,10 @@ class CapitalItemRestriction(BaseRestrictionRegister):
         attribute is absent, item is not restricted.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__current_ship = None
         self.__capital_items = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         if isinstance(message.item, Ship):
@@ -70,7 +70,7 @@ class CapitalItemRestriction(BaseRestrictionRegister):
         self.__capital_items.add(message.item)
 
     def _handle_item_removal(self, message):
-        if isinstance(message.item, Ship):
+        if message.item is self.__current_ship:
             self.__current_ship = None
         self.__capital_items.discard(message.item)
 
@@ -80,7 +80,8 @@ class CapitalItemRestriction(BaseRestrictionRegister):
     }
 
     def validate(self):
-        # Skip validation only if ship has special special attribute set to 1
+        # Skip validation only if ship has special special attribute set
+        # to true-evaluated value
         try:
             ship_eve_type = self.__current_ship._eve_type
         except AttributeError:

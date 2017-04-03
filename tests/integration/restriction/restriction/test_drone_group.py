@@ -192,3 +192,17 @@ class TestDroneGroup(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.allowed_drone_group_1: 4}).id)
+        item = Drone(self.ch.type(group=56).id)
+        fit.drones.add(item)
+        fit.source = None
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.drone_group)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

@@ -23,14 +23,14 @@ __all__ = [
     'BoosterEffectRestrictionRegister',
     'BoosterIndexRestriction',
     'CalibrationRestriction',
-    'CapitalItemRestriction',
+    'CapitalItemRestrictionRegister',
     'CpuRestriction',
-    'ChargeGroupRestriction',
-    'ChargeSizeRestriction',
-    'ChargeVolumeRestriction',
+    'ChargeGroupRestrictionRegister',
+    'ChargeSizeRestrictionRegister',
+    'ChargeVolumeRestrictionRegister',
     'DroneBandwidthRestriction',
     'DroneBayVolumeRestriction',
-    'DroneGroupRestriction',
+    'DroneGroupRestrictionRegister',
     'HighSlotRestriction',
     'ImplantIndexRestriction',
     'ItemClassRestriction',
@@ -54,11 +54,11 @@ __all__ = [
 
 
 from .booster_effect import BoosterEffectRestrictionRegister
-from .capital_item import CapitalItemRestriction
-from .charge_group import ChargeGroupRestriction
-from .charge_size import ChargeSizeRestriction
-from .charge_volume import ChargeVolumeRestriction
-from .drone_group import DroneGroupRestriction
+from .capital_item import CapitalItemRestrictionRegister
+from .charge_group import ChargeGroupRestrictionRegister
+from .charge_size import ChargeSizeRestrictionRegister
+from .charge_volume import ChargeVolumeRestrictionRegister
+from .drone_group import DroneGroupRestrictionRegister
 from .item_class import ItemClassRestriction
 from .max_group import MaxGroupFittedRestriction, MaxGroupOnlineRestriction, MaxGroupActiveRestriction
 from .resource import (

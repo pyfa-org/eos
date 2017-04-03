@@ -31,7 +31,7 @@ from ..exception import RestrictionValidationError
 ChargeVolumeErrorData = namedtuple('ChargeVolumeErrorData', ('item_volume', 'max_allowed_volume'))
 
 
-class ChargeVolumeRestriction(BaseRestrictionRegister):
+class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Volume of single charge loaded into container should not
@@ -44,9 +44,9 @@ class ChargeVolumeRestriction(BaseRestrictionRegister):
         to be 0.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__containers = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         # Ignore container items without charge attribute

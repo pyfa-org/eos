@@ -137,3 +137,19 @@ class TestBoosterEffect(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        item = Booster(self.booster_type_id)
+        fit.boosters.add(item)
+        item.set_side_effect_status(self.effect3_id, False)
+        item.set_side_effect_status(self.effect4_id, False)
+        fit.source = 'src2'
+        fit.source = None
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.booster_effect)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

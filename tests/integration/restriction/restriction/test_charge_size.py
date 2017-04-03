@@ -122,3 +122,22 @@ class TestChargeSize(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        charge_item = Charge(self.ch.type(attributes={Attribute.charge_size: 2}).id)
+        container_item = ModuleHigh(self.ch.type(attributes={Attribute.charge_size: 3}).id, state=State.offline)
+        container_item.charge = charge_item
+        fit.modules.high.append(container_item)
+        fit.source = None
+        # Action
+        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_size)
+        # Verification
+        self.assertIsNone(restriction_error1)
+        # Action
+        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_size)
+        # Verification
+        self.assertIsNone(restriction_error2)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
