@@ -243,20 +243,13 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         item is not a weapon or an inactive weapon, None is returned.
         """
         eve_type = self._eve_type
-        # Guard against malformed or absent eve types
         try:
-            item_deffeff = eve_type.default_effect
+            item_defeff_id = eve_type.default_effect.id
         except AttributeError:
             return None
-        try:
-            item_defeff_id = item_deffeff.id
-            item_defeff_state = item_deffeff._state
-        except AttributeError:
-            return None
-        # Weapon properties are defined by item default effect;
-        # thus, if item isn't in state to have this effect 'active',
-        # it can't be considered as weapon
-        if self.state < item_defeff_state:
+        # Weapon properties are defined by item default effect; thus,
+        # if it is not active, it can't be considered as weapon
+        if item_defeff_id not in self._active_effects:
             return None
         # If item contains some charge type but can't hold enough to actually
         # cycle itself, do not consider such item as weapon
@@ -278,7 +271,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
             try:
                 return MISSILE_EFFECT_WEAPON_MAP[charge_defeff_id]
             except KeyError:
-                pass
+                return None
         return None
 
     def get_volley_vs_target(self, target_data=None, target_resistances=None):
