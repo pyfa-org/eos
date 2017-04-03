@@ -138,7 +138,7 @@ class EosTestCase(TestCase):
         obj_classname = type(object_).__name__
         for attr_name, attr_val in object_vars:
             # Skip internal python attributes
-            if attr_name.startswith('__') and attr_name.endswith('__'):
+            if attr_name is not None and attr_name.startswith('__') and attr_name.endswith('__'):
                 continue
             # Skip attributes with values we've already investigated
             if id(attr_val) in checked_objects:

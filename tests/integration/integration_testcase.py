@@ -78,12 +78,14 @@ class IntegrationTestCase(EosTestCase):
         # As volatile manager always has one entry added to it
         # (stats service), make sure it's ignored for assertion purposes
         fit._volatile_mgr._FitVolatileManager__volatile_objects.remove(fit.stats)
-        entry_num += self._get_object_buffer_entry_amount(fit, ignore_objects=(fit,), ignore_attrs=(
+        entry_num += self._get_object_buffer_entry_amount(fit, ignore_objects=(
+            fit,
+        ), ignore_attrs=(
             ('Fit', '_Fit__source'),
             ('Fit', '_Fit__default_incoming_damage'),
             ('Fit', '_FitMessageBroker__subscribers'),
             ('RestrictionService', '_RestrictionService__restrictions'),
-            ('StatService', '_volatile_containers')
+            ('StatService', '_StatService__volatile_containers')
         ))
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'

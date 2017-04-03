@@ -23,11 +23,14 @@ import math
 
 from eos.const.eve import Attribute
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
+from eos.fit.item import Ship
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .register import *
 
 
-class StatService(InheritableVolatileMixin):
+class StatService(BaseSubscriber, InheritableVolatileMixin):
     """
     Object which is used as access points for all
     fit statistics.
@@ -36,25 +39,26 @@ class StatService(InheritableVolatileMixin):
     fit -- Fit object to which service is assigned
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
+        BaseSubscriber.__init__(self)
         InheritableVolatileMixin.__init__(self)
-        self._fit = fit
-        self._dd_reg = DamageDealerRegister(fit)
+        self.__current_ship = None
+        self.__dd_reg = DamageDealerRegister(msg_broker)
         # Initialize sub-containers
-        self.cpu = CpuStatRegister(fit)
-        self.powergrid = PowergridStatRegister(fit)
-        self.calibration = CalibrationStatRegister(fit)
-        self.dronebay = DronebayVolumeStatRegister(fit)
-        self.drone_bandwidth = DroneBandwidthStatRegister(fit)
-        self.high_slots = HighSlotStatRegister(fit)
-        self.med_slots = MediumSlotStatRegister(fit)
-        self.low_slots = LowSlotStatRegister(fit)
-        self.rig_slots = RigSlotStatRegister(fit)
-        self.subsystem_slots = SubsystemSlotStatRegister(fit)
-        self.turret_slots = TurretSlotStatRegister(fit)
-        self.launcher_slots = LauncherSlotStatRegister(fit)
-        self.launched_drones = LaunchedDroneStatRegister(fit)
-        self._volatile_containers = (
+        self.cpu = CpuStatRegister(msg_broker)
+        self.powergrid = PowergridStatRegister(msg_broker)
+        self.calibration = CalibrationStatRegister(msg_broker)
+        self.dronebay = DronebayVolumeStatRegister(msg_broker)
+        self.drone_bandwidth = DroneBandwidthStatRegister(msg_broker)
+        self.high_slots = HighSlotStatRegister(msg_broker)
+        self.med_slots = MediumSlotStatRegister(msg_broker)
+        self.low_slots = LowSlotStatRegister(msg_broker)
+        self.rig_slots = RigSlotStatRegister(msg_broker)
+        self.subsystem_slots = SubsystemSlotStatRegister(msg_broker)
+        self.turret_slots = TurretSlotStatRegister(msg_broker)
+        self.launcher_slots = LauncherSlotStatRegister(msg_broker)
+        self.launched_drones = LaunchedDroneStatRegister(msg_broker)
+        self.__volatile_containers = (
             self.cpu,
             self.powergrid,
             self.calibration,
@@ -69,6 +73,7 @@ class StatService(InheritableVolatileMixin):
             self.launcher_slots,
             self.launched_drones
         )
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     @volatile_property
     def hp(self):
@@ -77,20 +82,10 @@ class StatService(InheritableVolatileMixin):
         total attributes. If fit has no ship or some data cannot be fetched,
         corresponding attribs will be set to None.
         """
-        ship_item = self._fit.ship
         try:
-            hp_data = ship_item.hp
+            return self.__current_ship.hp
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None)
-        else:
-            # Build tuple here because the object we fetched
-            # from ship is access point to stats, which are
-            # updated on fit changes
-            return TankingLayersTotal(
-                hull=hp_data.hull,
-                armor=hp_data.armor,
-                shield=hp_data.shield
-            )
 
     @volatile_property
     def resistances(self):
@@ -102,9 +97,8 @@ class StatService(InheritableVolatileMixin):
         If fit has no ship or some data cannot be fetched, corresponding attribs
             will be set to None.
         """
-        ship_item = self._fit.ship
         try:
-            return ship_item.resistances
+            return self.__current_ship.resistances
         except AttributeError:
             empty = DamageTypes(em=None, thermal=None, kinetic=None, explosive=None)
             return TankingLayers(hull=empty, armor=empty, shield=empty)
@@ -118,9 +112,8 @@ class StatService(InheritableVolatileMixin):
         will be set to None. If no profile is specified, default fit profile is
         taken.
         """
-        ship_item = self._fit.ship
         try:
-            return ship_item.get_ehp(damage_profile)
+            return self.__current_ship.get_ehp(damage_profile)
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None)
 
@@ -131,9 +124,8 @@ class StatService(InheritableVolatileMixin):
         If fit has no ship or some data cannot be fetched, corresponding attribs
         will be set to None.
         """
-        ship_item = self._fit.ship
         try:
-            return ship_item.worst_case_ehp
+            return self.__current_ship.worst_case_ehp
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None)
 
@@ -152,7 +144,7 @@ class StatService(InheritableVolatileMixin):
         Return value:
         Object with em, thermal, kinetic, explosive and total attributes.
         """
-        volley = self._dd_reg._collect_damage_stats(
+        volley = self.__dd_reg._collect_damage_stats(
             item_filter,
             'get_nominal_volley',
             target_resistances=target_resistances
@@ -176,7 +168,7 @@ class StatService(InheritableVolatileMixin):
         Return value:
         Object with em, thermal, kinetic, explosive and total attributes.
         """
-        dps = self._dd_reg._collect_damage_stats(
+        dps = self.__dd_reg._collect_damage_stats(
             item_filter,
             'get_nominal_dps',
             target_resistances=target_resistances,
@@ -186,9 +178,8 @@ class StatService(InheritableVolatileMixin):
 
     @volatile_property
     def agility_factor(self):
-        ship_item = self._fit.ship
         try:
-            ship_attribs = ship_item.attributes
+            ship_attribs = self.__current_ship.attributes
         except AttributeError:
             return None
         try:
@@ -210,6 +201,19 @@ class StatService(InheritableVolatileMixin):
         """
         Clear volatile cache for self and all child objects.
         """
-        for container in self._volatile_containers:
+        for container in self.__volatile_containers:
             container._clear_volatile_attrs()
         InheritableVolatileMixin._clear_volatile_attrs(self)
+
+    def _handle_item_addition(self, message):
+        if isinstance(message.item, Ship):
+            self.__current_ship = message.item
+
+    def _handle_item_removal(self, message):
+        if message.item is self.__current_ship:
+            self.__current_ship = None
+
+    _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal
+    }

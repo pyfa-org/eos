@@ -32,9 +32,9 @@ class DamageDealerRegister(BaseStatRegister):
     useful data.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__dealers = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         if isinstance(message.item, DamageDealerMixin):
@@ -66,9 +66,9 @@ class DamageDealerRegister(BaseStatRegister):
         """
         em, therm, kin, expl = None, None, None, None
         for item in self.__dealers:
-            stat = getattr(item, method_name)(*args, **kwargs)
             if item_filter is not None and not item_filter(item):
                 continue
+            stat = getattr(item, method_name)(*args, **kwargs)
             # Guards against both aggregated values equal to None and
             # item values equal to None. If aggregated value is None,
             # assigns value from item stats to aggregated. If item
