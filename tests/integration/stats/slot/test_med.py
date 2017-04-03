@@ -31,7 +31,7 @@ class TestMedSlot(StatTestCase):
     def setUp(self):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.med_slots)
-        self.slot_effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -43,11 +43,11 @@ class TestMedSlot(StatTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         fit = Fit()
-        fit.ship = Ship(self.ch.type(effects=[effect], attributes={Attribute.med_slots: 3, src_attr.id: 2}).id)
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 3, src_attr.id: 2}, effects=[mod_effect]).id)
         # Verification
-        self.assertAlmostEqual(fit.stats.med_slots.total, 6)
+        self.assertEqual(fit.stats.med_slots.total, 6)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -82,8 +82,8 @@ class TestMedSlot(StatTestCase):
 
     def test_use_multiple(self):
         fit = Fit()
-        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
-        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.effect]).id))
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.effect]).id))
         # Verification
         self.assertEqual(fit.stats.med_slots.used, 2)
         # Cleanup
@@ -92,19 +92,45 @@ class TestMedSlot(StatTestCase):
 
     def test_use_multiple_with_none(self):
         fit = Fit()
-        fit.modules.med.place(1, ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
-        fit.modules.med.place(3, ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        fit.modules.med.place(1, ModuleMed(self.ch.type(effects=[self.effect]).id))
+        fit.modules.med.place(3, ModuleMed(self.ch.type(effects=[self.effect]).id))
         # Verification
         self.assertEqual(fit.stats.med_slots.used, 4)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_use_disabled_effect(self):
+        fit = Fit()
+        item1 = ModuleMed(self.ch.type(effects=[self.effect]).id)
+        item2 = ModuleMed(self.ch.type(effects=[self.effect]).id)
+        item2._set_effect_activability(self.effect.id, False)
+        fit.modules.med.append(item1)
+        fit.modules.med.append(item2)
+        # Verification
+        self.assertEqual(fit.stats.med_slots.used, 1)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_use_other_item_class(self):
         fit = Fit()
-        fit.modules.low.place(3, ModuleLow(self.ch.type(effects=[self.slot_effect]).id))
+        fit.modules.low.place(3, ModuleLow(self.ch.type(effects=[self.effect]).id))
         # Verification
         self.assertEqual(fit.stats.med_slots.used, 4)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 3}).id)
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.effect]).id))
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.effect]).id))
+        fit.source = None
+        # Verification
+        self.assertEqual(fit.stats.med_slots.used, 0)
+        self.assertIsNone(fit.stats.med_slots.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

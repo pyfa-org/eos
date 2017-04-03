@@ -26,11 +26,14 @@ from tests.integration.stats.stat_testcase import StatTestCase
 
 class TestHp(StatTestCase):
 
-    def test_relay(self):
-        # Check that stats service relays hp stats properly
+    def setUp(self):
+        super().setUp()
         self.ch.attribute(attribute_id=Attribute.hp)
         self.ch.attribute(attribute_id=Attribute.armor_hp)
         self.ch.attribute(attribute_id=Attribute.shield_capacity)
+
+    def test_relay(self):
+        # Check that stats service relays hp stats properly
         fit = Fit()
         fit.ship = Ship(self.ch.type(
             attributes={Attribute.hp: 10, Attribute.armor_hp: 15, Attribute.shield_capacity: 20}
@@ -49,6 +52,24 @@ class TestHp(StatTestCase):
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
         fit = Fit()
+        # Action
+        hp_stats = fit.stats.hp
+        # Verification
+        self.assertIsNone(hp_stats.hull)
+        self.assertIsNone(hp_stats.armor)
+        self.assertIsNone(hp_stats.shield)
+        self.assertIsNone(hp_stats.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        # Check that stats service relays hp stats properly
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(
+            attributes={Attribute.hp: 10, Attribute.armor_hp: 15, Attribute.shield_capacity: 20}
+        ).id)
+        fit.source = None
         # Action
         hp_stats = fit.stats.hp
         # Verification

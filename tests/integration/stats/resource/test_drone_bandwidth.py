@@ -44,9 +44,11 @@ class TestDroneBandwidth(StatTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         fit = Fit()
-        fit.ship = Ship(self.ch.type(effects=[effect], attributes={Attribute.drone_bandwidth: 200, src_attr.id: 2}).id)
+        fit.ship = Ship(self.ch.type(
+            attributes={Attribute.drone_bandwidth: 200, src_attr.id: 2}, effects=[mod_effect]
+        ).id)
         # Verification
         self.assertAlmostEqual(fit.stats.drone_bandwidth.output, 400)
         # Cleanup
@@ -117,7 +119,6 @@ class TestDroneBandwidth(StatTestCase):
         fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 200}).id)
         fit.drones.add(Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 50}).id, state=State.online))
         fit.drones.add(Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 30}).id, state=State.online))
-        # Action
         fit.source = None
         # Verification
         self.assertAlmostEqual(fit.stats.drone_bandwidth.used, 0)

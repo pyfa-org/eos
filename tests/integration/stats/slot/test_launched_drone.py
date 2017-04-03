@@ -41,13 +41,13 @@ class TestLaunchedDrone(StatTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         fit = Fit()
         fit.character = Character(self.ch.type(
-            effects=[effect], attributes={Attribute.max_active_drones: 3, src_attr.id: 2}
+            effects=[mod_effect], attributes={Attribute.max_active_drones: 3, src_attr.id: 2}
         ).id)
         # Verification
-        self.assertAlmostEqual(fit.stats.launched_drones.total, 6)
+        self.assertEqual(fit.stats.launched_drones.total, 6)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -105,6 +105,19 @@ class TestLaunchedDrone(StatTestCase):
         fit.modules.med.append(ModuleMed(self.ch.type().id, state=State.online))
         # Verification
         self.assertEqual(fit.stats.launched_drones.used, 0)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 3}).id)
+        fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        fit.source = None
+        # Verification
+        self.assertEqual(fit.stats.launched_drones.used, 0)
+        self.assertIsNone(fit.stats.launched_drones.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

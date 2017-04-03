@@ -26,10 +26,8 @@ from tests.integration.stats.stat_testcase import StatTestCase
 
 class TestWorstCaseEhp(StatTestCase):
 
-    def test_relay(self):
-        # Check that stats service relays wcehp stats properly
-
-        # Check that stats service relays ehp stats properly
+    def setUp(self):
+        super().setUp()
         self.ch.attribute(attribute_id=Attribute.hp)
         self.ch.attribute(attribute_id=Attribute.em_damage_resonance)
         self.ch.attribute(attribute_id=Attribute.thermal_damage_resonance)
@@ -45,6 +43,9 @@ class TestWorstCaseEhp(StatTestCase):
         self.ch.attribute(attribute_id=Attribute.shield_thermal_damage_resonance)
         self.ch.attribute(attribute_id=Attribute.shield_kinetic_damage_resonance)
         self.ch.attribute(attribute_id=Attribute.shield_explosive_damage_resonance)
+
+    def test_relay(self):
+        # Check that stats service relays wcehp stats properly
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={
             Attribute.hp: 10,
@@ -71,6 +72,32 @@ class TestWorstCaseEhp(StatTestCase):
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
         fit = Fit()
+        # Action
+        worst_ehp_stats = fit.stats.worst_case_ehp
+        # Verification
+        self.assertIsNone(worst_ehp_stats.hull)
+        self.assertIsNone(worst_ehp_stats.armor)
+        self.assertIsNone(worst_ehp_stats.shield)
+        self.assertIsNone(worst_ehp_stats.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        # Check that stats service relays wcehp stats properly
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={
+            Attribute.hp: 10,
+            Attribute.em_damage_resonance: 0.8, Attribute.thermal_damage_resonance: 0.5,
+            Attribute.kinetic_damage_resonance: 0.5, Attribute.explosive_damage_resonance: 0.5,
+            Attribute.armor_hp: 15,
+            Attribute.armor_em_damage_resonance: 0.5, Attribute.armor_thermal_damage_resonance: 0.8,
+            Attribute.armor_kinetic_damage_resonance: 0.5, Attribute.armor_explosive_damage_resonance: 0.5,
+            Attribute.shield_capacity: 20,
+            Attribute.shield_em_damage_resonance: 0.5, Attribute.shield_thermal_damage_resonance: 0.5,
+            Attribute.shield_kinetic_damage_resonance: 0.65, Attribute.shield_explosive_damage_resonance: 0.8
+        }).id)
+        fit.source = None
         # Action
         worst_ehp_stats = fit.stats.worst_case_ehp
         # Verification

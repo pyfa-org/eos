@@ -109,7 +109,6 @@ class TestCalibration(StatTestCase):
         fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 350}).id)
         fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id))
         fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id))
-        # Action
         fit.source = None
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 0)

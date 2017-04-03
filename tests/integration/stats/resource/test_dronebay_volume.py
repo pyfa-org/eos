@@ -44,9 +44,11 @@ class TestDroneBayVolume(StatTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         fit = Fit()
-        fit.ship = Ship(self.ch.type(effects=[effect], attributes={Attribute.drone_capacity: 200, src_attr.id: 2}).id)
+        fit.ship = Ship(self.ch.type(
+            attributes={Attribute.drone_capacity: 200, src_attr.id: 2}, effects=[mod_effect]
+        ).id)
         # Verification
         self.assertAlmostEqual(fit.stats.dronebay.output, 400)
         # Cleanup
@@ -105,7 +107,6 @@ class TestDroneBayVolume(StatTestCase):
         fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 200}).id)
         fit.drones.add(Drone(self.ch.type(attributes={Attribute.volume: 50}).id))
         fit.drones.add(Drone(self.ch.type(attributes={Attribute.volume: 30}).id))
-        # Action
         fit.source = None
         # Verification
         self.assertAlmostEqual(fit.stats.dronebay.used, 0)

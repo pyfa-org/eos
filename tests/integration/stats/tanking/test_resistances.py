@@ -26,8 +26,8 @@ from tests.integration.stats.stat_testcase import StatTestCase
 
 class TestResistances(StatTestCase):
 
-    def test_relay(self):
-        # Check that stats service relays resistance stats properly
+    def setUp(self):
+        super().setUp()
         self.ch.attribute(attribute_id=Attribute.em_damage_resonance)
         self.ch.attribute(attribute_id=Attribute.thermal_damage_resonance)
         self.ch.attribute(attribute_id=Attribute.kinetic_damage_resonance)
@@ -40,6 +40,9 @@ class TestResistances(StatTestCase):
         self.ch.attribute(attribute_id=Attribute.shield_thermal_damage_resonance)
         self.ch.attribute(attribute_id=Attribute.shield_kinetic_damage_resonance)
         self.ch.attribute(attribute_id=Attribute.shield_explosive_damage_resonance)
+
+    def test_relay(self):
+        # Check that stats service relays resistance stats properly
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={
             Attribute.em_damage_resonance: 0.05, Attribute.thermal_damage_resonance: 0.06,
@@ -71,6 +74,36 @@ class TestResistances(StatTestCase):
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
         fit = Fit()
+        # Action
+        res_stats = fit.stats.resistances
+        # Verification
+        self.assertIsNone(res_stats.hull.em)
+        self.assertIsNone(res_stats.hull.thermal)
+        self.assertIsNone(res_stats.hull.kinetic)
+        self.assertIsNone(res_stats.hull.explosive)
+        self.assertIsNone(res_stats.armor.em)
+        self.assertIsNone(res_stats.armor.thermal)
+        self.assertIsNone(res_stats.armor.kinetic)
+        self.assertIsNone(res_stats.armor.explosive)
+        self.assertIsNone(res_stats.shield.em)
+        self.assertIsNone(res_stats.shield.thermal)
+        self.assertIsNone(res_stats.shield.kinetic)
+        self.assertIsNone(res_stats.shield.explosive)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={
+            Attribute.em_damage_resonance: 0.05, Attribute.thermal_damage_resonance: 0.06,
+            Attribute.kinetic_damage_resonance: 0.07, Attribute.explosive_damage_resonance: 0.08,
+            Attribute.armor_em_damage_resonance: 0.09, Attribute.armor_thermal_damage_resonance: 0.1,
+            Attribute.armor_kinetic_damage_resonance: 0.11, Attribute.armor_explosive_damage_resonance: 0.12,
+            Attribute.shield_em_damage_resonance: 0.13, Attribute.shield_thermal_damage_resonance: 0.14,
+            Attribute.shield_kinetic_damage_resonance: 0.15, Attribute.shield_explosive_damage_resonance: 0.16
+        }).id)
+        fit.source = None
         # Action
         res_stats = fit.stats.resistances
         # Verification

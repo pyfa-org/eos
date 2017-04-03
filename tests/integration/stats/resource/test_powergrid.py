@@ -170,7 +170,6 @@ class TestPowergrid(StatTestCase):
         fit.modules.high.append(ModuleHigh(self.ch.type(
             attributes={Attribute.power: 30}, effects=[self.effect]
         ).id, state=State.online))
-        # Action
         fit.source = None
         # Verification
         self.assertAlmostEqual(fit.stats.powergrid.used, 0)
@@ -178,4 +177,3 @@ class TestPowergrid(StatTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
-

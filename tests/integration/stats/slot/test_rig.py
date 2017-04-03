@@ -29,13 +29,13 @@ class TestRig(StatTestCase):
     def setUp(self):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.rig_slots)
-        self.slot_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
 
     def test_output(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 3}).id)
         # Verification
-        self.assertAlmostEqual(fit.stats.rig_slots.total, 3)
+        self.assertEqual(fit.stats.rig_slots.total, 3)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -70,19 +70,45 @@ class TestRig(StatTestCase):
 
     def test_use_multiple(self):
         fit = Fit()
-        fit.rigs.add(Rig(self.ch.type(effects=[self.slot_effect]).id))
-        fit.rigs.add(Rig(self.ch.type(effects=[self.slot_effect]).id))
+        fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
+        fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
         # Verification
         self.assertEqual(fit.stats.rig_slots.used, 2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_use_other_item_class(self):
+    def test_use_disabled_effect(self):
         fit = Fit()
-        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.slot_effect]).id))
+        item1 = Rig(self.ch.type(effects=[self.effect]).id)
+        item2 = Rig(self.ch.type(effects=[self.effect]).id)
+        item2._set_effect_activability(self.effect.id, False)
+        fit.rigs.add(item1)
+        fit.rigs.add(item2)
         # Verification
         self.assertEqual(fit.stats.rig_slots.used, 1)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_use_other_item_class(self):
+        fit = Fit()
+        fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.effect]).id))
+        # Verification
+        self.assertEqual(fit.stats.rig_slots.used, 1)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 3}).id)
+        fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
+        fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
+        fit.source = None
+        # Verification
+        self.assertEqual(fit.stats.rig_slots.used, 0)
+        self.assertIsNone(fit.stats.rig_slots.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

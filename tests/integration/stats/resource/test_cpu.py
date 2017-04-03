@@ -164,7 +164,6 @@ class TestCpu(StatTestCase):
         fit.modules.high.append(ModuleHigh(self.ch.type(
             attributes={Attribute.cpu: 30}, effects=[self.effect]
         ).id, state=State.online))
-        # Action
         fit.source = None
         # Verification
         self.assertAlmostEqual(fit.stats.cpu.used, 0)
