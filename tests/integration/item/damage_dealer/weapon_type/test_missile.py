@@ -40,7 +40,7 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.effect_item = self.ch.effect(
             effect_id=Effect.use_missiles, category=EffectCategory.active, duration_attribute=self.cycle_attr.id
         )
-        self.effect_charge = self.ch.effect(effect_id=Effect.bomb_launching, category=EffectCategory.active)
+        self.effect_charge = self.ch.effect(effect_id=Effect.bomb_launching, category=EffectCategory.passive)
 
     def test_nominal_volley_generic(self):
         fit = Fit()
@@ -97,6 +97,52 @@ class TestItemDamageMissile(ItemMixinTestCase):
             Attribute.volume: 0.1, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
             Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
         }, effects=[self.effect_charge], default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_nominal_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_nominal_volley_disabled_item_effect(self):
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+            Attribute.charge_rate: 1.0, Attribute.reload_time: 10000
+        }, effects=[self.effect_item], default_effect=self.effect_item).id, state=State.active)
+        item._set_effect_activability(self.effect_item.id, False)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 0.1, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
+            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
+        }, effects=[self.effect_charge], default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_nominal_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_nominal_volley_disabled_charge_effect(self):
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+            Attribute.charge_rate: 1.0, Attribute.reload_time: 10000
+        }, effects=[self.effect_item], default_effect=self.effect_item).id, state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 0.1, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
+            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
+        }, effects=[self.effect_charge], default_effect=self.effect_charge).id)
+        item.charge._set_effect_activability(self.effect_charge.id, False)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()

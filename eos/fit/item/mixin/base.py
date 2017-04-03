@@ -26,7 +26,6 @@ from random import random
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsStatusChanged, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
-from eos.fit.null_source import NullSourceItem
 
 
 EffectData = namedtuple('EffectData', ('effect', 'chance', 'activable'))
@@ -60,7 +59,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         self.__blocked_effect_ids = set()
         # Which eve type this item wraps. Use null source item by default,
         # as item doesn't have fit with source yet
-        self._eve_type = NullSourceItem
+        self._eve_type = None
         super().__init__(**kwargs)
 
     @property
@@ -238,6 +237,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # as eve type - it's needed to raise errors on access to source-
         # dependent stuff
         except AttributeError:
-            self._eve_type = NullSourceItem
+            self._eve_type = None
         else:
             self._eve_type = type_getter(self._eve_type_id)

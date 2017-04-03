@@ -92,6 +92,25 @@ class TestItemDamageDrone(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_nominal_voley_disabled_effect(self):
+        fit = Fit()
+        item = Drone(self.ch.type(attributes={
+            Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52, Attribute.thermal_damage: 63,
+            Attribute.kinetic_damage: 74, Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
+        }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
+        item._set_effect_activability(self.effect.id, False)
+        fit.drones.add(item)
+        # Verification
+        volley = item.get_nominal_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_nominal_dps_no_reload(self):
         fit = Fit()
         item = Drone(self.ch.type(attributes={

@@ -461,3 +461,26 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.damage_multiplier: 2.5, Attribute.capacity: 2.0, self.cycle_attr.id: 500,
+            Attribute.charge_rate: 1.0, Attribute.reload_time: 5000
+        }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            Attribute.volume: 0.2, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
+            Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
+        }).id)
+        fit.modules.high.append(item)
+        fit.source = None
+        # Verification
+        volley = item.get_nominal_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

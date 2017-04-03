@@ -256,9 +256,10 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         if getattr(self, 'charged_cycles', None) == 0:
             return None
         # For some weapon types, it's enough to use just item for detection
-        weapon_type = SIMPLE_EFFECT_WEAPON_MAP.get(item_defeff_id)
-        if weapon_type is not None:
-            return weapon_type
+        try:
+            return SIMPLE_EFFECT_WEAPON_MAP[item_defeff_id]
+        except KeyError:
+            pass
         # For missiles and bombs, we need to use charge as well, as it
         # defines property of 'projectile' which massively influence type
         # of weapon
@@ -267,7 +268,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
             try:
                 charge_defeff_id = charge._eve_type.default_effect.id
             except AttributeError:
-                charge_defeff_id = None
+                return None
             if charge_defeff_id not in charge._active_effects:
                 return None
             try:

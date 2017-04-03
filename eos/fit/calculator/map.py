@@ -27,7 +27,6 @@ from math import exp
 from eos.const.eos import ModifierOperator
 from eos.const.eve import Category, Attribute
 from eos.data.cache_handler.exception import AttributeFetchError
-from eos.fit.null_source import NoSourceError
 from eos.fit.pubsub.message import InstrAttrValueChanged, InstrAttrValueChangedMasked
 from eos.util.keyed_set import KeyedSet
 from .exception import AttributeMetaError, BaseValueError
@@ -103,7 +102,7 @@ LIMITED_PRECISION = (
 )
 
 # List of exceptions calculate method may throw
-CALCULATE_RAISABLE_EXCEPTIONS = (NoSourceError, AttributeMetaError, BaseValueError)
+CALCULATE_RAISABLE_EXCEPTIONS = (AttributeMetaError, BaseValueError)
 
 
 class MutableAttributeMap:
@@ -190,7 +189,7 @@ class MutableAttributeMap:
     def keys(self):
         try:
             base_attrs = self.__item._eve_type.attributes
-        except NoSourceError:
+        except AttributeError:
             base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
         return set(chain(base_attrs, self.__modified_attributes, self.__override_callbacks or {}))
@@ -212,7 +211,6 @@ class MutableAttributeMap:
         Calculated attribute value
 
         Possible exceptions:
-        NoSourceError -- cannot fetch info about base item
         AttributeMetaError -- cannot fetch metadata of attribute
             being calculated
         BaseValueError -- cannot find base value for attribute
@@ -221,7 +219,10 @@ class MutableAttributeMap:
         # Assign eve type attributes first to make sure than in case when we're
         # calculating attribute for item without source, it fails with null
         # source error (triggered by accessing eve type attribute)
-        base_attrs = self.__item._eve_type.attributes
+        try:
+            base_attrs = self.__item._eve_type.attributes
+        except AttributeError:
+            base_attrs = {}
         # Attribute object for attribute being calculated
         try:
             attr_meta = self.__item._fit.source.cache_handler.get_attribute(attr)
