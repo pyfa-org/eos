@@ -268,6 +268,8 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
                 charge_defeff_id = charge._eve_type.default_effect.id
             except AttributeError:
                 charge_defeff_id = None
+            if charge_defeff_id not in charge._active_effects:
+                return None
             try:
                 return MISSILE_EFFECT_WEAPON_MAP[charge_defeff_id]
             except KeyError:

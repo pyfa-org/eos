@@ -111,3 +111,17 @@ class TestDroneBandwidth(StatTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 200}).id)
+        fit.drones.add(Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 50}).id, state=State.online))
+        fit.drones.add(Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 30}).id, state=State.online))
+        # Action
+        fit.source = None
+        # Verification
+        self.assertAlmostEqual(fit.stats.drone_bandwidth.used, 0)
+        self.assertIsNone(fit.stats.drone_bandwidth.output)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

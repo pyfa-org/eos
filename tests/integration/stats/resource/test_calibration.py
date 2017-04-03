@@ -31,7 +31,7 @@ class TestCalibration(StatTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.upgrade_capacity)
         self.ch.attribute(attribute_id=Attribute.upgrade_cost)
-        self.rig_effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+        self.effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -66,7 +66,7 @@ class TestCalibration(StatTestCase):
     def test_use_single_no_rounding(self):
         fit = Fit()
         fit.rigs.add(Rig(self.ch.type(
-            attributes={Attribute.upgrade_cost: 55.5555555555}, effects=[self.rig_effect]
+            attributes={Attribute.upgrade_cost: 55.5555555555}, effects=[self.effect]
         ).id))
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 55.5555555555)
@@ -76,10 +76,23 @@ class TestCalibration(StatTestCase):
 
     def test_use_multiple(self):
         fit = Fit()
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.rig_effect]).id))
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.rig_effect]).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id))
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 80)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_use_disabled_effect(self):
+        fit = Fit()
+        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id)
+        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id)
+        item2._set_effect_activability(self.effect.id, False)
+        fit.rigs.add(item1)
+        fit.rigs.add(item2)
+        # Verification
+        self.assertAlmostEqual(fit.stats.calibration.used, 50)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -88,5 +101,19 @@ class TestCalibration(StatTestCase):
         fit = Fit()
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 0)
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 350}).id)
+        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id))
+        # Action
+        fit.source = None
+        # Verification
+        self.assertAlmostEqual(fit.stats.calibration.used, 0)
+        self.assertIsNone(fit.stats.calibration.output)
+        # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

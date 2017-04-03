@@ -99,3 +99,17 @@ class TestDroneBayVolume(StatTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 200}).id)
+        fit.drones.add(Drone(self.ch.type(attributes={Attribute.volume: 50}).id))
+        fit.drones.add(Drone(self.ch.type(attributes={Attribute.volume: 30}).id))
+        # Action
+        fit.source = None
+        # Verification
+        self.assertAlmostEqual(fit.stats.dronebay.used, 0)
+        self.assertIsNone(fit.stats.dronebay.output)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

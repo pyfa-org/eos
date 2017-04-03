@@ -39,7 +39,9 @@ class OrderedShipSlotStatRegister(BaseSlotStatRegister, InheritableVolatileMixin
 
     @volatile_property
     def used(self):
-        return max(((i._container_position or 0) + 1 for i in self.__slot_users), default=0)
+        return max((
+            i._container_position + 1 for i in self.__slot_users if i._container_position is not None
+        ), default=0)
 
     @volatile_property
     def total(self):
