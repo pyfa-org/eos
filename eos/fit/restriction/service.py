@@ -31,42 +31,43 @@ class RestrictionService:
     results to fit.
 
     Required arguments:
-    fit -- Fit object to which service is assigned
+    msg_broker -- message broker which is used to deliver
+        all the messages about context changes
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         # Container for all restrictions
         self.__restrictions = {
-            BoosterEffectRestriction(fit),
-            BoosterIndexRestriction(fit),
-            CalibrationRestriction(fit),
-            CapitalItemRestriction(fit),
-            ChargeGroupRestriction(fit),
-            ChargeSizeRestriction(fit),
-            ChargeVolumeRestriction(fit),
-            CpuRestriction(fit),
-            DroneBandwidthRestriction(fit),
-            DroneBayVolumeRestriction(fit),
-            DroneGroupRestriction(fit),
-            HighSlotRestriction(fit),
-            ImplantIndexRestriction(fit),
-            ItemClassRestriction(fit),
-            LaunchedDroneRestriction(fit),
-            LauncherSlotRestriction(fit),
-            LowSlotRestriction(fit),
-            MaxGroupActiveRestriction(fit),
-            MaxGroupFittedRestriction(fit),
-            MaxGroupOnlineRestriction(fit),
-            MediumSlotRestriction(fit),
-            PowerGridRestriction(fit),
-            RigSizeRestriction(fit),
-            RigSlotRestriction(fit),
-            ShipTypeGroupRestriction(fit),
-            SkillRequirementRestriction(fit),
-            StateRestriction(fit),
-            SubsystemIndexRestriction(fit),
-            SubsystemSlotRestriction(fit),
-            TurretSlotRestriction(fit)
+            BoosterEffectRestrictionRegister(msg_broker),
+            BoosterIndexRestriction(msg_broker),
+            CalibrationRestriction(msg_broker),
+            CapitalItemRestriction(msg_broker),
+            ChargeGroupRestriction(msg_broker),
+            ChargeSizeRestriction(msg_broker),
+            ChargeVolumeRestriction(msg_broker),
+            CpuRestriction(msg_broker),
+            DroneBandwidthRestriction(msg_broker),
+            DroneBayVolumeRestriction(msg_broker),
+            DroneGroupRestriction(msg_broker),
+            HighSlotRestriction(msg_broker),
+            ImplantIndexRestriction(msg_broker),
+            ItemClassRestriction(msg_broker),
+            LaunchedDroneRestriction(msg_broker),
+            LauncherSlotRestriction(msg_broker),
+            LowSlotRestriction(msg_broker),
+            MaxGroupActiveRestriction(msg_broker),
+            MaxGroupFittedRestriction(msg_broker),
+            MaxGroupOnlineRestriction(msg_broker),
+            MediumSlotRestriction(msg_broker),
+            PowerGridRestriction(msg_broker),
+            RigSizeRestriction(msg_broker),
+            RigSlotRestriction(msg_broker),
+            ShipTypeGroupRestriction(msg_broker),
+            SkillRequirementRestriction(msg_broker),
+            StateRestriction(msg_broker),
+            SubsystemIndexRestriction(msg_broker),
+            SubsystemSlotRestriction(msg_broker),
+            TurretSlotRestriction(msg_broker)
         }
 
     def validate(self, skip_checks):

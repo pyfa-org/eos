@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('item_size', 'allowed_size'))
 
 
-class ChargeSizeRestriction(BaseRestriction):
+class ChargeSizeRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     If item can fit charges and specifies size of charges it

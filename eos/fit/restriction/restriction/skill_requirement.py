@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.fit.item import Rig
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
@@ -33,7 +33,7 @@ SkillRequirementErrorData = namedtuple('SkillRequirementErrorData', ('skill', 'l
 EXCEPTIONS = (Rig,)
 
 
-class SkillRequirementRestriction(BaseRestriction):
+class SkillRequirementRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     To use item, all its skill requirements must be met.

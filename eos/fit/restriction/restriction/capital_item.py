@@ -25,7 +25,7 @@ from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import Ship, ModuleHigh, ModuleMed, ModuleLow
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
@@ -37,7 +37,7 @@ TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('item_volume', 'max_subcap_volume'))
 
 
-class CapitalItemRestriction(BaseRestriction):
+class CapitalItemRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     To fit items with volume bigger than 4000, ship must

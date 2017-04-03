@@ -28,14 +28,14 @@ from eos.fit.item import Drone
 from eos.fit.pubsub.message import (
     InstrStatesActivate, InstrStatesDeactivate, InstrEffectsActivate, InstrEffectsDeactivate
 )
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
 
 
-class SlotAmountRestrictionOrdered(BaseRestriction, metaclass=ABCMeta):
+class SlotAmountRestrictionOrdered(BaseRestrictionRegister, metaclass=ABCMeta):
     """Base class for all slot amount restrictions"""
 
     def __init__(self, fit, stat_name, restriction_type):
@@ -71,7 +71,7 @@ class SlotAmountRestrictionOrdered(BaseRestriction, metaclass=ABCMeta):
         return self.__restriction_type
 
 
-class SlotAmountRestrictionUnordered(SlotAmountRestrictionOrdered, BaseRestriction):
+class SlotAmountRestrictionUnordered(SlotAmountRestrictionOrdered):
     """Base class for all slot amount restriction registers"""
 
     def __init__(self, fit, stat_name, restriction_type):

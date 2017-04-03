@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute, Effect
 from eos.fit.pubsub.message import InstrEffectsActivate, InstrEffectsDeactivate
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 RigSizeErrorData = namedtuple('RigSizeErrorData', ('item_size', 'allowed_size'))
 
 
-class RigSizeRestriction(BaseRestriction):
+class RigSizeRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     If ship requires rigs of certain size, rigs of other size cannot

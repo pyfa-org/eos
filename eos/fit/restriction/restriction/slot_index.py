@@ -25,14 +25,14 @@ from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from eos.util.keyed_set import KeyedSet
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('item_slot_index',))
 
 
-class SlotIndexRestriction(BaseRestriction):
+class SlotIndexRestriction(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track indices of occupied slots and

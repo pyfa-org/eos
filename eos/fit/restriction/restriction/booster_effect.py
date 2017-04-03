@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.fit.item import Booster
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 BoosterEffectErrorData = namedtuple('BoosterEffectErrorData', ('illegally_disabled', 'disablable'))
 
 
-class BoosterEffectRestriction(BaseRestriction):
+class BoosterEffectRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Booster must have all of its non-side-effects activable.
@@ -47,9 +47,9 @@ class BoosterEffectRestriction(BaseRestriction):
     rather than set of IDs of effects which are unactivable.
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__boosters = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         if isinstance(message.item, Booster):

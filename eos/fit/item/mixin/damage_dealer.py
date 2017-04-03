@@ -242,9 +242,8 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         deliver damage and attributes used for damage calculation. If
         item is not a weapon or an inactive weapon, None is returned.
         """
-        eve_type = self._eve_type
         try:
-            item_defeff_id = eve_type.default_effect.id
+            item_defeff_id = self._eve_type.default_effect.id
         except AttributeError:
             return None
         # Weapon properties are defined by item default effect; thus,

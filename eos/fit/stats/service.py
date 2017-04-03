@@ -32,11 +32,11 @@ from .register import *
 
 class StatService(BaseSubscriber, InheritableVolatileMixin):
     """
-    Object which is used as access points for all
-    fit statistics.
+    Object which is used as access points for all fit statistics.
 
     Required arguments:
-    fit -- Fit object to which service is assigned
+    msg_broker -- message broker which is used to deliver
+        all the messages about context changes
     """
 
     def __init__(self, msg_broker):

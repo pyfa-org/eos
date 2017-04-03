@@ -25,7 +25,7 @@ from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import Ship, Drone
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
@@ -38,7 +38,7 @@ RESTRICTION_ATTRS = (
 DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('drone_group', 'allowed_groups'))
 
 
-class DroneGroupRestriction(BaseRestriction):
+class DroneGroupRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     If ship restricts drone group, items from groups which are not

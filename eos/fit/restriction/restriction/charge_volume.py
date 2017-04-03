@@ -24,14 +24,14 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 ChargeVolumeErrorData = namedtuple('ChargeVolumeErrorData', ('item_volume', 'max_allowed_volume'))
 
 
-class ChargeVolumeRestriction(BaseRestriction):
+class ChargeVolumeRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     Volume of single charge loaded into container should not

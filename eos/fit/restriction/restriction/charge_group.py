@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
@@ -40,7 +40,7 @@ RESTRICTION_ATTRS = (
 ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('charge_group', 'allowed_groups'))
 
 
-class ChargeGroupRestriction(BaseRestriction):
+class ChargeGroupRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     If item can fit charges and specifies group of charges it

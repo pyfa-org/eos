@@ -26,7 +26,7 @@ from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
 from eos.util.keyed_set import KeyedSet
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
@@ -36,7 +36,7 @@ TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('item_group', 'max_group', 'group_items'))
 
 
-class MaxGroupRestriction(BaseRestriction):
+class MaxGroupRestriction(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track maximum number of modules in

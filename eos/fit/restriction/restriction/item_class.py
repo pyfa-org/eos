@@ -25,7 +25,7 @@ from eos.const.eos import Restriction, Slot
 from eos.const.eve import Attribute, Group, Category
 from eos.fit.item import *
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
@@ -71,7 +71,7 @@ CLASS_VALIDATORS = {
 }
 
 
-class ItemClassRestriction(BaseRestriction):
+class ItemClassRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     Check that eve type is wrapped by corresponding item class

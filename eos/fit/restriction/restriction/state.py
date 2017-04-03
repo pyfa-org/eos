@@ -23,14 +23,14 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction, State
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 StateErrorData = namedtuple('StateErrorData', ('current_state', 'allowed_states'))
 
 
-class StateRestriction(BaseRestriction):
+class StateRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     Verify that current state of item is not bigger than max state

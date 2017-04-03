@@ -25,7 +25,7 @@ from eos.const.eos import Restriction
 from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
@@ -79,7 +79,7 @@ ShipTypeGroupErrorData = namedtuple(
 AllowedData = namedtuple('AllowedData', ('types', 'groups'))
 
 
-class ShipTypeGroupRestriction(BaseRestriction):
+class ShipTypeGroupRestriction(BaseRestrictionRegister):
     """
     Implements restriction:
     Items, which have certain fittable ship types or ship groups

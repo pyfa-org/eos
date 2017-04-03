@@ -28,14 +28,14 @@ from eos.fit.pubsub.message import (
     InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate,
     InstrEffectsActivate, InstrEffectsDeactivate
 )
-from .base import BaseRestriction
+from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'item_use'))
 
 
-class ResourceRestriction(BaseRestriction):
+class ResourceRestriction(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track amount of resource, which is

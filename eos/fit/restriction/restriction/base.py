@@ -24,7 +24,7 @@ from abc import ABCMeta, abstractmethod
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
-class BaseRestriction(BaseSubscriber, metaclass=ABCMeta):
+class BaseRestriction(metaclass=ABCMeta):
     """Base class for all restrictions"""
 
     @abstractmethod
@@ -42,3 +42,11 @@ class BaseRestriction(BaseSubscriber, metaclass=ABCMeta):
         Get restriction type this register is dealing with.
         """
         ...
+
+
+class BaseRestrictionRegister(BaseRestriction, BaseSubscriber):
+    """
+    Base class for all restrictions which are supposed to
+    store some data on them.
+    """
+    ...
