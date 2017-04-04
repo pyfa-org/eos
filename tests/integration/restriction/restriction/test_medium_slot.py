@@ -160,11 +160,26 @@ class TestMediumSlot(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_pass_other_item_class(self):
+    def test_pass_disabled_effect(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 0}).id)
-        item = ModuleLow(self.ch.type(effects=[self.effect]).id)
-        fit.modules.low.append(item)
+        item = ModuleMed(self.ch.type(effects=[self.effect]).id)
+        item._set_effect_activability(self.effect.id, False)
+        fit.modules.med.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.medium_slot)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 0}).id)
+        item = ModuleMed(self.ch.type(effects=[self.effect]).id)
+        fit.modules.med.append(item)
+        fit.source = None
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.medium_slot)
         # Verification

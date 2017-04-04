@@ -76,7 +76,8 @@ from .slot_index import (
     BoosterIndexRestrictionRegister
 )
 from .slot_amount import (
-    HighSlotRestriction, MediumSlotRestriction, LowSlotRestriction, RigSlotRestriction, SubsystemSlotRestriction,
-    TurretSlotRestriction, LauncherSlotRestriction, LaunchedDroneRestriction
+    HighSlotRestriction, MediumSlotRestriction, LowSlotRestriction,
+    RigSlotRestriction, SubsystemSlotRestriction, TurretSlotRestriction,
+    LauncherSlotRestriction, LaunchedDroneRestriction
 )
 from .state import StateRestrictionRegister

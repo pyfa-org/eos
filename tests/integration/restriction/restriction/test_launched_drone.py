@@ -33,7 +33,7 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def test_fail_excess_single(self):
         # Check that error is raised when number of used
-        # slots exceeds slot amount provided by ship
+        # slots exceeds slot amount provided by char
         fit = Fit()
         fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 0}).id)
         item = Drone(self.ch.type().id, state=State.online)
@@ -145,11 +145,25 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def test_pass_other_item_class(self):
         # Check that error is raised when number of used
-        # slots exceeds slot amount provided by ship
+        # slots exceeds slot amount provided by char
         fit = Fit()
         fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 0}).id)
         item = ModuleHigh(self.ch.type().id, state=State.online)
         fit.modules.high.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.launched_drone)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        fit.character = Character(self.ch.type(attributes={Attribute.max_active_drones: 0}).id)
+        item = Drone(self.ch.type().id, state=State.online)
+        fit.drones.add(item)
+        fit.source = None
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.launched_drone)
         # Verification

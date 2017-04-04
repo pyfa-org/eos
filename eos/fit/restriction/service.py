@@ -51,25 +51,25 @@ class RestrictionService:
             DroneBandwidthRestriction(stats),
             DroneBayVolumeRestriction(stats),
             DroneGroupRestrictionRegister(msg_broker),
-            HighSlotRestriction(msg_broker),
+            HighSlotRestriction(stats),
             ImplantIndexRestrictionRegister(msg_broker),
             ItemClassRestrictionRegister(msg_broker),
-            LaunchedDroneRestriction(msg_broker),
-            LauncherSlotRestriction(msg_broker),
-            LowSlotRestriction(msg_broker),
+            LaunchedDroneRestriction(stats),
+            LauncherSlotRestriction(stats),
+            LowSlotRestriction(stats),
             MaxGroupActiveRestrictionRegister(msg_broker),
             MaxGroupFittedRestrictionRegister(msg_broker),
             MaxGroupOnlineRestrictionRegister(msg_broker),
-            MediumSlotRestriction(msg_broker),
+            MediumSlotRestriction(stats),
             PowergridRestriction(stats),
             RigSizeRestrictionRegister(msg_broker),
-            RigSlotRestriction(msg_broker),
+            RigSlotRestriction(stats),
             ShipTypeGroupRestrictionRegister(msg_broker),
             SkillRequirementRestrictionRegister(msg_broker),
             StateRestrictionRegister(msg_broker),
             SubsystemIndexRestrictionRegister(msg_broker),
-            SubsystemSlotRestriction(msg_broker),
-            TurretSlotRestriction(msg_broker)
+            SubsystemSlotRestriction(stats),
+            TurretSlotRestriction(stats)
         }
 
     def validate(self, skip_checks):

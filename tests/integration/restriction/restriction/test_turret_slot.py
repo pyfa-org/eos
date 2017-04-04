@@ -129,3 +129,31 @@ class TestTurretSlot(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_disabled_effect(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.turret_slots_left: 0}).id)
+        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
+        item._set_effect_activability(self.effect.id, False)
+        fit.modules.high.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.turret_slot)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        fit.ship = Ship(self.ch.type(attributes={Attribute.turret_slots_left: 0}).id)
+        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
+        fit.modules.high.append(item)
+        fit.source = None
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.turret_slot)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
