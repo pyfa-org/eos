@@ -33,21 +33,23 @@ class RestrictionService:
     Required arguments:
     msg_broker -- message broker which is used to deliver
         all the messages about context changes
+    stats -- stats module to use as data source for some
+        restrictions
     """
 
-    def __init__(self, msg_broker):
+    def __init__(self, msg_broker, stats):
         # Container for all restrictions
         self.__restrictions = {
             BoosterEffectRestrictionRegister(msg_broker),
             BoosterIndexRestriction(msg_broker),
-            CalibrationRestriction(msg_broker),
+            CalibrationRestriction(stats),
             CapitalItemRestrictionRegister(msg_broker),
             ChargeGroupRestrictionRegister(msg_broker),
             ChargeSizeRestrictionRegister(msg_broker),
             ChargeVolumeRestrictionRegister(msg_broker),
-            CpuRestriction(msg_broker),
-            DroneBandwidthRestriction(msg_broker),
-            DroneBayVolumeRestriction(msg_broker),
+            CpuRestriction(stats),
+            DroneBandwidthRestriction(stats),
+            DroneBayVolumeRestriction(stats),
             DroneGroupRestrictionRegister(msg_broker),
             HighSlotRestriction(msg_broker),
             ImplantIndexRestriction(msg_broker),
@@ -59,7 +61,7 @@ class RestrictionService:
             MaxGroupFittedRestrictionRegister(msg_broker),
             MaxGroupOnlineRestrictionRegister(msg_broker),
             MediumSlotRestriction(msg_broker),
-            PowerGridRestriction(msg_broker),
+            PowergridRestriction(stats),
             RigSizeRestriction(msg_broker),
             RigSlotRestriction(msg_broker),
             ShipTypeGroupRestriction(msg_broker),

@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import Attribute, EffectCategory
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 from .custom import customize_type

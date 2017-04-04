@@ -21,42 +21,27 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction, State
-from eos.const.eve import Attribute, Effect
-from eos.fit.item import Drone
-from eos.fit.pubsub.message import (
-    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate,
-    InstrEffectsActivate, InstrEffectsDeactivate
-)
-from .base import BaseRestrictionRegister
+from eos.const.eos import Restriction
+from eos.const.eve import Attribute
+from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
 
 ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'item_use'))
 
 
-class ResourceRestriction(BaseRestrictionRegister):
+class ResourceRestriction(BaseRestriction):
     """
     Class which implements common functionality for all
-    registers, which track amount of resource, which is
+    registers, which restrict amount of resource, which is
     used by various fit items.
     """
 
-    def __init__(self, stats, stat_name, usage_attr, restriction_type):
-        self.__restriction_type = restriction_type
+    def __init__(self, stats, stat_name, usage_attr):
         self.__stats = stats
         # Use this stat name to get numbers from stats service
         self.__stat_name = stat_name
         self.__usage_attr = usage_attr
-        self.__resource_users = set()
-
-    def _register_item(self, item):
-        if self.__usage_attr not in item._eve_type.attributes:
-            return
-        self.__resource_users.add(item)
-
-    def _unregister_item(self, item):
-        self.__resource_users.discard(item)
 
     def validate(self):
         # Use stats module to get resource use and output
@@ -68,10 +53,9 @@ class ResourceRestriction(BaseRestrictionRegister):
         if total_use <= output:
             return
         tainted_items = {}
-        for item in self.__resource_users:
+        for item in stats._users:
             resource_use = item.attributes[self.__usage_attr]
-            # Ignore items which do not actually
-            # consume resource
+            # Ignore items which do not actually consume resource
             if resource_use <= 0:
                 continue
             tainted_items[item] = ResourceErrorData(
@@ -80,10 +64,6 @@ class ResourceRestriction(BaseRestrictionRegister):
                 item_use=resource_use
             )
         raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return self.__restriction_type
 
 
 class CpuRestriction(ResourceRestriction):
@@ -95,25 +75,15 @@ class CpuRestriction(ResourceRestriction):
     For validation, stats module data is used.
     """
 
-    def __init__(self, fit):
-        ResourceRestriction.__init__(self, fit.stats, 'cpu', Attribute.cpu, Restriction.cpu)
-        fit._subscribe(self, self._handler_map.keys())
+    def __init__(self, stats):
+        ResourceRestriction.__init__(self, stats, 'cpu', Attribute.cpu)
 
-    def _handle_item_effects_activation(self, message):
-        if Effect.online in message.effects:
-            self._register_item(message.item)
-
-    def _handle_item_effects_deactivation(self, message):
-        if Effect.online in message.effects:
-            self._unregister_item(message.item)
-
-    _handler_map = {
-        InstrEffectsActivate: _handle_item_effects_activation,
-        InstrEffectsDeactivate: _handle_item_effects_deactivation
-    }
+    @property
+    def type(self):
+        return Restriction.cpu
 
 
-class PowerGridRestriction(ResourceRestriction):
+class PowergridRestriction(ResourceRestriction):
     """
     Implements restriction:
     Power grid usage by items should not exceed ship
@@ -123,22 +93,12 @@ class PowerGridRestriction(ResourceRestriction):
     For validation, stats module data is used.
     """
 
-    def __init__(self, fit):
-        ResourceRestriction.__init__(self, fit.stats, 'powergrid', Attribute.power, Restriction.powergrid)
-        fit._subscribe(self, self._handler_map.keys())
+    def __init__(self, stats):
+        ResourceRestriction.__init__(self, stats, 'powergrid', Attribute.power)
 
-    def _handle_item_effects_activation(self, message):
-        if Effect.online in message.effects:
-            self._register_item(message.item)
-
-    def _handle_item_effects_deactivation(self, message):
-        if Effect.online in message.effects:
-            self._unregister_item(message.item)
-
-    _handler_map = {
-        InstrEffectsActivate: _handle_item_effects_activation,
-        InstrEffectsDeactivate: _handle_item_effects_deactivation
-    }
+    @property
+    def type(self):
+        return Restriction.powergrid
 
 
 class CalibrationRestriction(ResourceRestriction):
@@ -151,22 +111,12 @@ class CalibrationRestriction(ResourceRestriction):
     For validation, stats module data is used.
     """
 
-    def __init__(self, fit):
-        ResourceRestriction.__init__(self, fit.stats, 'calibration', Attribute.upgrade_cost, Restriction.calibration)
-        fit._subscribe(self, self._handler_map.keys())
+    def __init__(self, stats):
+        ResourceRestriction.__init__(self, stats, 'calibration', Attribute.upgrade_cost)
 
-    def _handle_item_effects_activation(self, message):
-        if Effect.rig_slot in message.effects:
-            self._register_item(message.item)
-
-    def _handle_item_effects_deactivation(self, message):
-        if Effect.rig_slot in message.effects:
-            self._unregister_item(message.item)
-
-    _handler_map = {
-        InstrEffectsActivate: _handle_item_effects_activation,
-        InstrEffectsDeactivate: _handle_item_effects_deactivation
-    }
+    @property
+    def type(self):
+        return Restriction.calibration
 
 
 class DroneBayVolumeRestriction(ResourceRestriction):
@@ -180,22 +130,12 @@ class DroneBayVolumeRestriction(ResourceRestriction):
     For validation, stats module data is used.
     """
 
-    def __init__(self, fit):
-        ResourceRestriction.__init__(self, fit.stats, 'dronebay', Attribute.volume, Restriction.dronebay_volume)
-        fit._subscribe(self, self._handler_map.keys())
+    def __init__(self, stats):
+        ResourceRestriction.__init__(self, stats, 'dronebay', Attribute.volume)
 
-    def _handle_item_addition(self, message):
-        if isinstance(message.item, Drone):
-            self._register_item(message.item)
-
-    def _handle_item_removal(self, message):
-        if isinstance(message.item, Drone):
-            self._unregister_item(message.item)
-
-    _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+    @property
+    def type(self):
+        return Restriction.dronebay_volume
 
 
 class DroneBandwidthRestriction(ResourceRestriction):
@@ -208,21 +148,9 @@ class DroneBandwidthRestriction(ResourceRestriction):
     For validation, stats module data is used.
     """
 
-    def __init__(self, fit):
-        ResourceRestriction.__init__(
-            self, fit.stats, 'drone_bandwidth', Attribute.drone_bandwidth_used, Restriction.drone_bandwidth
-        )
-        fit._subscribe(self, self._handler_map.keys())
+    def __init__(self, stats):
+        ResourceRestriction.__init__(self, stats, 'drone_bandwidth', Attribute.drone_bandwidth_used)
 
-    def _handle_item_states_activation(self, message):
-        if isinstance(message.item, Drone) and State.online in message.states:
-            self._register_item(message.item)
-
-    def _handle_item_states_deactivation(self, message):
-        if isinstance(message.item, Drone) and State.online in message.states:
-            self._unregister_item(message.item)
-
-    _handler_map = {
-        InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation
-    }
+    @property
+    def type(self):
+        return Restriction.drone_bandwidth

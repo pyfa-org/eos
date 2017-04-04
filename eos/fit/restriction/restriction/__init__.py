@@ -41,7 +41,7 @@ __all__ = [
     'MaxGroupFittedRestrictionRegister',
     'MaxGroupOnlineRestrictionRegister',
     'MediumSlotRestriction',
-    'PowerGridRestriction',
+    'PowergridRestriction',
     'RigSizeRestriction',
     'RigSlotRestriction',
     'ShipTypeGroupRestriction',
@@ -65,8 +65,8 @@ from .max_group import (
     MaxGroupActiveRestrictionRegister
 )
 from .resource import (
-    CpuRestriction, PowerGridRestriction, CalibrationRestriction, DroneBayVolumeRestriction,
-    DroneBandwidthRestriction
+    CpuRestriction, PowergridRestriction, CalibrationRestriction,
+    DroneBayVolumeRestriction, DroneBandwidthRestriction
 )
 from .rig_size import RigSizeRestriction
 from .ship_type_group import ShipTypeGroupRestriction

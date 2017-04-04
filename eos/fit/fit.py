@@ -68,7 +68,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
         # they have to be initialized after item containers
         self._calculator = CalculationService(self)
         self.stats = StatService(self)
-        self._restriction = RestrictionService(self)
+        self._restriction = RestrictionService(self, self.stats)
         self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)

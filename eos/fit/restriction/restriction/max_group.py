@@ -43,10 +43,9 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     certain state on per-group basis.
     """
 
-    def __init__(self, max_group_attr, restriction_type):
+    def __init__(self, max_group_attr):
         # Attribute ID whose value contains group restriction of item
         self.__max_group_attr = max_group_attr
-        self.__restriction_type = restriction_type
         # Container for all tracked items, keyed by their group ID
         # Format: {group ID: {items}}
         self.__group_all = KeyedSet()
@@ -100,10 +99,6 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 
-    @property
-    def type(self):
-        return self.__restriction_type
-
 
 class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
     """
@@ -118,7 +113,7 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_fitted, Restriction.max_group_fitted)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_fitted)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
@@ -131,6 +126,10 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal
     }
+
+    @property
+    def type(self):
+        return Restriction.max_group_fitted
 
 
 class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
@@ -146,7 +145,7 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_online, Restriction.max_group_online)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_online)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_states_activation(self, message):
@@ -161,6 +160,10 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
         InstrStatesActivate: _handle_item_states_activation,
         InstrStatesDeactivate: _handle_item_states_deactivation
     }
+
+    @property
+    def type(self):
+        return Restriction.max_group_online
 
 
 class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
@@ -176,7 +179,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_active, Restriction.max_group_active)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_active)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_states_activation(self, message):
@@ -191,3 +194,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
         InstrStatesActivate: _handle_item_states_activation,
         InstrStatesDeactivate: _handle_item_states_deactivation
     }
+
+    @property
+    def type(self):
+        return Restriction.max_group_active
