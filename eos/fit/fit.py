@@ -21,6 +21,7 @@
 
 from eos.const.eve import Type
 from eos.data.source import SourceManager, Source
+from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
@@ -43,7 +44,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
     source -- source to use for this fit
     """
 
-    def __init__(self, source=None):
+    def __init__(self, source=DEFAULT):
         FitMessageBroker.__init__(self)
         self.__source = None
         self.__default_incoming_damage = DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)
@@ -75,7 +76,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
         # Use default source, unless specified otherwise. Source setting may
         # enable services (if there's source), thus it has to be after service
         # initialization
-        if source is None:
+        if source is DEFAULT:
             source = SourceManager.default
         self.source = source
         # As character object shouldn't change in any sane cases, initialize it
