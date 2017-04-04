@@ -21,7 +21,6 @@
 
 from numbers import Integral
 
-from eos.fit.pubsub.message import InputItemsPositionChanged
 from .base import ItemContainerBase
 from .exception import ItemAlreadyAssignedError, SlotTakenError
 
@@ -72,11 +71,6 @@ class ItemList(ItemContainerBase):
                 del self.__list[index]
                 self._cleanup()
                 raise ValueError(*e.args) from e
-        # After all the changes, if there're items after the index
-        # we're inserting to, items change their positions
-        new_positions = {i: self.__list.index(i) for i in self.__list[index + 1:] if i is not None}
-        if len(new_positions) > 0:
-            self.__fit._publish(InputItemsPositionChanged(new_positions))
 
     def append(self, item):
         """
@@ -173,11 +167,6 @@ class ItemList(ItemContainerBase):
             self._handle_item_removal(item)
         del self.__list[index]
         self._cleanup()
-        # After all the changes, if there're items on the index which
-        # we've just cleared and past it, they all changed their positions
-        new_positions = {i: self.__list.index(i) for i in self.__list[index:] if i is not None}
-        if len(new_positions) > 0:
-            self.__fit._publish(InputItemsPositionChanged(new_positions))
 
     def free(self, value):
         """
