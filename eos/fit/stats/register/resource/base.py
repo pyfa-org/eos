@@ -43,5 +43,5 @@ class BaseResourceStatRegister(BaseStatRegister, metaclass=ABCMeta):
         ...
 
     def __repr__(self):
-        spec = ['used', 'total']
+        spec = ['used', 'output']
         return make_repr_str(self, spec)
