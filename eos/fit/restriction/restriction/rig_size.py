@@ -23,7 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute, Effect
-from eos.fit.pubsub.message import InstrEffectsActivate, InstrEffectsDeactivate
+from eos.fit.item import Ship
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrEffectsActivate, InstrEffectsDeactivate
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -31,7 +32,7 @@ from ..exception import RestrictionValidationError
 RigSizeErrorData = namedtuple('RigSizeErrorData', ('item_size', 'allowed_size'))
 
 
-class RigSizeRestriction(BaseRestrictionRegister):
+class RigSizeRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     If ship requires rigs of certain size, rigs of other size cannot
@@ -41,11 +42,19 @@ class RigSizeRestriction(BaseRestrictionRegister):
     For validation, rig_size attribute value of eve type is taken.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
+    def __init__(self, msg_broker):
+        self.__current_ship = None
         # Container for items which have rig size restriction
         self.__restricted_items = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
+
+    def _handle_item_addition(self, message):
+        if isinstance(message.item, Ship):
+            self.__current_ship = message.item
+
+    def _handle_item_removal(self, message):
+        if message.item is self.__current_ship:
+            self.__current_ship = None
 
     def _handle_item_effects_activation(self, message):
         if Effect.rig_slot in message.effects and Attribute.rig_size in message.item._eve_type.attributes:
@@ -56,16 +65,16 @@ class RigSizeRestriction(BaseRestrictionRegister):
             self.__restricted_items.discard(message.item)
 
     _handler_map = {
+        InstrItemAdd: _handle_item_addition,
+        InstrItemRemove: _handle_item_removal,
         InstrEffectsActivate: _handle_item_effects_activation,
         InstrEffectsDeactivate: _handle_item_effects_deactivation
     }
 
     def validate(self):
-        ship_item = self._fit.ship
-        # Do not apply restriction when fit doesn't
-        # have ship
+        # Do not apply restriction when fit doesn't have ship
         try:
-            ship_eve_type = ship_item._eve_type
+            ship_eve_type = self.__current_ship._eve_type
         except AttributeError:
             return
         # If ship doesn't have restriction attribute,

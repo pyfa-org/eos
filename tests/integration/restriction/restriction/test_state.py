@@ -27,7 +27,22 @@ from tests.integration.restriction.restriction_testcase import RestrictionTestCa
 class TestState(RestrictionTestCase):
     """Check functionality of item state restriction"""
 
-    def test_state_lower(self):
+    def test_fail_state_higher(self):
+        fit = Fit()
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.overload)
+        fit.modules.high.append(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.state)
+        # Verification
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.current_state, State.overload)
+        self.assertCountEqual(restriction_error.allowed_states, (State.offline, State.online, State.active))
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_pass_state_lower(self):
         fit = Fit()
         effect = self.ch.effect(category=EffectCategory.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.online)
@@ -40,7 +55,7 @@ class TestState(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_state_equal(self):
+    def test_pass_state_equal(self):
         fit = Fit()
         effect = self.ch.effect(category=EffectCategory.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.active)
@@ -53,17 +68,16 @@ class TestState(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_state_higher(self):
+    def test_pass_no_source(self):
         fit = Fit()
         effect = self.ch.effect(category=EffectCategory.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.overload)
         fit.modules.high.append(item)
+        fit.source = None
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.state)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.current_state, State.overload)
-        self.assertCountEqual(restriction_error.allowed_states, (State.offline, State.online, State.active))
+        self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

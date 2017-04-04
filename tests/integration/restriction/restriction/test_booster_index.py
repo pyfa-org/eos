@@ -106,3 +106,21 @@ class TestBoosterIndex(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item1 = Booster(item_eve_type.id)
+        item2 = Booster(item_eve_type.id)
+        fit.boosters.add(item1)
+        fit.boosters.add(item2)
+        fit.source = None
+        # Action
+        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.booster_index)
+        self.assertIsNone(restriction_error1)
+        # Action
+        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.booster_index)
+        self.assertIsNone(restriction_error2)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

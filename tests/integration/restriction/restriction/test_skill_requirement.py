@@ -80,6 +80,26 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_fail_replacement(self):
+        # Check that failed attempt to replace skill doesn't affect restriction
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.required_skill_1: 50, Attribute.required_skill_1_level: 3
+        }).id)
+        fit.modules.high.append(item)
+        skill_eve_type = self.ch.type(type_id=50)
+        fit.skills.add(Skill(skill_eve_type.id, level=1))
+        with self.assertRaises(ValueError):
+            fit.skills.add(Skill(skill_eve_type.id, level=5))
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
+        # Verification
+        self.assertIsNotNone(restriction_error)
+        self.assertCountEqual(restriction_error, ((50, 1, 3),))
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_pass_satisfied(self):
         # Check that error isn't raised when all skill requirements
         # are met
@@ -104,6 +124,21 @@ class TestSkillRequirement(RestrictionTestCase):
             Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 3
         }).id)
         fit.rigs.add(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={
+            Attribute.required_skill_1: 50, Attribute.required_skill_1_level: 3
+        }).id)
+        fit.modules.high.append(item)
+        fit.source = None
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.skill_requirement)
         # Verification

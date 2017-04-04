@@ -32,7 +32,7 @@ from ..exception import RestrictionValidationError
 SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('item_slot_index',))
 
 
-class SlotIndexRestriction(BaseRestrictionRegister):
+class SlotIndexRestrictionRegister(BaseRestrictionRegister):
     """
     Class which implements common functionality for all
     registers, which track indices of occupied slots and
@@ -40,16 +40,13 @@ class SlotIndexRestriction(BaseRestrictionRegister):
     same index.
     """
 
-    def __init__(self, fit, slot_index_attr, restriction_type):
-        # This attribute's value on item
-        # represents their index of slot
+    def __init__(self, msg_broker, slot_index_attr):
+        # This attribute's value on item represents their index of slot
         self.__slot_index_attr = slot_index_attr
-        self.__restriction_type = restriction_type
-        # All items which possess index of slot
-        # are stored in this container
+        # All items which possess index of slot are stored in this container
         # Format: {slot index: {items}}
         self.__slotted_items = KeyedSet()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         # Skip items which don't have index specified
@@ -81,12 +78,8 @@ class SlotIndexRestriction(BaseRestrictionRegister):
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 
-    @property
-    def type(self):
-        return self.__restriction_type
 
-
-class SubsystemIndexRestriction(SlotIndexRestriction):
+class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple subsystems can't be added into the same subsystem slot.
@@ -95,11 +88,15 @@ class SubsystemIndexRestriction(SlotIndexRestriction):
     Slot to occupy is determined by eve type attributes.
     """
 
-    def __init__(self, fit):
-        SlotIndexRestriction.__init__(self, fit, Attribute.subsystem_slot, Restriction.subsystem_index)
+    def __init__(self, msg_broker):
+        SlotIndexRestrictionRegister.__init__(self, msg_broker, Attribute.subsystem_slot)
+
+    @property
+    def type(self):
+        return Restriction.subsystem_index
 
 
-class ImplantIndexRestriction(SlotIndexRestriction):
+class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple implants can't be added into the same implant slot.
@@ -108,11 +105,15 @@ class ImplantIndexRestriction(SlotIndexRestriction):
     Slot to occupy is determined by eve type attributes.
     """
 
-    def __init__(self, fit):
-        SlotIndexRestriction.__init__(self, fit, Attribute.implantness, Restriction.implant_index)
+    def __init__(self, msg_broker):
+        SlotIndexRestrictionRegister.__init__(self, msg_broker, Attribute.implantness)
+
+    @property
+    def type(self):
+        return Restriction.implant_index
 
 
-class BoosterIndexRestriction(SlotIndexRestriction):
+class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
     Implements restriction:
     Multiple boosters can't be added into the same booster slot.
@@ -121,5 +122,9 @@ class BoosterIndexRestriction(SlotIndexRestriction):
     Slot to occupy is determined by eve type attributes.
     """
 
-    def __init__(self, fit):
-        SlotIndexRestriction.__init__(self, fit, Attribute.boosterness, Restriction.booster_index)
+    def __init__(self, msg_broker):
+        SlotIndexRestrictionRegister.__init__(self, msg_broker, Attribute.boosterness)
+
+    @property
+    def type(self):
+        return Restriction.booster_index

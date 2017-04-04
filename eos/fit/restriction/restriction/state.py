@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import InstrStatesActivate, InstrStatesDeactivate
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -30,7 +30,7 @@ from ..exception import RestrictionValidationError
 StateErrorData = namedtuple('StateErrorData', ('current_state', 'allowed_states'))
 
 
-class StateRestriction(BaseRestrictionRegister):
+class StateRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Verify that current state of item is not bigger than max state
@@ -39,19 +39,21 @@ class StateRestriction(BaseRestrictionRegister):
     and so on).
     """
 
-    def __init__(self, fit):
+    def __init__(self, msg_broker):
         self.__items = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
-        self.__items.add(message.item)
+    def _handle_item_states_activation(self, message):
+        if State.online in message.states:
+            self.__items.add(message.item)
 
-    def _handle_item_removal(self, message):
-        self.__items.discard(message.item)
+    def _handle_item_states_deactivation(self, message):
+        if State.online in message.states:
+            self.__items.discard(message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
+        InstrStatesActivate: _handle_item_states_activation,
+        InstrStatesDeactivate: _handle_item_states_deactivation
     }
 
     def validate(self):

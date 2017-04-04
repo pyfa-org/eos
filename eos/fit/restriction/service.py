@@ -41,7 +41,7 @@ class RestrictionService:
         # Container for all restrictions
         self.__restrictions = {
             BoosterEffectRestrictionRegister(msg_broker),
-            BoosterIndexRestriction(msg_broker),
+            BoosterIndexRestrictionRegister(msg_broker),
             CalibrationRestriction(stats),
             CapitalItemRestrictionRegister(msg_broker),
             ChargeGroupRestrictionRegister(msg_broker),
@@ -52,7 +52,7 @@ class RestrictionService:
             DroneBayVolumeRestriction(stats),
             DroneGroupRestrictionRegister(msg_broker),
             HighSlotRestriction(msg_broker),
-            ImplantIndexRestriction(msg_broker),
+            ImplantIndexRestrictionRegister(msg_broker),
             ItemClassRestrictionRegister(msg_broker),
             LaunchedDroneRestriction(msg_broker),
             LauncherSlotRestriction(msg_broker),
@@ -62,12 +62,12 @@ class RestrictionService:
             MaxGroupOnlineRestrictionRegister(msg_broker),
             MediumSlotRestriction(msg_broker),
             PowergridRestriction(stats),
-            RigSizeRestriction(msg_broker),
+            RigSizeRestrictionRegister(msg_broker),
             RigSlotRestriction(msg_broker),
-            ShipTypeGroupRestriction(msg_broker),
-            SkillRequirementRestriction(msg_broker),
-            StateRestriction(msg_broker),
-            SubsystemIndexRestriction(msg_broker),
+            ShipTypeGroupRestrictionRegister(msg_broker),
+            SkillRequirementRestrictionRegister(msg_broker),
+            StateRestrictionRegister(msg_broker),
+            SubsystemIndexRestrictionRegister(msg_broker),
             SubsystemSlotRestriction(msg_broker),
             TurretSlotRestriction(msg_broker)
         }

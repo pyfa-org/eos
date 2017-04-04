@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.fit.item import Rig
+from eos.fit.item import Rig, Skill
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -33,7 +33,7 @@ SkillRequirementErrorData = namedtuple('SkillRequirementErrorData', ('skill', 'l
 EXCEPTIONS = (Rig,)
 
 
-class SkillRequirementRestriction(BaseRestrictionRegister):
+class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     To use item, all its skill requirements must be met.
@@ -49,20 +49,27 @@ class SkillRequirementRestriction(BaseRestrictionRegister):
         requirements.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
+    def __init__(self, msg_broker):
+        self.__skills = {}
         # Set with items which have any skill requirements
         # Format: {items}
         self.__restricted_items = set()
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
+        # Handle skill addition
+        if isinstance(message.item, Skill):
+            self.__skills[message.item._eve_type_id] = message.item
         # Items which are not exceptions and which have any
         # skill requirement are tracked
         if message.item._eve_type.required_skills and not isinstance(message.item, EXCEPTIONS):
             self.__restricted_items.add(message.item)
 
     def _handle_item_removal(self, message):
+        # Handle skill removal
+        if isinstance(message.item, Skill):
+            del self.__skills[message.item._eve_type_id]
+        # Handle restricted item removal
         self.__restricted_items.discard(message.item)
 
     _handler_map = {
@@ -81,9 +88,9 @@ class SkillRequirementRestriction(BaseRestrictionRegister):
             for required_skill_id in item._eve_type.required_skills:
                 required_skill_level = item._eve_type.required_skills[required_skill_id]
                 # Get skill level with None as fallback value for case
-                # when we don't have such skill in fit
+                # when we don't have such skill
                 try:
-                    skill_level = self._fit.skills[required_skill_id].level
+                    skill_level = self.__skills[required_skill_id].level
                 except KeyError:
                     skill_level = None
                 # Last check - if skill level is lower than expected, current item

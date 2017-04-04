@@ -267,3 +267,18 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_pass_no_source(self):
+        fit = Fit()
+        ship_eve_type = self.ch.type(group=31)
+        fit.ship = Ship(ship_eve_type.id)
+        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        fit.modules.high.append(item)
+        fit.source = None
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)

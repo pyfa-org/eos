@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
+from eos.fit.item import Ship, ModuleHigh, ModuleMed, ModuleLow
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -79,7 +79,7 @@ ShipTypeGroupErrorData = namedtuple(
 AllowedData = namedtuple('AllowedData', ('types', 'groups'))
 
 
-class ShipTypeGroupRestriction(BaseRestrictionRegister):
+class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
     """
     Implements restriction:
     Items, which have certain fittable ship types or ship groups
@@ -97,16 +97,17 @@ class ShipTypeGroupRestriction(BaseRestrictionRegister):
         values of eve type are taken.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
-        # Container for items which possess
-        # ship type/group restriction
+    def __init__(self, msg_broker):
+        self.__current_ship = None
+        # Container for items which possess ship type/group restriction
         # Format: {item: allowed data}
         self.__restricted_items = {}
-        fit._subscribe(self, self._handler_map.keys())
+        msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
-        if not isinstance(message.item, TRACKED_ITEM_CLASSES):
+        if isinstance(message.item, Ship):
+            self.__current_ship = message.item
+        elif not isinstance(message.item, TRACKED_ITEM_CLASSES):
             return
         # Containers for type IDs and group IDs of ships, to
         # which item is allowed to fit
@@ -134,7 +135,9 @@ class ShipTypeGroupRestriction(BaseRestrictionRegister):
         )
 
     def _handle_item_removal(self, message):
-        if message.item in self.__restricted_items:
+        if message.item is self.__current_ship:
+            self.__current_ship = None
+        elif message.item in self.__restricted_items:
             del self.__restricted_items[message.item]
 
     _handler_map = {
@@ -148,10 +151,9 @@ class ShipTypeGroupRestriction(BaseRestrictionRegister):
         # them to None because our primary data container
         # with restricted items can't contain None in its
         # values anyway
-        ship_item = self._fit.ship
         try:
-            ship_type_id = ship_item._eve_type_id
-            ship_group = ship_item._eve_type.group
+            ship_type_id = self.__current_ship._eve_type_id
+            ship_group = self.__current_ship._eve_type.group
         except AttributeError:
             ship_type_id = None
             ship_group = None
