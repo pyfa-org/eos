@@ -41,6 +41,13 @@ CLASS_VALIDATORS = {
     Charge: lambda eve_type: eve_type.category == Category.charge,
     Drone: lambda eve_type: eve_type.category == Category.drone,
     EffectBeacon: lambda eve_type: eve_type.group == Group.effect_beacon,
+    FighterSquad: lambda eve_type: (
+        eve_type.category == Category.fighter and (
+            Attribute.fighter_squadron_is_heavy in eve_type.attributes or
+            Attribute.fighter_squadron_is_light in eve_type.attributes or
+            Attribute.fighter_squadron_is_support in eve_type.attributes
+        )
+    ),
     Implant: lambda eve_type: (
         eve_type.category == Category.implant and
         Attribute.implantness in eve_type.attributes

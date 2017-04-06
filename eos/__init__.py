@@ -28,9 +28,9 @@ __all__ = [
     'DamageProfile', 'ResistanceProfile',
     'JsonCacheHandler',
     'JsonDataHandler', 'SQLiteDataHandler',
-    'Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon',
-    'Implant', 'ModuleHigh', 'ModuleMed', 'ModuleLow',
-    'Rig', 'Ship', 'Skill', 'Stance', 'Subsystem'
+    'Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon', 'FighterSquad',
+    'Implant', 'ModuleHigh', 'ModuleMed', 'ModuleLow', 'Rig', 'Ship', 'Skill',
+    'Stance', 'Subsystem'
 ]
 __version__ = '0.0.0.dev10'
 
@@ -44,7 +44,7 @@ from .fit.helper import DamageProfile, ResistanceProfile
 from .data.cache_handler import JsonCacheHandler
 from .data.data_handler import JsonDataHandler, SQLiteDataHandler
 from .fit.item import (
-    Booster, Character, Charge, Drone, EffectBeacon,
-    Implant, ModuleHigh, ModuleMed, ModuleLow,
-    Rig, Ship, Skill, Stance, Subsystem
+    Booster, Character, Charge, Drone, EffectBeacon, FighterSquad,
+    Implant, ModuleHigh, ModuleMed, ModuleLow, Rig, Ship, Skill,
+    Stance, Subsystem
 )

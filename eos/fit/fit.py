@@ -64,6 +64,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
         )
         self.rigs = ItemSet(self, Rig)
         self.drones = ItemSet(self, Drone)
+        self.fighters = ItemSet(self, FighterSquad)
         # Initialize services. Some of services rely on fit structure
         # (module racks, implant set) even during initialization, thus
         # they have to be initialized after item containers

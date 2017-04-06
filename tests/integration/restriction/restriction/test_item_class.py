@@ -190,6 +190,48 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_fighter_squad_pass(self):
+        fit = Fit()
+        item = FighterSquad(self.ch.type(
+            category=Category.fighter, attributes={Attribute.fighter_squadron_is_heavy: 1.0}
+        ).id)
+        fit.fighters.add(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(restriction_error)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_fighter_squad_fail_category(self):
+        fit = Fit()
+        item = FighterSquad(self.ch.type(category=1008, attributes={Attribute.fighter_squadron_is_heavy: 1.0}).id)
+        fit.fighters.add(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.item_class, FighterSquad)
+        self.assertEqual(len(restriction_error.expected_classes), 0)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_fighter_squad_fail_attr(self):
+        fit = Fit()
+        item = FighterSquad(self.ch.type(category=Category.fighter).id)
+        fit.fighters.add(item)
+        # Action
+        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        # Verification
+        self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.item_class, FighterSquad)
+        self.assertEqual(len(restriction_error.expected_classes), 0)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_implant_pass(self):
         fit = Fit()
         item = Implant(self.ch.type(category=Category.implant, attributes={Attribute.implantness: 3}).id)

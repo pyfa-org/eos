@@ -103,6 +103,7 @@ class IntegrationTestCase(EosTestCase):
         fit.modules.low.clear()
         fit.rigs.clear()
         fit.drones.clear()
+        fit.fighters.clear()
         fit.skills.clear()
         fit.implants.clear()
         fit.boosters.clear()

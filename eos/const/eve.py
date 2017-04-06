@@ -141,6 +141,10 @@ class Attribute(IntEnum):
     max_group_fitted = 1544
     max_group_online = 978
     rig_size = 1547
+    # Fighters
+    fighter_squadron_is_heavy = 2214
+    fighter_squadron_is_light = 2212
+    fighter_squadron_is_support = 2213
     # Misc
     agility = 70
     capacity = 38
@@ -182,6 +186,7 @@ class Group(IntEnum):
 class Category(IntEnum):
     charge = 8
     drone = 18
+    fighter = 87
     implant = 20
     module = 7
     ship = 6
