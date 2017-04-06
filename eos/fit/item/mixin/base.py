@@ -210,7 +210,11 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     @property
     def _activable_effects(self):
-        return {eid: e for eid, e in self._eve_type.effects.items() if eid not in self.__blocked_effect_ids}
+        try:
+            eve_type_effects = self._eve_type.effects
+        except AttributeError:
+            return {}
+        return {eid: e for eid, e in eve_type_effects.items() if eid not in self.__blocked_effect_ids}
 
     @property
     @abstractmethod
