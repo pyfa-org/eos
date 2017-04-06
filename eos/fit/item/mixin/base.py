@@ -140,8 +140,12 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         {effect ID: (effect=effect object, chance=chance to apply
             on effect activation, activable=activable flag)}
         """
+        try:
+            eve_type_effects = self._eve_type.effects
+        except AttributeError:
+            return {}
         data = {}
-        for effect in self._eve_type.effects.values():
+        for effect in eve_type_effects.values():
             # Get chance from modified attributes, if specified
             chance_attr = effect.fitting_usage_chance_attribute
             chance = self.attributes[chance_attr] if chance_attr is not None else None

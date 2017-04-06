@@ -59,3 +59,18 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit(source=None)
+        item = Ship(self.ch.type(
+            attributes={Attribute.hp: 8, Attribute.armor_hp: 10, Attribute.shield_capacity: 12}
+        ).id)
+        fit.ship = item
+        # Verification
+        self.assertIsNone(item.hp.hull)
+        self.assertIsNone(item.hp.armor)
+        self.assertIsNone(item.hp.shield)
+        self.assertIsNone(item.hp.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 3)
+        self.assert_fit_buffers_empty(fit)

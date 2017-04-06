@@ -89,3 +89,31 @@ class TestItemMixinTankingResistances(ItemMixinTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 12)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit(source=None)
+        item = Ship(self.ch.type(attributes={
+            Attribute.em_damage_resonance: 0.01, Attribute.thermal_damage_resonance: 0.02,
+            Attribute.kinetic_damage_resonance: 0.03, Attribute.explosive_damage_resonance: 0.04,
+            Attribute.armor_em_damage_resonance: 0.05, Attribute.armor_thermal_damage_resonance: 0.06,
+            Attribute.armor_kinetic_damage_resonance: 0.07, Attribute.armor_explosive_damage_resonance: 0.08,
+            Attribute.shield_em_damage_resonance: 0.09, Attribute.shield_thermal_damage_resonance: 0.1,
+            Attribute.shield_kinetic_damage_resonance: 0.11, Attribute.shield_explosive_damage_resonance: 0.12
+        }).id)
+        fit.ship = item
+        # Verification
+        self.assertIsNone(item.resistances.hull.em)
+        self.assertIsNone(item.resistances.hull.thermal)
+        self.assertIsNone(item.resistances.hull.kinetic)
+        self.assertIsNone(item.resistances.hull.explosive)
+        self.assertIsNone(item.resistances.armor.em)
+        self.assertIsNone(item.resistances.armor.thermal)
+        self.assertIsNone(item.resistances.armor.kinetic)
+        self.assertIsNone(item.resistances.armor.explosive)
+        self.assertIsNone(item.resistances.shield.em)
+        self.assertIsNone(item.resistances.shield.thermal)
+        self.assertIsNone(item.resistances.shield.kinetic)
+        self.assertIsNone(item.resistances.shield.explosive)
+        # Cleanup
+        self.assertEqual(len(self.log), 12)
+        self.assert_fit_buffers_empty(fit)

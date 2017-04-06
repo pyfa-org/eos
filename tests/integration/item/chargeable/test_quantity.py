@@ -95,3 +95,15 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        item = ModuleHigh(self.ch.type(attributes={Attribute.capacity: 20.0}).id)
+        item.charge = Charge(self.ch.type(attributes={Attribute.volume: 2.0}).id)
+        fit.modules.high.append(item)
+        fit.source = None
+        # Verification
+        self.assertIsNone(item.charge_quantity)
+        # Cleanup
+        self.assertEqual(len(self.log), 2)
+        self.assert_fit_buffers_empty(fit)

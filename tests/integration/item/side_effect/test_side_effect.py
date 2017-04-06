@@ -67,6 +67,37 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_data_no_source(self):
+        # Setup
+        chance_attr1 = self.ch.attribute()
+        chance_attr2 = self.ch.attribute()
+        src_attr = self.ch.attribute()
+        modifier = DogmaModifier(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr=chance_attr2.id,
+            operator=ModifierOperator.post_percent,
+            src_attr=src_attr.id
+        )
+        effect1 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1.id)
+        effect2 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr2.id)
+        effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        fit = Fit(source=None)
+        item = Booster(self.ch.type(
+            attributes={chance_attr1.id: 0.5, chance_attr2.id: 0.1, src_attr.id: -25},
+            effects=(effect1, effect2, effect3)
+        ).id)
+        fit.boosters.add(item)
+        item.set_side_effect_status(effect2.id, False)
+        # Verification
+        side_effects = item.side_effects
+        self.assertEqual(len(side_effects), 0)
+        self.assertNotIn(effect1.id, side_effects)
+        self.assertNotIn(effect2.id, side_effects)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_persistence(self):
         # Here we check that when item._eve_type doesn't have effect
         # which was disabled anymore, everything runs as expected, and

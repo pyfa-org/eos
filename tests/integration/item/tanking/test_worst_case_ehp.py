@@ -380,3 +380,26 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 4)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit(source=None)
+        item = Ship(self.ch.type(attributes={
+            Attribute.hp: 1,
+            Attribute.em_damage_resonance: 0.8, Attribute.thermal_damage_resonance: 0.8,
+            Attribute.kinetic_damage_resonance: 0.8, Attribute.explosive_damage_resonance: 0.8,
+            Attribute.armor_hp: 10,
+            Attribute.armor_em_damage_resonance: 0.4, Attribute.armor_thermal_damage_resonance: 0.4,
+            Attribute.armor_kinetic_damage_resonance: 0.4, Attribute.armor_explosive_damage_resonance: 0.4,
+            Attribute.shield_capacity: 100,
+            Attribute.shield_em_damage_resonance: 0.2, Attribute.shield_thermal_damage_resonance: 0.2,
+            Attribute.shield_kinetic_damage_resonance: 0.2, Attribute.shield_explosive_damage_resonance: 0.2
+        }).id)
+        fit.ship = item
+        # Verification
+        self.assertIsNone(item.worst_case_ehp.hull)
+        self.assertIsNone(item.worst_case_ehp.armor)
+        self.assertIsNone(item.worst_case_ehp.shield)
+        self.assertIsNone(item.worst_case_ehp.total)
+        # Cleanup
+        self.assertEqual(len(self.log), 15)
+        self.assert_fit_buffers_empty(fit)

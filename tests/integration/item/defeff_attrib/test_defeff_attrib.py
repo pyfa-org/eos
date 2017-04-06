@@ -57,12 +57,32 @@ class TestItemMixinSpecialAttrib(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_tracking_no_source(self):
+        fit = Fit(source=None)
+        item = self.make_item_with_defeff_attrib('tracking_speed_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.tracking_speed)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_optimal(self):
         fit = Fit()
         item = self.make_item_with_defeff_attrib('range_attribute')
         fit.modules.high.append(item)
         # Verification
         self.assertAlmostEqual(item.optimal_range, 100)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_optimal_no_source(self):
+        fit = Fit(source=None)
+        item = self.make_item_with_defeff_attrib('range_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.optimal_range)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -77,6 +97,16 @@ class TestItemMixinSpecialAttrib(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
+    def test_falloff_no_source(self):
+        fit = Fit(source=None)
+        item = self.make_item_with_defeff_attrib('falloff_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.falloff_range)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
     def test_cycle(self):
         fit = Fit()
         item = self.make_item_with_defeff_attrib('duration_attribute')
@@ -84,6 +114,16 @@ class TestItemMixinSpecialAttrib(ItemMixinTestCase):
         # Verification
         # Cycle time is divided by 1000, as it's defined in ms
         self.assertAlmostEqual(item.cycle_time, 0.1)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_cycle_no_source(self):
+        fit = Fit(source=None)
+        item = self.make_item_with_defeff_attrib('duration_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.cycle_time)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

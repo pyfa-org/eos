@@ -90,3 +90,17 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+
+    def test_no_source(self):
+        fit = Fit()
+        effect = self.ch.effect(category=EffectCategory.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+        ).id)
+        fit.modules.high.append(item)
+        fit.source = None
+        # Verification
+        self.assertIsNone(item.reload_time)
+        # Cleanup
+        self.assertEqual(len(self.log), 1)
+        self.assert_fit_buffers_empty(fit)
