@@ -37,11 +37,11 @@ class AffectionRegister:
     attribute recalculation.
 
     Required arguments:
-    fit -- fit, to which this register is bound to
+    calc_svc -- calculator service, to which this register is bound to
     """
 
-    def __init__(self, fit):
-        self.__fit = fit
+    def __init__(self, calc_svc):
+        self.__calc_svc = calc_svc
 
         # All known items
         # Format: {items}
@@ -93,14 +93,14 @@ class AffectionRegister:
         return (affector.carrier_item,)
 
     def __affectee_getter_item_character(self, _):
-        character = self.__fit.character
+        character = self.__calc_svc._current_char
         if character is not None:
             return (character,)
         else:
             return ()
 
     def __affectee_getter_item_ship(self, _):
-        ship = self.__fit.ship
+        ship = self.__calc_svc._current_ship
         if ship is not None:
             return (ship,)
         else:
@@ -231,11 +231,11 @@ class AffectionRegister:
             affectors_to_enable = self.__find_affectors_for_tgt_other(
                 chain(*self.__affector_item_awaiting.values()), other_item
             )
-        elif target_item is self.__fit.ship:
+        elif target_item is self.__calc_svc._current_ship:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
                 chain(*self.__affector_item_awaiting.values()), ModifierDomain.ship
             )
-        elif target_item is self.__fit.character:
+        elif target_item is self.__calc_svc._current_char:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
                 chain(*self.__affector_item_awaiting.values()), ModifierDomain.character
             )
@@ -333,14 +333,14 @@ class AffectionRegister:
         return affector.carrier_item, self.__affector_item_active
 
     def __affector_map_getter_item_character(self, affector):
-        character = self.__fit.character
+        character = self.__calc_svc._current_char
         if character is not None:
             return character, self.__affector_item_active
         else:
             return affector.carrier_item, self.__affector_item_awaiting
 
     def __affector_map_getter_item_ship(self, affector):
-        ship = self.__fit.ship
+        ship = self.__calc_svc._current_ship
         if ship is not None:
             return ship, self.__affector_item_active
         else:
@@ -431,9 +431,9 @@ class AffectionRegister:
         carrier_item = affector.carrier_item
         domain = affector.modifier.tgt_domain
         if domain == ModifierDomain.self:
-            if carrier_item is self.__fit.ship:
+            if carrier_item is self.__calc_svc._current_ship:
                 return ModifierDomain.ship
-            elif carrier_item is self.__fit.character:
+            elif carrier_item is self.__calc_svc._current_char:
                 return ModifierDomain.character
             else:
                 raise UnexpectedDomainError(domain)

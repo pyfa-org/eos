@@ -50,7 +50,7 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def revise_modification(self, message, carrier_item, fit):
+    def revise_modification(self, message, carrier_item, ship):
         """
         Rely on provided event and context for it, decide if modification
         provided by modifier can change or it cannot. If it can, calculated

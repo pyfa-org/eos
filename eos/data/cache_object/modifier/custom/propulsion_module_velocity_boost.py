@@ -39,10 +39,10 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             tgt_filter_extra_arg=None, tgt_attr=Attribute.max_velocity
         )
 
-    def get_modification(self, carrier_item, fit):
+    def get_modification(self, carrier_item, ship):
         # If attributes of any necessary items are not available, do not calculate anything
         try:
-            ship_attributes = fit.ship.attributes
+            ship_attributes = ship.attributes
             carrier_attributes = carrier_item.attributes
         except AttributeError as e:
             raise ModificationCalculationError from e
@@ -62,13 +62,13 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             raise ModificationCalculationError from e
         return ModifierOperator.post_percent, ship_speed_percentage
 
-    def __revise_on_attr_change(self, message, carrier_item, fit):
+    def __revise_on_attr_change(self, message, carrier_item, ship):
         """
         If any of the attribute values this modifier relies on is changed,
         then modification value can be changed as well.
         """
         if (
-            (message.item is fit.ship and message.attr == Attribute.mass) or
+            (message.item is ship and message.attr == Attribute.mass) or
             (message.item is carrier_item and message.attr == Attribute.speed_factor) or
             (message.item is carrier_item and message.attr == Attribute.speed_boost_factor)
         ):
@@ -83,6 +83,6 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
     def revise_message_types(self):
         return set(self.__revision_map.keys())
 
-    def revise_modification(self, message, carrier_item, fit):
+    def revise_modification(self, message, carrier_item, ship):
         revision_func = self.__revision_map[type(message)]
-        return revision_func(self, message, carrier_item, fit)
+        return revision_func(self, message, carrier_item, ship)

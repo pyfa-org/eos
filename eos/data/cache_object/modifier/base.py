@@ -39,11 +39,11 @@ class BaseModifier(metaclass=ABCMeta):
         self.tgt_attr = tgt_attr
 
     @abstractmethod
-    def get_modification(self, carrier_item, fit):
+    def get_modification(self, carrier_item, ship):
         """
         Return tuple (operator, modification value) which is result
         of applying modifier from the passed carrier item within
-        scope of the passed fit.
+        scope of the passed context.
         """
         ...
 

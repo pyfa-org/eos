@@ -44,10 +44,10 @@ class TestModifierPython(CalculatorTestCase):
                     tgt_filter_extra_arg=None, tgt_attr=attr1.id
                 )
 
-            def get_modification(self, carrier_item, fit):
+            def get_modification(self, carrier_item, ship):
                 try:
                     carrier_attrs = carrier_item.attributes
-                    ship_attrs = fit.ship.attributes
+                    ship_attrs = ship.attributes
                 except AttributeError as e:
                     raise ModificationCalculationError from e
                 try:
@@ -61,10 +61,10 @@ class TestModifierPython(CalculatorTestCase):
             def revise_message_types(self):
                 return {InstrAttrValueChanged}
 
-            def revise_modification(self, message, carrier_item, fit):
+            def revise_modification(self, message, carrier_item, ship):
                 if (
                     (message.item is carrier_item and message.attr == attr2.id) or
-                    (message.item is fit.ship and message.attr == attr3.id)
+                    (message.item is ship and message.attr == attr3.id)
                 ):
                     return True
                 return False

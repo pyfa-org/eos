@@ -34,7 +34,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             tgt_filter_extra_arg=None, tgt_attr=Attribute.armor_damage_amount
         )
 
-    def get_modification(self, carrier_item, fit):
+    def get_modification(self, carrier_item, _):
         """
         If carrier item has charge and it's paste, use on-carrier
         rep amount multiplier, otherwise do nothing (multipy by 1).
@@ -84,6 +84,6 @@ class AncillaryRepAmountModifier(BasePythonModifier):
     def revise_message_types(self):
         return set(self.__revision_map.keys())
 
-    def revise_modification(self, message, carrier_item, fit):
+    def revise_modification(self, message, carrier_item, ship):
         revision_func = self.__revision_map[type(message)]
-        return revision_func(self, message, carrier_item, fit)
+        return revision_func(self, message, carrier_item, ship)
