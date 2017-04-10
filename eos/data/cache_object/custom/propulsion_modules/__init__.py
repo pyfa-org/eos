@@ -19,4 +19,4 @@
 # ===============================================================================
 
 
-from .effect import Effect
+from .effect import add_ab_modifiers, add_mwd_modifiers

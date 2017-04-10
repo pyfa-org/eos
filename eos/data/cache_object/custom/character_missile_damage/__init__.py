@@ -19,11 +19,4 @@
 # ===============================================================================
 
 
-__all__ = [
-    'AncillaryRepAmountModifier',
-    'PropulsionModuleVelocityBoostModifier'
-]
-
-
-from .ancillary_rep_amount import AncillaryRepAmountModifier
-from .propulsion_module_velocity_boost import PropulsionModuleVelocityBoostModifier
+from .type import add_character_missile_damage_multiplier

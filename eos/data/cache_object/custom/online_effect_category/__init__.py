@@ -19,4 +19,4 @@
 # ===============================================================================
 
 
-from .effect import Effect
+from .effect import fix_online_category

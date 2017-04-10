@@ -35,6 +35,6 @@ __all__ = [
 
 
 from .attribute import Attribute
-from .modifier import DogmaModifier
 from .effect import Effect
+from .modifier import DogmaModifier
 from .type import Type

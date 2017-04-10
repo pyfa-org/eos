@@ -23,7 +23,6 @@ from eos.const.eos import State
 from eos.const.eve import Attribute, EffectCategory
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
-from .custom import customize_type
 
 
 class Type:
@@ -55,8 +54,6 @@ class Type:
 
         # Default effect of eve type, which defines its several major properties
         self.default_effect = default_effect
-
-        customize_type(self)
 
     # Define attributes which describe eve type skill requirement details
     # Format: {skill eve type attribute ID: skill level attribute ID}

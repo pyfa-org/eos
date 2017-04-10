@@ -20,4 +20,3 @@
 
 
 from .type import Type
-

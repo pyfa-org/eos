@@ -20,4 +20,3 @@
 
 
 from .attribute import Attribute
-

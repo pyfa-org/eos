@@ -21,6 +21,7 @@
 
 from eos.data.cache_handler.exception import TypeFetchError, AttributeFetchError, EffectFetchError
 from eos.data.cache_object import Attribute, Effect, Type
+from eos.data.cache_object.custom import customize_effect, customize_type
 
 
 TEST_ID_START = 1000000
@@ -37,31 +38,39 @@ class CacheHandler:
         self.__allocated_effect = 0
 
     def type(self, type_id=None, **kwargs):
+        # Allocate & verify ID
         if type_id is None:
             type_id = self.allocate_type_id()
+        if type_id in self.__type_data:
+            raise KeyError(type_id)
+        # Create, store and return type
         eve_type = Type(type_id=type_id, **kwargs)
-        if eve_type.id in self.__type_data:
-            raise KeyError(eve_type.id)
+        customize_type(eve_type)
         self.__type_data[eve_type.id] = eve_type
         return eve_type
 
     def attribute(self, attribute_id=None, **kwargs):
+        # Allocate & verify ID
         if attribute_id is None:
             attribute_id = self.allocate_attribute_id()
-        attr = Attribute(attribute_id=attribute_id, **kwargs)
-        if attr.id in self.__attribute_data:
-            raise KeyError(attr.id)
-        self.__attribute_data[attr.id] = attr
-        return attr
+        if attribute_id in self.__attribute_data:
+            raise KeyError(attribute_id)
+        # Create, store and return attribute
+        attribute = Attribute(attribute_id=attribute_id, **kwargs)
+        self.__attribute_data[attribute.id] = attribute
+        return attribute
 
     def effect(self, effect_id=None, **kwargs):
+        # Allocate & verify ID
         if effect_id is None:
             effect_id = self.allocate_effect_id()
-        eff = Effect(effect_id=effect_id, **kwargs)
-        if eff.id in self.__effect_data:
-            raise KeyError(eff.id)
-        self.__effect_data[eff.id] = eff
-        return eff
+        if effect_id in self.__effect_data:
+            raise KeyError(effect_id)
+        # Create, store and return effect
+        effect = Effect(effect_id=effect_id, **kwargs)
+        customize_effect(effect)
+        self.__effect_data[effect.id] = effect
+        return effect
 
     def get_type(self, type_id):
         try:

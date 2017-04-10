@@ -26,7 +26,7 @@ from logging import getLogger
 from weakref import WeakValueDictionary
 
 from eos.data.cache_object import *
-from eos.data.cache_object import DogmaModifier
+from eos.data.cache_object.custom import customize_effect, customize_type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
@@ -87,7 +87,7 @@ class JsonCacheHandler(BaseCacheHandler):
         except TypeError as e:
             raise TypeFetchError(type_id) from e
         try:
-            type_ = self.__type_obj_cache[type_id]
+            eve_type = self.__type_obj_cache[type_id]
         except KeyError:
             # We do str(int(id)) here because JSON dictionaries
             # always have strings as key
@@ -96,7 +96,7 @@ class JsonCacheHandler(BaseCacheHandler):
                 type_data = self.__type_data_cache[json_type_id]
             except KeyError as e:
                 raise TypeFetchError(type_id) from e
-            type_ = Type(
+            eve_type = Type(
                 type_id=type_id,
                 group=type_data[0],
                 category=type_data[1],
@@ -104,8 +104,9 @@ class JsonCacheHandler(BaseCacheHandler):
                 effects=tuple(self.get_effect(effect_id) for effect_id in type_data[3]),
                 default_effect=None if type_data[4] is None else self.get_effect(type_data[4])
             )
-            self.__type_obj_cache[type_id] = type_
-        return type_
+            customize_type(eve_type)
+            self.__type_obj_cache[type_id] = eve_type
+        return eve_type
 
     def get_attribute(self, attr_id):
         try:
@@ -157,6 +158,7 @@ class JsonCacheHandler(BaseCacheHandler):
                 build_status=effect_data[9],
                 modifiers=tuple(self.get_modifier(modifier_id) for modifier_id in effect_data[10])
             )
+            customize_effect(effect)
             self.__effect_obj_cache[effect_id] = effect
         return effect
 
