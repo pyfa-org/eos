@@ -45,7 +45,7 @@ class WeaponType(IntEnum):
     untargeted_aoe = 6
 
 
-SIMPLE_EFFECT_WEAPON_MAP = {
+BASIC_EFFECT_WEAPON_MAP = {
     Effect.target_attack: WeaponType.turret,
     Effect.projectile_fired: WeaponType.turret,
     Effect.emp_wave: WeaponType.untargeted_aoe,
@@ -57,10 +57,12 @@ SIMPLE_EFFECT_WEAPON_MAP = {
     Effect.super_weapon_minmatar: WeaponType.direct
 }
 
-MISSILE_EFFECT_WEAPON_MAP = {
-    Effect.missile_launching: WeaponType.guided_missile,
-    Effect.fof_missile_launching: WeaponType.guided_missile,
-    Effect.bomb_launching: WeaponType.bomb
+CHARGE_EFFECT_WEAPON_MAP = {
+    Effect.use_missiles: {
+        Effect.missile_launching: WeaponType.guided_missile,
+        Effect.fof_missile_launching: WeaponType.guided_missile,
+        Effect.bomb_launching: WeaponType.bomb
+    }
 }
 
 
@@ -254,15 +256,14 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         # cycle itself, do not consider such item as weapon
         if getattr(self, 'charged_cycles', None) == 0:
             return None
-        # For some weapon types, it's enough to use just item for detection
+        # For some weapon types, it's enough to use just
+        # item default effect for detection
         try:
-            return SIMPLE_EFFECT_WEAPON_MAP[item_defeff_id]
+            return BASIC_EFFECT_WEAPON_MAP[item_defeff_id]
         except KeyError:
-            pass
-        # For missiles and bombs, we need to use charge as well, as it
-        # defines property of 'projectile' which massively influence type
-        # of weapon
-        if item_defeff_id == Effect.use_missiles:
+            # For missiles and bombs, we need to use charge default effect as well
+            # as it defines property of 'projectile' which massively influence type
+            # of weapon
             charge = getattr(self, 'charge', None)
             try:
                 charge_defeff_id = charge._eve_type.default_effect.id
@@ -271,10 +272,9 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
             if charge_defeff_id not in charge._active_effects:
                 return None
             try:
-                return MISSILE_EFFECT_WEAPON_MAP[charge_defeff_id]
+                return CHARGE_EFFECT_WEAPON_MAP[item_defeff_id][charge_defeff_id]
             except KeyError:
                 return None
-        return None
 
     def get_volley_vs_target(self, target_data=None, target_resistances=None):
         # TODO
