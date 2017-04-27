@@ -19,10 +19,14 @@
 # ===============================================================================
 
 
-from eos.fit.item.mixin.damage_dealer import DamageDealerMixin
+from eos.fit.item.mixin.damage_dealer import DamageDealerMixin, BASIC_EFFECT_WEAPON_MAP, CHARGE_EFFECT_WEAPON_MAP
 from eos.fit.helper import DamageTypesTotal
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import InstrEffectsActivate, InstrEffectsDeactivate
+from eos.util.keyed_set import KeyedSet
 from .base import BaseStatRegister
+
+
+PRIMARY_DAMAGE_EFFECTS = set(BASIC_EFFECT_WEAPON_MAP).union(CHARGE_EFFECT_WEAPON_MAP)
 
 
 class DamageDealerRegister(BaseStatRegister):
@@ -33,19 +37,27 @@ class DamageDealerRegister(BaseStatRegister):
     """
 
     def __init__(self, msg_broker):
-        self.__dealers = set()
+        # Format: {item: {damage dealing effect IDs}}
+        self.__dealers = KeyedSet()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
-        if isinstance(message.item, DamageDealerMixin):
-            self.__dealers.add(message.item)
+    def _handle_item_effects_activation(self, message):
+        if not isinstance(message.item, DamageDealerMixin):
+            return
+        damage_effects = message.effects.intersection(PRIMARY_DAMAGE_EFFECTS)
+        if damage_effects:
+            self.__dealers.add_data_set(message.item, damage_effects)
 
-    def _handle_item_removal(self, message):
-        self.__dealers.discard(message.item)
+    def _handle_item_effects_deactivation(self, message):
+        if not isinstance(message.item, DamageDealerMixin):
+            return
+        damage_effects = message.effects.intersection(PRIMARY_DAMAGE_EFFECTS)
+        if damage_effects:
+            self.__dealers.rm_data_set(message.item, damage_effects)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
+        InstrEffectsActivate: _handle_item_effects_activation,
+        InstrEffectsDeactivate: _handle_item_effects_deactivation
     }
 
     def _collect_damage_stats(self, item_filter, method_name, *args, **kwargs):
