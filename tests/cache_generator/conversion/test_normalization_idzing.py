@@ -31,7 +31,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
     def test_group_idzing(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
@@ -60,7 +60,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         self.assertIn(expected, expressions)
 
     def test_group_ignorelist(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
@@ -103,7 +103,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         )
 
     def test_warning_unknown(self, mod_builder):
-        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({

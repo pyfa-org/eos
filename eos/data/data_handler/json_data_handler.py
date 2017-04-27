@@ -55,12 +55,32 @@ class JsonDataHandler(BaseDataHandler):
     def get_dgmexpressions(self):
         return self.__fetch_file('dgmexpressions')
 
+    def get_typefighterabils(self):
+        rows = []
+        for eve_type_id, type_abilities in self.__fetch_file('fighterabilitiesbytype').items():
+            eve_type_id = int(eve_type_id)
+            for ability_data in type_abilities.values():
+                ability_row = {'typeID': eve_type_id}
+                self.__collapse_dict(ability_data, ability_row)
+                rows.append(ability_row)
+        return rows
+
     def __fetch_file(self, filename, values_only=False):
         with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r', encoding='utf8') as file:
             data = json.load(file)
         if values_only:
             data = list(data.values())
         return data
+
+    def __collapse_dict(self, source, target):
+        """
+        Convert multi-level dictionary to single-level one.
+        """
+        for k, v in source.items():
+            if isinstance(v, dict):
+                self.__collapse_dict(v, target)
+            elif k not in target:
+                target[k] = v
 
     def get_version(self):
         metadata = self.__fetch_file('phbmetadata')

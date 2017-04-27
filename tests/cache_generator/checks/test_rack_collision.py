@@ -32,7 +32,7 @@ class TestRackCollision(GeneratorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.eve_type = {'typeID': 1, 'groupID': 1, 'typeName_en-us': ''}
+        self.eve_type = {'typeID': 1, 'groupID': 1}
         self.dh.data['evetypes'].append(self.eve_type)
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})

@@ -19,10 +19,16 @@
 # ===============================================================================
 
 
+from collections import namedtuple
+
 from eos.const.eos import State
 from eos.const.eve import Attribute, EffectCategory
 from eos.util.cached_property import cached_property
+from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
+
+
+FighterAbility = namedtuple('FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))
 
 
 class Type:
@@ -32,8 +38,8 @@ class Type:
     """
 
     def __init__(
-        self, type_id, group=None, category=None, attributes=None,
-        effects=(), default_effect=None
+        self, type_id, group=None, category=None, attributes=DEFAULT,
+        effects=(), default_effect=None, fighter_abilities=DEFAULT
     ):
         self.id = type_id
 
@@ -46,7 +52,7 @@ class Type:
         # The attributes of this type, used as base for calculation of modified
         # attributes, thus they should stay immutable
         # Format: {attribute ID: attribute value}
-        self.attributes = attributes if attributes is not None else {}
+        self.attributes = {} if attributes is DEFAULT else attributes
 
         # Map with effects this type has
         # Format: {effect ID: effect object}
@@ -54,6 +60,10 @@ class Type:
 
         # Default effect of eve type, which defines its several major properties
         self.default_effect = default_effect
+
+        # Iterable with tuples which describe fighter abilities, in format
+        # (ability ID, cooldown time, charge amount, rearm time)
+        self.fighter_abilities = {} if fighter_abilities is DEFAULT else fighter_abilities
 
     # Define attributes which describe eve type skill requirement details
     # Format: {skill eve type attribute ID: skill level attribute ID}

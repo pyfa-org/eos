@@ -61,7 +61,8 @@ class CacheGenerator:
             'dgmtypeattribs': data_handler.get_dgmtypeattribs,
             'dgmeffects': data_handler.get_dgmeffects,
             'dgmtypeeffects': data_handler.get_dgmtypeeffects,
-            'dgmexpressions': data_handler.get_dgmexpressions
+            'dgmexpressions': data_handler.get_dgmexpressions,
+            'typefighterabils': data_handler.get_typefighterabils
         }
 
         for tablename, method in tables.items():

@@ -182,6 +182,7 @@ class Converter:
         Use passed data to compose object-like data rows,
         as in, to 'assemble' objects.
         """
+
         # Before actually generating rows, we need to collect
         # some data in convenient form
         # Format: {type ID: type row}
@@ -205,6 +206,15 @@ class Converter:
         type_attribs = {}
         for row in data['dgmtypeattribs']:
             type_attribs.setdefault(row['typeID'], {})[row['attributeID']] = row['value']
+        # Format: {type ID: {ability ID: ability data}}
+        typeabils_reformat = {}
+        for row in data['typefighterabils']:
+            type_abils = typeabils_reformat.setdefault(row['typeID'], {})
+            type_abils[row['abilityID']] = {
+                'cooldown_time': row.get('cooldownSeconds'),
+                'charge_amount': row.get('chargeCount'),
+                'charge_rearm_time': row.get('rearmTimeSeconds')
+            }
 
         # We will build new data structure from scratch
         assembly = {}
@@ -213,15 +223,16 @@ class Converter:
         for row in data['evetypes']:
             type_id = row['typeID']
             group = row.get('groupID')
-            type_ = {
+            eve_type = {
                 'type_id': type_id,
                 'group': group,
                 'category': evegroups_keyed.get(group, {}).get('categoryID'),
                 'effects': type_effects.get(type_id, []),
                 'attributes': type_attribs.get(type_id, {}),
-                'default_effect': type_defeff_map.get(type_id)
+                'default_effect': type_defeff_map.get(type_id),
+                'fighterabilities': typeabils_reformat.get(type_id, {})
             }
-            types.append(type_)
+            types.append(eve_type)
         assembly['types'] = types
 
         attributes = []

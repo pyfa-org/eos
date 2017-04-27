@@ -29,7 +29,8 @@ class DataHandler:
             'dgmtypeattribs': [],
             'dgmeffects': [],
             'dgmtypeeffects': [],
-            'dgmexpressions': []
+            'dgmexpressions': [],
+            'typefighterabils': []
         }
 
     def get_evetypes(self):
@@ -52,3 +53,6 @@ class DataHandler:
 
     def get_dgmexpressions(self):
         return self.data['dgmexpressions']
+
+    def get_typefighterabils(self):
+        return self.data['typefighterabils']

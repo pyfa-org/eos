@@ -54,80 +54,68 @@ class TestAssociatedData(GeneratorTestCase):
                 '  modifyingAttributeID: 1009\n  operator: 6\n')
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 5, 'maxAttributeID': 1006, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': True, 'attributeName': ''
+            'attributeID': 5, 'maxAttributeID': 1006, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': True
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 1000, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False, 'attributeName': ''
+            'attributeID': 1000, 'maxAttributeID': None, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': False
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 1001, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False, 'attributeName': ''
+            'attributeID': 1001, 'maxAttributeID': None, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': False
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 1002, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False, 'attributeName': ''
+            'attributeID': 1002, 'maxAttributeID': None, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': False
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 1003, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False, 'attributeName': ''
+            'attributeID': 1003, 'maxAttributeID': None, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': False
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 1004, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False, 'attributeName': ''
+            'attributeID': 1004, 'maxAttributeID': None, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': False
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 1005, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False, 'attributeName': ''
+            'attributeID': 1005, 'maxAttributeID': None, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': False
         })
         self.dh.data['dgmattribs'].append({
-            'attributeID': 1006, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False, 'attributeName': ''
+            'attributeID': 1006, 'maxAttributeID': None, 'defaultValue': 0.0, 'highIsGood': False, 'stackable': False
         })
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 100, 'operandID': 6, 'arg1': 102, 'arg2': 103,
-            'expressionValue': None, 'expressionTypeID': 2,
-            'expressionGroupID': 500, 'expressionAttributeID': 1007
+            'expressionID': 100, 'operandID': 6, 'arg1': 102, 'arg2': 103, 'expressionValue': None,
+            'expressionTypeID': 2, 'expressionGroupID': 500, 'expressionAttributeID': 1007
         })
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 101, 'operandID': 6, 'arg1': 102, 'arg2': 103,
-            'expressionValue': None, 'expressionTypeID': None,
-            'expressionGroupID': None, 'expressionAttributeID': None
+            'expressionID': 101, 'operandID': 6, 'arg1': 102, 'arg2': 103, 'expressionValue': None,
+            'expressionTypeID': None, 'expressionGroupID': None, 'expressionAttributeID': None
         })
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 102, 'operandID': 6, 'arg1': None, 'arg2': None,
-            'expressionValue': None, 'expressionTypeID': None,
-            'expressionGroupID': None, 'expressionAttributeID': None
+            'expressionID': 102, 'operandID': 6, 'arg1': None, 'arg2': None, 'expressionValue': None,
+            'expressionTypeID': None, 'expressionGroupID': None, 'expressionAttributeID': None
         })
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 103, 'operandID': 6, 'arg1': None, 'arg2': None,
-            'expressionValue': None, 'expressionTypeID': None,
-            'expressionGroupID': None, 'expressionAttributeID': None
+            'expressionID': 103, 'operandID': 6, 'arg1': None, 'arg2': None, 'expressionValue': None,
+            'expressionTypeID': None, 'expressionGroupID': None, 'expressionAttributeID': None
         })
         # Weak entities in any case, but linked through expression
-        self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50, 'groupName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6})
+        self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1007, 'maxAttributeID': None, 'default_value': 0.0,
-            'high_is_good': False, 'stackable': False, 'attributeName': ''
+            'high_is_good': False, 'stackable': False
         })
         # Also weak entities, but linked through modifier info
-        self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 7, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 7, 'categoryID': 51, 'groupName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 7})
+        self.dh.data['evegroups'].append({'groupID': 7, 'categoryID': 51})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1008, 'maxAttributeID': None, 'default_value': 0.0,
-            'high_is_good': False, 'stackable': False, 'attributeName': ''
+            'high_is_good': False, 'stackable': False
         })
         self.dh.data['dgmattribs'].append({
             'attributeID': 1009, 'maxAttributeID': None, 'default_value': 0.0,
-            'high_is_good': False, 'stackable': False, 'attributeName': ''
+            'high_is_good': False, 'stackable': False
         })
 
     def test_strong(self, mod_builder):
         self.__generate_data()
-        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16, 'groupName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5})
+        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
@@ -171,8 +159,8 @@ class TestAssociatedData(GeneratorTestCase):
 
     def test_weak(self, mod_builder):
         self.__generate_data()
-        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 101, 'groupName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5})
+        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 101})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
@@ -217,8 +205,8 @@ class TestAssociatedData(GeneratorTestCase):
     def test_reverse_types(self, mod_builder):
         # Check that single type included into table does not
         # pull other types belonging to same group
-        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16, 'groupName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5})
+        self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmeffects'].append({
             'effectID': 100, 'effectCategory': 8888, 'isOffensive': True, 'isAssistance': False,
@@ -235,10 +223,10 @@ class TestAssociatedData(GeneratorTestCase):
             'expressionGroupID': None, 'expressionAttributeID': None
         })
         # 2 weak type, but linked through expression/YAML
-        self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6, 'typeName_en-us': ''})
-        self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 6, 'typeName_en-us': ''})
-        self.dh.data['evetypes'].append({'typeID': 4, 'groupID': 6, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50, 'groupName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6})
+        self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 6})
+        self.dh.data['evetypes'].append({'typeID': 4, 'groupID': 6})
+        self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50})
         mod_builder.return_value.build.return_value = ([], 0)
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)

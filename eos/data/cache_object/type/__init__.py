@@ -19,4 +19,4 @@
 # ===============================================================================
 
 
-from .type import Type
+from .type import FighterAbility, Type

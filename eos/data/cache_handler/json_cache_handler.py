@@ -102,7 +102,8 @@ class JsonCacheHandler(BaseCacheHandler):
                 category=type_data[1],
                 attributes={attr_id: attr_val for attr_id, attr_val in type_data[2]},
                 effects=tuple(self.get_effect(effect_id) for effect_id in type_data[3]),
-                default_effect=None if type_data[4] is None else self.get_effect(type_data[4])
+                default_effect=None if type_data[4] is None else self.get_effect(type_data[4]),
+                fighter_abilities={abililty_id: ability_data for abililty_id, ability_data in type_data[5]}
             )
             customize_type(eve_type)
             self.__type_obj_cache[type_id] = eve_type
@@ -224,7 +225,8 @@ class JsonCacheHandler(BaseCacheHandler):
                 type_row['category'],
                 tuple(type_row['attributes'].items()),  # Dictionary -> tuple
                 tuple(type_row['effects']),  # List -> tuple
-                type_row['default_effect']
+                type_row['default_effect'],
+                tuple(type_row['fighterabilities'].items())  # Dictionary -> tuple
             )
         slim_data['types'] = slim_types
 

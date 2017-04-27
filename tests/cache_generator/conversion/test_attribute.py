@@ -31,12 +31,11 @@ class TestConversionAttribute(GeneratorTestCase):
     """
 
     def test_fields(self):
-        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'typeName_en-us': ''})
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 111, 'value': 8.2})
         self.dh.data['dgmattribs'].append({
             'maxAttributeID': 84, 'randomField': None, 'stackable': True,
-            'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False,
-            'attributeName': ''
+            'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False
         })
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)

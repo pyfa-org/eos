@@ -57,12 +57,13 @@ class Cleaner:
         """
         # Tuple with category IDs of eve types we want to keep
         strong_categories = (
-            Category.ship,
-            Category.module,
             Category.charge,
-            Category.skill,
             Category.drone,
+            Category.fighter,
             Category.implant,
+            Category.module,
+            Category.ship,
+            Category.skill,
             Category.subsystem
         )
         # Set with group IDs of eve types we want to keep
@@ -113,7 +114,7 @@ class Cleaner:
         # Auxiliary tables are those which do not define
         # any entities, they just map one entities to others
         # or complement entities with additional data
-        aux_tables = ('dgmtypeattribs', 'dgmtypeeffects')
+        aux_tables = ('dgmtypeattribs', 'dgmtypeeffects', 'typefighterabils')
         for table_name in aux_tables:
             to_restore = set()
             # Restore rows which map other entities to types
@@ -185,6 +186,9 @@ class Cleaner:
             },
             'evetypes': {
                 'groupID': ('evegroups', 'groupID')
+            },
+            'typefighterabils': {
+                'typeID': ('evetypes', 'typeID')
             }
         }
         for src_table_name, table_fks in foreign_keys.items():

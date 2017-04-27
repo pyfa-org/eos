@@ -51,7 +51,8 @@ class Checker:
             'dgmtypeattribs': ('typeID', 'attributeID'),
             'dgmtypeeffects': ('typeID', 'effectID'),
             'evegroups': ('groupID',),
-            'evetypes': ('typeID',)
+            'evetypes': ('typeID',),
+            'typefighterabils': ('typeID', 'abilityID')
         }
         for table_name, key_names in primary_keys.items():
             self._table_pk(table_name, key_names)

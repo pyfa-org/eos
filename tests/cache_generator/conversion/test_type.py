@@ -31,8 +31,8 @@ class TestConversionType(GeneratorTestCase):
     """
 
     def test_fields(self):
-        self.dh.data['evetypes'].append({'randomField': 66, 'typeID': 1, 'groupID': 6, 'typeName_en-us': ''})
-        self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6, 'groupName_en-us': ''})
+        self.dh.data['evetypes'].append({'randomField': 66, 'typeID': 1, 'groupID': 6})
+        self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeattribs'].append({'attributeID': 80, 'typeID': 1, 'value': 180.0})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111, 'isDefault': True})
@@ -45,6 +45,11 @@ class TestConversionType(GeneratorTestCase):
             'effectID': 1111, 'effectCategory': 85, 'isOffensive': False, 'isAssistance': True,
             'fittingUsageChanceAttributeID': 41, 'preExpression': None, 'postExpression': None
         })
+        self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 5})
+        self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 6, 'cooldownSeconds': 60})
+        self.dh.data['typefighterabils'].append({
+            'typeID': 1, 'abilityID': 50, 'chargeCount': 3, 'rearmTimeSeconds': 20
+        })
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
@@ -56,7 +61,7 @@ class TestConversionType(GeneratorTestCase):
         self.assertEqual(len(data['types']), 1)
         self.assertIn(1, data['types'])
         type_row = data['types'][1]
-        self.assertEqual(len(type_row), 6)
+        self.assertEqual(len(type_row), 7)
         self.assertEqual(type_row['group'], 6)
         self.assertEqual(type_row['category'], 16)
         type_attributes = type_row['attributes']
@@ -69,3 +74,15 @@ class TestConversionType(GeneratorTestCase):
         self.assertIn(1111, type_effects)
         type_defeff = type_row['default_effect']
         self.assertEqual(type_defeff, 111)
+        type_fighterabils = type_row['fighterabilities']
+        self.assertEqual(len(type_fighterabils), 3)
+        self.assertCountEqual(type_fighterabils, {5, 6, 50})
+        self.assertDictEqual(
+            type_fighterabils[5], {'cooldown_time': None, 'charge_amount': None, 'charge_rearm_time': None}
+        )
+        self.assertDictEqual(
+            type_fighterabils[6], {'cooldown_time': 60, 'charge_amount': None, 'charge_rearm_time': None}
+        )
+        self.assertDictEqual(
+            type_fighterabils[50], {'cooldown_time': None, 'charge_amount': 3, 'charge_rearm_time': 20}
+        )

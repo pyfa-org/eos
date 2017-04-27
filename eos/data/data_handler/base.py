@@ -60,6 +60,10 @@ class BaseDataHandler(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def get_typefighterabils(self):
+        ...
+
+    @abstractmethod
     def get_version(self):
         """
         Get version of data.
