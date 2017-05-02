@@ -108,51 +108,52 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         expl = item.attributes.get(Attribute.explosive_damage)
         return em, therm, kin, expl
 
+    # Format: {weapon type: (function which fetches base damage, damage multiplier flag)}
+    __base_dmg_fetchers = {
+        WeaponType.turret: (__get_base_dmg_hybrid, True),
+        WeaponType.guided_missile: (__get_base_dmg_charge, False),
+        WeaponType.instant_missile: (__get_base_dmg_item, True),
+        WeaponType.bomb: (__get_base_dmg_charge, False),
+        WeaponType.direct: (__get_base_dmg_item, False),
+        WeaponType.untargeted_aoe: (__get_base_dmg_item, False)
+    }
+
     @volatile_property
-    def _base_volley(self):
+    def _base_volleys(self):
         """
         Return base volley for current item - nominal volley, not modified by
         any resistances.
         """
-        # Format: {weapon type: (function which fetches base damage, damage multiplier flag)}
-        base_dmg_fetchers = {
-            WeaponType.turret: (self.__get_base_dmg_hybrid, True),
-            WeaponType.guided_missile: (self.__get_base_dmg_charge, False),
-            WeaponType.instant_missile: (self.__get_base_dmg_item, True),
-            WeaponType.bomb: (self.__get_base_dmg_charge, False),
-            WeaponType.direct: (self.__get_base_dmg_item, False),
-            WeaponType.untargeted_aoe: (self.__get_base_dmg_item, False)
-        }
-        try:
-            base_fetcher, multiply = base_dmg_fetchers[self._weapon_type]
-        # Return tuple with Nones if we're not dealing with known type weapon
-        except KeyError:
-            return DamageTypesTotal(em=None, thermal=None, kinetic=None, explosive=None)
-        em, therm, kin, expl = base_fetcher()
-        if multiply:
-            try:
-                multiplier = self.attributes[Attribute.damage_multiplier]
-            except KeyError:
-                pass
-            else:
-                # Guards against None-values
+        # Format: {effect ID: base volley}
+        base_volleys = {}
+        for effect_id, weapon_type in self._weapon_types.items():
+            base_fetcher, multiply = self.__base_dmg_fetchers[weapon_type]
+            em, therm, kin, expl = base_fetcher(self)
+            if multiply:
                 try:
-                    em *= multiplier
-                except TypeError:
+                    multiplier = self.attributes[Attribute.damage_multiplier]
+                except KeyError:
                     pass
-                try:
-                    therm *= multiplier
-                except TypeError:
-                    pass
-                try:
-                    kin *= multiplier
-                except TypeError:
-                    pass
-                try:
-                    expl *= multiplier
-                except TypeError:
-                    pass
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
+                else:
+                    # Guards against None-values
+                    try:
+                        em *= multiplier
+                    except TypeError:
+                        pass
+                    try:
+                        therm *= multiplier
+                    except TypeError:
+                        pass
+                    try:
+                        kin *= multiplier
+                    except TypeError:
+                        pass
+                    try:
+                        expl *= multiplier
+                    except TypeError:
+                        pass
+            base_volleys[effect_id] = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
+        return base_volleys
 
     def get_nominal_volley(self, target_resistances=None):
         """
@@ -168,7 +169,37 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         Object with volley damage of current item, accessible via following attributes:
         em, thermal, kinetic, explosive, total
         """
-        volley = self._base_volley
+        # TODO: Combine multiple volleys into one as temporary measure
+        em, therm, kin, expl = None, None, None, None
+        for volley in self._base_volleys.values():
+            if em is None:
+                em = volley.em
+            else:
+                try:
+                    em += volley.em
+                except TypeError:
+                    pass
+            if therm is None:
+                therm = volley.thermal
+            else:
+                try:
+                    therm += volley.thermal
+                except TypeError:
+                    pass
+            if kin is None:
+                kin = volley.kinetic
+            else:
+                try:
+                    kin += volley.kinetic
+                except TypeError:
+                    pass
+            if expl is None:
+                expl = volley.explosive
+            else:
+                try:
+                    expl += volley.explosive
+                except TypeError:
+                    pass
         if target_resistances is not None:
             em_resonance = 1 - target_resistances.em
             therm_resonance = 1 - target_resistances.thermal
@@ -191,8 +222,7 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
                 expl = volley.explosive * expl_resonance
             except TypeError:
                 expl = None
-            volley = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
-        return volley
+        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
 
     def get_nominal_dps(self, target_resistances=None, reload=False):
         volley = self.get_nominal_volley(target_resistances=target_resistances)
@@ -238,43 +268,38 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
 
     @volatile_property
-    def _weapon_type(self):
+    def _weapon_types(self):
         """
         Get weapon type of item. Weapon type defines mechanics used to
         deliver damage and attributes used for damage calculation. If
         item is not a weapon or an inactive weapon, None is returned.
         """
-        try:
-            item_defeff_id = self._eve_type.default_effect.id
-        except AttributeError:
-            return None
-        # Weapon properties are defined by item default effect; thus,
-        # if it is not active, it can't be considered as weapon
-        if item_defeff_id not in self._active_effects:
-            return None
+        # Format: {effect ID: weapon type}
+        weapon_types = {}
         # If item contains some charge type but can't hold enough to actually
         # cycle itself, do not consider such item as weapon
         if getattr(self, 'charged_cycles', None) == 0:
-            return None
-        # For some weapon types, it's enough to use just
-        # item default effect for detection
-        try:
-            return BASIC_EFFECT_WEAPON_MAP[item_defeff_id]
-        except KeyError:
+            return weapon_types
+        for effect_id in self._active_effects:
+            # Weapon properties are defined by item effects
+            if effect_id in BASIC_EFFECT_WEAPON_MAP:
+                weapon_types[effect_id] = BASIC_EFFECT_WEAPON_MAP[effect_id]
             # For missiles and bombs, we need to use charge default effect as well
             # as it defines property of 'projectile' which massively influence type
             # of weapon
-            charge = getattr(self, 'charge', None)
-            try:
-                charge_defeff_id = charge._eve_type.default_effect.id
-            except AttributeError:
-                return None
-            if charge_defeff_id not in charge._active_effects:
-                return None
-            try:
-                return CHARGE_EFFECT_WEAPON_MAP[item_defeff_id][charge_defeff_id]
-            except KeyError:
-                return None
+            elif effect_id in CHARGE_EFFECT_WEAPON_MAP:
+                charge = getattr(self, 'charge', None)
+                try:
+                    charge_defeff_id = charge._eve_type.default_effect.id
+                except AttributeError:
+                    continue
+                if charge_defeff_id not in charge._active_effects:
+                    continue
+                try:
+                    weapon_types[effect_id] = CHARGE_EFFECT_WEAPON_MAP[effect_id][charge_defeff_id]
+                except KeyError:
+                    continue
+        return weapon_types
 
     def get_volley_vs_target(self, target_data=None, target_resistances=None):
         # TODO
