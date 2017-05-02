@@ -121,8 +121,8 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
     @volatile_property
     def _base_volleys(self):
         """
-        Return base volley for current item - nominal volley, not modified by
-        any resistances.
+        Return base volleys for all damage-dealing effects of the current item;
+        values returned are nominal volleys, not modified by any resistances.
         """
         # Format: {effect ID: base volley}
         base_volleys = {}
@@ -207,19 +207,19 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
             expl_resonance = 1 - target_resistances.explosive
             # Guards against None-values of volley components
             try:
-                em = volley.em * em_resonance
+                em *= em_resonance
             except TypeError:
                 em = None
             try:
-                therm = volley.thermal * therm_resonance
+                therm *= therm_resonance
             except TypeError:
                 therm = None
             try:
-                kin = volley.kinetic * kin_resonance
+                kin *= kin_resonance
             except TypeError:
                 kin = None
             try:
-                expl = volley.explosive * expl_resonance
+                expl *= expl_resonance
             except TypeError:
                 expl = None
         return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
@@ -270,9 +270,10 @@ class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVola
     @volatile_property
     def _weapon_types(self):
         """
-        Get weapon type of item. Weapon type defines mechanics used to
-        deliver damage and attributes used for damage calculation. If
-        item is not a weapon or an inactive weapon, None is returned.
+        Get weapon types of the item. Weapon types defines mechanics used
+        to deliver damage and attributes used for damage calculation on a
+        per-effect basis. If item is not a weapon or an inactive weapon,
+        empty dictionary is returned.
         """
         # Format: {effect ID: weapon type}
         weapon_types = {}
