@@ -122,13 +122,7 @@ class JsonCacheHandler(BaseCacheHandler):
                 attr_data = self.__attribute_data_cache[json_attr_id]
             except KeyError as e:
                 raise AttributeFetchError(attr_id) from e
-            attribute = Attribute(
-                attribute_id=attr_id,
-                max_attribute=attr_data[0],
-                default_value=attr_data[1],
-                high_is_good=attr_data[2],
-                stackable=attr_data[3]
-            )
+            attribute = Attribute.decompress(attr_id, attr_data)
             self.__attribute_obj_cache[attr_id] = attribute
         return attribute
 

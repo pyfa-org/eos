@@ -23,9 +23,10 @@ from eos.const.eos import ModifierOperator
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
 from .exception import ModificationCalculationError
+from ..base import BaseCachable
 
 
-class DogmaModifier(BaseModifier):
+class DogmaModifier(BaseModifier, BaseCachable):
     """
     Dogma modifiers are the most typical modifier type. They always
     take attribute value which describes modification strength from
@@ -34,15 +35,13 @@ class DogmaModifier(BaseModifier):
     """
 
     def __init__(
-            self, modifier_id=None, tgt_filter=None,
-            tgt_domain=None, tgt_filter_extra_arg=None,
+            self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
             tgt_attr=None, operator=None, src_attr=None
     ):
         BaseModifier.__init__(
             self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
             tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr=tgt_attr
         )
-        self.id = modifier_id
         # Class-specific attributes
         self.operator = operator
         self.src_attr = src_attr
@@ -66,7 +65,14 @@ class DogmaModifier(BaseModifier):
             isinstance(self.src_attr, int)
         ))
 
+    # Caching-related methods
+    def compress(self):
+        return self.tgt_filter, self.tgt_domain, self.tgt_filter_extra_arg, self.tgt_attr, self.operator, self.src_attr
+
+    @classmethod
+    def decompress(cls, compressed):
+        return cls(*compressed)
+
     # Auxiliary methods
     def __repr__(self):
-        spec = ['id']
-        return make_repr_str(self, spec)
+        return make_repr_str(self, ())

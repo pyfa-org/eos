@@ -19,13 +19,17 @@
 # ===============================================================================
 
 
+from itertools import chain
+
 from eos.const.eos import State
 from eos.const.eve import EffectCategory
+from eos.data.cache_object.modifier import DogmaModifier
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
+from ..base import BaseCachable
 
 
-class Effect:
+class Effect(BaseCachable):
     """
     Represents a single effect. Effects are the building blocks which describe what its carrier
     does with other items.
@@ -98,6 +102,21 @@ class Effect:
         """
         return self.__effect_state_map[self.category]
 
+    # Caching-related methods
+    def compress(self):
+        modifiers = tuple(m.compress() for m in self.modifiers if isinstance(m, BaseCachable))
+        return (
+            self.id, self.category, self.is_offensive, self.is_assistance, self.duration_attribute,
+            self.discharge_attribute, self.range_attribute, self.falloff_attribute, self.tracking_speed_attribute,
+            self.fitting_usage_chance_attribute, self.build_status, modifiers
+        )
+
+    @classmethod
+    def decompress(cls, compressed):
+        modifiers = tuple(DogmaModifier.decompress(cm) for cm in compressed[-1])
+        return cls(chain(*compressed[:-1], (modifiers,)))
+
+    # Auxiliary methods
     def __repr__(self):
         spec = ['id']
         return make_repr_str(self, spec)

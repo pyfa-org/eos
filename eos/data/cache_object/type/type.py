@@ -130,6 +130,15 @@ class Type:
                 break
         return targeted
 
+    # Caching-related methods
+    def compress(self):
+        return self.id, self.tgt_domain, self.tgt_filter_extra_arg, self.tgt_attr, self.operator, self.src_attr
+
+    @classmethod
+    def decompress(cls, compressed):
+        return cls(*compressed)
+
+    # Auxiliary methods
     def __repr__(self):
         spec = ['id']
         return make_repr_str(self, spec)

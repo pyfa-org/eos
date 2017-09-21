@@ -20,14 +20,15 @@
 
 
 from eos.util.repr import make_repr_str
+from ..base import BaseCachable
 
 
-class Attribute:
+class Attribute(BaseCachable):
     """Class which holds attribute metadata"""
 
     def __init__(
-        self, attribute_id, max_attribute=None, default_value=None,
-        high_is_good=None, stackable=None
+        self, attribute_id, max_attribute=None,
+        default_value=None, high_is_good=None, stackable=None
     ):
         self.id = attribute_id
 
@@ -47,6 +48,15 @@ class Attribute:
         # or not (True)
         self.stackable = bool(stackable) if stackable is not None else None
 
+    # Caching-related methods
+    def compress(self):
+        return self.id, self.max_attribute, self.default_value, self.high_is_good, self.stackable
+
+    @classmethod
+    def decompress(cls, compressed):
+        return cls(*compressed)
+
+    # Auxiliary methods
     def __repr__(self):
         spec = ['id']
         return make_repr_str(self, spec)
