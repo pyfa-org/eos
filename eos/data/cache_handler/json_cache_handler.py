@@ -29,7 +29,7 @@ from eos.data.cache_object import *
 from eos.data.cache_object.custom import customize_effect, customize_type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
-from .exception import TypeFetchError, AttributeFetchError, EffectFetchError, ModifierFetchError
+from .exception import TypeFetchError, AttributeFetchError, EffectFetchError
 
 
 logger = getLogger(__name__)
@@ -52,34 +52,13 @@ class JsonCacheHandler(BaseCacheHandler):
         self.__type_data_cache = {}
         self.__attribute_data_cache = {}
         self.__effect_data_cache = {}
-        self.__modifier_data_cache = {}
         self.__fingerprint = None
         # Initialize weakref object cache
         self.__type_obj_cache = WeakValueDictionary()
         self.__attribute_obj_cache = WeakValueDictionary()
         self.__effect_obj_cache = WeakValueDictionary()
-        self.__modifier_obj_cache = WeakValueDictionary()
-
-        # If cache doesn't exist, silently finish initialization
-        if not os.path.exists(self._cache_path):
-            return
-        # Read JSON into local variable
-        try:
-            with bz2.BZ2File(self._cache_path, 'r') as file:
-                json_data = file.read().decode('utf-8')
-                data = json.loads(json_data)
-        except KeyboardInterrupt:
-            raise
-        # If file doesn't exist, JSON load errors occur, or
-        # anything else bad happens, do not load anything
-        # and leave values as initialized
-        except:
-            msg = 'error during reading cache'
-            logger.error(msg)
-        # Load data into data cache, if no errors occurred
-        # during JSON reading/parsing
-        else:
-            self.__update_mem_cache(data)
+        # Fill memory cache with data, if possible
+        self.__load_persistent_cache()
 
     def get_type(self, type_id):
         try:
@@ -89,22 +68,11 @@ class JsonCacheHandler(BaseCacheHandler):
         try:
             eve_type = self.__type_obj_cache[type_id]
         except KeyError:
-            # We do str(int(id)) here because JSON dictionaries
-            # always have strings as key
-            json_type_id = str(type_id)
             try:
-                type_data = self.__type_data_cache[json_type_id]
+                type_data = self.__type_data_cache[type_id]
             except KeyError as e:
                 raise TypeFetchError(type_id) from e
-            eve_type = Type(
-                type_id=type_id,
-                group=type_data[0],
-                category=type_data[1],
-                attributes={attr_id: attr_val for attr_id, attr_val in type_data[2]},
-                effects=tuple(self.get_effect(effect_id) for effect_id in type_data[3]),
-                default_effect=None if type_data[4] is None else self.get_effect(type_data[4]),
-                fighter_abilities={abililty_id: ability_data for abililty_id, ability_data in type_data[5]}
-            )
+            eve_type = Type.decompress(self, type_data)
             customize_type(eve_type)
             self.__type_obj_cache[type_id] = eve_type
         return eve_type
@@ -117,12 +85,11 @@ class JsonCacheHandler(BaseCacheHandler):
         try:
             attribute = self.__attribute_obj_cache[attr_id]
         except KeyError:
-            json_attr_id = str(attr_id)
             try:
-                attr_data = self.__attribute_data_cache[json_attr_id]
+                attr_data = self.__attribute_data_cache[attr_id]
             except KeyError as e:
                 raise AttributeFetchError(attr_id) from e
-            attribute = Attribute.decompress(attr_id, attr_data)
+            attribute = Attribute.decompress(self, attr_data)
             self.__attribute_obj_cache[attr_id] = attribute
         return attribute
 
@@ -134,158 +101,79 @@ class JsonCacheHandler(BaseCacheHandler):
         try:
             effect = self.__effect_obj_cache[effect_id]
         except KeyError:
-            json_effect_id = str(effect_id)
             try:
-                effect_data = self.__effect_data_cache[json_effect_id]
+                effect_data = self.__effect_data_cache[effect_id]
             except KeyError as e:
                 raise EffectFetchError(effect_id) from e
-            effect = Effect(
-                effect_id=effect_id,
-                category=effect_data[0],
-                is_offensive=effect_data[1],
-                is_assistance=effect_data[2],
-                duration_attribute=effect_data[3],
-                discharge_attribute=effect_data[4],
-                range_attribute=effect_data[5],
-                falloff_attribute=effect_data[6],
-                tracking_speed_attribute=effect_data[7],
-                fitting_usage_chance_attribute=effect_data[8],
-                build_status=effect_data[9],
-                modifiers=tuple(self.get_modifier(modifier_id) for modifier_id in effect_data[10])
-            )
+            effect = Effect.decompress(self, effect_data)
             customize_effect(effect)
             self.__effect_obj_cache[effect_id] = effect
         return effect
 
-    def get_modifier(self, modifier_id):
-        try:
-            modifier_id = int(modifier_id)
-        except TypeError as e:
-            raise ModifierFetchError(modifier_id) from e
-        try:
-            modifier = self.__modifier_obj_cache[modifier_id]
-        except KeyError:
-            json_modifier_id = str(modifier_id)
-            try:
-                modifier_data = self.__modifier_data_cache[json_modifier_id]
-            except KeyError as e:
-                raise ModifierFetchError(modifier_id) from e
-            modifier = DogmaModifier(
-                modifier_id=modifier_id,
-                tgt_filter=modifier_data[0],
-                tgt_domain=modifier_data[1],
-                tgt_filter_extra_arg=modifier_data[2],
-                tgt_attr=modifier_data[3],
-                operator=modifier_data[4],
-                src_attr=modifier_data[5]
-            )
-            self.__modifier_obj_cache[modifier_id] = modifier
-        return modifier
-
     def get_fingerprint(self):
         return self.__fingerprint
 
+    def __load_persistent_cache(self):
+        # If cache file doesn't exist, bail out - we have nothing to read
+        if not os.path.exists(self._cache_path):
+            return
+        try:
+            with bz2.BZ2File(self._cache_path, 'r') as file:
+                json_cache_data = file.read().decode('utf-8')
+                cache_data = json.loads(json_cache_data)
+        except KeyboardInterrupt:
+            raise
+        # If file doesn't exist, JSON load errors occur, or anything else bad
+        # happens, leave memory cache empty
+        except:
+            msg = 'error during reading cache'
+            logger.error(msg)
+        # Load cache data into memory data cache, if no errors occurred
+        # during JSON reading/parsing
+        else:
+            self.__update_memory_cache(cache_data)
+
     def update_cache(self, data, fingerprint):
-        # Make light version of data and add fingerprint
-        # to it
-        data = self.__strip_data(data)
-        data['fingerprint'] = fingerprint
-        # Update disk cache
+        """
+        Replace existing cache data with passed data.
+        """
+        types, attributes, effects = data
+        cache_data = {
+            'types': {type_id: eve_type.compress() for type_id, eve_type in types.items()},
+            'attributes': {attr_id: attr.compress() for attr_id, attr in attributes.items()},
+            'effects': {effect_id: effect.compress() for effect_id, effect in effects.items()},
+            'fingerprint': fingerprint
+        }
+        self.__update_persistent_cache(cache_data)
+        self.__update_memory_cache(cache_data)
+
+    def __update_persistent_cache(self, cache_data):
+        """
+        Write passed data to persistent storage, possibly
+        overwriting existing data.
+        """
         cache_folder = os.path.dirname(self._cache_path)
         if os.path.isdir(cache_folder) is not True:
             os.makedirs(cache_folder, mode=0o755)
         with bz2.BZ2File(self._cache_path, 'w') as file:
-            json_data = json.dumps(data)
-            file.write(json_data.encode('utf-8'))
-        # Update data cache; encode to JSON and decode back
-        # to make sure form of data is the same as after
-        # loading it from cache (e.g. dictionary keys are
-        # stored as strings in JSON)
-        data = json.loads(json_data)
-        self.__update_mem_cache(data)
+            json_cache_data = json.dumps(cache_data)
+            file.write(json_cache_data.encode('utf-8'))
 
-    def __strip_data(self, data):
+    def __update_memory_cache(self, cache_data):
         """
-        Rework passed data, keying it and stripping dictionary
-        keys from rows for performance.
+        Replace existing memory cache data with passed data.
         """
-        slim_data = {}
-
-        slim_types = {}
-        for type_row in data['types']:
-            type_id = type_row['type_id']
-            slim_types[type_id] = (
-                type_row['group'],
-                type_row['category'],
-                tuple(type_row['attributes'].items()),  # Dictionary -> tuple
-                tuple(type_row['effects']),  # List -> tuple
-                type_row['default_effect'],
-                tuple(type_row['fighterabilities'].items())  # Dictionary -> tuple
-            )
-        slim_data['types'] = slim_types
-
-        slim_attribs = {}
-        for attr_row in data['attributes']:
-            attribute_id = attr_row['attribute_id']
-            slim_attribs[attribute_id] = (
-                attr_row['max_attribute'],
-                attr_row['default_value'],
-                attr_row['high_is_good'],
-                attr_row['stackable']
-            )
-        slim_data['attributes'] = slim_attribs
-
-        slim_effects = {}
-        for effect_row in data['effects']:
-            effect_id = effect_row['effect_id']
-            slim_effects[effect_id] = (
-                effect_row['effect_category'],
-                effect_row['is_offensive'],
-                effect_row['is_assistance'],
-                effect_row['duration_attribute'],
-                effect_row['discharge_attribute'],
-                effect_row['range_attribute'],
-                effect_row['falloff_attribute'],
-                effect_row['tracking_speed_attribute'],
-                effect_row['fitting_usage_chance_attribute'],
-                effect_row['build_status'],
-                tuple(effect_row['modifiers'])  # List -> tuple
-            )
-        slim_data['effects'] = slim_effects
-
-        slim_modifiers = {}
-        for modifier_row in data['modifiers']:
-            modifier_id = modifier_row['modifier_id']
-            slim_modifiers[modifier_id] = (
-                modifier_row['tgt_filter'],
-                modifier_row['tgt_domain'],
-                modifier_row['tgt_filter_extra_arg'],
-                modifier_row['tgt_attr'],
-                modifier_row['operator'],
-                modifier_row['src_attr']
-            )
-        slim_data['modifiers'] = slim_modifiers
-
-        return slim_data
-
-    def __update_mem_cache(self, data):
-        """
-        Loads data into memory data cache.
-
-        Required arguments:
-        data -- dictionary with data to load
-        """
-        self.__type_data_cache = data['types']
-        self.__attribute_data_cache = data['attributes']
-        self.__effect_data_cache = data['effects']
-        self.__modifier_data_cache = data['modifiers']
-        self.__fingerprint = data['fingerprint']
+        # Convert keys to ints because we accept cache data decoded
+        # from JSON, and in JSON map keys are always strings
+        self.__type_data_cache = {int(k): v for k, v in cache_data['types'].items()}
+        self.__attribute_data_cache = {int(k): v for k, v in cache_data['attributes'].items()}
+        self.__effect_data_cache = {int(k): v for k, v in cache_data['effects'].items()}
+        self.__fingerprint = cache_data['fingerprint']
         # Also clear object cache to make sure objects composed
         # from old data are gone
         self.__type_obj_cache.clear()
         self.__attribute_obj_cache.clear()
         self.__effect_obj_cache.clear()
-        self.__modifier_obj_cache.clear()
 
     def __repr__(self):
         spec = [['cache_path', '_cache_path']]

@@ -85,8 +85,8 @@ class SourceManager:
                 logger.info(msg)
 
             # Generate cache and write it
-            cache_data = CacheGenerator().run(data_handler)
-            cache_handler.update_cache(cache_data, current_fp)
+            data = CacheGenerator().run(data_handler)
+            cache_handler.update_cache(data, current_fp)
 
         # Finally, add record to list of sources
         source = Source(alias=alias, cache_handler=cache_handler)

@@ -32,6 +32,6 @@ class BaseCachable(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def decompress(cls, compressed):
+    def decompress(cls, cache_handler, compressed):
         """Construct object from python primitive"""
         ...

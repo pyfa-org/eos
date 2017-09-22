@@ -43,10 +43,6 @@ class BaseCacheHandler(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def get_modifier(self, modifier_id):
-        ...
-
-    @abstractmethod
     def get_fingerprint(self):
         ...
 

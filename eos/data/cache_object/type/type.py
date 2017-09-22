@@ -26,12 +26,13 @@ from eos.const.eve import Attribute, EffectCategory
 from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
+from ..base import BaseCachable
 
 
 FighterAbility = namedtuple('FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))
 
 
-class Type:
+class Type(BaseCachable):
     """
     Type represents any eve type. All characters, ships,
     incursion system-wide effects are actually eve types.
@@ -130,13 +131,29 @@ class Type:
                 break
         return targeted
 
-    # Caching-related methods
+    # Cache-related methods
     def compress(self):
-        return self.id, self.tgt_domain, self.tgt_filter_extra_arg, self.tgt_attr, self.operator, self.src_attr
+        return (
+            self.id,
+            self.group,
+            self.category,
+            tuple(self.attributes.items()),
+            tuple(self.effects.keys()),
+            None if self.default_effect is None else self.default_effect.id,
+            tuple(self.fighter_abilities.items())
+        )
 
     @classmethod
-    def decompress(cls, compressed):
-        return cls(*compressed)
+    def decompress(cls, cache_handler, compressed):
+        return cls(
+            type_id=compressed[0],
+            group=compressed[1],
+            category=compressed[2],
+            attributes={k: v for k, v in compressed[3]},
+            effects=tuple(cache_handler.get_effect(eid) for eid in compressed[4]),
+            default_effect=None if compressed[5] is None else cache_handler.get_effect(compressed[5]),
+            fighter_abilities={k: v for k, v in compressed[6]}
+        )
 
     # Auxiliary methods
     def __repr__(self):

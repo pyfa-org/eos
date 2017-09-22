@@ -48,13 +48,25 @@ class Attribute(BaseCachable):
         # or not (True)
         self.stackable = bool(stackable) if stackable is not None else None
 
-    # Caching-related methods
+    # Cache-related methods
     def compress(self):
-        return self.id, self.max_attribute, self.default_value, self.high_is_good, self.stackable
+        return (
+            self.id,
+            self.max_attribute,
+            self.default_value,
+            self.high_is_good,
+            self.stackable
+        )
 
     @classmethod
-    def decompress(cls, compressed):
-        return cls(*compressed)
+    def decompress(cls, cache_handler, compressed):
+        return cls(
+            attribute_id=compressed[0],
+            max_attribute=compressed[1],
+            default_value=compressed[2],
+            high_is_good=compressed[3],
+            stackable=compressed[4]
+        )
 
     # Auxiliary methods
     def __repr__(self):

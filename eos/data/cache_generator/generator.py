@@ -23,6 +23,7 @@ from eos.util.frozen_dict import FrozenDict
 from .checker import Checker
 from .cleaner import Cleaner
 from .converter import Converter
+from .normalizer import Normalizer
 
 
 class CacheGenerator:
@@ -34,6 +35,7 @@ class CacheGenerator:
     def __init__(self):
         self._checker = Checker()
         self._cleaner = Cleaner()
+        self._normalizer = Normalizer()
         self._converter = Converter()
 
     def run(self, data_handler):
@@ -87,7 +89,7 @@ class CacheGenerator:
 
         # Also normalize the data to make data structure
         # more consistent, and thus easier to clean properly
-        self._converter.normalize(data)
+        self._normalizer.normalize(data)
 
         # Clean our container out of unwanted data
         self._cleaner.clean(data)
@@ -95,9 +97,8 @@ class CacheGenerator:
         # Verify that our data is ready for conversion
         self._checker.pre_convert(data)
 
-        # Convert data into Eos-specific format. Here tables are
-        # no longer represented by sets of frozendicts, but by
-        # list of dicts
-        data = self._converter.convert(data)
+        # Convert data into Eos-specific objects, stored in several dictionaries,
+        # with object IDs being keys
+        types, attributes, effects = self._converter.convert(data)
 
-        return data
+        return types, attributes, effects

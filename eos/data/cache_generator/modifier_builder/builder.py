@@ -50,13 +50,13 @@ class ModifierBuilder:
         Return value:
         Tuple with list of modifiers and effect build status
         """
-        modifier_info = effect_row['modifier_info']
-        pre_expression = effect_row['pre_expression']
+        modifier_info = effect_row['modifierInfo']
+        pre_expression = effect_row['preExpression']
         if modifier_info:
             try:
                 modifiers, build_failures = self._info.convert(modifier_info)
             except YamlParsingError as e:
-                effect_id = effect_row['effect_id']
+                effect_id = effect_row['effectID']
                 msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
                 logger.error(msg)
                 return (), EffectBuildStatus.error
@@ -70,7 +70,7 @@ class ModifierBuilder:
             # non-modifier definitions. Handle these somewhat
             # gracefully and mark such effects as skipped
             except UnknownEtreeRootOperandError as e:
-                effect_id = effect_row['effect_id']
+                effect_id = effect_row['effectID']
                 msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
                 logger.info(msg)
                 return (), EffectBuildStatus.skipped
@@ -83,7 +83,7 @@ class ModifierBuilder:
         if build_failures == 0 and validation_failures == 0:
             return valid_modifiers, EffectBuildStatus.success
         else:
-            effect_id = effect_row['effect_id']
+            effect_id = effect_row['effectID']
             total_modifiers = build_failures + validation_failures + len(valid_modifiers)
             msg_segments = []
             if build_failures > 0:

@@ -65,13 +65,27 @@ class DogmaModifier(BaseModifier, BaseCachable):
             isinstance(self.src_attr, int)
         ))
 
-    # Caching-related methods
+    # Cache-related methods
     def compress(self):
-        return self.tgt_filter, self.tgt_domain, self.tgt_filter_extra_arg, self.tgt_attr, self.operator, self.src_attr
+        return (
+            self.tgt_filter,
+            self.tgt_domain,
+            self.tgt_filter_extra_arg,
+            self.tgt_attr,
+            self.operator,
+            self.src_attr
+        )
 
     @classmethod
-    def decompress(cls, compressed):
-        return cls(*compressed)
+    def decompress(cls, cache_handler, compressed):
+        return cls(
+            tgt_filter=compressed[0],
+            tgt_domain=compressed[1],
+            tgt_filter_extra_arg=compressed[2],
+            tgt_attr=compressed[3],
+            operator=compressed[4],
+            src_attr=compressed[5]
+        )
 
     # Auxiliary methods
     def __repr__(self):

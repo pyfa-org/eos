@@ -102,19 +102,39 @@ class Effect(BaseCachable):
         """
         return self.__effect_state_map[self.category]
 
-    # Caching-related methods
+    # Cache-related methods
     def compress(self):
-        modifiers = tuple(m.compress() for m in self.modifiers if isinstance(m, BaseCachable))
         return (
-            self.id, self.category, self.is_offensive, self.is_assistance, self.duration_attribute,
-            self.discharge_attribute, self.range_attribute, self.falloff_attribute, self.tracking_speed_attribute,
-            self.fitting_usage_chance_attribute, self.build_status, modifiers
+            self.id,
+            self.category,
+            self.is_offensive,
+            self.is_assistance,
+            self.duration_attribute,
+            self.discharge_attribute,
+            self.range_attribute,
+            self.falloff_attribute,
+            self.tracking_speed_attribute,
+            self.fitting_usage_chance_attribute,
+            self.build_status,
+            tuple(m.compress() for m in self.modifiers if isinstance(m, DogmaModifier))
         )
 
     @classmethod
-    def decompress(cls, compressed):
-        modifiers = tuple(DogmaModifier.decompress(cm) for cm in compressed[-1])
-        return cls(chain(*compressed[:-1], (modifiers,)))
+    def decompress(cls, cache_handler, compressed):
+        return cls(
+            effect_id=compressed[0],
+            category=compressed[1],
+            is_offensive=compressed[2],
+            is_assistance=compressed[3],
+            duration_attribute=compressed[4],
+            discharge_attribute=compressed[5],
+            range_attribute=compressed[6],
+            falloff_attribute=compressed[7],
+            tracking_speed_attribute=compressed[8],
+            fitting_usage_chance_attribute=compressed[9],
+            build_status=compressed[10],
+            modifiers=tuple(DogmaModifier.decompress(cache_handler, cm) for cm in compressed[11])
+        )
 
     # Auxiliary methods
     def __repr__(self):
