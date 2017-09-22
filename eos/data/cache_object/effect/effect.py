@@ -19,8 +19,6 @@
 # ===============================================================================
 
 
-from itertools import chain
-
 from eos.const.eos import State
 from eos.const.eve import EffectCategory
 from eos.data.cache_object.modifier import DogmaModifier

@@ -23,7 +23,6 @@ from logging import getLogger
 
 from eos.const.eve import Attribute, Group, Operand
 from eos.util.frozen_dict import FrozenDict
-from .modifier_builder import ModifierBuilder
 
 
 logger = getLogger(__name__)
