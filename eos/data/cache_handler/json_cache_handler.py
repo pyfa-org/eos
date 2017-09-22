@@ -37,13 +37,13 @@ logger = getLogger(__name__)
 
 class JsonCacheHandler(BaseCacheHandler):
     """
-    This cache handler implements on-disk cache store in the form
-    of compressed JSON. To improve performance further, it also
-    keeps loads data from on-disk cache to memory, and uses weakref
-    object cache for assembled objects.
+    This cache handler implements persistent cache store in the form
+    of compressed JSON. To improve performance further, it also keeps
+    loaded data in memory, and uses weakref object cache for assembled
+    objects.
 
     Required arguments:
-    cache_path -- file name where on-disk cache will be stored (.json.bz2)
+    cache_path -- file path where persistent cache will be stored (.json.bz2)
     """
 
     def __init__(self, cache_path):
@@ -123,13 +123,12 @@ class JsonCacheHandler(BaseCacheHandler):
                 cache_data = json.loads(json_cache_data)
         except KeyboardInterrupt:
             raise
-        # If file doesn't exist, JSON load errors occur, or anything else bad
+        # If file doesn't exist, JSON load errors occurs, or anything else bad
         # happens, leave memory cache empty
         except:
             msg = 'error during reading cache'
             logger.error(msg)
-        # Load cache data into memory data cache, if no errors occurred
-        # during JSON reading/parsing
+        # Load cache data into memory data cache, if everything went smooth
         else:
             self.__update_memory_cache(cache_data)
 
