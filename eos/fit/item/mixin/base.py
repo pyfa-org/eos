@@ -147,8 +147,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         data = {}
         for effect in eve_type_effects.values():
             # Get chance from modified attributes, if specified
-            chance_attr = effect.fitting_usage_chance_attribute
-            chance = self.attributes[chance_attr] if chance_attr is not None else None
+            chance = effect.get_fitting_usage_chance(self)
             # Get effect activable flag
             activable = effect.id not in self.__blocked_effect_ids
             data[effect.id] = EffectData(effect, chance, activable)
