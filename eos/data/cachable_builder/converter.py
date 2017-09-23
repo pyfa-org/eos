@@ -93,7 +93,8 @@ class Converter:
                 tracking_speed_attribute=row.get('trackingSpeedAttributeID'),
                 fitting_usage_chance_attribute=row.get('fittingUsageChanceAttributeID'),
                 build_status=build_status,
-                modifiers=tuple(modifiers)
+                modifiers=tuple(modifiers),
+                customize=False
             )
             effects[effect.id] = effect
 
@@ -109,7 +110,8 @@ class Converter:
                 attributes=type_attribs.get(type_id, {}),
                 effects=tuple(effects[eid] for eid in type_effects.get(type_id, ()) if eid in effects),
                 default_effect=effects.get(type_defeff_map.get(type_id)),
-                fighter_abilities=typeabils_reformat.get(type_id, {})
+                fighter_abilities=typeabils_reformat.get(type_id, {}),
+                customize=False
             )
             types[eve_type.id] = eve_type
 

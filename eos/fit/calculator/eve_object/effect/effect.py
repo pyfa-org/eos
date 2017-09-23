@@ -21,10 +21,11 @@
 
 from eos.const.eos import State
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 from ..base import BaseCachable
+from ..custom import customize_effect
+from ..modifier import DogmaModifier
 
 
 class Effect(BaseCachable):
@@ -38,7 +39,7 @@ class Effect(BaseCachable):
         duration_attribute=None, discharge_attribute=None, range_attribute=None,
         falloff_attribute=None, tracking_speed_attribute=None,
         fitting_usage_chance_attribute=None, build_status=None,
-        modifiers=()
+        modifiers=(), customize=True
     ):
         self.id = effect_id
 
@@ -81,6 +82,9 @@ class Effect(BaseCachable):
 
         # Stores Modifiers which are assigned to given effect
         self.modifiers = modifiers
+
+        if customize:
+            customize_effect(self)
 
     # Format: {effect category ID: state ID}
     __effect_state_map = {

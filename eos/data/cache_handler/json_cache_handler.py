@@ -26,7 +26,6 @@ from logging import getLogger
 from weakref import WeakValueDictionary
 
 from eos.data.cachable import *
-from eos.data.cachable.custom import customize_effect, customize_type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError
@@ -73,7 +72,6 @@ class JsonCacheHandler(BaseCacheHandler):
             except KeyError as e:
                 raise TypeFetchError(type_id) from e
             eve_type = Type.decompress(self, type_data)
-            customize_type(eve_type)
             self.__type_obj_cache[type_id] = eve_type
         return eve_type
 
@@ -106,7 +104,6 @@ class JsonCacheHandler(BaseCacheHandler):
             except KeyError as e:
                 raise EffectFetchError(effect_id) from e
             effect = Effect.decompress(self, effect_data)
-            customize_effect(effect)
             self.__effect_obj_cache[effect_id] = effect
         return effect
 

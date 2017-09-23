@@ -27,6 +27,7 @@ from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 from ..base import BaseCachable
+from ..custom import customize_type
 
 
 FighterAbility = namedtuple('FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))
@@ -39,8 +40,8 @@ class Type(BaseCachable):
     """
 
     def __init__(
-        self, type_id, group=None, category=None, attributes=DEFAULT,
-        effects=(), default_effect=None, fighter_abilities=DEFAULT
+        self, type_id, group=None, category=None, attributes=DEFAULT, effects=(),
+        default_effect=None, fighter_abilities=DEFAULT, customize=True
     ):
         self.id = type_id
 
@@ -65,6 +66,9 @@ class Type(BaseCachable):
         # Iterable with tuples which describe fighter abilities, in format
         # (ability ID, cooldown time, charge amount, rearm time)
         self.fighter_abilities = {} if fighter_abilities is DEFAULT else fighter_abilities
+
+        if customize:
+            customize_type(self)
 
     # Define attributes which describe eve type skill requirement details
     # Format: {skill eve type attribute ID: skill level attribute ID}

@@ -19,22 +19,19 @@
 # ===============================================================================
 
 
-"""
-Classes in this module are objects stored in cache or used when initializing them.
-Eos' items are built on top of cached object instances, and often these instances
-are reused, thus make sure to not store any fit-specific data on them.
-"""
+from abc import ABCMeta, abstractmethod
 
 
-__all__ = [
-    'Attribute',
-    'DogmaModifier',
-    'Effect',
-    'Type'
-]
+class BaseCachable(metaclass=ABCMeta):
+    """Base class for all objects which can be stored in cache"""
 
+    @abstractmethod
+    def compress(self):
+        """Compress object into python primitive"""
+        ...
 
-from .attribute import Attribute
-from .effect import Effect
-from .modifier import DogmaModifier
-from .type import Type
+    @classmethod
+    @abstractmethod
+    def decompress(cls, cache_handler, compressed):
+        """Construct object from python primitive"""
+        ...
