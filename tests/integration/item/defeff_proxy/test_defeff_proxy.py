@@ -25,7 +25,7 @@ from eos.const.eve import EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
-class TestItemMixinSpecialAttrib(ItemMixinTestCase):
+class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def make_item_with_defeff_attrib(self, defeff_attrib_name):
         attr = self.ch.attribute()
@@ -46,22 +46,43 @@ class TestItemMixinSpecialAttrib(ItemMixinTestCase):
         ).id)
         return item
 
-    def test_tracking(self):
+    def test_cycle(self):
         fit = Fit()
-        item = self.make_item_with_defeff_attrib('tracking_speed_attribute')
+        item = self.make_item_with_defeff_attrib('duration_attribute')
         fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.tracking_speed, 100)
+        # Cycle time is divided by 1000, as it's defined in ms
+        self.assertAlmostEqual(item.cycle_time, 0.1)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_tracking_no_source(self):
+    def test_cycle_no_source(self):
         fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('tracking_speed_attribute')
+        item = self.make_item_with_defeff_attrib('duration_attribute')
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.tracking_speed)
+        self.assertIsNone(item.cycle_time)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_cap_use(self):
+        fit = Fit()
+        item = self.make_item_with_defeff_attrib('discharge_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.cap_use, 100)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_cap_use_no_source(self):
+        fit = Fit(source=None)
+        item = self.make_item_with_defeff_attrib('discharge_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.cap_use)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -106,23 +127,42 @@ class TestItemMixinSpecialAttrib(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_cycle(self):
+    def test_tracking(self):
         fit = Fit()
-        item = self.make_item_with_defeff_attrib('duration_attribute')
+        item = self.make_item_with_defeff_attrib('tracking_speed_attribute')
         fit.modules.high.append(item)
         # Verification
-        # Cycle time is divided by 1000, as it's defined in ms
-        self.assertAlmostEqual(item.cycle_time, 0.1)
+        self.assertAlmostEqual(item.tracking_speed, 100)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_cycle_no_source(self):
+    def test_tracking_no_source(self):
         fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('duration_attribute')
+        item = self.make_item_with_defeff_attrib('tracking_speed_attribute')
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.cycle_time)
+        self.assertIsNone(item.tracking_speed)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_fitting_usage_chance(self):
+        fit = Fit()
+        item = self.make_item_with_defeff_attrib('fitting_usage_chance_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.fitting_usage_chance, 100)
+        # Cleanup
+        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(fit)
+
+    def test_fitting_usage_chance_no_source(self):
+        fit = Fit(source=None)
+        item = self.make_item_with_defeff_attrib('fitting_usage_chance_attribute')
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.fitting_usage_chance)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)

@@ -104,6 +104,42 @@ class Effect(BaseCachable):
         """
         return self.__effect_state_map[self.category]
 
+    # Getters for effect-referenced attributes
+    def get_cycle_time(self, item):
+        if self.duration_attribute is None:
+            return None
+        raw_time = item.attributes.get(self.duration_attribute)
+        # Time is specified in milliseconds, but we want to return seconds
+        try:
+            return raw_time / 1000
+        except TypeError:
+            return raw_time
+
+    def get_cap_use(self, item):
+        if self.discharge_attribute is None:
+            return None
+        return item.attributes.get(self.discharge_attribute)
+
+    def get_optimal_range(self, item):
+        if self.range_attribute is None:
+            return None
+        return item.attributes.get(self.range_attribute)
+
+    def get_falloff_range(self, item):
+        if self.falloff_attribute is None:
+            return None
+        return item.attributes.get(self.falloff_attribute)
+
+    def get_tracking_speed(self, item):
+        if self.tracking_speed_attribute is None:
+            return None
+        return item.attributes.get(self.tracking_speed_attribute)
+
+    def get_fitting_usage_chance(self, item):
+        if self.fitting_usage_chance_attribute is None:
+            return None
+        return item.attributes.get(self.fitting_usage_chance_attribute)
+
     # Cache-related methods
     def compress(self):
         return (

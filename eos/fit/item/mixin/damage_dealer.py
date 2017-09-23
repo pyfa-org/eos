@@ -25,7 +25,7 @@ from eos.const.eve import Attribute, Effect
 from eos.fit.helper import DamageTypesTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
 from .base import BaseItemMixin
-from .misc import DefaultEffectAttribMixin
+from .defeff_proxy import DefaultEffectProxyMixin
 
 
 @unique
@@ -66,7 +66,7 @@ CHARGE_EFFECT_WEAPON_MAP = {
 }
 
 
-class DamageDealerMixin(DefaultEffectAttribMixin, BaseItemMixin, CooperativeVolatileMixin):
+class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolatileMixin):
     """
     Mixin intended to use with all entities which are able
     to deal damage (modules, drones).

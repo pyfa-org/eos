@@ -24,13 +24,13 @@ from eos.const.eve import Attribute
 from eos.util.repr import make_repr_str
 from .mixin.chargeable import ChargeableMixin
 from .mixin.damage_dealer import DamageDealerMixin
-from .mixin.misc import DefaultEffectAttribMixin
+from .mixin.defeff_proxy import DefaultEffectProxyMixin
 from .mixin.state import MutableStateMixin
 
 
 class Module(
     MutableStateMixin, ChargeableMixin,
-    DamageDealerMixin, DefaultEffectAttribMixin
+    DamageDealerMixin, DefaultEffectProxyMixin
 ):
     def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
         super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)

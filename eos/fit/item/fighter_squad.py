@@ -22,14 +22,14 @@
 from eos.const.eos import State
 from eos.util.repr import make_repr_str
 from .mixin.damage_dealer import DamageDealerMixin
-from .mixin.misc import DefaultEffectAttribMixin
+from .mixin.defeff_proxy import DefaultEffectProxyMixin
 from .mixin.state import MutableStateMixin
 from .mixin.tanking import BufferTankingMixin
 
 
 class FighterSquad(
     MutableStateMixin, DamageDealerMixin,
-    BufferTankingMixin, DefaultEffectAttribMixin
+    BufferTankingMixin, DefaultEffectProxyMixin
 ):
     """
     Fighter squad.
