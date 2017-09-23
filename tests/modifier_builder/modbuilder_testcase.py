@@ -38,9 +38,9 @@ class ModBuilderTestCase(EosTestCase):
         self.ef = ExpressionFactory()
 
     def run_builder(self, effect_row):
-        effect_row.setdefault('effect_id', 1)
-        effect_row.setdefault('pre_expression', None)
-        effect_row.setdefault('post_expression', None)
-        effect_row.setdefault('modifier_info', None)
+        effect_row.setdefault('effectID', 1)
+        effect_row.setdefault('preExpression', None)
+        effect_row.setdefault('postExpression', None)
+        effect_row.setdefault('modifierInfo', None)
         builder = ModifierBuilder(self.ef.data)
         return builder.build(effect_row)

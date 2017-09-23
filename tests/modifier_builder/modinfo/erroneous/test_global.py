@@ -32,7 +32,7 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
     """
 
     def test_error_yaml(self):
-        effect_row = {'effect_id': 94, 'modifier_info': 'yap((EWH\x02'}
+        effect_row = {'effectID': 94, 'modifierInfo': 'yap((EWH\x02'}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)

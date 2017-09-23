@@ -63,8 +63,8 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
 
     def test_single(self):
         effect_row = {
-            'pre_expression': self.e_add_mod_invalid['expressionID'],
-            'post_expression': self.e_rm_mod_invalid['expressionID']
+            'preExpression': self.e_add_mod_invalid['expressionID'],
+            'postExpression': self.e_rm_mod_invalid['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
@@ -112,8 +112,8 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
             arg2=e_rm_mod_valid['expressionID']
         )
         effect_row = {
-            'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID']
+            'preExpression': e_add_splice['expressionID'],
+            'postExpression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
@@ -161,8 +161,8 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
             arg2=self.e_rm_mod_invalid['expressionID']
         )
         effect_row = {
-            'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID']
+            'preExpression': e_add_splice['expressionID'],
+            'postExpression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
@@ -221,8 +221,8 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
             arg2=e_rm_splice1['expressionID']
         )
         effect_row = {
-            'pre_expression': e_add_splice2['expressionID'],
-            'post_expression': e_rm_splice2['expressionID']
+            'preExpression': e_add_splice2['expressionID'],
+            'postExpression': e_rm_splice2['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)

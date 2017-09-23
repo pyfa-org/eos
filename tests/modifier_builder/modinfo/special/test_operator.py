@@ -34,7 +34,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         return yaml.format(operator)
 
     def test_preassign(self):
-        effect_row = {'modifier_info': self._make_yaml(-1)}
+        effect_row = {'modifierInfo': self._make_yaml(-1)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -43,7 +43,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_premul(self):
-        effect_row = {'modifier_info': self._make_yaml(0)}
+        effect_row = {'modifierInfo': self._make_yaml(0)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -52,7 +52,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_prediv(self):
-        effect_row = {'modifier_info': self._make_yaml(1)}
+        effect_row = {'modifierInfo': self._make_yaml(1)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -61,7 +61,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_modadd(self):
-        effect_row = {'modifier_info': self._make_yaml(2)}
+        effect_row = {'modifierInfo': self._make_yaml(2)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -70,7 +70,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_modsub(self):
-        effect_row = {'modifier_info': self._make_yaml(3)}
+        effect_row = {'modifierInfo': self._make_yaml(3)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -79,7 +79,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_postmul(self):
-        effect_row = {'modifier_info': self._make_yaml(4)}
+        effect_row = {'modifierInfo': self._make_yaml(4)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -88,7 +88,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_postdiv(self):
-        effect_row = {'modifier_info': self._make_yaml(5)}
+        effect_row = {'modifierInfo': self._make_yaml(5)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -97,7 +97,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_postperc(self):
-        effect_row = {'modifier_info': self._make_yaml(6)}
+        effect_row = {'modifierInfo': self._make_yaml(6)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -106,7 +106,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_postassign(self):
-        effect_row = {'modifier_info': self._make_yaml(7)}
+        effect_row = {'modifierInfo': self._make_yaml(7)}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)

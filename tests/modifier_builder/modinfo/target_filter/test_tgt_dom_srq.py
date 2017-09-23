@@ -33,7 +33,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         return yaml.format(domain)
 
     def test_domain_none(self):
-        effect_row = {'modifier_info': self._make_yaml('null')}
+        effect_row = {'modifierInfo': self._make_yaml('null')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -47,7 +47,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_item(self):
-        effect_row = {'modifier_info': self._make_yaml('itemID')}
+        effect_row = {'modifierInfo': self._make_yaml('itemID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -61,7 +61,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_char(self):
-        effect_row = {'modifier_info': self._make_yaml('charID')}
+        effect_row = {'modifierInfo': self._make_yaml('charID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -75,7 +75,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_ship(self):
-        effect_row = {'modifier_info': self._make_yaml('shipID')}
+        effect_row = {'modifierInfo': self._make_yaml('shipID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -89,7 +89,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_target(self):
-        effect_row = {'modifier_info': self._make_yaml('targetID')}
+        effect_row = {'modifierInfo': self._make_yaml('targetID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -103,7 +103,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_domain_other(self):
-        effect_row = {'modifier_info': self._make_yaml('otherID')}
+        effect_row = {'modifierInfo': self._make_yaml('otherID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)

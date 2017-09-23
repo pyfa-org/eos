@@ -95,8 +95,9 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
             arg2=e_rm_mod_valid['expressionID']
         )
         effect_row = {
-            'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID']
+            'effectID': 4,
+            'preExpression': e_add_splice['expressionID'],
+            'postExpression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
@@ -105,7 +106,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'effect 1, building 2 modifiers: 1 build errors'
+        expected = 'effect 4, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
 
     def test_partial_error_last(self):
@@ -144,8 +145,9 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
             arg2=self.e_mod_invalid['expressionID']
         )
         effect_row = {
-            'pre_expression': e_add_splice['expressionID'],
-            'post_expression': e_rm_splice['expressionID']
+            'effectID': 44,
+            'preExpression': e_add_splice['expressionID'],
+            'postExpression': e_rm_splice['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
@@ -154,5 +156,5 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'effect 1, building 2 modifiers: 1 build errors'
+        expected = 'effect 44, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)

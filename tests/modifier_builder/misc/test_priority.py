@@ -56,9 +56,9 @@ class TestBuilderPriority(ModBuilderTestCase):
 
     def test_etree(self):
         effect_row = {
-            'pre_expression': self.e_add_mod['expressionID'],
-            'post_expression': self.e_rm_mod['expressionID'],
-            'modifier_info': None
+            'preExpression': self.e_add_mod['expressionID'],
+            'postExpression': self.e_rm_mod['expressionID'],
+            'modifierInfo': None
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
@@ -74,9 +74,9 @@ class TestBuilderPriority(ModBuilderTestCase):
 
     def test_modinfo(self):
         effect_row = {
-            'pre_expression': self.e_add_mod['expressionID'],
-            'post_expression': self.e_rm_mod['expressionID'],
-            'modifier_info':
+            'preExpression': self.e_add_mod['expressionID'],
+            'postExpression': self.e_rm_mod['expressionID'],
+            'modifierInfo':
                 '- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 164\n'
                 '  modifyingAttributeID: 175\n  operator: 2\n'
         }

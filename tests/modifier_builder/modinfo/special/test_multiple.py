@@ -28,7 +28,7 @@ class TestBuilderModinfoMultiple(ModBuilderTestCase):
 
     def test_multiple(self):
         effect_row = {
-            'modifier_info':
+            'modifierInfo':
                 '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
                 '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'
                 '  modifyingAttributeID: 44\n  operator: 7\n'

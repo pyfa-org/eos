@@ -31,8 +31,8 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
     def test_int_stub(self):
         e_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
         effect_row = {
-            'pre_expression': e_stub['expressionID'],
-            'post_expression': e_stub['expressionID']
+            'preExpression': e_stub['expressionID'],
+            'postExpression': e_stub['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.skipped)
@@ -47,8 +47,8 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
     def test_other(self):
         e_stub = self.ef.make(1, operandID=567)
         effect_row = {
-            'pre_expression': e_stub['expressionID'],
-            'post_expression': e_stub['expressionID']
+            'preExpression': e_stub['expressionID'],
+            'postExpression': e_stub['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.skipped)

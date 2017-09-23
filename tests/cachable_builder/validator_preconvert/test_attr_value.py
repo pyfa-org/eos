@@ -26,7 +26,7 @@ from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTest
 
 class TestAttrValue(CachableBuilderTestCase):
     """
-    After cleanup generator should check that all attribute values
+    After cleanup builder should check that all attribute values
     are integers or floats, rows with other value types should be
     cleaned up.
     """

@@ -122,8 +122,8 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
             arg2=e_rm_splice1['expressionID']
         )
         effect_row = {
-            'pre_expression': e_add_splice2['expressionID'],
-            'post_expression': e_rm_splice2['expressionID']
+            'preExpression': e_add_splice2['expressionID'],
+            'postExpression': e_rm_splice2['expressionID']
         }
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)

@@ -59,8 +59,8 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
             arg2=e_src_attr['expressionID']
         )
         self.effect_row = {
-            'pre_expression': e_add_mod['expressionID'],
-            'post_expression': e_rm_mod['expressionID']
+            'preExpression': e_add_mod['expressionID'],
+            'postExpression': e_rm_mod['expressionID']
         }
 
     def test_mod_domain_skillrq(self):
