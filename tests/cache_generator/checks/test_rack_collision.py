@@ -45,13 +45,13 @@ class TestRackCollision(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         log_record = self.log[2]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '2 rows contain colliding module racks, removing them')
         self.assertEqual(len(data['types']), 1)
@@ -66,10 +66,10 @@ class TestRackCollision(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['types']), 0)
         self.assertEqual(len(data['effects']), 0)

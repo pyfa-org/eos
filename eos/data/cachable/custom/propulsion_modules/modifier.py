@@ -23,8 +23,8 @@ from logging import getLogger
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute
-from eos.data.cache_object.modifier.exception import ModificationCalculationError
-from eos.data.cache_object.modifier.python import BasePythonModifier
+from eos.data.cachable.modifier.exception import ModificationCalculationError
+from eos.data.cachable.modifier.python import BasePythonModifier
 from eos.fit.pubsub.message import InstrAttrValueChanged
 
 

@@ -24,7 +24,7 @@ from collections import namedtuple
 
 from eos import __version__ as eos_version
 from eos.util.repr import make_repr_str
-from .cache_generator import CacheGenerator
+from .cachable_builder import CachableBuilder
 from .exception import ExistingSourceError, UnknownSourceError
 
 
@@ -84,9 +84,9 @@ class SourceManager:
                     cache_fp, current_fp)
                 logger.info(msg)
 
-            # Generate cache and write it
-            data = CacheGenerator().run(data_handler)
-            cache_handler.update_cache(data, current_fp)
+            # Generate cachable objects and cache them
+            cachable_data = CachableBuilder.run(data_handler)
+            cache_handler.update_cache(cachable_data, current_fp)
 
         # Finally, add record to list of sources
         source = Source(alias=alias, cache_handler=cache_handler)

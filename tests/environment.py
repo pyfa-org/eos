@@ -20,8 +20,8 @@
 
 
 from eos.data.cache_handler.exception import TypeFetchError, AttributeFetchError, EffectFetchError
-from eos.data.cache_object import Attribute, Effect, Type
-from eos.data.cache_object.custom import customize_effect, customize_type
+from eos.data.cachable import Attribute, Effect, Type
+from eos.data.cachable.custom import customize_effect, customize_type
 
 
 TEST_ID_START = 1000000

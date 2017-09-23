@@ -30,13 +30,13 @@ logger = getLogger(__name__)
 
 class Normalizer:
 
-    def normalize(self, data):
-        """ Make data format more consistent."""
-        self.data = data
-        self._move_attribs()
-        self._convert_expression_symbolic_references()
+    @staticmethod
+    def run(data):
+        Normalizer._move_attribs(data)
+        Normalizer._convert_expression_symbolic_references(data)
 
-    def _move_attribs(self):
+    @staticmethod
+    def _move_attribs(data):
         """
         Some of eve type attributes are defined in evetypes table.
         We do not need them there, for data consistency it's worth
@@ -50,9 +50,9 @@ class Normalizer:
         }
         attr_ids = tuple(atrrib_map.values())
         # Here we will store pairs (typeID, attrID) already
-        # defined in table
+        # defined in dgmtypeattribs
         defined_pairs = set()
-        dgmtypeattribs = self.data['dgmtypeattribs']
+        dgmtypeattribs = data['dgmtypeattribs']
         for row in dgmtypeattribs:
             if row['attributeID'] not in attr_ids:
                 continue
@@ -61,7 +61,7 @@ class Normalizer:
         new_evetypes = set()
         # Cycle through all evetypes, for each row moving each its field
         # either to different table or container for updated rows
-        for row in self.data['evetypes']:
+        for row in data['evetypes']:
             type_id = row['typeID']
             new_row = {}
             for field, value in row.items():
@@ -86,19 +86,19 @@ class Normalizer:
                     new_row[field] = value
             new_evetypes.add(FrozenDict(new_row))
         # Update evetypes with rows which do not contain attributes
-        self.data['evetypes'].clear()
-        self.data['evetypes'].update(new_evetypes)
+        data['evetypes'].clear()
+        data['evetypes'].update(new_evetypes)
         if attrs_skipped > 0:
             msg = '{} built-in attributes already have had value in dgmtypeattribs and were skipped'.format(
                 attrs_skipped)
             logger.warning(msg)
 
-    def _convert_expression_symbolic_references(self):
+    @staticmethod
+    def _convert_expression_symbolic_references(data):
         """
         Some of entities in dgmexpressions table are defined not as
         IDs, but as symbolic references. Convert them to IDs here.
         """
-        data = self.data
         dgmexpressions = data['dgmexpressions']
         # Format: ((operator, column name for entity ID, {replacement_map}, (ignored names, ...)), ...)
         replacement_spec = (

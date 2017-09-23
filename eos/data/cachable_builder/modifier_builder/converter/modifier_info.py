@@ -21,7 +21,7 @@
 import yaml
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.data.cache_object import DogmaModifier
+from eos.data.cachable import DogmaModifier
 from ..exception import YamlParsingError
 
 

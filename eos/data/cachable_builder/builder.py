@@ -20,41 +20,26 @@
 
 
 from eos.util.frozen_dict import FrozenDict
-from .checker import Checker
 from .cleaner import Cleaner
 from .converter import Converter
 from .normalizer import Normalizer
+from .validator_preclean import ValidatorPreCleanup
+from .validator_preconvert import ValidatorPreConversion
 
 
-class CacheGenerator:
+class CachableBuilder:
     """
-    Refactors and optimizes data into format suitable
-    for Eos.
+    Builds Eos-specific cachable objects from passed data.
     """
 
-    def __init__(self):
-        self._checker = Checker()
-        self._cleaner = Cleaner()
-        self._normalizer = Normalizer()
-        self._converter = Converter()
-
-    def run(self, data_handler):
-        """
-        Generate cache out of passed data.
-
-        Required arguments:
-        data_handler - data handler to use for getting data
-
-        Return value:
-        Dictionary in {entity type: [{field name: field value}]
-        format
-        """
+    @staticmethod
+    def run(data_handler):
         # Put all the data we need into single dictionary
         # Format, as usual, {table name: table}, where table
         # is set of rows, which are represented by frozendicts
         # {fieldName: fieldValue}. Combination of sets and
         # frozendicts is used to speed up several stages of
-        # the generator.
+        # the builder.
         data = {}
         tables = {
             'evetypes': data_handler.get_evetypes,
@@ -69,36 +54,33 @@ class CacheGenerator:
 
         for tablename, method in tables.items():
             table_pos = 0
-            # For faster processing of various operations,
-            # freeze table rows and put them into set
             table = set()
             for row in method():
-                # During  further generator stages. some of rows
-                # may fall in risk groups, where all rows but one
-                # need to be removed. To deterministically remove rows
-                # based on position in original data, write position
-                # to each row
+                # During further builder stages. some of rows may fall
+                # in risk groups, where all rows but one need to be
+                # removed. To deterministically remove rows based on
+                # position in original data, write position to each row
                 row['table_pos'] = table_pos
                 table_pos += 1
                 table.add(FrozenDict(row))
             data[tablename] = table
 
-        # Run pre-cleanup checks, as cleaning and further stages
+        # Run pre-cleanup checks, as cleanup stage and further stages
         # rely on some assumptions about the data
-        self._checker.pre_cleanup(data)
+        ValidatorPreCleanup.run(data)
 
-        # Also normalize the data to make data structure
-        # more consistent, and thus easier to clean properly
-        self._normalizer.normalize(data)
+        # Normalize the data to make data structure more consistent,
+        # making it easier to clean properly
+        Normalizer.run(data)
 
-        # Clean our container out of unwanted data
-        self._cleaner.clean(data)
+        # Remove unwanted data
+        Cleaner().clean(data)
 
         # Verify that our data is ready for conversion
-        self._checker.pre_convert(data)
+        ValidatorPreConversion.run(data)
 
         # Convert data into Eos-specific objects, stored in several dictionaries,
-        # with object IDs being keys
-        types, attributes, effects = self._converter.convert(data)
+        # with object IDs being dictionary keys
+        types, attributes, effects = Converter.run(data)
 
         return types, attributes, effects

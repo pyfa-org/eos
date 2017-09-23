@@ -25,8 +25,8 @@ import os.path
 from logging import getLogger
 from weakref import WeakValueDictionary
 
-from eos.data.cache_object import *
-from eos.data.cache_object.custom import customize_effect, customize_type
+from eos.data.cachable import *
+from eos.data.cachable.custom import customize_effect, customize_type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
 from .exception import TypeFetchError, AttributeFetchError, EffectFetchError
@@ -132,11 +132,11 @@ class JsonCacheHandler(BaseCacheHandler):
         else:
             self.__update_memory_cache(cache_data)
 
-    def update_cache(self, data, fingerprint):
+    def update_cache(self, cachable_data, fingerprint):
         """
         Replace existing cache data with passed data.
         """
-        types, attributes, effects = data
+        types, attributes, effects = cachable_data
         cache_data = {
             'types': {type_id: eve_type.compress() for type_id, eve_type in types.items()},
             'attributes': {attr_id: attr.compress() for attr_id, attr in attributes.items()},

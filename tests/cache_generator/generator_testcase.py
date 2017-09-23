@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
-from eos.data.cache_generator import CacheGenerator
-from eos.data.cache_object.modifier import DogmaModifier
+from eos.data.cachable_builder import CachableBuilder
+from eos.data.cachable.modifier import DogmaModifier
 from tests.eos_testcase import EosTestCase
 from .environment import DataHandler
 
@@ -41,7 +41,7 @@ class GeneratorTestCase(EosTestCase):
         Run generator and rework data structure into
         keyed tables so it's easier to check.
         """
-        generator = CacheGenerator()
+        generator = CachableBuilder()
         data = generator.run(self.dh)
         keys = {
             'types': 'type_id',

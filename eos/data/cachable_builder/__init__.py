@@ -19,4 +19,4 @@
 # ===============================================================================
 
 
-from .generator import CacheGenerator
+from .builder import CachableBuilder

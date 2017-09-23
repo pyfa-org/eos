@@ -103,7 +103,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'effect 1, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
@@ -152,7 +152,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cache_generator.modifier_builder.builder')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'effect 1, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)

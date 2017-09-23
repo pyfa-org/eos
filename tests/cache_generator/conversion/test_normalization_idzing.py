@@ -26,7 +26,7 @@ from eos.const.eve import Operand
 from tests.cache_generator.generator_testcase import GeneratorTestCase
 
 
-@patch('eos.data.cache_generator.converter.ModifierBuilder')
+@patch('eos.data.cachable_builder.converter.ModifierBuilder')
 class TestNormalizationIdzing(GeneratorTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
@@ -45,10 +45,10 @@ class TestNormalizationIdzing(GeneratorTestCase):
         # Verification
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
@@ -74,10 +74,10 @@ class TestNormalizationIdzing(GeneratorTestCase):
         # Verification
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
@@ -95,7 +95,7 @@ class TestNormalizationIdzing(GeneratorTestCase):
         # Verification
         self.assertEqual(len(self.log), 1)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats.msg, '4 replacements for expressionGroupID were not used: '
@@ -117,15 +117,15 @@ class TestNormalizationIdzing(GeneratorTestCase):
         # Verification
         self.assertEqual(len(self.log), 3)
         idzing_stats_unused = self.log[0]
-        self.assertEqual(idzing_stats_unused.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats_unused.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats_unused.levelno, logging.WARNING)
         idzing_stats_failures = self.log[1]
-        self.assertEqual(idzing_stats_failures.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats_failures.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats_failures.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats_failures.msg, 'unable to convert 1 literal references '
             'to expressionGroupID: "EnergyWeaponry"'
         )
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)

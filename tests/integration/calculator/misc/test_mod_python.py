@@ -22,8 +22,8 @@
 from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculationError
-from eos.data.cache_object.modifier.python import BasePythonModifier
+from eos.data.cachable.modifier import DogmaModifier, ModificationCalculationError
+from eos.data.cachable.modifier.python import BasePythonModifier
 from eos.fit.pubsub.message import InstrAttrValueChanged
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 

@@ -31,7 +31,7 @@ class TestConversionEffect(GeneratorTestCase):
     indexes of object representing effect.
     """
 
-    @patch('eos.data.cache_generator.converter.ModifierBuilder')
+    @patch('eos.data.cachable_builder.converter.ModifierBuilder')
     def test_fields(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 112})
@@ -50,10 +50,10 @@ class TestConversionEffect(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(data['effects']), 1)
         self.assertIn(112, data['effects'])

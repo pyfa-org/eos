@@ -33,10 +33,10 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.radius], 50.0)
 
@@ -45,10 +45,10 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 5.0)
 
@@ -57,10 +57,10 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.volume], 500.0)
 
@@ -69,10 +69,10 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.capacity], 0.5)
 
@@ -83,14 +83,14 @@ class TestNormalizationAttr(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 3)
         duplicate_error = self.log[0]
-        self.assertEqual(duplicate_error.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(duplicate_error.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(duplicate_error.levelno, logging.WARNING)
         self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in'
                                               ' dgmtypeattribs and were skipped')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 6.0)

@@ -20,7 +20,7 @@
 
 
 from logging import getLogger
-from numbers import Integral, Real
+from numbers import Real
 
 from eos.const.eve import Effect
 from eos.util.frozen_dict import FrozenDict
@@ -29,35 +29,10 @@ from eos.util.frozen_dict import FrozenDict
 logger = getLogger(__name__)
 
 
-class Checker:
-    """
-    Class responsible for conducting checks and making
-    data consistent for further stages of processing.
-    """
+class ValidatorPreConversion:
 
-    def pre_cleanup(self, data):
-        """
-        Run checks which should be performed on
-        data which is yet to be cleaned.
-
-        Required arguments:
-        data -- data to check
-        """
-        self.data = data
-        primary_keys = {
-            'dgmattribs': ('attributeID',),
-            'dgmeffects': ('effectID',),
-            'dgmexpressions': ('expressionID',),
-            'dgmtypeattribs': ('typeID', 'attributeID'),
-            'dgmtypeeffects': ('typeID', 'effectID'),
-            'evegroups': ('groupID',),
-            'evetypes': ('typeID',),
-            'typefighterabils': ('typeID', 'abilityID')
-        }
-        for table_name, key_names in primary_keys.items():
-            self._table_pk(table_name, key_names)
-
-    def pre_convert(self, data):
+    @staticmethod
+    def run(data):
         """
         As data convertor and eos relies on some
         assumptions, check that data corresponds to them.
@@ -65,74 +40,19 @@ class Checker:
         Required arguments:
         data -- data to check
         """
-        self.data = data
-        self._attribute_value_type()
-        self._multiple_default_effects()
-        self._colliding_module_racks()
+        ValidatorPreConversion._attribute_value_type(data)
+        ValidatorPreConversion._multiple_default_effects(data)
+        ValidatorPreConversion._colliding_module_racks(data)
 
-    def _table_pk(self, table_name, key_names):
-        """
-        Check if all primary keys in table are integers.
-
-        Required arguments:
-        table_name -- name of table to check
-        key_names -- names of fields which are considerred
-        as primary keys in iterable
-        """
-        table = self.data[table_name]
-        # Contains keys used in current table
-        used_keys = set()
-        # Storage for rows which should be removed
-        invalid_rows = set()
-        for datarow in sorted(table, key=lambda row: row['table_pos']):
-            self._row_pk(key_names, datarow, used_keys, invalid_rows)
-        # If any invalid rows were detected, remove them and
-        # write corresponding message to log
-        if invalid_rows:
-            msg = '{} rows in table {} have invalid PKs, removing them'.format(
-                len(invalid_rows), table_name)
-            logger.warning(msg)
-            table.difference_update(invalid_rows)
-
-    def _row_pk(self, key_names, datarow, used_keys, invalid_rows):
-        """
-        Check row primary key for validity.
-
-        Required arguments:
-        key_names -- names of fields which contain keys
-        datarow -- row to check
-        used_keys -- container with alreaady used keys
-        invalid_rows -- container for invalid rows
-        """
-        row_key = []
-        for key_name in key_names:
-            try:
-                key_value = datarow[key_name]
-            # Invalidate row if it doesn't have any component
-            # of primary key
-            except KeyError:
-                invalid_rows.add(datarow)
-                return
-            # If primary key is not an integer
-            if not isinstance(key_value, Integral):
-                invalid_rows.add(datarow)
-                return
-            row_key.append(key_value)
-        row_key = tuple(row_key)
-        # If specified key is already used
-        if row_key in used_keys:
-            invalid_rows.add(datarow)
-            return
-        used_keys.add(row_key)
-
-    def _attribute_value_type(self):
+    @staticmethod
+    def _attribute_value_type(data):
         """
         Check all attributes of all items for validity.
         Only ints and floats are considered as valid. Eos
         attribute calculation engine relies on this assumption.
         """
         invalid_rows = set()
-        table = self.data['dgmtypeattribs']
+        table = data['dgmtypeattribs']
         for row in table:
             if not isinstance(row.get('value'), Real):
                 invalid_rows.add(row)
@@ -142,15 +62,15 @@ class Checker:
             logger.warning(msg)
             table.difference_update(invalid_rows)
 
-    def _multiple_default_effects(self):
+    @staticmethod
+    def _multiple_default_effects(data):
         """
         Each type must have one default effect at max. Data
-        conversion (and resulting data structure) relies on
-        this assumption.
+        conversion relies on this assumption.
         """
         # Set with IDs of types, which have default effect
         defeff = set()
-        table = self.data['dgmtypeeffects']
+        table = data['dgmtypeeffects']
         invalid_rows = set()
         for row in sorted(table, key=lambda r: r['table_pos']):
             is_default = row.get('isDefault')
@@ -177,7 +97,8 @@ class Checker:
                     new_row[field] = False if field == 'isDefault' else value
                 table.add(FrozenDict(new_row))
 
-    def _colliding_module_racks(self):
+    @staticmethod
+    def _colliding_module_racks(data):
         """
         Type of slot into which module is placed is detected
         using module's effects. Engine relies on assumption that
@@ -186,7 +107,7 @@ class Checker:
         type effects are still used on many item types we do not need
         and want to remove to avoid printing unnecessary log entries.
         """
-        table = self.data['dgmtypeeffects']
+        table = data['dgmtypeeffects']
         rack_effects = (Effect.hi_power, Effect.med_power, Effect.lo_power)
         racked_items = set()
         invalid_rows = set()

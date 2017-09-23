@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import DogmaModifier
+from eos.data.cachable.modifier import DogmaModifier
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 from ..base import BaseCachable

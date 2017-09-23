@@ -20,8 +20,8 @@
 
 
 from eos.const.eos import ModifierDomain
-from eos.data.cache_object.modifier import DogmaModifier, ModificationCalculationError
-from eos.data.cache_object.modifier.python import BasePythonModifier
+from eos.data.cachable.modifier import DogmaModifier, ModificationCalculationError
+from eos.data.cachable.modifier.python import BasePythonModifier
 from eos.fit.item import Character, Ship
 from eos.fit.pubsub.message import (
     InstrItemAdd, InstrItemRemove, InstrEffectsActivate, InstrEffectsDeactivate,

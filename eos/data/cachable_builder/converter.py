@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.data.cache_object import Attribute, Effect, Type
+from eos.data.cachable import Attribute, Effect, Type
 from .modifier_builder import ModifierBuilder
 
 
@@ -30,7 +30,8 @@ logger = getLogger(__name__)
 
 class Converter:
 
-    def convert(self, data):
+    @staticmethod
+    def run(data):
         """
         Convert data into Eos cachable objects.
         """

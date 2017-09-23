@@ -34,10 +34,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -48,10 +48,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -62,10 +62,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 100.0% from evetypes')
         self.assertEqual(len(data['types']), 0)
@@ -75,10 +75,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -90,10 +90,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -105,10 +105,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -120,10 +120,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -135,10 +135,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -150,10 +150,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -165,10 +165,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -180,10 +180,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -195,10 +195,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(data['types']), 1)
@@ -210,10 +210,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 100.0% from evegroups, 100.0% from evetypes')
         self.assertEqual(len(data['types']), 0)
@@ -228,10 +228,10 @@ class TestCleanupTypes(GeneratorTestCase):
         data = self.run_generator()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cache_generator.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cache_generator.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 50.0% from evegroups, 50.0% from evetypes')
         self.assertEqual(len(data['types']), 2)

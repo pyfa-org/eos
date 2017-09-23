@@ -22,7 +22,7 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cache_object.modifier import DogmaModifier
+from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
