@@ -50,8 +50,8 @@ class ModifierBuilder:
         Return value:
         Tuple with list of modifiers and effect build status
         """
-        modifier_info = effect_row['modifierInfo']
-        pre_expression = effect_row['preExpression']
+        modifier_info = effect_row.get('modifierInfo')
+        pre_expression = effect_row.get('preExpression')
         if modifier_info:
             try:
                 modifiers, build_failures = self._info.convert(modifier_info)

@@ -22,13 +22,13 @@
 import logging
 from unittest.mock import patch
 
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
-class TestConversionEffect(GeneratorTestCase):
+class TestConversionEffect(CachableBuilderTestCase):
     """
     Appropriate data should be saved into appropriate
-    indexes of object representing effect.
+    fields of effect object.
     """
 
     @patch('eos.data.cachable_builder.converter.ModifierBuilder')
@@ -47,21 +47,26 @@ class TestConversionEffect(GeneratorTestCase):
             tgt_attr=6, operator=7, src_attr=8
         )
         mod_builder.return_value.build.return_value = ([mod], 29)
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['effects']), 1)
-        self.assertIn(112, data['effects'])
-        expected = {
-            'effect_id': 112, 'effect_category': 111, 'is_offensive': True,
-            'is_assistance': False, 'duration_attribute': 781,
-            'discharge_attribute': 72, 'range_attribute': 2,
-            'falloff_attribute': 3, 'tracking_speed_attribute': 6,
-            'fitting_usage_chance_attribute': 96, 'build_status': 29, 'modifiers': [1]
-        }
-        self.assertEqual(data['effects'][112], expected)
+        self.assertEqual(len(self.effects), 1)
+        self.assertIn(112, self.effects)
+        effect = self.effects[112]
+        self.assertEqual(effect.id, 112)
+        self.assertEqual(effect.category, 111)
+        self.assertIs(effect.is_offensive, True)
+        self.assertIs(effect.is_assistance, False)
+        self.assertEqual(effect.duration_attribute, 781)
+        self.assertEqual(effect.discharge_attribute, 72)
+        self.assertEqual(effect.range_attribute, 2)
+        self.assertEqual(effect.falloff_attribute, 3)
+        self.assertEqual(effect.tracking_speed_attribute, 6)
+        self.assertEqual(effect.fitting_usage_chance_attribute, 96)
+        self.assertEqual(effect.build_status, 29)
+        self.assertIn(mod, effect.modifiers)

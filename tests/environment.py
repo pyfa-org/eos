@@ -20,8 +20,9 @@
 
 
 from eos.data.cache_handler.exception import TypeFetchError, AttributeFetchError, EffectFetchError
-from eos.data.cachable import Attribute, Effect, Type
-from eos.data.cachable.custom import customize_effect, customize_type
+from eos.eve_object.attribute import Attribute
+from eos.eve_object.effect import Effect
+from eos.eve_object.type import Type
 
 
 TEST_ID_START = 1000000
@@ -37,15 +38,14 @@ class CacheHandler:
         self.__allocated_attribute = 0
         self.__allocated_effect = 0
 
-    def type(self, type_id=None, **kwargs):
+    def type(self, type_id=None, customize=False, **kwargs):
         # Allocate & verify ID
         if type_id is None:
             type_id = self.allocate_type_id()
         if type_id in self.__type_data:
             raise KeyError(type_id)
         # Create, store and return type
-        eve_type = Type(type_id=type_id, **kwargs)
-        customize_type(eve_type)
+        eve_type = Type(type_id=type_id, customize=customize, **kwargs)
         self.__type_data[eve_type.id] = eve_type
         return eve_type
 
@@ -60,15 +60,14 @@ class CacheHandler:
         self.__attribute_data[attribute.id] = attribute
         return attribute
 
-    def effect(self, effect_id=None, **kwargs):
+    def effect(self, effect_id=None, customize=False, **kwargs):
         # Allocate & verify ID
         if effect_id is None:
             effect_id = self.allocate_effect_id()
         if effect_id in self.__effect_data:
             raise KeyError(effect_id)
         # Create, store and return effect
-        effect = Effect(effect_id=effect_id, **kwargs)
-        customize_effect(effect)
+        effect = Effect(effect_id=effect_id, customize=customize, **kwargs)
         self.__effect_data[effect.id] = effect
         return effect
 

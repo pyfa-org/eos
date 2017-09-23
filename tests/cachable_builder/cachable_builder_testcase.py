@@ -20,44 +20,31 @@
 
 
 from eos.data.cachable_builder import CachableBuilder
-from eos.data.cachable.modifier import DogmaModifier
+from eos.eve_object.modifier import DogmaModifier
 from tests.eos_testcase import EosTestCase
 from .environment import DataHandler
 
 
-class GeneratorTestCase(EosTestCase):
+class CachableBuilderTestCase(EosTestCase):
     """
     Additional functionality provided:
 
     self.dh -- default data handler
+    self.run_builder -- shortcut to runing cachable object
+        builder on the data provided by data handler self.dh
+    self.mod -- instantiate dogma modifier
     """
 
     def setUp(self):
         super().setUp()
         self.dh = DataHandler()
 
-    def run_generator(self):
+    def run_builder(self):
         """
-        Run generator and rework data structure into
-        keyed tables so it's easier to check.
+        Run builder and store data on test object so that
+        it's easier to access.
         """
-        generator = CachableBuilder()
-        data = generator.run(self.dh)
-        keys = {
-            'types': 'type_id',
-            'attributes': 'attribute_id',
-            'effects': 'effect_id',
-            'modifiers': 'modifier_id'
-        }
-        keyed_data = {}
-        for table_name in data:
-            keyed_table = {}
-            key_name = keys[table_name]
-            for row in data[table_name]:
-                key = row[key_name]
-                keyed_table[key] = row
-            keyed_data[table_name] = keyed_table
-        return keyed_data
+        self.types, self.attributes, self.effects = CachableBuilder.run(self.dh)
 
     def mod(self, *args, **kwargs):
         """Instantiate and return modifier."""

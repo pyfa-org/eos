@@ -21,13 +21,13 @@
 
 import logging
 
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
-class TestConversionType(GeneratorTestCase):
+class TestConversionType(CachableBuilderTestCase):
     """
     Appropriate data should be saved into appropriate
-    indexes of object representing effect.
+    fields of type object.
     """
 
     def test_fields(self):
@@ -50,31 +50,30 @@ class TestConversionType(GeneratorTestCase):
         self.dh.data['typefighterabils'].append({
             'typeID': 1, 'abilityID': 50, 'chargeCount': 3, 'rearmTimeSeconds': 20
         })
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 1)
-        self.assertIn(1, data['types'])
-        type_row = data['types'][1]
-        self.assertEqual(len(type_row), 7)
-        self.assertEqual(type_row['group'], 6)
-        self.assertEqual(type_row['category'], 16)
-        type_attributes = type_row['attributes']
+        self.assertEqual(len(self.types), 1)
+        self.assertIn(1, self.types)
+        evetype = self.types[1]
+        self.assertEqual(evetype.group, 6)
+        self.assertEqual(evetype.category, 16)
+        type_attributes = evetype.attributes
         self.assertEqual(len(type_attributes), 2)
         self.assertEqual(type_attributes[5], 10.0)
         self.assertEqual(type_attributes[80], 180.0)
-        type_effects = type_row['effects']
+        type_effects = evetype.effects
         self.assertEqual(len(type_effects), 2)
         self.assertIn(111, type_effects)
         self.assertIn(1111, type_effects)
-        type_defeff = type_row['default_effect']
-        self.assertEqual(type_defeff, 111)
-        type_fighterabils = type_row['fighterabilities']
+        type_defeff = evetype.default_effect
+        self.assertEqual(type_defeff.id, 111)
+        type_fighterabils = evetype.fighter_abilities
         self.assertEqual(len(type_fighterabils), 3)
         self.assertCountEqual(type_fighterabils, {5, 6, 50})
         self.assertDictEqual(

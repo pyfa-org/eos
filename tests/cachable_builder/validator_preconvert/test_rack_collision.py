@@ -21,10 +21,10 @@
 
 import logging
 
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
-class TestRackCollision(GeneratorTestCase):
+class TestRackCollision(CachableBuilderTestCase):
     """
     Make sure that rack collision is detected,
     and it is detected after cleanup.
@@ -42,34 +42,34 @@ class TestRackCollision(GeneratorTestCase):
         self.dh.data['dgmeffects'].append({'effectID': 13})
 
     def test_collision(self):
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         log_record = self.log[2]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preconvert')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '2 rows contain colliding module racks, removing them')
-        self.assertEqual(len(data['types']), 1)
-        self.assertIn(1, data['types'])
-        type_effects = data['types'][1]['effects']
+        self.assertEqual(len(self.types), 1)
+        self.assertIn(1, self.types)
+        type_effects = self.types[1].effects
         self.assertEqual(len(type_effects), 1)
         self.assertIn(13, type_effects)
-        self.assertEqual(len(data['effects']), 3)
+        self.assertEqual(len(self.effects), 3)
 
     def test_cleaned(self):
         del self.eve_type['groupID']
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 0)
-        self.assertEqual(len(data['effects']), 0)
+        self.assertEqual(len(self.types), 0)
+        self.assertEqual(len(self.effects), 0)

@@ -22,174 +22,174 @@
 import logging
 from unittest.mock import patch
 
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
-class TestPrimaryKey(GeneratorTestCase):
+class TestPrimaryKey(CachableBuilderTestCase):
     """Check that only valid primary keys pass checks"""
 
     def test_single_proper_pk(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 1})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertIn(1, data['types'])
-        self.assertIn(2, data['types'])
+        self.assertIn(1, self.types)
+        self.assertIn(2, self.types)
 
     def test_single_no_pk(self):
         self.dh.data['evetypes'].append({'groupID': 1})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        self.assertEqual(len(data['types']), 0)
+        self.assertEqual(len(self.types), 0)
 
     def test_single_invalid(self):
         self.dh.data['evetypes'].append({'typeID': 1.5, 'groupID': 1})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        self.assertEqual(len(data['types']), 0)
+        self.assertEqual(len(self.types), 0)
 
     def test_single_duplicate(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['group'], 1)
+        self.assertEqual(len(self.types), 1)
+        self.assertEqual(self.types[1].group, 1)
 
     def test_single_duplicate_reverse(self):
         # Make sure first fed by data_handler row is accepted
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920})
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['group'], 920)
+        self.assertEqual(len(self.types), 1)
+        self.assertEqual(self.types[1].group, 920)
 
     def test_single_cleaned(self):
         # Make sure check is ran before cleanup
         self.dh.data['evetypes'].append({'typeID': 1})
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 0)
+        self.assertEqual(len(self.types), 0)
 
     def test_dual_proper_pk(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 50, 'value': 100.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        type_attributes = data['types'][1]['attributes']
+        type_attributes = self.types[1].attributes
         self.assertEqual(type_attributes[100], 50.0)
         self.assertEqual(type_attributes[50], 100.0)
 
     def test_dual_no_pk(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'value': 50.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types'][1]['attributes']), 0)
+        self.assertEqual(len(self.types[1].attributes), 0)
 
     def test_dual_invalid(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100.1, 'value': 50.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types'][1]['attributes']), 0)
+        self.assertEqual(len(self.types[1].attributes), 0)
 
     def test_dual_duplicate(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        type_attributes = data['types'][1]['attributes']
+        type_attributes = self.types[1].attributes
         self.assertEqual(len(type_attributes), 1)
         self.assertEqual(type_attributes[100], 50.0)
 
@@ -198,38 +198,38 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['evetypes'].append({'typeID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 0)
+        self.assertEqual(len(self.types), 0)
 
     def test_dual_duplicate_reverse(self):
         # Make sure first fed by data_handler row is accepted
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 5.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 100, 'value': 50.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        type_attributes = data['types'][1]['attributes']
+        type_attributes = self.types[1].attributes
         self.assertEqual(len(type_attributes), 1)
         self.assertEqual(type_attributes[100], 5.0)
 
@@ -240,80 +240,80 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['evegroups'].append({'groupID': 1, 'categoryID': 7})
         self.dh.data['evegroups'].append({'groupID': 1, 'categoryID': 32})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evegroups have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['category'], 7)
+        self.assertEqual(len(self.types), 1)
+        self.assertEqual(self.types[1].category, 7)
 
     def test_dgmattribs(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 7, 'value': 8.0})
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 50})
         self.dh.data['dgmattribs'].append({'attributeID': 7, 'maxAttributeID': 55})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['attributes']), 1)
-        self.assertEqual(data['attributes'][7]['max_attribute'], 50)
+        self.assertEqual(len(self.attributes), 1)
+        self.assertEqual(self.attributes[7].max_attribute, 50)
 
     def test_dgmeffects(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'effectCategory': 50})
         self.dh.data['dgmeffects'].append({'effectID': 7, 'effectCategory': 55})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmeffects have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['effects']), 1)
-        self.assertEqual(data['effects'][7]['effect_category'], 50)
+        self.assertEqual(len(self.effects), 1)
+        self.assertEqual(self.effects[7].category, 50)
 
     def test_dgmtypeeffects(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 100, 'isDefault': False})
         self.dh.data['dgmeffects'].append({'effectID': 100})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeeffects have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 1)
-        self.assertEqual(data['types'][1]['default_effect'], 100)
+        self.assertEqual(len(self.types), 1)
+        self.assertEqual(self.types[1].default_effect.id, 100)
 
     @patch('eos.data.cachable_builder.converter.ModifierBuilder')
     def test_dgmexpressions(self, mod_builder):
@@ -331,19 +331,19 @@ class TestPrimaryKey(GeneratorTestCase):
             'expressionGroupID': 451, 'expressionAttributeID': 90
         })
         mod_builder.return_value.build.return_value = ([], 0)
-        self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmexpressions have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        expressions = mod_builder.mock_calls[0][1][0]
+        expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
             'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
@@ -359,18 +359,18 @@ class TestPrimaryKey(GeneratorTestCase):
         self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 2})
         self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 4})
         self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 2})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.checker')
+        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table typefighterabils have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['types']), 1)
-        type_fighter_abilities = data['types'][1]['fighterabilities']
+        self.assertEqual(len(self.types), 1)
+        type_fighter_abilities = self.types[1].fighter_abilities
         self.assertEqual(len(type_fighter_abilities), 2)

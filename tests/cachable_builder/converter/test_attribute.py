@@ -21,13 +21,13 @@
 
 import logging
 
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
-class TestConversionAttribute(GeneratorTestCase):
+class TestConversionAttribute(CachableBuilderTestCase):
     """
     Appropriate data should be saved into appropriate
-    indexes of object representing attribute.
+    fields of attribute object.
     """
 
     def test_fields(self):
@@ -37,18 +37,19 @@ class TestConversionAttribute(GeneratorTestCase):
             'maxAttributeID': 84, 'randomField': None, 'stackable': True,
             'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False
         })
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(len(data['attributes']), 1)
-        self.assertIn(111, data['attributes'])
-        expected = {
-            'attribute_id': 111, 'max_attribute': 84, 'default_value': 0.0,
-            'high_is_good': False, 'stackable': True
-        }
-        self.assertEqual(data['attributes'][111], expected)
+        self.assertEqual(len(self.attributes), 1)
+        self.assertIn(111, self.attributes)
+        attribute = self.attributes[111]
+        self.assertEqual(attribute.id, 111)
+        self.assertEqual(attribute.max_attribute, 84)
+        self.assertEqual(attribute.default_value, 0.0)
+        self.assertIs(attribute.high_is_good, False)
+        self.assertIs(attribute.stackable, True)

@@ -22,11 +22,11 @@
 import logging
 from unittest.mock import patch
 
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
 @patch('eos.data.cachable_builder.converter.ModifierBuilder')
-class TestAssociatedData(GeneratorTestCase):
+class TestAssociatedData(CachableBuilderTestCase):
     """
     Check that types, which passed filter, pull in
     all related data.
@@ -117,10 +117,10 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16})
         mod_builder.return_value.build.return_value = ([], 0)
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
@@ -130,28 +130,28 @@ class TestAssociatedData(GeneratorTestCase):
             'cleaned: 0.0% from dgmattribs, 0.0% from dgmeffects, 0.0% from dgmexpressions, '
             '0.0% from dgmtypeattribs, 0.0% from dgmtypeeffects, 0.0% from evegroups, 0.0% from evetypes'
         )
-        self.assertEqual(len(data['types']), 3)
-        self.assertIn(1, data['types'])
-        self.assertEqual(data['types'][1]['category'], 16)
-        self.assertIn(2, data['types'])
-        self.assertEqual(data['types'][2]['category'], 50)
-        self.assertIn(3, data['types'])
-        self.assertEqual(data['types'][3]['category'], 51)
-        self.assertEqual(len(data['attributes']), 11)
-        self.assertIn(5, data['attributes'])
-        self.assertIn(1000, data['attributes'])
-        self.assertIn(1001, data['attributes'])
-        self.assertIn(1002, data['attributes'])
-        self.assertIn(1003, data['attributes'])
-        self.assertIn(1004, data['attributes'])
-        self.assertIn(1005, data['attributes'])
-        self.assertIn(1006, data['attributes'])
-        self.assertIn(1007, data['attributes'])
-        self.assertIn(1008, data['attributes'])
-        self.assertIn(1009, data['attributes'])
-        self.assertEqual(len(data['effects']), 2)
-        self.assertIn(200, data['effects'])
-        self.assertIn(201, data['effects'])
+        self.assertEqual(len(self.types), 3)
+        self.assertIn(1, self.types)
+        self.assertEqual(self.types[1].category, 16)
+        self.assertIn(2, self.types)
+        self.assertEqual(self.types[2].category, 50)
+        self.assertIn(3, self.types)
+        self.assertEqual(self.types[3].category, 51)
+        self.assertEqual(len(self.attributes), 11)
+        self.assertIn(5, self.attributes)
+        self.assertIn(1000, self.attributes)
+        self.assertIn(1001, self.attributes)
+        self.assertIn(1002, self.attributes)
+        self.assertIn(1003, self.attributes)
+        self.assertIn(1004, self.attributes)
+        self.assertIn(1005, self.attributes)
+        self.assertIn(1006, self.attributes)
+        self.assertIn(1007, self.attributes)
+        self.assertIn(1008, self.attributes)
+        self.assertIn(1009, self.attributes)
+        self.assertEqual(len(self.effects), 2)
+        self.assertIn(200, self.effects)
+        self.assertIn(201, self.effects)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 4)
         expression_ids = set(row['expressionID'] for row in expressions)
@@ -162,10 +162,10 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 5})
         self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 101})
         mod_builder.return_value.build.return_value = ([], 0)
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
@@ -176,17 +176,17 @@ class TestAssociatedData(GeneratorTestCase):
             '100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from evegroups, '
             '100.0% from evetypes'
         )
-        self.assertEqual(len(data['types']), 0)
-        self.assertEqual(len(data['attributes']), 0)
-        self.assertEqual(len(data['effects']), 0)
+        self.assertEqual(len(self.types), 0)
+        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.effects), 0)
         self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
 
     def test_unlinked(self, mod_builder):
         self.__generate_data()
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
@@ -197,9 +197,9 @@ class TestAssociatedData(GeneratorTestCase):
             '100.0% from dgmtypeattribs, 100.0% from dgmtypeeffects, 100.0% from evegroups, '
             '100.0% from evetypes'
         )
-        self.assertEqual(len(data['types']), 0)
-        self.assertEqual(len(data['attributes']), 0)
-        self.assertEqual(len(data['effects']), 0)
+        self.assertEqual(len(self.types), 0)
+        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.effects), 0)
         self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
 
     def test_reverse_types(self, mod_builder):
@@ -228,10 +228,10 @@ class TestAssociatedData(GeneratorTestCase):
         self.dh.data['evetypes'].append({'typeID': 4, 'groupID': 6})
         self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50})
         mod_builder.return_value.build.return_value = ([], 0)
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
@@ -241,13 +241,13 @@ class TestAssociatedData(GeneratorTestCase):
             'cleaned: 0.0% from dgmeffects, 0.0% from dgmexpressions, 0.0% from dgmtypeeffects, '
             '0.0% from evegroups, 25.0% from evetypes'
         )
-        self.assertEqual(len(data['types']), 3)
-        self.assertIn(1, data['types'])
-        self.assertIn(2, data['types'])
-        self.assertIn(3, data['types'])
-        self.assertEqual(len(data['attributes']), 0)
-        self.assertEqual(len(data['effects']), 1)
-        self.assertIn(100, data['effects'])
+        self.assertEqual(len(self.types), 3)
+        self.assertIn(1, self.types)
+        self.assertIn(2, self.types)
+        self.assertIn(3, self.types)
+        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.effects), 1)
+        self.assertIn(100, self.effects)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
         expression_ids = set(row['expressionID'] for row in expressions)

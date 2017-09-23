@@ -22,75 +22,75 @@
 import logging
 
 from eos.const.eve import Attribute
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
-class TestNormalizationAttr(GeneratorTestCase):
-    """Check that attribute normalization jobs function as expected"""
+class TestNormalizationIdzing(CachableBuilderTestCase):
+    """Check that symbolic references are converted into IDs"""
 
     def test_basic_attr_radius(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'radius': 50.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(data['types'][1]['attributes'][Attribute.radius], 50.0)
+        self.assertEqual(self.types[1].attributes[Attribute.radius], 50.0)
 
     def test_basic_attr_mass(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 5.0)
+        self.assertEqual(self.types[1].attributes[Attribute.mass], 5.0)
 
     def test_basic_attr_volume(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'volume': 500.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(data['types'][1]['attributes'][Attribute.volume], 500.0)
+        self.assertEqual(self.types[1].attributes[Attribute.volume], 500.0)
 
     def test_basic_attr_capacity(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'capacity': 0.5})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(data['types'][1]['attributes'][Attribute.capacity], 0.5)
+        self.assertEqual(self.types[1].attributes[Attribute.capacity], 0.5)
 
     def test_duplicate_definition(self):
         # Check what happens if attribute is defined in both dgmtypeattribs and evetypes
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': Attribute.mass, 'value': 6.0})
-        data = self.run_generator()
+        self.run_builder()
         self.assertEqual(len(self.log), 3)
         duplicate_error = self.log[0]
-        self.assertEqual(duplicate_error.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(duplicate_error.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(duplicate_error.levelno, logging.WARNING)
         self.assertEqual(duplicate_error.msg, '1 built-in attributes already have had value in'
                                               ' dgmtypeattribs and were skipped')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(data['types'][1]['attributes'][Attribute.mass], 6.0)
+        self.assertEqual(self.types[1].attributes[Attribute.mass], 6.0)

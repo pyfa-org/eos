@@ -23,11 +23,12 @@ import logging
 from unittest.mock import patch
 
 from eos.const.eve import Operand
-from tests.cache_generator.generator_testcase import GeneratorTestCase
+from eos.util.frozen_dict import FrozenDict
+from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
 @patch('eos.data.cachable_builder.converter.ModifierBuilder')
-class TestNormalizationIdzing(GeneratorTestCase):
+class TestNormalizationIdzing(CachableBuilderTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
     def test_group_idzing(self, mod_builder):
@@ -41,22 +42,22 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         # Action
-        self.run_generator()
+        self.run_builder()
         # Verification
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {
+        expected = FrozenDict({
             'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
             'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 53,
             'expressionAttributeID': 102, 'table_pos': 0
-        }
+        })
         self.assertIn(expected, expressions)
 
     def test_group_ignorelist(self, mod_builder):
@@ -70,32 +71,32 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         # Action
-        self.run_generator()
+        self.run_builder()
         # Verification
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = mod_builder.mock_calls[0][1][0]
         self.assertEqual(len(expressions), 1)
-        expected = {
+        expected = FrozenDict({
             'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
             'expressionValue': 'PowerCore', 'expressionTypeID': 567, 'expressionGroupID': None,
             'expressionAttributeID': 102, 'table_pos': 0
-        }
+        })
         self.assertIn(expected, expressions)
 
     def test_warning_unused(self, mod_builder):
         mod_builder.return_value.build.return_value = ([], 0)
         # Action
-        self.run_generator()
+        self.run_builder()
         # Verification
         self.assertEqual(len(self.log), 1)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats.msg, '4 replacements for expressionGroupID were not used: '
@@ -113,14 +114,14 @@ class TestNormalizationIdzing(GeneratorTestCase):
         })
         mod_builder.return_value.build.return_value = ([], 0)
         # Action
-        self.run_generator()
+        self.run_builder()
         # Verification
         self.assertEqual(len(self.log), 3)
         idzing_stats_unused = self.log[0]
-        self.assertEqual(idzing_stats_unused.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats_unused.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats_unused.levelno, logging.WARNING)
         idzing_stats_failures = self.log[1]
-        self.assertEqual(idzing_stats_failures.name, 'eos.data.cachable_builder.converter')
+        self.assertEqual(idzing_stats_failures.name, 'eos.data.cachable_builder.normalizer')
         self.assertEqual(idzing_stats_failures.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats_failures.msg, 'unable to convert 1 literal references '
