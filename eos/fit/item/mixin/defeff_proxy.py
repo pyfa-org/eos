@@ -30,42 +30,30 @@ class DefaultEffectProxyMixin(BaseItemMixin):
 
     @property
     def cycle_time(self):
-        default_effect = getattr(self._eve_type, 'default_effect', None)
-        if default_effect is None:
-            return None
-        return default_effect.get_cycle_time(self)
+        return self.__safe_get_from_defeff('get_cycle_time')
 
     @property
     def cap_use(self):
-        default_effect = getattr(self._eve_type, 'default_effect', None)
-        if default_effect is None:
-            return None
-        return default_effect.get_cap_use(self)
+        return self.__safe_get_from_defeff('get_cap_use')
 
     @property
     def optimal_range(self):
-        default_effect = getattr(self._eve_type, 'default_effect', None)
-        if default_effect is None:
-            return None
-        return default_effect.get_optimal_range(self)
+        return self.__safe_get_from_defeff('get_optimal_range')
 
     @property
     def falloff_range(self):
-        default_effect = getattr(self._eve_type, 'default_effect', None)
-        if default_effect is None:
-            return None
-        return default_effect.get_falloff_range(self)
+        return self.__safe_get_from_defeff('get_falloff_range')
 
     @property
     def tracking_speed(self):
-        default_effect = getattr(self._eve_type, 'default_effect', None)
-        if default_effect is None:
-            return None
-        return default_effect.get_tracking_speed(self)
+        return self.__safe_get_from_defeff('get_tracking_speed')
 
     @property
     def fitting_usage_chance(self):
+        return self.__safe_get_from_defeff('get_fitting_usage_chance')
+
+    def __safe_get_from_defeff(self, method):
         default_effect = getattr(self._eve_type, 'default_effect', None)
         if default_effect is None:
             return None
-        return default_effect.get_fitting_usage_chance(self)
+        return getattr(default_effect, method)(self)

@@ -57,32 +57,12 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_cycle_no_source(self):
-        fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('duration_attribute')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertIsNone(item.cycle_time)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_cap_use(self):
         fit = Fit()
         item = self.make_item_with_defeff_attrib('discharge_attribute')
         fit.modules.high.append(item)
         # Verification
         self.assertAlmostEqual(item.cap_use, 100)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_cap_use_no_source(self):
-        fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('discharge_attribute')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertIsNone(item.cap_use)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -97,32 +77,12 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_optimal_no_source(self):
-        fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('range_attribute')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertIsNone(item.optimal_range)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_falloff(self):
         fit = Fit()
         item = self.make_item_with_defeff_attrib('falloff_attribute')
         fit.modules.high.append(item)
         # Verification
         self.assertAlmostEqual(item.falloff_range, 100)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_falloff_no_source(self):
-        fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('falloff_attribute')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertIsNone(item.falloff_range)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
@@ -137,16 +97,6 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_tracking_no_source(self):
-        fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('tracking_speed_attribute')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertIsNone(item.tracking_speed)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_fitting_usage_chance(self):
         fit = Fit()
         item = self.make_item_with_defeff_attrib('fitting_usage_chance_attribute')
@@ -157,17 +107,18 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_fitting_usage_chance_no_source(self):
+    # Various errors are tested here, but just for one of access points
+    def test_optimal_no_source(self):
         fit = Fit(source=None)
-        item = self.make_item_with_defeff_attrib('fitting_usage_chance_attribute')
+        item = self.make_item_with_defeff_attrib('range_attribute')
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.fitting_usage_chance)
+        self.assertIsNone(item.optimal_range)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_nodefault_effect(self):
+    def test_optimal_no_defeff(self):
         attr = self.ch.attribute()
         effect = self.ch.effect(category=EffectCategory.active, range_attribute=attr.id)
         fit = Fit()
@@ -179,7 +130,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_no_description(self):
+    def test_optimal_no_description(self):
         attr = self.ch.attribute()
         effect = self.ch.effect(category=EffectCategory.active)
         fit = Fit()
@@ -191,7 +142,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_no_attr(self):
+    def test_optimal_no_attr(self):
         attr = self.ch.attribute()
         effect = self.ch.effect(category=EffectCategory.active, range_attribute=attr.id)
         fit = Fit()
