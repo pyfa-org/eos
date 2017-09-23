@@ -27,7 +27,7 @@ from eos.data.cachable import BaseCachable
 from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
-from ..custom import customize_type
+from ..custom.type import customize_type
 
 
 FighterAbility = namedtuple('FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))

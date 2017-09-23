@@ -38,7 +38,7 @@ __version__ = '0.0.0.dev10'
 from .const.eos import State, Restriction
 from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
-from .fit import Fit
+from .fit.fit import Fit
 from .fit.restriction.exception import ValidationError
 from .fit.helper import DamageProfile, ResistanceProfile
 from .data.cache_handler import JsonCacheHandler

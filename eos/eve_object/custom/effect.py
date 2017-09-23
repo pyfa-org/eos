@@ -19,23 +19,11 @@
 # ===============================================================================
 
 
-from eos.const.eve import Effect, Group
+from eos.const.eve import Effect
 from .ancillary_armor_repairer import add_aar_modifier
-from .character_missile_damage import add_character_missile_damage_multiplier
 from .online_effect_category import fix_online_category
 from .propulsion_modules import add_ab_modifiers, add_mwd_modifiers
 from .reactive_armor_hardener import add_rah_modifiers
-
-
-# Format: {type group ID: customization method}
-_type_group_map = {
-    Group.character: add_character_missile_damage_multiplier
-}
-
-
-def customize_type(eve_type):
-    if eve_type.group in _type_group_map:
-        _type_group_map[eve_type.group](eve_type)
 
 
 # Format: {effect ID: customization method}

@@ -21,14 +21,14 @@
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosType
 from eos.const.eve import Operand
-from eos.eve_object import DogmaModifier
+from eos.eve_object.modifier import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
 from ..exception import UnknownEtreeRootOperandError
 
 
 class ExpressionTreeConverter:
     """
-    Class which uses effects' expression trees to generate
+    Class which uses effects' expression trees to build
     actual modifier objects used by Eos.
     """
 

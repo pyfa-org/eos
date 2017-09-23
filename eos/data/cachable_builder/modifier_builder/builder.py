@@ -31,7 +31,7 @@ logger = getLogger(__name__)
 
 class ModifierBuilder:
     """
-    Class which is used for generating Eos modifiers out of
+    Class which is used for building Eos modifiers out of
     effect data.
     """
 

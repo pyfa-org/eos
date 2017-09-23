@@ -21,7 +21,9 @@
 
 from logging import getLogger
 
-from eos.eve_object import Attribute, Effect, Type
+from eos.eve_object.attribute import Attribute
+from eos.eve_object.effect import Effect
+from eos.eve_object.type import Type
 from .modifier_builder import ModifierBuilder
 
 

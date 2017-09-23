@@ -25,7 +25,9 @@ import os.path
 from logging import getLogger
 from weakref import WeakValueDictionary
 
-from eos.eve_object import Attribute, Effect, Type
+from eos.eve_object.attribute import Attribute
+from eos.eve_object.effect import Effect
+from eos.eve_object.type import Type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
 from .exception import AttributeFetchError, EffectFetchError, TypeFetchError

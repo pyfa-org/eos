@@ -21,7 +21,7 @@
 import yaml
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.eve_object import DogmaModifier
+from eos.eve_object.modifier import DogmaModifier
 from ..exception import YamlParsingError
 
 
