@@ -23,7 +23,6 @@ import logging
 from unittest.mock import patch
 
 from eos.const.eve import Operand
-from eos.util.frozen_dict import FrozenDict
 from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
@@ -51,13 +50,13 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        expressions = mod_builder.mock_calls[0][1][0]
+        expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
-        expected = FrozenDict({
+        expected = {
             'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
             'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 53,
             'expressionAttributeID': 102, 'table_pos': 0
-        })
+        }
         self.assertIn(expected, expressions)
 
     def test_group_ignorelist(self, mod_builder):
@@ -80,13 +79,13 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        expressions = mod_builder.mock_calls[0][1][0]
+        expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
-        expected = FrozenDict({
+        expected = {
             'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
             'expressionValue': 'PowerCore', 'expressionTypeID': 567, 'expressionGroupID': None,
             'expressionAttributeID': 102, 'table_pos': 0
-        })
+        }
         self.assertIn(expected, expressions)
 
     def test_warning_unused(self, mod_builder):

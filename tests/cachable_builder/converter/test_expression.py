@@ -22,7 +22,6 @@
 import logging
 from unittest.mock import patch
 
-from eos.util.frozen_dict import FrozenDict
 from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
@@ -58,19 +57,19 @@ class TestConversionExpression(CachableBuilderTestCase):
         self.assertEqual(clean_stats.levelno, logging.INFO)
         # As expressions are absent in final container,
         # check those which were passed to modifier builder
-        expressions = mod_builder.mock_calls[0][1][0]
+        expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 2)
         # It's fine that additional fields get into final expression set,
         # because they will be replaced by modifiers anyway
-        expected = FrozenDict({
+        expected = {
             'expressionID': 41, 'operandID': 6, 'arg1': 1009, 'arg2': 15, 'expressionValue': None,
             'expressionTypeID': 502, 'expressionGroupID': 451, 'expressionAttributeID': 90,
             'table_pos': 0, 'randomField': 'vals'
-        })
+        }
         self.assertIn(expected, expressions)
-        expected = FrozenDict({
+        expected = {
             'expressionID': 57, 'operandID': 33, 'arg1': 5007, 'arg2': 66, 'expressionValue': 'Kurr',
             'expressionTypeID': 551, 'expressionGroupID': 567, 'expressionAttributeID': 102,
             'table_pos': 1, 'randoom': True
-        })
+        }
         self.assertIn(expected, expressions)
