@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -33,7 +32,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr1 = self.ch.attribute()
         chance_attr2 = self.ch.attribute()
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=chance_attr2.id,
@@ -72,7 +71,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr1 = self.ch.attribute()
         chance_attr2 = self.ch.attribute()
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=chance_attr2.id,
@@ -177,7 +176,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
         tgt_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
@@ -207,7 +206,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
         tgt_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
@@ -236,7 +235,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
         tgt_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
@@ -267,7 +266,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
         tgt_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,

@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -34,7 +33,7 @@ class TestCalculationChain(CalculatorTestCase):
         attr2 = self.ch.attribute()
         attr3 = self.ch.attribute()
         attr4 = self.ch.attribute()
-        modifier1 = DogmaModifier(
+        modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=attr2.id,
@@ -42,7 +41,7 @@ class TestCalculationChain(CalculatorTestCase):
             src_attr=attr1.id
         )
         effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier1])
-        modifier2 = DogmaModifier(
+        modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr3.id,
@@ -50,7 +49,7 @@ class TestCalculationChain(CalculatorTestCase):
             src_attr=attr2.id
         )
         effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier2])
-        modifier3 = DogmaModifier(
+        modifier3 = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr4.id,

@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -142,7 +141,7 @@ class TestRahSimCleanup(RahSimTestCase):
     def test_ship_resonance(self):
         # Setup
         skill_attr = self.ch.attribute(high_is_good=False, stackable=False)
-        skill_modifier = DogmaModifier(
+        skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.armor_therm.id,
@@ -183,7 +182,7 @@ class TestRahSimCleanup(RahSimTestCase):
     def test_rah_resonance(self):
         # Setup
         skill_attr = self.ch.attribute(high_is_good=False, stackable=False)
-        skill_modifier = DogmaModifier(
+        skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.armor_kin.id,
@@ -224,7 +223,7 @@ class TestRahSimCleanup(RahSimTestCase):
     def test_rah_shift(self):
         # Setup
         skill_attr = self.ch.attribute(high_is_good=False, stackable=False)
-        skill_modifier = DogmaModifier(
+        skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.shift_attr.id,

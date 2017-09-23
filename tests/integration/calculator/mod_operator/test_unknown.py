@@ -24,7 +24,6 @@ import logging
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -35,7 +34,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         # attribute calculator
         tgt_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
-        invalid_modifier = DogmaModifier(
+        invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
@@ -65,14 +64,14 @@ class TestOperatorUnknown(CalculatorTestCase):
         # method made it to crash
         tgt_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
-        invalid_modifier = DogmaModifier(
+        invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=None,
             src_attr=src_attr.id
         )
-        valid_modifier = DogmaModifier(
+        valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
@@ -99,14 +98,14 @@ class TestOperatorUnknown(CalculatorTestCase):
     def test_combination(self):
         tgt_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
-        invalid_modifier = DogmaModifier(
+        invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=1008,
             src_attr=src_attr.id
         )
-        valid_modifier = DogmaModifier(
+        valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,

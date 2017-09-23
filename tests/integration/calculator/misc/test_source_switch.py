@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -45,7 +44,7 @@ class TestSourceSwitch(CalculatorTestCase):
         tgt_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
         self.ch.attribute(attribute_id=tgt_attr_id)
         self.ch2.attribute(attribute_id=tgt_attr_id)
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr_id,
@@ -90,7 +89,7 @@ class TestSourceSwitch(CalculatorTestCase):
         self.ch2.attribute(attribute_id=tgt_attr_id, max_attribute=max_attr_id)
         self.ch.attribute(attribute_id=max_attr_id, default_value=54.5)
         self.ch2.attribute(attribute_id=max_attr_id, default_value=88)
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr_id,

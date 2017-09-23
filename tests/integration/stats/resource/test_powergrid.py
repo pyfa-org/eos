@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Effect, EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -33,12 +32,12 @@ class TestPowergrid(StatTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.power_output)
         self.ch.attribute(attribute_id=Attribute.power)
-        self.effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active)
+        self.effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active, customize=True)
 
     def test_output(self):
         # Check that modified attribute of ship is used
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=Attribute.power_output,
@@ -79,7 +78,7 @@ class TestPowergrid(StatTestCase):
     def test_use_single(self):
         # Check that modified consumption attribute is used
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=Attribute.power,

@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Effect, EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -33,7 +32,7 @@ class TestPowerGrid(RestrictionTestCase):
         super().setUp()
         self.ch.attribute(attribute_id=Attribute.power)
         self.ch.attribute(attribute_id=Attribute.power_output)
-        self.effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active)
+        self.effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active, customize=True)
 
     def test_fail_excess_single(self):
         # When ship provides powergrid output, but single consumer
@@ -107,7 +106,7 @@ class TestPowerGrid(RestrictionTestCase):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 50}).id)
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=Attribute.power,

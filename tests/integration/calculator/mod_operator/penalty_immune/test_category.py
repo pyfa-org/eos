@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Category, EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -36,7 +35,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         super().setUp()
         self.tgt_attr = self.ch.attribute(stackable=0)
         self.src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.tgt_attr.id,

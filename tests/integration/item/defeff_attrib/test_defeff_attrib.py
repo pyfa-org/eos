@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -31,7 +30,7 @@ class TestItemMixinSpecialAttrib(ItemMixinTestCase):
     def make_item_with_defeff_attrib(self, defeff_attrib_name):
         attr = self.ch.attribute()
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=attr.id,

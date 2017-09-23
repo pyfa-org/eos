@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -32,7 +31,7 @@ class TestOperatorAllIn(CalculatorTestCase):
     def test_all_in(self):
         tgt_attr = self.ch.attribute(stackable=0)
         src_attr = self.ch.attribute()
-        modifier_pre_ass = DogmaModifier(
+        modifier_pre_ass = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -45,7 +44,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             effects=[effect_pre_ass], attributes={src_attr.id: value_pre_ass}
         ).id)
         self.fit.implants.add(influence_source_pre_ass)
-        modifier_pre_mul = DogmaModifier(
+        modifier_pre_mul = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -58,7 +57,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             effects=[effect_pre_mul], attributes={src_attr.id: value_pre_mul}
         ).id)
         self.fit.implants.add(influence_source_pre_mul)
-        modifier_pre_div = DogmaModifier(
+        modifier_pre_div = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -71,7 +70,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             effects=[effect_pre_div], attributes={src_attr.id: value_pre_div}
         ).id)
         self.fit.implants.add(influence_source_pre_div)
-        modifier_mod_add = DogmaModifier(
+        modifier_mod_add = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -84,7 +83,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             effects=[effect_mod_add], attributes={src_attr.id: value_mod_add}
         ).id)
         self.fit.implants.add(influence_source_mod_add)
-        modifier_mod_sub = DogmaModifier(
+        modifier_mod_sub = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -97,7 +96,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             effects=[effect_mod_sub], attributes={src_attr.id: value_mod_sub}
         ).id)
         self.fit.implants.add(influence_source_mod_sub)
-        modifier_post_mul = DogmaModifier(
+        modifier_post_mul = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -110,7 +109,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             effects=[effect_post_mul], attributes={src_attr.id: value_post_mul}
         ).id)
         self.fit.implants.add(influence_source_post_mul)
-        modifier_post_div = DogmaModifier(
+        modifier_post_div = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -123,7 +122,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             effects=[effect_post_div], attributes={src_attr.id: value_post_div}
         ).id)
         self.fit.implants.add(influence_source_post_div)
-        modifier_post_perc = DogmaModifier(
+        modifier_post_perc = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,

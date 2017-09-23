@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Effect, EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -103,7 +102,7 @@ class TestCalibration(RestrictionTestCase):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 50}).id)
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=Attribute.upgrade_cost,

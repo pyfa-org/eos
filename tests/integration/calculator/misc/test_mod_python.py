@@ -22,8 +22,8 @@
 from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier, ModificationCalculationError
-from eos.data.cachable.modifier.python import BasePythonModifier
+from eos.eve_object.modifier import ModificationCalculationError
+from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.pubsub.message import InstrAttrValueChanged
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -106,7 +106,7 @@ class TestModifierPython(CalculatorTestCase):
         # which are used as source by python modifier, and sees if
         # python modifier target value is updated
         attr4 = self.ch.attribute()
-        dogma_modifier = DogmaModifier(
+        dogma_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr2.id,
@@ -132,7 +132,7 @@ class TestModifierPython(CalculatorTestCase):
         # Make sure that when python modifier unsubscribes
         # from message type needed by calculator, calculator
         # still receives that message type
-        dogma_modifier1 = DogmaModifier(
+        dogma_modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr1.id,
@@ -140,7 +140,7 @@ class TestModifierPython(CalculatorTestCase):
             src_attr=self.attr2.id
         )
         dogma_effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=[dogma_modifier1])
-        dogma_modifier2 = DogmaModifier(
+        dogma_modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr2.id,

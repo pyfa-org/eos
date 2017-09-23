@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -35,21 +34,21 @@ class TestEffectToggling(CalculatorTestCase):
         src_attr1 = self.ch.attribute()
         src_attr2 = self.ch.attribute()
         src_attr3 = self.ch.attribute()
-        modifier1 = DogmaModifier(
+        modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr1.id
         )
-        modifier2 = DogmaModifier(
+        modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr2.id
         )
-        modifier_active = DogmaModifier(
+        modifier_active = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,

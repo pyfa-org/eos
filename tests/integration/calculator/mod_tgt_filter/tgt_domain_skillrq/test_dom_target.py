@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -31,7 +30,7 @@ class TestTgtDomainSkillrqDomainTarget(CalculatorTestCase):
     def test_no_effect(self):
         tgt_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=ModifierDomain.target,
             tgt_filter_extra_arg=56,

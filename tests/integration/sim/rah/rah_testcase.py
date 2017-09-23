@@ -22,7 +22,6 @@
 from eos import Fit
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Effect, EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
@@ -54,9 +53,9 @@ class RahSimTestCase(IntegrationTestCase):
         # Effect setup
         self.rah_effect = self.ch.effect(
             effect_id=Effect.adaptive_armor_hardener, category=EffectCategory.active,
-            duration_attribute=self.cycle_attr.id
+            duration_attribute=self.cycle_attr.id, customize=True
         )
-        heat_modifier = DogmaModifier(
+        heat_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.cycle_attr.id,

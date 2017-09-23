@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -34,7 +33,7 @@ class TestLaunchedDrone(StatTestCase):
 
     def test_output(self):
         src_attr = self.ch.attribute()
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=Attribute.max_active_drones,

@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -32,7 +31,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
     def test_forced_value(self):
         tgt_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
-        modifier_pre_ass = DogmaModifier(
+        modifier_pre_ass = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -44,7 +43,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_pre_ass], attributes={src_attr.id: 5}
         ).id)
         self.fit.implants.add(influence_source_pre_ass)
-        modifier_pre_mul = DogmaModifier(
+        modifier_pre_mul = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -56,7 +55,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_pre_mul], attributes={src_attr.id: 50}
         ).id)
         self.fit.implants.add(influence_source_pre_mul)
-        modifier_pre_div = DogmaModifier(
+        modifier_pre_div = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -68,7 +67,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_pre_div], attributes={src_attr.id: 0.5}
         ).id)
         self.fit.implants.add(influence_source_pre_div)
-        modifier_mod_add = DogmaModifier(
+        modifier_mod_add = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -80,7 +79,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_mod_add], attributes={src_attr.id: 10}
         ).id)
         self.fit.implants.add(influence_source_mod_add)
-        modifier_mod_sub = DogmaModifier(
+        modifier_mod_sub = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -92,7 +91,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_mod_sub], attributes={src_attr.id: 63}
         ).id)
         self.fit.implants.add(influence_source_mod_sub)
-        modifier_post_mul = DogmaModifier(
+        modifier_post_mul = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -104,7 +103,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_post_mul], attributes={src_attr.id: 1.35}
         ).id)
         self.fit.implants.add(influence_source_post_mul)
-        modifier_post_div = DogmaModifier(
+        modifier_post_div = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -116,7 +115,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_post_div], attributes={src_attr.id: 2.7}
         ).id)
         self.fit.implants.add(influence_source_post_div)
-        modifier_post_perc = DogmaModifier(
+        modifier_post_perc = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
@@ -128,7 +127,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_post_perc], attributes={src_attr.id: 15}
         ).id)
         self.fit.implants.add(influence_source_post_perc)
-        modifier_post_ass = DogmaModifier(
+        modifier_post_ass = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,

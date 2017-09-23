@@ -24,7 +24,6 @@ import logging
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -35,14 +34,14 @@ class TestSourceAttribute(CalculatorTestCase):
         tgt_attr = self.ch.attribute()
         abs_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
-        invalid_modifier = DogmaModifier(
+        invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
             src_attr=abs_attr.id
         )
-        valid_modifier = DogmaModifier(
+        valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,

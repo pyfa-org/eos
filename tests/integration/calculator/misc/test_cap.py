@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -36,7 +35,7 @@ class TestCap(CalculatorTestCase):
         self.source_attr = self.ch.attribute()
         # Just to make sure cap is applied to final value, not
         # base, make some basic modification modifier
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.capped_attr.id,
@@ -76,7 +75,7 @@ class TestCap(CalculatorTestCase):
         # Make sure that item's own specified attribute
         # value is taken as cap, and it's taken with all
         # modifications applied onto it
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.capping_attr.id,
@@ -107,7 +106,7 @@ class TestCap(CalculatorTestCase):
         # Check attribute vs initial cap
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
         # Add something which changes capping attribute
-        modifier = DogmaModifier(
+        modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.capping_attr.id,

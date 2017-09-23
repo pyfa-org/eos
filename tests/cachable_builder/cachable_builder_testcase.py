@@ -47,5 +47,4 @@ class CachableBuilderTestCase(EosTestCase):
         self.types, self.attributes, self.effects = CachableBuilder.run(self.dh)
 
     def mod(self, *args, **kwargs):
-        """Instantiate and return modifier."""
         return DogmaModifier(*args, **kwargs)

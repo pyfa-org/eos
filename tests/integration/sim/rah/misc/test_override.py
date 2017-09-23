@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -31,7 +30,7 @@ class TestRahSimAttributeOverride(RahSimTestCase):
     def test_rah_modified_resonance_update(self):
         # Setup
         skill_attr = self.ch.attribute(high_is_good=False, stackable=False)
-        skill_modifiers = tuple(DogmaModifier(
+        skill_modifiers = tuple(self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr,

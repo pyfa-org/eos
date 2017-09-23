@@ -22,7 +22,6 @@
 from eos import *
 from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import EffectCategory
-from eos.data.cachable.modifier import DogmaModifier
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -36,35 +35,35 @@ class TestStateSwitching(CalculatorTestCase):
         src_attr3 = self.ch.attribute()
         src_attr4 = self.ch.attribute()
         src_attr5 = self.ch.attribute()
-        modifier_off = DogmaModifier(
+        modifier_off = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr1.id
         )
-        modifier_on = DogmaModifier(
+        modifier_on = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr2.id
         )
-        modifier_act = DogmaModifier(
+        modifier_act = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id
         )
-        modifier_over = DogmaModifier(
+        modifier_over = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr4.id
         )
-        modifier_disabled = DogmaModifier(
+        modifier_disabled = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,

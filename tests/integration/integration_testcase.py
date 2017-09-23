@@ -23,6 +23,7 @@ from copy import copy
 
 from eos.const.eve import Type, Group
 from eos.data.source import SourceManager, Source
+from eos.eve_object.modifier import DogmaModifier
 from tests.eos_testcase import EosTestCase
 
 
@@ -32,6 +33,7 @@ class IntegrationTestCase(EosTestCase):
 
     Two sources for fit are set up, src1 (default) and src2
     self.ch2 -- cache handler for second source
+    self.mod -- instantiate dogma modifier
     self.assert_fit_buffers_empty -- checks if fit contains anything
         in object containers which are designed to hold temporary data
     """
@@ -62,6 +64,9 @@ class IntegrationTestCase(EosTestCase):
         # Instantiate character type, as it's used in every test
         cache_handler.type(type_id=Type.character_static, group=Group.character)
         return source
+
+    def mod(self, *args, **kwargs):
+        return DogmaModifier(*args, **kwargs)
 
     def allocate_type_id(self, *cache_handlers):
         return max(ch.allocate_type_id() for ch in cache_handlers)
