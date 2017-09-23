@@ -22,6 +22,7 @@
 from logging import getLogger
 from numbers import Integral
 
+
 logger = getLogger(__name__)
 
 

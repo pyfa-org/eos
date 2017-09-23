@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute
-from eos.data.cachable import DogmaModifier
+from ...modifier import DogmaModifier
 
 
 logger = getLogger(__name__)

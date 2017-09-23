@@ -25,10 +25,10 @@ import os.path
 from logging import getLogger
 from weakref import WeakValueDictionary
 
-from eos.data.cachable import *
+from eos.eve_object import Attribute, Effect, Type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
-from .exception import TypeFetchError, AttributeFetchError, EffectFetchError
+from .exception import AttributeFetchError, EffectFetchError, TypeFetchError
 
 
 logger = getLogger(__name__)

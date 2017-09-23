@@ -21,7 +21,8 @@
 
 from eos.const.eos import EffectBuildStatus, EosEffect, ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Attribute, Type, EffectCategory
-from eos.data.cachable import Effect, DogmaModifier
+from ...effect import Effect
+from ...modifier import DogmaModifier
 
 
 def add_character_missile_damage_multiplier(eve_type):

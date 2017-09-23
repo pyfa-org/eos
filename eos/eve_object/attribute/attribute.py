@@ -19,8 +19,8 @@
 # ===============================================================================
 
 
+from eos.data.cachable import BaseCachable
 from eos.util.repr import make_repr_str
-from ..base import BaseCachable
 
 
 class Attribute(BaseCachable):

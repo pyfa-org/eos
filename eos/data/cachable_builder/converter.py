@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.data.cachable import Attribute, Effect, Type
+from eos.eve_object import Attribute, Effect, Type
 from .modifier_builder import ModifierBuilder
 
 

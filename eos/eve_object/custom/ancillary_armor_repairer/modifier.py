@@ -21,9 +21,9 @@
 
 from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
 from eos.const.eve import Attribute, Type
-from eos.data.cachable.modifier.exception import ModificationCalculationError
-from eos.data.cachable.modifier.python import BasePythonModifier
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrAttrValueChanged
+from ...modifier.exception import ModificationCalculationError
+from ...modifier.python import BasePythonModifier
 
 
 class AncillaryRepAmountModifier(BasePythonModifier):

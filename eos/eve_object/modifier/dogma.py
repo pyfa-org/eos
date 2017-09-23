@@ -20,10 +20,10 @@
 
 
 from eos.const.eos import ModifierOperator
+from eos.data.cachable import BaseCachable
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
 from .exception import ModificationCalculationError
-from ..base import BaseCachable
 
 
 class DogmaModifier(BaseModifier, BaseCachable):

@@ -19,19 +19,7 @@
 # ===============================================================================
 
 
-from abc import ABCMeta, abstractmethod
-
-
-class BaseCachable(metaclass=ABCMeta):
-    """Base class for all objects which can be stored in cache"""
-
-    @abstractmethod
-    def compress(self):
-        """Compress object into python primitive"""
-        ...
-
-    @classmethod
-    @abstractmethod
-    def decompress(cls, cache_handler, compressed):
-        """Construct object from python primitive"""
-        ...
+from .attribute import Attribute
+from .effect import Effect
+from .modifier import DogmaModifier
+from .type import Type
