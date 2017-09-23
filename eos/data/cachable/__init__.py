@@ -30,7 +30,6 @@ __all__ = [
     'Attribute',
     'DogmaModifier',
     'Effect',
-    'FighterAbility',
     'Type'
 ]
 
@@ -38,4 +37,4 @@ __all__ = [
 from .attribute import Attribute
 from .effect import Effect
 from .modifier import DogmaModifier
-from .type import FighterAbility, Type
+from .type import Type

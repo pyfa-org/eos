@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from ..message.base import BaseInputMessage
+from ..message.base import BaseInputMessage, BaseInstructionMessage
 
 
 class FitMessageBroker:
@@ -64,6 +64,6 @@ class FitMessageBroker:
             for message in (message, *message.get_instructions()):
                 for subscriber in self.__subscribers.get(type(message), ()):
                     subscriber._notify(message)
-        else:
+        elif isinstance(message, BaseInstructionMessage):
             for subscriber in self.__subscribers.get(type(message), ()):
                 subscriber._notify(message)
