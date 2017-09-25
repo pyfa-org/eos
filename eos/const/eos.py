@@ -46,6 +46,35 @@ class State(IntEnum):
 
 
 @unique
+class EffectRunMode(IntEnum):
+    """
+    Run mode defines under which conditions effect is run.
+    """
+    # By default, effects are run depending on item state:
+    # - Offline: all effects with offline category are run,
+    # except for effects which have fitting usage chance
+    # specified
+    # - Online: if item has 'online' effect, all effects
+    # with online category are run, otherwise nothing
+    # happens
+    # - Active: only item's default effect is run, and only
+    # if it has active category
+    # - Overload: all item's overload effects are run
+    default = 1
+    # Effects in this mode are run in a few situations they
+    # normally shouldn't:
+    # - Offline effects with fitting usage chance specified
+    # - Online effects when item has no 'online' effect
+    # - Non-default active effects
+    # But only when item's state is sufficient to run it
+    enabled_soft = 2
+    # Effects in this mode are always running no matter what
+    enabled_forced = 3
+    # Effects in this mode are never running no matter what
+    disabled_forced = 4
+
+
+@unique
 class EffectBuildStatus(IntEnum):
     skipped = 1
     error = 2
