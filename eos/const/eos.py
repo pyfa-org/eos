@@ -50,28 +50,21 @@ class EffectRunMode(IntEnum):
     """
     Run mode defines under which conditions effect is run.
     """
-    # By default, effects are run depending on item state:
-    # - Offline: all effects with offline category are run,
-    # except for effects which have fitting usage chance
-    # specified
-    # - Online: if item has 'online' effect, all effects
-    # with online category are run, otherwise nothing
-    # happens
-    # - Active: only item's default effect is run, and only
-    # if it has active category
-    # - Overload: all item's overload effects are run
-    default = 1
-    # Effects in this mode are run in a few situations they
-    # normally shouldn't:
-    # - Offline effects with fitting usage chance specified
-    # - Online effects when item has no 'online' effect
-    # - Non-default active effects
-    # But only when item's state is sufficient to run it
-    enabled_soft = 2
+    # In this mode rules are different, depending on effect category:
+    # - Offline: effects from this category are run when item is in offline+ state,
+    # and when they do not have fitting usage chance specified
+    # - Online: effects from this category are run when item is in online+ state,
+    # and when item has runnable 'online' effect
+    # - Active: effects from this category are run when item is in active+ state,
+    # and only when effect is default item effect
+    # - Overload: effects from this category are run when item is in overload+ state
+    eve_compliance = 1
+    # Effects in this mode are always run if item's state is high enough to run it
+    state_compliance = 2
     # Effects in this mode are always running no matter what
-    enabled_forced = 3
+    force_run = 3
     # Effects in this mode are never running no matter what
-    disabled_forced = 4
+    force_stop = 4
 
 
 @unique
