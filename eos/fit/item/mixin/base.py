@@ -23,12 +23,14 @@ from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 from random import random
 
+from eos.const.eos import EffectRunMode
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsStatusChanged, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
 EffectData = namedtuple('EffectData', ('effect', 'chance', 'activable'))
+DEFAULT_EFFECT_MODE = EffectRunMode.full_compliance
 
 
 class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
@@ -57,9 +59,9 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # IDs are stored here without actual effects because we want to keep blocked
         # effect info even when item's fit switches sources
         self.__blocked_effect_ids = set()
-        # Contains
+        # Keeps track of effect run modes, if they are any different from default
         # Format: {effect ID: effect run mode}
-        self.__effect_mode_overrides = {}
+        self.__effect_mode_overrides = None
         # Which eve type this item wraps. Use null source item by default,
         # as item doesn't have fit with source yet
         self._eve_type = None
@@ -133,7 +135,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         else:
             return None
 
-    # Effect methods
+    # Old effect methods
     @property
     def _effects_data(self):
         """
@@ -222,6 +224,44 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     @abstractmethod
     def _active_effects(self):
         ...
+
+    # Effect methods
+    def _get_effect_mode(self, effect_id):
+        """
+        Get run mode for passed effect ID. Returns run mode even if
+        there's no such effect on item (default mode in such case).
+        """
+        if self.__effect_mode_overrides is None:
+            return DEFAULT_EFFECT_MODE
+        return self.__effect_mode_overrides.get(effect_id, DEFAULT_EFFECT_MODE)
+
+    def _set_effect_mode(self, effect_id, new_mode):
+        """
+        Set run mode for passed effect.
+        """
+        # If it's default, then remove it from override map
+        if new_mode == DEFAULT_EFFECT_MODE:
+            # If override map is even not initialized, we're
+            # not changing anything
+            if self.__effect_mode_overrides is None:
+                return
+            # Try removing value from override map and do nothing if it
+            # fails. It means that default mode was requested for an
+            # effect for which getter will return default anyway
+            try:
+                del self.__effect_mode_overrides[effect_id]
+            except KeyError:
+                pass
+            # If we removed value, replace dict with None to save memory
+            else:
+                if len(self.__effect_mode_overrides) == 0:
+                    self.__effect_mode_overrides = None
+        # If value is not default, initialize override map if necessary
+        # and store value
+        else:
+            if self.__effect_mode_overrides is None:
+                self.__effect_mode_overrides = {}
+            self.__effect_mode_overrides[effect_id] = new_mode
 
     # Message handling
     def _handle_refresh_source(self, _):

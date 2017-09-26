@@ -125,38 +125,38 @@ class MutableAttributeMap:
         self.__override_callbacks = None
         self.__cap_map = None
 
-    def __getitem__(self, attr):
+    def __getitem__(self, attr_id):
         # Overridden values are priority. Access 'private' override callbacks map
         # directly due to performance reasons
-        if self.__override_callbacks is not None and attr in self.__override_callbacks:
-            callback, args, kwargs = self.__override_callbacks[attr]
+        if self.__override_callbacks is not None and attr_id in self.__override_callbacks:
+            callback, args, kwargs = self.__override_callbacks[attr_id]
             return callback(*args, **kwargs)
         # If no override is set, use modified value. If value is stored in
         # modified map, it's considered valid
         try:
-            val = self.__modified_attributes[attr]
+            val = self.__modified_attributes[attr_id]
         # Else, we have to run full calculation process
         except KeyError:
             try:
-                val = self.__modified_attributes[attr] = self.__calculate(attr)
+                val = self.__modified_attributes[attr_id] = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS as e:
-                raise KeyError(attr) from e
+                raise KeyError(attr_id) from e
         return val
 
     def __len__(self):
         return len(self.keys())
 
-    def __contains__(self, attr):
-        return attr in self.keys()
+    def __contains__(self, attr_id):
+        return attr_id in self.keys()
 
     def __iter__(self):
         for k in self.keys():
             yield k
 
-    def __delitem__(self, attr):
+    def __delitem__(self, attr_id):
         # Clear the value in our calculated attributes dictionary
         try:
-            del self.__modified_attributes[attr]
+            del self.__modified_attributes[attr_id]
         # Do nothing if it wasn't calculated
         except KeyError:
             return
@@ -165,23 +165,23 @@ class MutableAttributeMap:
         else:
             # Special message type if modified attribute is masked by override. While
             # exposed value cannot change in this case, underlying modified value can
-            if self.__override_callbacks is not None and attr in self.__override_callbacks:
-                self.__publish(InstrAttrValueChangedMasked(item=self.__item, attr=attr))
+            if self.__override_callbacks is not None and attr_id in self.__override_callbacks:
+                self.__publish(InstrAttrValueChangedMasked(item=self.__item, attr=attr_id))
             else:
-                self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
+                self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
 
-    def get(self, attr, default=None):
+    def get(self, attr_id, default=None):
         # Almost copy-paste of __getitem__ due to performance reasons - attribute
         # getters should make as few calls as possible, especially when attribute
         # is already calculated
-        if self.__override_callbacks is not None and attr in self.__override_callbacks:
-            callback, args, kwargs = self.__override_callbacks[attr]
+        if self.__override_callbacks is not None and attr_id in self.__override_callbacks:
+            callback, args, kwargs = self.__override_callbacks[attr_id]
             return callback(*args, **kwargs)
         try:
-            val = self.__modified_attributes[attr]
+            val = self.__modified_attributes[attr_id]
         except KeyError:
             try:
-                val = self.__modified_attributes[attr] = self.__calculate(attr)
+                val = self.__modified_attributes[attr_id] = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
         return val
@@ -203,12 +203,12 @@ class MutableAttributeMap:
             del self[attr]
         self.__cap_map = None
 
-    def __calculate(self, attr):
+    def __calculate(self, attr_id):
         """
         Run calculations to find the actual value of attribute.
 
         Required arguments:
-        attr -- ID of attribute to be calculated
+        attr_id -- ID of attribute to be calculated
 
         Return value:
         Calculated attribute value
@@ -228,16 +228,16 @@ class MutableAttributeMap:
             base_attrs = {}
         # Attribute object for attribute being calculated
         try:
-            attr_meta = self.__item._fit.source.cache_handler.get_attribute(attr)
+            attr_meta = self.__item._fit.source.cache_handler.get_attribute(attr_id)
         # Raise error if we can't get metadata for requested attribute
         except (AttributeError, AttributeFetchError) as e:
             msg = 'unable to fetch metadata for attribute {}, requested for eve type {}'.format(
-                attr, self.__item._eve_type_id)
+                attr_id, self.__item._eve_type_id)
             logger.warning(msg)
-            raise AttributeMetaError(attr) from e
+            raise AttributeMetaError(attr_id) from e
         # Base attribute value which we'll use for modification
         try:
-            result = base_attrs[attr]
+            result = base_attrs[attr_id]
         # If attribute isn't available on eve type, base off its default value
         except KeyError:
             result = attr_meta.default_value
@@ -246,9 +246,9 @@ class MutableAttributeMap:
             # base we can't go on
             if result is None:
                 msg = 'unable to find base value for attribute {} on eve type {}'.format(
-                    attr, self.__item._eve_type_id)
+                    attr_id, self.__item._eve_type_id)
                 logger.info(msg)
-                raise BaseValueError(attr)
+                raise BaseValueError(attr_id)
         # Container for non-penalized modifications
         # Format: {operator: [values]}
         normal_mods = {}
@@ -256,7 +256,7 @@ class MutableAttributeMap:
         # Format: {operator: [values]}
         penalized_mods = {}
         # Now, go through all affectors affecting our item
-        for operator, mod_value, carrier_item in self.__item._fit._calculator.get_modifications(self.__item, attr):
+        for operator, mod_value, carrier_item in self.__item._fit._calculator.get_modifications(self.__item, attr_id):
             # Decide if it should be stacking penalized or not, based on stackable property,
             # carrier item eve type category and operator
             penalize = (
@@ -311,10 +311,10 @@ class MutableAttributeMap:
                 result = min(result, max_value)
                 # Let map know that capping attribute
                 # restricts current attribute
-                self._cap_set(attr_meta.max_attribute, attr)
+                self._cap_set(attr_meta.max_attribute, attr_id)
         # Some of attributes are rounded for whatever reason,
         # deal with it after all the calculations
-        if attr in LIMITED_PRECISION:
+        if attr_id in LIMITED_PRECISION:
             result = round(result, 2)
         return result
 
@@ -359,45 +359,45 @@ class MutableAttributeMap:
         return list_result
 
     # Override-related methods
-    def _set_override_callback(self, attr, callback):
+    def _set_override_callback(self, attr_id, callback):
         """Set override for the attribute in the form of callback"""
         if self.__override_callbacks is None:
             self.__override_callbacks = {}
         # If the same callback is set, do nothing
-        if self.__override_callbacks.get(attr) == callback:
+        if self.__override_callbacks.get(attr_id) == callback:
             return
-        self.__override_callbacks[attr] = callback
+        self.__override_callbacks[attr_id] = callback
         # Exposed attribute value may change after setting/resetting override
-        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
 
-    def _del_override_callback(self, attr):
+    def _del_override_callback(self, attr_id):
         """Remove override callback from attribute"""
         overrides = self.__override_callbacks or {}
-        if attr not in overrides:
+        if attr_id not in overrides:
             return
-        del overrides[attr]
+        del overrides[attr_id]
         # Set overrides map to None if there're none left to save some memory
         if len(overrides) == 0:
             self.__override_callbacks = None
         # Exposed attribute value may change after removing override
-        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
 
-    def _override_value_may_change(self, attr):
+    def _override_value_may_change(self, attr_id):
         """
         When originator of callback knows that callback return
         value may (or will) change for an attribute, it should
         invoke this method.
         """
-        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
 
-    def _get_without_overrides(self, attr, default=None):
+    def _get_without_overrides(self, attr_id, default=None):
         """Get attribute value without using overrides"""
         # Partially borrowed from get() method
         try:
-            val = self.__modified_attributes[attr]
+            val = self.__modified_attributes[attr_id]
         except KeyError:
             try:
-                val = self.__modified_attributes[attr] = self.__calculate(attr)
+                val = self.__modified_attributes[attr_id] = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
         return val
