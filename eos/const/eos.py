@@ -58,7 +58,7 @@ class EffectRunMode(IntEnum):
     # - Active: effects from this category are run when item is in active+ state,
     # and only when effect is default item effect
     # - Overload: effects from this category are run when item is in overload+ state
-    eve_compliance = 1
+    full_compliance = 1
     # Effects in this mode are always run if item's state is high enough to run it
     state_compliance = 2
     # Effects in this mode are always running no matter what

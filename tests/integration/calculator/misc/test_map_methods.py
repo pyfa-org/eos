@@ -222,6 +222,33 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.log), 6)
         self.assert_fit_buffers_empty(self.fit)
 
+    def test_items(self):
+        # As with keys, we include unique attribute IDs, plus their
+        # calculated values
+        self.assertCountEqual(
+            self.item.attributes.items(),
+            ((self.attr1.id, 20), (self.attr2.id, 40), (self.attr5.id, 4))
+        )
+        self.calculate_attrs(special=[1008])
+        self.assertCountEqual(
+            self.item.attributes.items(),
+            ((self.attr1.id, 20), (self.attr2.id, 40), (self.attr3.id, 44), (self.attr5.id, 4))
+        )
+        # Cleanup
+        # Log entries are unrelated to this test
+        self.assertEqual(len(self.log), 2)
+        self.assert_fit_buffers_empty(self.fit)
+
+    def test_items_no_source(self):
+        self.fit.source = None
+        self.assertCountEqual(self.item.attributes.items(), ())
+        self.calculate_attrs(special=[1008])
+        self.assertCountEqual(self.item.attributes.items(), ())
+        # Cleanup
+        # Log entries are unrelated to this test
+        self.assertEqual(len(self.log), 6)
+        self.assert_fit_buffers_empty(self.fit)
+
     def test_iter(self):
         # Iter should return the same keys as keys(). CountEqual
         # takes any iterable - we just check its contents here,

@@ -57,6 +57,9 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # IDs are stored here without actual effects because we want to keep blocked
         # effect info even when item's fit switches sources
         self.__blocked_effect_ids = set()
+        # Contains
+        # Format: {effect ID: effect run mode}
+        self.__effect_mode_overrides = {}
         # Which eve type this item wraps. Use null source item by default,
         # as item doesn't have fit with source yet
         self._eve_type = None

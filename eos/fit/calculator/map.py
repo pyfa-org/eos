@@ -194,6 +194,9 @@ class MutableAttributeMap:
         # Return union of attributes from base, modified and override dictionary
         return set(chain(base_attrs, self.__modified_attributes, self.__override_callbacks or {}))
 
+    def items(self):
+        return set((attr_id, self.get(attr_id)) for attr_id in self.keys())
+
     def clear(self):
         """Reset map to its initial state"""
         for attr in set(self.__modified_attributes):
