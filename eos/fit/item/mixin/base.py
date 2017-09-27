@@ -226,6 +226,22 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         ...
 
     # Effect methods
+    @property
+    def _effect_modes(self):
+        overrides = self.__effect_mode_overrides or {}
+        effect_modes = {}
+        effect_modes.update(overrides)
+        try:
+            eve_type_effects = self._eve_type.effects
+        except AttributeError:
+            return effect_modes
+        else:
+            for effect_id in eve_type_effects:
+                if effect_id in overrides:
+                    continue
+                effect_modes[effect_id] = DEFAULT_EFFECT_MODE
+            return effect_modes
+
     def _get_effect_mode(self, effect_id):
         """
         Get run mode for passed effect ID. Returns run mode even if
@@ -241,8 +257,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         """
         # If it's default, then remove it from override map
         if new_mode == DEFAULT_EFFECT_MODE:
-            # If override map is even not initialized, we're
-            # not changing anything
+            # If override map is not initialized, we're not changing
+            # anything
             if self.__effect_mode_overrides is None:
                 return
             # Try removing value from override map and do nothing if it
