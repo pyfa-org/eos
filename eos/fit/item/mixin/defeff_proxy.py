@@ -33,10 +33,6 @@ class DefaultEffectProxyMixin(BaseItemMixin):
         return self.__safe_get_from_defeff('get_cycle_time')
 
     @property
-    def cap_use(self):
-        return self.__safe_get_from_defeff('get_cap_use')
-
-    @property
     def optimal_range(self):
         return self.__safe_get_from_defeff('get_optimal_range')
 
@@ -47,10 +43,6 @@ class DefaultEffectProxyMixin(BaseItemMixin):
     @property
     def tracking_speed(self):
         return self.__safe_get_from_defeff('get_tracking_speed')
-
-    @property
-    def fitting_usage_chance(self):
-        return self.__safe_get_from_defeff('get_fitting_usage_chance')
 
     def __safe_get_from_defeff(self, method):
         default_effect = getattr(self._eve_type, 'default_effect', None)

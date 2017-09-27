@@ -57,16 +57,6 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_cap_use(self):
-        fit = Fit()
-        item = self.make_item_with_defeff_attrib('discharge_attribute')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertAlmostEqual(item.cap_use, 100)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_optimal(self):
         fit = Fit()
         item = self.make_item_with_defeff_attrib('range_attribute')
@@ -93,16 +83,6 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         self.assertAlmostEqual(item.tracking_speed, 100)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
-    def test_fitting_usage_chance(self):
-        fit = Fit()
-        item = self.make_item_with_defeff_attrib('fitting_usage_chance_attribute')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertAlmostEqual(item.fitting_usage_chance, 100)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
