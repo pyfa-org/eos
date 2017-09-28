@@ -23,7 +23,7 @@ from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 from random import random
 
-from eos.const.eos import EffectRunMode
+from eos.const.eos import EffectRunMode, State
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsStatusChanged, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
@@ -59,6 +59,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # IDs are stored here without actual effects because we want to keep blocked
         # effect info even when item's fit switches sources
         self.__blocked_effect_ids = set()
+        # Container for effects IDs which are currently running
+        self._running_effects = set()
         # Keeps track of effect run modes, if they are any different from default
         # Format: {effect ID: effect run mode}
         self.__effect_mode_overrides = None
@@ -115,6 +117,11 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             return self._container._fit
         except AttributeError:
             return None
+
+    @property
+    @abstractmethod
+    def state(self):
+        ...
 
     # Properties used by attribute calculator
     @property
@@ -194,7 +201,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
         Optional arguments:
         effect_filter -- randomize statuses of effects whose IDs
-            are in this iterable. When None, randomize all\
+            are in this iterable. When None, randomize all
             effects. Default is None.
         """
         effect_activability = {}
@@ -226,15 +233,72 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         ...
 
     # Effect methods
-    @property
-    def _effect_modes(self):
-        overrides = self.__effect_mode_overrides or {}
-        effect_modes = {}
-        effect_modes.update(overrides)
+    def _get_effect_run_status_changes(self):
+        to_run = set()
+        to_stop = set()
         try:
             eve_type_effects = self._eve_type.effects
+        # If eve type effects are not accessible, then we cannot
+        # do anything, as we rely on effect attributes to take
+        # our decisions
+        except AttributeError:
+            return to_run, to_stop
+        # Reference some data locally for faster access
+        effect_run_modes = self._effect_run_modes
+        item_state = self.state
+        for effect_id, effect in eve_type_effects.items():
+            # Flag which controls if currently reviewed effect should
+            # be running or not. Assume it's not by default
+            effect_running = False
+            # Decide how we handle effect based on its run mode
+            effect_run_mode = effect_run_modes[effect_id]
+            if effect_run_mode == EffectRunMode.full_compliance:
+                # Check state restriction first, as it should be checked
+                # regardless of effect category
+                effect_state = effect._state
+                if item_state >= effect_state:
+                    # Offline effects must NOT specify fitting usage chance
+                    if effect_state == State.offline:
+                        if effect.fitting_usage_chance_attribute is None:
+                            effect_running = True
+                    # Online effects are running only in presence of running
+                    # 'online' effect
+                    elif effect_state == State.online:
+                        # TODO
+                        pass
+                    # Only default active effect is run in full compliance
+                    elif effect_state == State.active:
+                        if self._eve_type.default_effect is effect:
+                            effect_running = True
+                    # No additional restrictions for overload effects
+                    elif effect_state == State.overload:
+                        effect_running = True
+            # In state compliance, consider effect running if item's
+            # state is at least as high as required by the effect
+            elif effect_run_mode == EffectRunMode.state_compliance:
+                if item_state >= effect._state:
+                    effect_running = True
+            # If it's supposed to always run, make it so without
+            # a second thought
+            elif effect_run_mode == EffectRunMode.force_run:
+                effect_running = True
+            # Do nothing if effect is supposed to not run, we have
+            # this status by default anyway
+            elif effect_run_mode == EffectRunMode.force_stop:
+                pass
+
+    @property
+    def _effect_run_modes(self):
+        overrides = self.__effect_mode_overrides or {}
+        # Copy to not expose overrides map itself to caller
+        effect_modes = dict(overrides)
+        try:
+            eve_type_effects = self._eve_type.effects
+        # If effect data on item is not available, return just overrides
         except AttributeError:
             return effect_modes
+        # If item has effects, fill mode map with missing effects
+        # with default mode assigned
         else:
             for effect_id in eve_type_effects:
                 if effect_id in overrides:
@@ -242,7 +306,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 effect_modes[effect_id] = DEFAULT_EFFECT_MODE
             return effect_modes
 
-    def _get_effect_mode(self, effect_id):
+    def _get_effect_run_mode(self, effect_id):
         """
         Get run mode for passed effect ID. Returns run mode even if
         there's no such effect on item (default mode in such case).
@@ -251,7 +315,17 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             return DEFAULT_EFFECT_MODE
         return self.__effect_mode_overrides.get(effect_id, DEFAULT_EFFECT_MODE)
 
-    def _set_effect_mode(self, effect_id, new_mode):
+    def _set_effects_run_modes(self, effects_modes):
+        """
+        Set modes of multiple effects for this item.
+
+        Required arguments:
+        effects_modes -- map in the form of {effect ID: effect run mode}.
+        """
+        for effect_id, effect_mode in effects_modes.items():
+            ...
+
+    def _set_effect_run_mode(self, effect_id, new_mode):
         """
         Set run mode for passed effect.
         """
