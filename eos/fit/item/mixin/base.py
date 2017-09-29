@@ -234,26 +234,42 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         ...
 
     # Effect methods
-    def _get_effect_run_status_changes(self):
-        to_run = set()
-        to_stop = set()
+    def _get_wanted_effect_run_status_changes(self):
+        """
+        Decide which effects should be running according to current
+        state of item's affairs, compare it to effects which are
+        already running, and return effects which should be started
+        and stopped to actualize list of currently running effects.
+        """
         try:
             eve_type_effects = self._eve_type.effects
         # If eve type effects are not accessible, then we cannot
         # do anything, as we rely on effect attributes to take
         # our decisions
         except AttributeError:
-            return to_run, to_stop
+            return set(), set()
+        # Set of effects which should be running according to new
+        # conditions
+        new_running = set()
+        # Process 'online' effect separately, as it's needed for all
+        # other effects from online categories
         if Effect.online in eve_type_effects:
-            online_running = self.__get_effect_run_status(eve_type_effects[Effect.online], None)
+            online_running = self.__get_wanted_effect_run_status(eve_type_effects[Effect.online], None)
+            if online_running is True:
+                new_running.add(Effect.online)
         else:
             online_running = False
+        # Do a pass over regular effects
         for effect_id, effect in eve_type_effects.items():
             if effect_id == Effect.online:
                 continue
-            effect_running = self.__get_effect_run_status(effect, online_running)
+            if self.__get_wanted_effect_run_status(effect, online_running) is True:
+                new_running.add(effect_id)
+        to_start = new_running.difference(self._running_effects)
+        to_stop = self._running_effects.difference(new_running)
+        return to_start, to_stop
 
-    def __get_effect_run_status(self, effect, online_running):
+    def __get_wanted_effect_run_status(self, effect, online_running):
         """
         Decide if effect should be running or not, considering
         current item state.
@@ -324,35 +340,36 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         effects_modes -- map in the form of {effect ID: effect run mode}.
         """
         for effect_id, effect_mode in effects_modes.items():
-            ...
+            # If new mode is default, then remove it from override map
+            if effect_mode == DEFAULT_EFFECT_MODE:
+                # If override map is not initialized, we're not changing
+                # anything
+                if self.__effect_mode_overrides is None:
+                    return
+                # Try removing value from override map and do nothing if it
+                # fails. It means that default mode was requested for an
+                # effect for which getter will return default anyway
+                try:
+                    del self.__effect_mode_overrides[effect_id]
+                except KeyError:
+                    pass
+            # If value is not default, initialize override map if necessary
+            # and store value
+            else:
+                if self.__effect_mode_overrides is None:
+                    self.__effect_mode_overrides = {}
+                self.__effect_mode_overrides[effect_id] = effect_mode
+        # After all the changes we did, check if there's any data in overrides
+        # map, if there's no data, replace it with None to save memory
+        if len(self.__effect_mode_overrides) == 0:
+            self.__effect_mode_overrides = None
+        to_start, to_stop = self._get_wanted_effect_run_status_changes()
+        self._running_effects.update(to_start)
+        self._running_effects.difference_update(to_stop)
 
     def _set_effect_run_mode(self, effect_id, new_mode):
-        """
-        Set run mode for passed effect.
-        """
-        # If it's default, then remove it from override map
-        if new_mode == DEFAULT_EFFECT_MODE:
-            # If override map is not initialized, we're not changing
-            # anything
-            if self.__effect_mode_overrides is None:
-                return
-            # Try removing value from override map and do nothing if it
-            # fails. It means that default mode was requested for an
-            # effect for which getter will return default anyway
-            try:
-                del self.__effect_mode_overrides[effect_id]
-            except KeyError:
-                pass
-            # If we removed value, replace dict with None to save memory
-            else:
-                if len(self.__effect_mode_overrides) == 0:
-                    self.__effect_mode_overrides = None
-        # If value is not default, initialize override map if necessary
-        # and store value
-        else:
-            if self.__effect_mode_overrides is None:
-                self.__effect_mode_overrides = {}
-            self.__effect_mode_overrides[effect_id] = new_mode
+        """Set run mode for effect with passed ID."""
+        self._set_effects_run_modes({effect_id: new_mode})
 
     # Message handling
     def _handle_refresh_source(self, _):
