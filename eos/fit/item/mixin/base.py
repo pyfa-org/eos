@@ -24,6 +24,7 @@ from collections import namedtuple
 from random import random
 
 from eos.const.eos import EffectRunMode, State
+from eos.const.eve import Effect
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsStatusChanged, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
@@ -243,68 +244,68 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # our decisions
         except AttributeError:
             return to_run, to_stop
-        # Reference some data locally for faster access
-        effect_run_modes = self._effect_run_modes
-        item_state = self.state
-        for effect_id, effect in eve_type_effects.items():
-            # Flag which controls if currently reviewed effect should
-            # be running or not. Assume it's not by default
-            effect_running = False
-            # Decide how we handle effect based on its run mode
-            effect_run_mode = effect_run_modes[effect_id]
-            if effect_run_mode == EffectRunMode.full_compliance:
-                # Check state restriction first, as it should be checked
-                # regardless of effect category
-                effect_state = effect._state
-                if item_state >= effect_state:
-                    # Offline effects must NOT specify fitting usage chance
-                    if effect_state == State.offline:
-                        if effect.fitting_usage_chance_attribute is None:
-                            effect_running = True
-                    # Online effects are running only in presence of running
-                    # 'online' effect
-                    elif effect_state == State.online:
-                        # TODO
-                        pass
-                    # Only default active effect is run in full compliance
-                    elif effect_state == State.active:
-                        if self._eve_type.default_effect is effect:
-                            effect_running = True
-                    # No additional restrictions for overload effects
-                    elif effect_state == State.overload:
-                        effect_running = True
-            # In state compliance, consider effect running if item's
-            # state is at least as high as required by the effect
-            elif effect_run_mode == EffectRunMode.state_compliance:
-                if item_state >= effect._state:
-                    effect_running = True
-            # If it's supposed to always run, make it so without
-            # a second thought
-            elif effect_run_mode == EffectRunMode.force_run:
-                effect_running = True
-            # Do nothing if effect is supposed to not run, we have
-            # this status by default anyway
-            elif effect_run_mode == EffectRunMode.force_stop:
-                pass
-
-    @property
-    def _effect_run_modes(self):
-        overrides = self.__effect_mode_overrides or {}
-        # Copy to not expose overrides map itself to caller
-        effect_modes = dict(overrides)
-        try:
-            eve_type_effects = self._eve_type.effects
-        # If effect data on item is not available, return just overrides
-        except AttributeError:
-            return effect_modes
-        # If item has effects, fill mode map with missing effects
-        # with default mode assigned
+        if Effect.online in eve_type_effects:
+            online_running = self.__get_effect_run_status(eve_type_effects[Effect.online], None)
         else:
-            for effect_id in eve_type_effects:
-                if effect_id in overrides:
-                    continue
-                effect_modes[effect_id] = DEFAULT_EFFECT_MODE
-            return effect_modes
+            online_running = False
+        for effect_id, effect in eve_type_effects.items():
+            if effect_id == Effect.online:
+                continue
+            effect_running = self.__get_effect_run_status(effect, online_running)
+
+    def __get_effect_run_status(self, effect, online_running):
+        """
+        Decide if effect should be running or not, considering
+        current item state.
+
+        Required arguments:
+        effect -- effect in question
+        online_running -- flag which tells us if 'online' effect
+            is running on this item or not.
+        """
+        # Decide how we handle effect based on its run mode
+        effect_run_mode = self._get_effect_run_mode(effect.id)
+        if effect_run_mode == EffectRunMode.full_compliance:
+            # Check state restriction first, as it should be checked
+            # regardless of effect category
+            effect_state = effect._state
+            if self.state < effect_state:
+                return False
+            # Offline effects must NOT specify fitting usage chance
+            if effect_state == State.offline:
+                return effect.fitting_usage_chance_attribute is None
+            # Online effects depend on 'online' effect
+            elif effect_state == State.online:
+                # If we've been requested for 'online' effect status, it has
+                # no additional restrictions
+                if effect.id == Effect.online:
+                    return True
+                # For regular online effects, check if 'online' is running
+                else:
+                    return online_running
+            # Only default active effect is run in full compliance
+            elif effect_state == State.active:
+                return self._eve_type.default_effect is effect
+            # No additional restrictions for overload effects
+            elif effect_state == State.overload:
+                return True
+            # For safety, generally should never happen
+            else:
+                return False
+        # In state compliance, consider effect running if item's
+        # state is at least as high as required by the effect
+        elif effect_run_mode == EffectRunMode.state_compliance:
+            return self.state >= effect._state
+        # If it's supposed to always run, make it so without
+        # a second thought
+        elif effect_run_mode == EffectRunMode.force_run:
+            return True
+        # Same for always-stop
+        elif effect_run_mode == EffectRunMode.force_stop:
+            return False
+        # For safety, generally should never happen
+        else:
+            return False
 
     def _get_effect_run_mode(self, effect_id):
         """
