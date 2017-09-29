@@ -69,9 +69,9 @@ class MutableStateMixin(BaseItemMixin):
         old_state = self.__state
         if new_state == old_state:
             return
+        self.__state = new_state
         # When item is assigned to some fit, ask fit to perform
         # fit-specific state switch of our item
         fit = self._fit
         if fit is not None:
             fit._publish(InputStateChanged(self, old_state, new_state))
-        self.__state = new_state
