@@ -20,10 +20,20 @@
 
 
 from collections import namedtuple
+from random import random
+
+from eos.const.eos import EffectRunMode, State
 from .base import BaseItemMixin
 
 
 SideEffectData = namedtuple('SideEffectData', ('effect', 'chance', 'status'))
+
+run_mode_to_side_state = {
+    EffectRunMode.full_compliance: False,
+    EffectRunMode.state_compliance: True,
+    EffectRunMode.force_run: True,
+    EffectRunMode.force_stop: False
+}
 
 
 class SideEffectMixin(BaseItemMixin):
@@ -42,9 +52,20 @@ class SideEffectMixin(BaseItemMixin):
         chance=chance of setting in, enabled=side-effect status)}
         """
         side_effects = {}
-        for effect_id, edata in self._effects_data.items():
-            if edata.chance is not None:
-                side_effects[effect_id] = SideEffectData(edata.effect, edata.chance, edata.activable)
+        try:
+            eve_type_effects = self._eve_type.effects
+        except AttributeError:
+            return side_effects
+        for effect_id, effect in eve_type_effects.items():
+            # Effect must be from offline category
+            if effect._state != State.offline:
+                continue
+            # Its application must be chance-based
+            chance = effect.get_fitting_usage_chance(self)
+            if chance is None:
+                continue
+            side_effect_state = run_mode_to_side_state[self._get_effect_run_mode(effect_id)]
+            side_effects[effect_id] = SideEffectData(effect, chance, side_effect_state)
         return side_effects
 
     def set_side_effect_status(self, effect_id, status):
@@ -55,11 +76,25 @@ class SideEffectMixin(BaseItemMixin):
         effect_id -- ID of side-effect
         status -- True for enabling, False for disabling
         """
-        self._set_effect_activability(effect_id, status)
+        if status:
+            run_mode = EffectRunMode.state_compliance
+        else:
+            run_mode = EffectRunMode.full_compliance
+        self._set_effect_run_mode(effect_id, run_mode)
 
     def randomize_side_effects(self):
         """
         Randomize side-effects' status according to their
         chances to set in.
         """
-        self._randomize_effects_status(effect_filter=set(self.side_effects))
+        new_modes = {}
+        for effect_id, edata in self.side_effects:
+            # If it's supposed to be enabled, set state compliance mode, which
+            # will keep effect running if item is in offline or higher state
+            if random() < edata.chance:
+                new_modes[effect_id] = EffectRunMode.state_compliance
+            # If it should be disabled, full compliance will keep all chance-based
+            # effects stopped
+            else:
+                new_modes[effect_id] = EffectRunMode.full_compliance
+        self._set_effects_run_modes(new_modes)

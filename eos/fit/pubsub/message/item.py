@@ -98,7 +98,6 @@ class InputStateChanged(BaseInputMessage):
         # State switching upwards
         if self.new > self.old:
             states = {s for s in State if self.old < s <= self.new}
-            effects = {eid for eid, e in item._activable_effects.items() if e._state in states}
             instructions.append(InstrStatesActivate(item, states))
         # State switching downwards
         else:

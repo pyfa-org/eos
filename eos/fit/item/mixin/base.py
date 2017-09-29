@@ -20,8 +20,6 @@
 
 
 from abc import ABCMeta, abstractmethod
-from collections import namedtuple
-from random import random
 
 from eos.const.eos import EffectRunMode, State
 from eos.const.eve import Effect
@@ -30,7 +28,6 @@ from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffect
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
-EffectData = namedtuple('EffectData', ('effect', 'chance', 'activable'))
 DEFAULT_EFFECT_MODE = EffectRunMode.state_compliance
 
 
@@ -56,10 +53,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # Special dictionary subclass that holds modified attributes
         # and data related to their calculation
         self.attributes = MutableAttributeMap(self)
-        # Contains IDs of effects which are prohibited to be activated on this item.
-        # IDs are stored here without actual effects because we want to keep blocked
-        # effect info even when item's fit switches sources
-        self.__blocked_effect_ids = set()
         # Container for effects IDs which are currently running
         self._running_effects = set()
         # Keeps track of effect run modes, if they are any different from default
@@ -280,31 +273,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     def _set_effect_run_mode(self, effect_id, new_mode):
         """Set run mode for effect with passed ID."""
         self._set_effects_run_modes({effect_id: new_mode})
-
-    def _randomize_fitting_usage_chance_effects(self, effect_filter=None):
-        """
-        Randomize status of effects on this item, take value of
-        chance attribute into consideration when necessary.
-
-        Optional arguments:
-        effect_filter -- randomize statuses of effects whose IDs
-            are in this iterable. When None, randomize all
-            effects. Default is None.
-        """
-        effect_activability = {}
-        for effect_id, data in self._effects_data.items():
-            if effect_filter is not None and effect_id not in effect_filter:
-                continue
-            # If effect is not chance-based, it always gets run
-            if data.chance is None:
-                effect_activability[effect_id] = True
-                continue
-            # If it is, roll the floating dice
-            if random() < data.chance:
-                effect_activability[effect_id] = True
-            else:
-                effect_activability[effect_id] = False
-        self.__set_effects_activability(effect_activability)
 
     # Message handling
     def _handle_refresh_source(self, _):
