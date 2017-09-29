@@ -24,7 +24,7 @@ from eos.util.repr import make_repr_str
 from .base import BaseInputMessage, BaseInstructionMessage
 from .item import (
     InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate,
-    InstrEffectsActivate, InstrEffectsDeactivate
+    InstrEffectsStart, InstrEffectsStop
 )
 
 
@@ -42,9 +42,9 @@ class InputSourceChanged(BaseInputMessage):
             for item in self.items:
                 states = {s for s in State if s <= item.state}
                 # Handle effect deactivation
-                effects = {eid for eid, e in item._activable_effects.items() if e._state in states}
-                if len(effects) > 0:
-                    instructions.append(InstrEffectsDeactivate(item, effects))
+                running_effects = set(item._running_effects)
+                if len(running_effects) > 0:
+                    instructions.append(InstrEffectsStop(item, running_effects))
                 # Handle state deactivation
                 instructions.append(InstrStatesDeactivate(item, states))
                 # Handle item removal
@@ -60,9 +60,13 @@ class InputSourceChanged(BaseInputMessage):
                 states = {s for s in State if s <= item.state}
                 instructions.append(InstrStatesActivate(item, states))
                 # Handle effect activation
-                effects = {eid for eid, e in item._activable_effects.items() if e._state in states}
-                if len(effects) > 0:
-                    instructions.append(InstrEffectsActivate(item, effects))
+                to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
+                if len(to_start_effects) > 0:
+                    item._running_effects.update(to_start_effects)
+                    instructions.append(InstrEffectsStart(item, to_start_effects))
+                if len(to_stop_effects) > 0:
+                    instructions.append(InstrEffectsStop(item, to_stop_effects))
+                    item._running_effects.difference_update(to_stop_effects)
         return instructions
 
     def __repr__(self):

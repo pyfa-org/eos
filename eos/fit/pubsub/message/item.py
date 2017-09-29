@@ -30,19 +30,24 @@ class InputItemAdded(BaseInputMessage):
         self.item = item
 
     def get_instructions(self):
+        item = self.item
         # Do nothing if fit doesn't have source
-        if self.item._fit.source is None:
+        if item._fit.source is None:
             return ()
         instructions = []
         # Handle item addition
-        instructions.append(InstrItemAdd(self.item))
+        instructions.append(InstrItemAdd(item))
         # Handle state activation
-        states = {s for s in State if s <= self.item.state}
-        instructions.append(InstrStatesActivate(self.item, states))
+        states = {s for s in State if s <= item.state}
+        instructions.append(InstrStatesActivate(item, states))
         # Handle effect activation
-        effects = {eid for eid, e in self.item._activable_effects.items() if e._state in states}
-        if len(effects) > 0:
-            instructions.append(InstrEffectsActivate(self.item, effects))
+        to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
+        if len(to_start_effects) > 0:
+            item._running_effects.update(to_start_effects)
+            instructions.append(InstrEffectsStart(item, to_start_effects))
+        if len(to_stop_effects) > 0:
+            instructions.append(InstrEffectsStop(item, to_stop_effects))
+            item._running_effects.difference_update(to_stop_effects)
         return instructions
 
     def __repr__(self):
@@ -56,19 +61,20 @@ class InputItemRemoved(BaseInputMessage):
         self.item = item
 
     def get_instructions(self):
+        item = self.item
         # Do nothing if fit doesn't have source
-        if self.item._fit.source is None:
+        if item._fit.source is None:
             return ()
         instructions = []
-        states = {s for s in State if s <= self.item.state}
+        states = {s for s in State if s <= item.state}
         # Handle effect deactivation
-        effects = {eid for eid, e in self.item._activable_effects.items() if e._state in states}
-        if len(effects) > 0:
-            instructions.append(InstrEffectsDeactivate(self.item, effects))
+        running_effects = set(item._running_effects)
+        if len(running_effects) > 0:
+            instructions.append(InstrEffectsStop(item, running_effects))
         # Handle state deactivation
-        instructions.append(InstrStatesDeactivate(self.item, states))
+        instructions.append(InstrStatesDeactivate(item, states))
         # Handle item removal
-        instructions.append(InstrItemRemove(self.item))
+        instructions.append(InstrItemRemove(item))
         return instructions
 
     def __repr__(self):
@@ -84,27 +90,29 @@ class InputStateChanged(BaseInputMessage):
         self.new = new
 
     def get_instructions(self):
+        item = self.item
         # Do nothing if fit doesn't have source
-        if self.item._fit.source is None:
+        if item._fit.source is None:
             return ()
         instructions = []
         # State switching upwards
         if self.new > self.old:
-            # Activate states and effects, which are activable and should be activated
-            # together with activated states
             states = {s for s in State if self.old < s <= self.new}
-            effects = {eid for eid, e in self.item._activable_effects.items() if e._state in states}
-            instructions.append(InstrStatesActivate(self.item, states))
-            if len(effects) > 0:
-                instructions.append(InstrEffectsActivate(self.item, effects))
+            effects = {eid for eid, e in item._activable_effects.items() if e._state in states}
+            instructions.append(InstrStatesActivate(item, states))
         # State switching downwards
-        elif self.new < self.old:
+        else:
             # Deactivate effects and states
             states = {s for s in State if self.new < s <= self.old}
-            effects = {eid for eid, e in self.item._activable_effects.items() if e._state in states}
-            if len(effects) > 0:
-                instructions.append(InstrEffectsDeactivate(self.item, effects))
-            instructions.append(InstrStatesDeactivate(self.item, states))
+            instructions.append(InstrStatesDeactivate(item, states))
+        # Effect changes
+        to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
+        if len(to_start_effects) > 0:
+            item._running_effects.update(to_start_effects)
+            instructions.append(InstrEffectsStart(item, to_start_effects))
+        if len(to_stop_effects) > 0:
+            instructions.append(InstrEffectsStop(item, to_stop_effects))
+            item._running_effects.difference_update(to_stop_effects)
         return instructions
 
     def __repr__(self):
@@ -112,30 +120,28 @@ class InputStateChanged(BaseInputMessage):
         return make_repr_str(self, spec)
 
 
-class InputEffectsStatusChanged(BaseInputMessage):
+class InputEffectsRunModeChanged(BaseInputMessage):
 
-    def __init__(self, item, effects):
+    def __init__(self, item):
         self.item = item
-        # Format: {effect ID: status}
-        self.effects = effects
 
     def get_instructions(self):
+        item = self.item
         # Do nothing if fit doesn't have source
-        if self.item._fit.source is None:
+        if item._fit.source is None:
             return ()
         instructions = []
-        # If there're effects set for activation, issue activation command
-        activate = {e for e in self.effects if self.effects[e]}
-        if len(activate) > 0:
-            instructions.append(InstrEffectsActivate(self.item, activate))
-        # Same for deactivation
-        deactivate = {e for e in self.effects if not self.effects[e]}
-        if len(deactivate) > 0:
-            instructions.append(InstrEffectsDeactivate(self.item, deactivate))
+        to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
+        if len(to_start_effects) > 0:
+            item._running_effects.update(to_start_effects)
+            instructions.append(InstrEffectsStart(item, to_start_effects))
+        if len(to_stop_effects) > 0:
+            instructions.append(InstrEffectsStop(item, to_stop_effects))
+            item._running_effects.difference_update(to_stop_effects)
         return instructions
 
     def __repr__(self):
-        spec = ['item', 'effects']
+        spec = ['item']
         return make_repr_str(self, spec)
 
 
@@ -183,7 +189,7 @@ class InstrStatesDeactivate(BaseInstructionMessage):
         return make_repr_str(self, spec)
 
 
-class InstrEffectsActivate(BaseInstructionMessage):
+class InstrEffectsStart(BaseInstructionMessage):
 
     def __init__(self, item, effects):
         self.item = item
@@ -195,7 +201,7 @@ class InstrEffectsActivate(BaseInstructionMessage):
         return make_repr_str(self, spec)
 
 
-class InstrEffectsDeactivate(BaseInstructionMessage):
+class InstrEffectsStop(BaseInstructionMessage):
 
     def __init__(self, item, effects):
         self.item = item

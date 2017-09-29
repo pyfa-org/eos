@@ -21,7 +21,7 @@
 
 from eos.const.eve import Attribute, Effect
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrEffectsActivate, InstrEffectsDeactivate
+from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrEffectsStart, InstrEffectsStop
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister
 
@@ -77,8 +77,8 @@ class UnroundedResourceStatRegister(BaseResourceStatRegister, InheritableVolatil
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
-        InstrEffectsActivate: _handle_item_effects_activation,
-        InstrEffectsDeactivate: _handle_item_effects_deactivation
+        InstrEffectsStart: _handle_item_effects_activation,
+        InstrEffectsStop: _handle_item_effects_deactivation
     }
 
 

@@ -24,7 +24,7 @@ from eos.eve_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.item import Character, Ship
 from eos.fit.pubsub.message import (
-    InstrItemAdd, InstrItemRemove, InstrEffectsActivate, InstrEffectsDeactivate,
+    InstrItemAdd, InstrItemRemove, InstrEffectsStart, InstrEffectsStop,
     InstrAttrValueChanged
 )
 from eos.fit.pubsub.subscriber import BaseSubscriber
@@ -124,7 +124,7 @@ class CalculationService(BaseSubscriber):
             del message.item.attributes[capped_attr]
         # Remove values of target attributes which are using changing attribute
         # as modification source
-        for affector in self.__generate_affectors(message.item, message.item._active_effects.keys()):
+        for affector in self.__generate_affectors(message.item, message.item._running_effects):
             modifier = affector.modifier
             # Only dogma modifiers have source attribute specified,
             # python modifiers are processed separately
@@ -157,8 +157,8 @@ class CalculationService(BaseSubscriber):
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
-        InstrEffectsActivate: _handle_item_effects_activation,
-        InstrEffectsDeactivate: _handle_item_effects_deactivation,
+        InstrEffectsStart: _handle_item_effects_activation,
+        InstrEffectsStop: _handle_item_effects_deactivation,
         InstrAttrValueChanged: _revise_regular_attrib_dependents
     }
 

@@ -32,7 +32,7 @@ from eos.const.eve import Category, Effect, Type
 
 def turret_filter(item):
     """True for all items which occupy turret hardpoint"""
-    if Effect.turret_fitted in item._active_effects:
+    if Effect.turret_fitted in item._running_effects:
         return True
     else:
         return False
@@ -40,7 +40,7 @@ def turret_filter(item):
 
 def missile_filter(item):
     """True for all items which occupy launcher hardpoint"""
-    if Effect.launcher_fitted in item._active_effects:
+    if Effect.launcher_fitted in item._running_effects:
         return True
     else:
         return False

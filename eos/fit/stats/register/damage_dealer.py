@@ -21,7 +21,7 @@
 
 from eos.fit.item.mixin.damage_dealer import DamageDealerMixin, BASIC_EFFECT_WEAPON_MAP, CHARGE_EFFECT_WEAPON_MAP
 from eos.fit.helper import DamageTypesTotal
-from eos.fit.pubsub.message import InstrEffectsActivate, InstrEffectsDeactivate
+from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop
 from eos.util.keyed_set import KeyedSet
 from .base import BaseStatRegister
 
@@ -56,8 +56,8 @@ class DamageDealerRegister(BaseStatRegister):
             self.__dealers.rm_data_set(message.item, damage_effects)
 
     _handler_map = {
-        InstrEffectsActivate: _handle_item_effects_activation,
-        InstrEffectsDeactivate: _handle_item_effects_deactivation
+        InstrEffectsStart: _handle_item_effects_activation,
+        InstrEffectsStop: _handle_item_effects_deactivation
     }
 
     def _collect_damage_stats(self, item_filter, method_name, *args, **kwargs):

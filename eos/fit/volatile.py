@@ -20,7 +20,7 @@
 
 
 from .pubsub.message import (
-    InputItemAdded, InputItemRemoved, InputStateChanged, InputEffectsStatusChanged,
+    InputItemAdded, InputItemRemoved, InputStateChanged, InputEffectsRunModeChanged,
     InputSkillLevelChanged, InputSourceChanged, InputDefaultIncomingDamageChanged
 )
 from .pubsub.subscriber import BaseSubscriber
@@ -64,7 +64,7 @@ class FitVolatileManager(BaseSubscriber):
         InputItemAdded: _handle_item_addition,
         InputItemRemoved: _handle_item_removal,
         InputStateChanged: _handle_other_changes,
-        InputEffectsStatusChanged: _handle_other_changes,
+        InputEffectsRunModeChanged: _handle_other_changes,
         InputSkillLevelChanged: _handle_other_changes,
         InputSourceChanged: _handle_other_changes,
         InputDefaultIncomingDamageChanged: _handle_other_changes

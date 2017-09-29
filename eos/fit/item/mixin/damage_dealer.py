@@ -86,7 +86,7 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
         # cycle itself, do not consider such item as weapon
         if getattr(self, 'charged_cycles', None) == 0:
             return weapon_types
-        for effect_id in self._active_effects:
+        for effect_id in self._running_effects:
             # Weapon properties are defined by item effects
             if effect_id in BASIC_EFFECT_WEAPON_MAP:
                 weapon_types[effect_id] = BASIC_EFFECT_WEAPON_MAP[effect_id]
@@ -99,7 +99,7 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
                     charge_defeff_id = charge._eve_type.default_effect.id
                 except AttributeError:
                     continue
-                if charge_defeff_id not in charge._active_effects:
+                if charge_defeff_id not in charge._running_effects:
                     continue
                 try:
                     weapon_types[effect_id] = CHARGE_EFFECT_WEAPON_MAP[effect_id][charge_defeff_id]

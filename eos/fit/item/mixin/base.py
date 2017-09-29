@@ -26,12 +26,12 @@ from random import random
 from eos.const.eos import EffectRunMode, State
 from eos.const.eve import Effect
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsStatusChanged, InstrRefreshSource
+from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsRunModeChanged, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
 EffectData = namedtuple('EffectData', ('effect', 'chance', 'activable'))
-DEFAULT_EFFECT_MODE = EffectRunMode.full_compliance
+DEFAULT_EFFECT_MODE = EffectRunMode.state_compliance
 
 
 class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
@@ -142,96 +142,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             return container
         else:
             return None
-
-    # Old effect methods
-    @property
-    def _effects_data(self):
-        """
-        Return map with effects and their item-specific data.
-
-        Return data as dictionary:
-        {effect ID: (effect=effect object, chance=chance to apply
-            on effect activation, activable=activable flag)}
-        """
-        try:
-            eve_type_effects = self._eve_type.effects
-        except AttributeError:
-            return {}
-        data = {}
-        for effect in eve_type_effects.values():
-            # Get chance from modified attributes, if specified
-            chance = effect.get_fitting_usage_chance(self)
-            # Get effect activable flag
-            activable = effect.id not in self.__blocked_effect_ids
-            data[effect.id] = EffectData(effect, chance, activable)
-        return data
-
-    def _set_effect_activability(self, effect_id, activability):
-        """
-        Set activability of particular effect.
-        """
-        self.__set_effects_activability({effect_id: activability})
-
-    def __set_effects_activability(self, effect_activability):
-        """
-        Set activability of effects for this item.
-
-        Required arguments:
-        effect_activability -- dictionary in the form of {effect ID:
-            activability flag}. Activability flag controls if effect
-            should be set as activable or blocked.
-        """
-        changes = {}
-        for effect_id, activability in effect_activability.items():
-            if activability and effect_id in self.__blocked_effect_ids:
-                changes[effect_id] = activability
-                self.__blocked_effect_ids.remove(effect_id)
-            elif not activability and effect_id not in self.__blocked_effect_ids:
-                changes[effect_id] = activability
-                self.__blocked_effect_ids.add(effect_id)
-        if len(changes) == 0:
-            return
-        fit = self._fit
-        if fit is not None:
-            fit._publish(InputEffectsStatusChanged(self, changes))
-
-    def _randomize_effects_status(self, effect_filter=None):
-        """
-        Randomize status of effects on this item, take value of
-        chance attribute into consideration when necessary.
-
-        Optional arguments:
-        effect_filter -- randomize statuses of effects whose IDs
-            are in this iterable. When None, randomize all
-            effects. Default is None.
-        """
-        effect_activability = {}
-        for effect_id, data in self._effects_data.items():
-            if effect_filter is not None and effect_id not in effect_filter:
-                continue
-            # If effect is not chance-based, it always gets run
-            if data.chance is None:
-                effect_activability[effect_id] = True
-                continue
-            # If it is, roll the floating dice
-            if random() < data.chance:
-                effect_activability[effect_id] = True
-            else:
-                effect_activability[effect_id] = False
-        self.__set_effects_activability(effect_activability)
-
-    @property
-    def _activable_effects(self):
-        try:
-            eve_type_effects = self._eve_type.effects
-        except AttributeError:
-            return {}
-        return {eid: e for eid, e in eve_type_effects.items() if eid not in self.__blocked_effect_ids}
-
-    @property
-    @abstractmethod
-    def _active_effects(self):
-        ...
 
     # Effect methods
     def _get_wanted_effect_run_status_changes(self):
@@ -363,13 +273,38 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # map, if there's no data, replace it with None to save memory
         if len(self.__effect_mode_overrides) == 0:
             self.__effect_mode_overrides = None
-        to_start, to_stop = self._get_wanted_effect_run_status_changes()
-        self._running_effects.update(to_start)
-        self._running_effects.difference_update(to_stop)
+        fit = self._fit
+        if fit is not None:
+            fit._publish(InputEffectsRunModeChanged(self))
 
     def _set_effect_run_mode(self, effect_id, new_mode):
         """Set run mode for effect with passed ID."""
         self._set_effects_run_modes({effect_id: new_mode})
+
+    def _randomize_fitting_usage_chance_effects(self, effect_filter=None):
+        """
+        Randomize status of effects on this item, take value of
+        chance attribute into consideration when necessary.
+
+        Optional arguments:
+        effect_filter -- randomize statuses of effects whose IDs
+            are in this iterable. When None, randomize all
+            effects. Default is None.
+        """
+        effect_activability = {}
+        for effect_id, data in self._effects_data.items():
+            if effect_filter is not None and effect_id not in effect_filter:
+                continue
+            # If effect is not chance-based, it always gets run
+            if data.chance is None:
+                effect_activability[effect_id] = True
+                continue
+            # If it is, roll the floating dice
+            if random() < data.chance:
+                effect_activability[effect_id] = True
+            else:
+                effect_activability[effect_id] = False
+        self.__set_effects_activability(effect_activability)
 
     # Message handling
     def _handle_refresh_source(self, _):
