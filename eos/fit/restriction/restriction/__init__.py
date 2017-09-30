@@ -20,7 +20,6 @@
 
 
 __all__ = [
-    'BoosterEffectRestrictionRegister',
     'BoosterIndexRestrictionRegister',
     'CalibrationRestriction',
     'CapitalItemRestrictionRegister',
@@ -53,7 +52,6 @@ __all__ = [
 ]
 
 
-from .booster_effect import BoosterEffectRestrictionRegister
 from .capital_item import CapitalItemRestrictionRegister
 from .charge_group import ChargeGroupRestrictionRegister
 from .charge_size import ChargeSizeRestrictionRegister

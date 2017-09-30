@@ -144,7 +144,7 @@ class TestItemDamageBomb(ItemMixinTestCase):
             Attribute.volume: 30.0, Attribute.em_damage: 5200, Attribute.thermal_damage: 6300,
             Attribute.kinetic_damage: 7400, Attribute.explosive_damage: 8500
         }, effects=[self.effect_charge], default_effect=self.effect_charge).id)
-        item.charge.EffectRunMode.force_stop(self.effect_charge.id, EffectRunMode.force_stop)
+        item.charge.set_effect_run_mode(self.effect_charge.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()

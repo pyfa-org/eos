@@ -40,7 +40,6 @@ class RestrictionService:
     def __init__(self, msg_broker, stats):
         # Container for all restrictions
         self.__restrictions = {
-            BoosterEffectRestrictionRegister(msg_broker),
             BoosterIndexRestrictionRegister(msg_broker),
             CalibrationRestriction(stats),
             CapitalItemRestrictionRegister(msg_broker),
