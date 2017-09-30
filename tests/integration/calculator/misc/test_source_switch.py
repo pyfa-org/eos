@@ -26,10 +26,6 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestSourceSwitch(CalculatorTestCase):
-    """
-    Test cases when item is transferred from fit to fit, when both
-    fits have source assigned (i.e. item's eve type ID doesn't change).
-    """
 
     def test_switch_item(self):
         # Here we create 2 separate fits with ships affecting it;
@@ -55,8 +51,8 @@ class TestSourceSwitch(CalculatorTestCase):
         effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
         effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
-        ship1 = Ship(self.ch.type(type_id=ship_eve_type_id, effects=[effect_src1], attributes={src_attr_id: 10}).id)
-        ship2 = Ship(self.ch2.type(type_id=ship_eve_type_id, effects=[effect_src2], attributes={src_attr_id: 20}).id)
+        ship1 = Ship(self.ch.type(type_id=ship_eve_type_id, attributes={src_attr_id: 10}, effects=[effect_src1]).id)
+        ship2 = Ship(self.ch2.type(type_id=ship_eve_type_id, attributes={src_attr_id: 20}, effects=[effect_src2]).id)
         item_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
         self.ch2.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
@@ -100,8 +96,8 @@ class TestSourceSwitch(CalculatorTestCase):
         effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
         effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.type(type_id=ship_eve_type_id, effects=[effect_src1], attributes={src_attr_id: 10})
-        self.ch2.type(type_id=ship_eve_type_id, effects=[effect_src2], attributes={src_attr_id: 20})
+        self.ch.type(type_id=ship_eve_type_id, attributes={src_attr_id: 10}, effects=[effect_src1])
+        self.ch2.type(type_id=ship_eve_type_id, attributes={src_attr_id: 20}, effects=[effect_src2])
         item_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
         self.ch2.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 75})

@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -57,8 +57,8 @@ class TestCalculationChain(CalculatorTestCase):
             src_attr=attr3.id
         )
         effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier3])
-        implant_item = Implant(self.ch.type(effects=(effect1, effect2), attributes={attr1.id: 5, attr2.id: 20}).id)
-        ship_item = Ship(self.ch.type(effects=[effect3], attributes={attr3.id: 150}).id)
+        implant_item = Implant(self.ch.type(attributes={attr1.id: 5, attr2.id: 20}, effects=(effect1, effect2)).id)
+        ship_item = Ship(self.ch.type(attributes={attr3.id: 150}, effects=[effect3]).id)
         rig_item = Rig(self.ch.type(attributes={attr4.id: 12.5}).id)
         self.fit.implants.add(implant_item)
         self.fit.ship = ship_item

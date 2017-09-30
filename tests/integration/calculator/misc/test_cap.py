@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -48,7 +48,7 @@ class TestCap(CalculatorTestCase):
         # Check that cap is applied properly when item
         # doesn't have base value of capping attribute
         item = Implant(self.ch.type(
-            effects=[self.effect], attributes={self.capped_attr.id: 3, self.source_attr.id: 6}
+            attributes={self.capped_attr.id: 3, self.source_attr.id: 6}, effects=[self.effect]
         ).id)
         self.fit.implants.add(item)
         # Verification
@@ -61,8 +61,8 @@ class TestCap(CalculatorTestCase):
         # Make sure that item's own specified attribute
         # value is taken as cap
         item = Implant(self.ch.type(
-            effects=[self.effect],
-            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
+            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2},
+            effects=[self.effect]
         ).id)
         self.fit.implants.add(item)
         # Verification
@@ -84,8 +84,8 @@ class TestCap(CalculatorTestCase):
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         item = Implant(self.ch.type(
-            effects=(self.effect, effect),
-            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1}
+            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1},
+            effects=(self.effect, effect)
         ).id)
         self.fit.implants.add(item)
         # Verification
@@ -99,8 +99,8 @@ class TestCap(CalculatorTestCase):
         # If cap updates, capped attributes should
         # be updated too
         item = Rig(self.ch.type(
-            effects=[self.effect],
-            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2}
+            attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 2},
+            effects=[self.effect]
         ).id)
         self.fit.rigs.add(item)
         # Check attribute vs initial cap
@@ -114,7 +114,7 @@ class TestCap(CalculatorTestCase):
             src_attr=self.source_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        cap_updater = Implant(self.ch.type(effects=[effect], attributes={self.source_attr.id: 3.5}).id)
+        cap_updater = Implant(self.ch.type(attributes={self.source_attr.id: 3.5}, effects=[effect]).id)
         self.fit.implants.add(cap_updater)
         # Verification
         # As capping attribute is updated, capped attribute must be updated too

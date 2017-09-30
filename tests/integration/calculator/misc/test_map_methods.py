@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -67,7 +67,7 @@ class TestMapMethods(CalculatorTestCase):
             category=EffectCategory.passive, modifiers=(modifier1, modifier2, modifier3, modifier4)
         )
         self.item = Implant(self.ch.type(
-            effects=[effect], attributes={self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4}
+            attributes={self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4}, effects=[effect]
         ).id)
         self.fit.implants.add(self.item)
 

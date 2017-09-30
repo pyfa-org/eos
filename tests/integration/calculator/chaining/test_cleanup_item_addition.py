@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -49,8 +49,8 @@ class TestCleanupChainAddition(CalculatorTestCase):
             src_attr=attr2.id
         )
         effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier2])
-        implant_item = Implant(self.ch.type(effects=[effect1], attributes={attr1.id: 5}).id)
-        ship_item = Ship(self.ch.type(effects=[effect2], attributes={attr2.id: 7.5}).id)
+        implant_item = Implant(self.ch.type(attributes={attr1.id: 5}, effects=[effect1]).id)
+        ship_item = Ship(self.ch.type(attributes={attr2.id: 7.5}, effects=[effect2]).id)
         rig_item = Rig(self.ch.type(attributes={attr3.id: 0.5}).id)
         self.fit.ship = ship_item
         self.fit.rigs.add(rig_item)

@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter, State
 from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -59,8 +59,8 @@ class TestEffectToggling(CalculatorTestCase):
         self.effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier2])
         self.effect_active = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_active])
         self.item = ModuleHigh(self.ch.type(
-            effects=(self.effect1, self.effect2, self.effect_active),
-            attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2}
+            attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2},
+            effects=(self.effect1, self.effect2, self.effect_active), default_effect=self.effect_active
         ).id)
 
     def test_effect_disabling(self):

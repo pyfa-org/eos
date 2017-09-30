@@ -28,7 +28,7 @@ from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffect
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
-DEFAULT_EFFECT_MODE = EffectRunMode.state_compliance
+DEFAULT_EFFECT_MODE = EffectRunMode.full_compliance
 
 
 class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):

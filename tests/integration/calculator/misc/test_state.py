@@ -20,8 +20,8 @@
 
 
 from eos import *
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter, State
+from eos.const.eve import Effect, EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -70,17 +70,22 @@ class TestStateSwitching(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id
         )
-        effect_off = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_off])
-        effect_on = self.ch.effect(category=EffectCategory.online, modifiers=[modifier_on])
-        effect_act = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_act])
-        effect_over = self.ch.effect(category=EffectCategory.overload, modifiers=[modifier_over])
-        effect_disabled = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_disabled])
+        effect_cat_offline = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_off])
+        effect_cat_online = self.ch.effect(category=EffectCategory.online, modifiers=[modifier_on])
+        effect_cat_active = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_act])
+        effect_cat_overload = self.ch.effect(category=EffectCategory.overload, modifiers=[modifier_over])
+        online_effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active, customize=True)
+        effect_disabled = self.ch.effect(category=EffectCategory.online, modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.ch.type(
-            effects=(effect_off, effect_on, effect_act, effect_over, effect_disabled),
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
-            }
+            },
+            effects=(
+                effect_cat_offline, effect_cat_online, effect_cat_active,
+                effect_cat_overload, online_effect, effect_disabled
+            ),
+            default_effect=effect_cat_active
         ).id)
         self.item.set_effect_run_mode(effect_disabled.id, EffectRunMode.force_stop)
 

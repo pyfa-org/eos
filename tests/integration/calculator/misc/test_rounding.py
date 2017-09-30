@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Attribute, EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -58,7 +58,7 @@ class TestRounding(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        item = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 20, tgt_attr.id: 1.9444}).id)
+        item = Implant(self.ch.type(attributes={src_attr.id: 20, tgt_attr.id: 1.9444}, effects=[effect]).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 2.33)

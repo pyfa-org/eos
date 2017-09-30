@@ -22,7 +22,7 @@
 import logging
 
 from eos import *
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -49,7 +49,7 @@ class TestSourceAttribute(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=(invalid_modifier, valid_modifier))
-        item_eve_type = self.ch.type(effects=[effect], attributes={src_attr.id: 1.5, tgt_attr.id: 100})
+        item_eve_type = self.ch.type(attributes={src_attr.id: 1.5, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)

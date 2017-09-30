@@ -20,8 +20,8 @@
 
 
 from eos import *
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
-from eos.const.eve import EffectCategory
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter, State
+from eos.const.eve import Effect, EffectCategory
 from eos.eve_object.modifier import ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.pubsub.message import InstrAttrValueChanged
@@ -70,11 +70,12 @@ class TestModifierPython(CalculatorTestCase):
                 return False
 
         self.python_effect = self.ch.effect(category=EffectCategory.online, modifiers=(TestPythonModifier(),))
+        self.online_effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active, customize=True)
         self.fit.ship = Ship(self.ch.type(attributes={attr3.id: 3}).id)
 
     def test_enabling(self):
         item = ModuleHigh(self.ch.type(
-            effects=(self.python_effect,), attributes={self.attr1.id: 100, self.attr2.id: 2}
+            attributes={self.attr1.id: 100, self.attr2.id: 2}, effects=(self.python_effect, self.online_effect)
         ).id)
         self.fit.modules.high.append(item)
         self.assertAlmostEqual(item.attributes[self.attr1.id], 100)
@@ -88,7 +89,7 @@ class TestModifierPython(CalculatorTestCase):
 
     def test_disabling(self):
         item = ModuleHigh(self.ch.type(
-            effects=(self.python_effect,), attributes={self.attr1.id: 100, self.attr2.id: 2}
+            attributes={self.attr1.id: 100, self.attr2.id: 2}, effects=(self.python_effect, self.online_effect)
         ).id)
         self.fit.modules.high.append(item)
         item.state = State.online
@@ -115,7 +116,8 @@ class TestModifierPython(CalculatorTestCase):
         )
         dogma_effect = self.ch.effect(category=EffectCategory.active, modifiers=[dogma_modifier])
         item = ModuleHigh(self.ch.type(
-            effects=(self.python_effect, dogma_effect), attributes={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5}
+            attributes={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5},
+            effects=(self.python_effect, self.online_effect, dogma_effect), default_effect=dogma_effect
         ).id)
         self.fit.modules.high.append(item)
         item.state = State.online
@@ -149,11 +151,11 @@ class TestModifierPython(CalculatorTestCase):
         )
         dogma_effect2 = self.ch.effect(category=EffectCategory.online, modifiers=[dogma_modifier2])
         python_item = ModuleHigh(self.ch.type(
-            effects=(self.python_effect,), attributes={self.attr1.id: 100, self.attr2.id: 2}
+            attributes={self.attr1.id: 100, self.attr2.id: 2}, effects=(self.python_effect, self.online_effect)
         ).id)
         dogma_item = ModuleHigh(self.ch.type(
-            effects=(dogma_effect1, dogma_effect2),
-            attributes={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3}
+            attributes={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3},
+            effects=(dogma_effect1, dogma_effect2, self.online_effect)
         ).id)
         self.fit.modules.high.append(python_item)
         self.assertAlmostEqual(python_item.attributes[self.attr1.id], 100)
