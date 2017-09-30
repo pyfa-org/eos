@@ -116,7 +116,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.fit.ship = ship_item
         rah_item = ModuleLow(rah_eve_type.id, state=State.active)
         # RAH is detected using effect, thus if item doesn't have RAH effect, it's not RAH
-        rah_item._set_effect_activability(Effect.adaptive_armor_hardener, False)
+        rah_item.set_effect_run_mode(Effect.adaptive_armor_hardener, EffectRunMode.force_stop)
         # Action
         self.fit.modules.low.equip(rah_item)
         # Verification

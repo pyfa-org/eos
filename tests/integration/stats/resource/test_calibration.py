@@ -88,7 +88,7 @@ class TestCalibration(StatTestCase):
         fit = Fit()
         item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id)
         item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id)
-        item2._set_effect_activability(self.effect.id, False)
+        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.rigs.add(item1)
         fit.rigs.add(item2)
         # Verification

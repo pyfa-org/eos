@@ -82,7 +82,7 @@ class TestSubsystem(StatTestCase):
         fit = Fit()
         item1 = Subsystem(self.ch.type(effects=[self.effect]).id)
         item2 = Subsystem(self.ch.type(effects=[self.effect]).id)
-        item2._set_effect_activability(self.effect.id, False)
+        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.subsystems.add(item1)
         fit.subsystems.add(item2)
         # Verification

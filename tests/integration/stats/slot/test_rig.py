@@ -82,7 +82,7 @@ class TestRig(StatTestCase):
         fit = Fit()
         item1 = Rig(self.ch.type(effects=[self.effect]).id)
         item2 = Rig(self.ch.type(effects=[self.effect]).id)
-        item2._set_effect_activability(self.effect.id, False)
+        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.rigs.add(item1)
         fit.rigs.add(item2)
         # Verification

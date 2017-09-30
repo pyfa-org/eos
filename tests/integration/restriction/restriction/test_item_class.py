@@ -291,7 +291,7 @@ class TestItemClass(RestrictionTestCase):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.hi_power, category=EffectCategory.passive)
         item = ModuleHigh(self.ch.type(category=Category.module, effects=[effect]).id)
-        item._set_effect_activability(effect.id, False)
+        item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -347,7 +347,7 @@ class TestItemClass(RestrictionTestCase):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
         item = ModuleMed(self.ch.type(category=Category.module, effects=[effect]).id)
-        item._set_effect_activability(effect.id, False)
+        item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
         fit.modules.med.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -404,7 +404,7 @@ class TestItemClass(RestrictionTestCase):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.lo_power, category=EffectCategory.passive)
         item = ModuleLow(self.ch.type(category=Category.module, effects=[effect]).id)
-        item._set_effect_activability(effect.id, False)
+        item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
         fit.modules.low.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -461,7 +461,7 @@ class TestItemClass(RestrictionTestCase):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
         item = Rig(self.ch.type(category=Category.module, effects=[effect]).id)
-        item._set_effect_activability(effect.id, False)
+        item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
@@ -596,7 +596,7 @@ class TestItemClass(RestrictionTestCase):
         fit = Fit()
         effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
         item = Subsystem(self.ch.type(category=Category.subsystem, effects=[effect]).id)
-        item._set_effect_activability(effect.id, False)
+        item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
         fit.subsystems.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)

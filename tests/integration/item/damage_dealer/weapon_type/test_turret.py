@@ -113,7 +113,7 @@ class TestItemDamageTurret(ItemMixinTestCase):
             Attribute.damage_multiplier: 2.5, Attribute.capacity: 2.0, self.cycle_attr.id: 500,
             Attribute.charge_rate: 1.0, Attribute.reload_time: 5000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
-        item._set_effect_activability(self.effect.id, False)
+        item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         item.charge = Charge(self.ch.type(attributes={
             Attribute.volume: 0.2, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
             Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5

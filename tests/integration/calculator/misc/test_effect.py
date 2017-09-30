@@ -68,7 +68,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effect_activability(self.effect1.id, False)
+        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
         # Cleanup
@@ -80,9 +80,9 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effect_activability(self.effect1.id, False)
-        self.item._set_effect_activability(self.effect2.id, False)
-        self.item._set_effect_activability(self.effect_active.id, False)
+        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
+        self.item.set_effect_run_mode(self.effect2.id, EffectRunMode.force_stop)
+        self.item.set_effect_run_mode(self.effect_active.id, EffectRunMode.force_stop)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
         # Cleanup
@@ -92,10 +92,10 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling(self):
         # Setup
         self.item.state = State.offline
-        self.item._set_effect_activability(self.effect1.id, False)
+        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effect_activability(self.effect1.id, True)
+        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_run)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
@@ -105,13 +105,13 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling_multiple(self):
         # Setup
         self.item.state = State.offline
-        self.item._set_effect_activability(self.effect1.id, False)
-        self.item._set_effect_activability(self.effect2.id, False)
+        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
+        self.item.set_effect_run_mode(self.effect2.id, EffectRunMode.force_stop)
         self.fit.modules.high.append(self.item)
         # Action
-        self.item._set_effect_activability(self.effect1.id, True)
-        self.item._set_effect_activability(self.effect2.id, True)
-        self.item._set_effect_activability(self.effect_active.id, True)
+        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_run)
+        self.item.set_effect_run_mode(self.effect2.id, EffectRunMode.force_run)
+        self.item.set_effect_run_mode(self.effect_active.id, EffectRunMode.force_run)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup

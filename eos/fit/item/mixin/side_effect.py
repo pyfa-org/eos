@@ -64,7 +64,7 @@ class SideEffectMixin(BaseItemMixin):
             chance = effect.get_fitting_usage_chance(self)
             if chance is None:
                 continue
-            side_effect_state = run_mode_to_side_state[self._get_effect_run_mode(effect_id)]
+            side_effect_state = run_mode_to_side_state[self.get_effect_run_mode(effect_id)]
             side_effects[effect_id] = SideEffectData(effect, chance, side_effect_state)
         return side_effects
 
@@ -80,7 +80,7 @@ class SideEffectMixin(BaseItemMixin):
             run_mode = EffectRunMode.state_compliance
         else:
             run_mode = EffectRunMode.full_compliance
-        self._set_effect_run_mode(effect_id, run_mode)
+        self.set_effect_run_mode(effect_id, run_mode)
 
     def randomize_side_effects(self):
         """

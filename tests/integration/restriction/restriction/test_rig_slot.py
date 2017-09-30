@@ -134,7 +134,7 @@ class TestRigSlot(RestrictionTestCase):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 0}).id)
         item = Rig(self.ch.type(effects=[self.effect]).id)
-        item._set_effect_activability(self.effect.id, False)
+        item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.rig_slot)

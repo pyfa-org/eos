@@ -164,7 +164,7 @@ class TestHighSlot(RestrictionTestCase):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={Attribute.hi_slots: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
-        item._set_effect_activability(self.effect.id, False)
+        item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.high_slot)

@@ -183,7 +183,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             is running on this item or not.
         """
         # Decide how we handle effect based on its run mode
-        effect_run_mode = self._get_effect_run_mode(effect.id)
+        effect_run_mode = self.get_effect_run_mode(effect.id)
         if effect_run_mode == EffectRunMode.full_compliance:
             # Check state restriction first, as it should be checked
             # regardless of effect category
@@ -226,7 +226,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         else:
             return False
 
-    def _get_effect_run_mode(self, effect_id):
+    def get_effect_run_mode(self, effect_id):
         """
         Get run mode for passed effect ID. Returns run mode even if
         there's no such effect on item (default mode in such case).
@@ -234,6 +234,10 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         if self.__effect_mode_overrides is None:
             return DEFAULT_EFFECT_MODE
         return self.__effect_mode_overrides.get(effect_id, DEFAULT_EFFECT_MODE)
+
+    def set_effect_run_mode(self, effect_id, new_mode):
+        """Set run mode for effect with passed ID."""
+        self._set_effects_run_modes({effect_id: new_mode})
 
     def _set_effects_run_modes(self, effects_modes):
         """
@@ -269,10 +273,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         fit = self._fit
         if fit is not None:
             fit._publish(InputEffectsRunModeChanged(self))
-
-    def _set_effect_run_mode(self, effect_id, new_mode):
-        """Set run mode for effect with passed ID."""
-        self._set_effects_run_modes({effect_id: new_mode})
 
     # Message handling
     def _handle_refresh_source(self, _):

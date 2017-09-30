@@ -98,7 +98,7 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
             Attribute.em_damage: 52000, Attribute.thermal_damage: 63000, Attribute.kinetic_damage: 74000,
             Attribute.explosive_damage: 85000, self.cycle_attr.id: 250000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
-        item._set_effect_activability(self.effect.id, False)
+        item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()

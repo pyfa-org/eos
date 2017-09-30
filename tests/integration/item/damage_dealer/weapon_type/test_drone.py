@@ -98,7 +98,7 @@ class TestItemDamageDrone(ItemMixinTestCase):
             Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52, Attribute.thermal_damage: 63,
             Attribute.kinetic_damage: 74, Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
-        item._set_effect_activability(self.effect.id, False)
+        item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.drones.add(item)
         # Verification
         volley = item.get_nominal_volley()

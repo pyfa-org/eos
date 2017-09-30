@@ -115,7 +115,7 @@ class TestItemDamageMissile(ItemMixinTestCase):
             Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
             Attribute.charge_rate: 1.0, Attribute.reload_time: 10000
         }, effects=[self.effect_item], default_effect=self.effect_item).id, state=State.active)
-        item._set_effect_activability(self.effect_item.id, False)
+        item.set_effect_run_mode(self.effect_item.id, EffectRunMode.force_stop)
         item.charge = Charge(self.ch.type(attributes={
             Attribute.volume: 0.1, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
             Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
@@ -142,7 +142,7 @@ class TestItemDamageMissile(ItemMixinTestCase):
             Attribute.volume: 0.1, Attribute.em_damage: 5.2, Attribute.thermal_damage: 6.3,
             Attribute.kinetic_damage: 7.4, Attribute.explosive_damage: 8.5
         }, effects=[self.effect_charge], default_effect=self.effect_charge).id)
-        item.charge._set_effect_activability(self.effect_charge.id, False)
+        item.charge.set_effect_run_mode(self.effect_charge.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()

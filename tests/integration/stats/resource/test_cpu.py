@@ -137,7 +137,7 @@ class TestCpu(StatTestCase):
         fit = Fit()
         item1 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 50}, effects=[self.effect]).id, state=State.online)
         item2 = ModuleHigh(self.ch.type(attributes={Attribute.cpu: 30}, effects=[self.effect]).id, state=State.online)
-        item2._set_effect_activability(self.effect.id, False)
+        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Verification

@@ -117,7 +117,7 @@ class TestItemDamageBomb(ItemMixinTestCase):
             Attribute.capacity: 60.0, self.cycle_attr.id: 5000, Attribute.charge_rate: 1.0,
             Attribute.reload_time: 10000, Attribute.module_reactivation_delay: 120000
         }, effects=[self.effect_item], default_effect=self.effect_item).id, state=State.active)
-        item._set_effect_activability(self.effect_item.id, False)
+        item.set_effect_run_mode(self.effect_item.id, EffectRunMode.force_stop)
         item.charge = Charge(self.ch.type(attributes={
             Attribute.volume: 30.0, Attribute.em_damage: 5200, Attribute.thermal_damage: 6300,
             Attribute.kinetic_damage: 7400, Attribute.explosive_damage: 8500
@@ -144,7 +144,7 @@ class TestItemDamageBomb(ItemMixinTestCase):
             Attribute.volume: 30.0, Attribute.em_damage: 5200, Attribute.thermal_damage: 6300,
             Attribute.kinetic_damage: 7400, Attribute.explosive_damage: 8500
         }, effects=[self.effect_charge], default_effect=self.effect_charge).id)
-        item.charge._set_effect_activability(self.effect_charge.id, False)
+        item.charge.EffectRunMode.force_stop(self.effect_charge.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()

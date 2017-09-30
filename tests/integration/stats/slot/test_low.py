@@ -103,7 +103,7 @@ class TestLowSlot(StatTestCase):
         fit = Fit()
         item1 = ModuleLow(self.ch.type(effects=[self.effect]).id)
         item2 = ModuleLow(self.ch.type(effects=[self.effect]).id)
-        item2._set_effect_activability(self.effect.id, False)
+        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.modules.low.append(item1)
         fit.modules.low.append(item2)
         # Verification
