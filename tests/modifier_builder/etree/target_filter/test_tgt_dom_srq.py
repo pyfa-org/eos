@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 

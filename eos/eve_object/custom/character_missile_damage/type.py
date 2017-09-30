@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import EffectBuildStatus, EosEffect, ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, Type, EffectCategory
+from eos.const.eve import Attribute, EffectCategory, Type
 from ...effect import Effect
 from ...modifier import DogmaModifier
 

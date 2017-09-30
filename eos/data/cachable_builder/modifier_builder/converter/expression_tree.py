@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosType
+from eos.const.eos import EosType, ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Operand
 from eos.eve_object.modifier import DogmaModifier
 from eos.util.attribute_dict import AttributeDict

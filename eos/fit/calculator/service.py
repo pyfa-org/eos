@@ -24,12 +24,10 @@ from eos.eve_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.item import Character, Ship
 from eos.fit.pubsub.message import (
-    InstrItemAdd, InstrItemRemove, InstrEffectsStart, InstrEffectsStop,
-    InstrAttrValueChanged
+    InstrAttrValueChanged, InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
 )
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_set import KeyedSet
-
 from .affector import Affector
 from .register import AffectionRegister
 

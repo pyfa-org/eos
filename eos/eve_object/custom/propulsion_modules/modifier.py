@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Attribute
 from eos.fit.pubsub.message import InstrAttrValueChanged
 from ...modifier.exception import ModificationCalculationError

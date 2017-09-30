@@ -21,9 +21,9 @@
 
 from collections import namedtuple
 
-from eos.const.eos import State, Restriction
+from eos.const.eos import Restriction, State
 from eos.const.eve import Attribute
-from eos.fit.item import ModuleHigh, ModuleMed, ModuleLow
+from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
 from eos.util.keyed_set import KeyedSet
 from .base import BaseRestrictionRegister

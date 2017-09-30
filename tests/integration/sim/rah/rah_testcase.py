@@ -20,7 +20,7 @@
 
 
 from eos import Fit
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.integration_testcase import IntegrationTestCase
 

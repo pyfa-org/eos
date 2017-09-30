@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.const.eve import Attribute
-from eos.fit.item import Ship, Drone
+from eos.fit.item import Drone, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister

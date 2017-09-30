@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute
-from eos.fit.item import Ship, ModuleHigh, ModuleMed, ModuleLow
+from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError

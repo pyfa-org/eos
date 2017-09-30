@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import Attribute
-from eos.fit.helper import TankingLayers, TankingLayersTotal, DamageTypes
+from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
 from .base import BaseItemMixin
 

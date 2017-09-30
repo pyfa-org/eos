@@ -20,11 +20,11 @@
 
 
 from .pubsub.message import (
-    InputItemAdded, InputItemRemoved, InputStateChanged, InputEffectsRunModeChanged,
-    InputSkillLevelChanged, InputSourceChanged, InputDefaultIncomingDamageChanged
+    InputDefaultIncomingDamageChanged, InputEffectsRunModeChanged, InputItemAdded,
+    InputItemRemoved, InputSkillLevelChanged, InputSourceChanged, InputStateChanged
 )
 from .pubsub.subscriber import BaseSubscriber
-from eos.util.volatile_cache import InheritableVolatileMixin, CooperativeVolatileMixin
+from eos.util.volatile_cache import CooperativeVolatileMixin, InheritableVolatileMixin
 
 
 class FitVolatileManager(BaseSubscriber):

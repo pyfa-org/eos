@@ -23,7 +23,7 @@ import yaml
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eve import Group, Category
+from eos.const.eve import Category, Group
 from eos.util.cached_property import cached_property
 
 

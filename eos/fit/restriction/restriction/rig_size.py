@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import Attribute, Effect
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrEffectsStart, InstrEffectsStop
+from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 

@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.data.cache_handler.exception import TypeFetchError, AttributeFetchError, EffectFetchError
+from eos.data.cache_handler.exception import AttributeFetchError, EffectFetchError, TypeFetchError
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
 from eos.eve_object.type import Type

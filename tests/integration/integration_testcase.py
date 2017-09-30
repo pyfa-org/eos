@@ -21,8 +21,8 @@
 
 from copy import copy
 
-from eos.const.eve import Type, Group
-from eos.data.source import SourceManager, Source
+from eos.const.eve import Group, Type
+from eos.data.source import Source, SourceManager
 from eos.eve_object.modifier import DogmaModifier
 from tests.eos_testcase import EosTestCase
 

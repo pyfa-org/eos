@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import State, ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import EffectCategory
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 

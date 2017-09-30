@@ -22,7 +22,7 @@
 from abc import ABCMeta, abstractmethod
 from numbers import Integral
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain
+from eos.const.eos import ModifierDomain, ModifierTargetFilter
 
 
 class BaseModifier(metaclass=ABCMeta):

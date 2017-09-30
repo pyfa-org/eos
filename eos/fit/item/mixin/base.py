@@ -24,7 +24,7 @@ from abc import ABCMeta, abstractmethod
 from eos.const.eos import EffectRunMode, State
 from eos.const.eve import Effect
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.pubsub.message import InputItemAdded, InputItemRemoved, InputEffectsRunModeChanged, InstrRefreshSource
+from eos.fit.pubsub.message import InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 

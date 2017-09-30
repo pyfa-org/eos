@@ -20,7 +20,6 @@
 
 
 from eos import *
-from eos.fit.container.exception import SlotTakenError
 from tests.integration.container.container_testcase import ContainerTestCase
 
 

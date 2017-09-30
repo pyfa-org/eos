@@ -19,7 +19,7 @@
 # ===============================================================================
 
 
-from eos.const.eos import State, ModifierDomain
+from eos.const.eos import ModifierDomain, State
 from eos.const.eve import Attribute
 from eos.util.repr import make_repr_str
 from .mixin.side_effect import SideEffectMixin

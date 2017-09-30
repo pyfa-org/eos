@@ -25,7 +25,7 @@ from logging import getLogger
 from math import exp
 
 from eos.const.eos import ModifierOperator
-from eos.const.eve import Category, Attribute
+from eos.const.eve import Attribute, Category
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.pubsub.message import InstrAttrValueChanged, InstrAttrValueChangedMasked
 from eos.util.keyed_set import KeyedSet

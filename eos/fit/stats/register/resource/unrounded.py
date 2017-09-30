@@ -21,7 +21,7 @@
 
 from eos.const.eve import Attribute, Effect
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrEffectsStart, InstrEffectsStop
+from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister
 

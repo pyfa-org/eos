@@ -20,7 +20,6 @@
 
 
 from eos import *
-from eos.fit.item import Ship
 from tests.integration.container.container_testcase import ContainerTestCase
 
 

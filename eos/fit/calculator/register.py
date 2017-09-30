@@ -22,7 +22,7 @@
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, EosType
+from eos.const.eos import EosType, ModifierDomain, ModifierTargetFilter
 from eos.util.keyed_set import KeyedSet
 from .exception import UnexpectedDomainError, UnknownTargetFilterError
 

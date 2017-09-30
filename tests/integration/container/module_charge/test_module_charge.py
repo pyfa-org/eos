@@ -20,7 +20,6 @@
 
 
 from eos import *
-from eos.const.eos import State
 from tests.integration.container.container_testcase import ContainerTestCase
 
 

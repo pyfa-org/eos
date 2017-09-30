@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory, Group, Category
+from eos.const.eve import Attribute, Category, Effect, EffectCategory, Group
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 

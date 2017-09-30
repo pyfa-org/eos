@@ -25,8 +25,8 @@ from math import ceil, floor
 
 from eos.const.eve import Attribute, Effect
 from eos.fit.pubsub.message import (
-    InputDefaultIncomingDamageChanged, InstrEffectsStart, InstrEffectsStop,
-    InstrAttrValueChanged, InstrAttrValueChangedMasked
+    InstrAttrValueChanged, InstrAttrValueChangedMasked, InputDefaultIncomingDamageChanged,
+    InstrEffectsStart, InstrEffectsStop
 )
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str

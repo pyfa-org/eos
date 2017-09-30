@@ -19,9 +19,9 @@
 # ===============================================================================
 
 
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Attribute, Type
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrAttrValueChanged
+from eos.fit.pubsub.message import InstrAttrValueChanged, InstrItemAdd, InstrItemRemove
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
 

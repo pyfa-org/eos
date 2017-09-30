@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierTargetFilter, ModifierDomain, ModifierOperator, EosType
+from eos.const.eos import EosType, ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import Attribute, EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 

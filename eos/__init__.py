@@ -23,6 +23,7 @@ __all__ = [
     'EffectRunMode', 'Restriction', 'State',
     'TypeFetchError',
     'SourceManager',
+    'SlotTakenError',
     'Fit',
     'ValidationError',
     'DamageProfile', 'ResistanceProfile',
@@ -38,6 +39,7 @@ __version__ = '0.0.0.dev10'
 from .const.eos import EffectRunMode, Restriction, State
 from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
+from .fit.container.exception import SlotTakenError
 from .fit.fit import Fit
 from .fit.restriction.exception import ValidationError
 from .fit.helper import DamageProfile, ResistanceProfile

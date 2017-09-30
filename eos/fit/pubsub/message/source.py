@@ -23,8 +23,8 @@ from eos.const.eos import State
 from eos.util.repr import make_repr_str
 from .base import BaseInputMessage, BaseInstructionMessage
 from .item import (
-    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate,
-    InstrEffectsStart, InstrEffectsStop
+    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove,
+    InstrStatesActivate, InstrStatesDeactivate
 )
 
 
