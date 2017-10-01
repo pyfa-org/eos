@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from eos.util.keyed_set import KeyedSet
 from .base import BaseRestrictionRegister
@@ -89,7 +89,7 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(self, msg_broker, Attribute.subsystem_slot)
+        SlotIndexRestrictionRegister.__init__(self, msg_broker, AttributeId.subsystem_slot)
 
     @property
     def type(self):
@@ -106,7 +106,7 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(self, msg_broker, Attribute.implantness)
+        SlotIndexRestrictionRegister.__init__(self, msg_broker, AttributeId.implantness)
 
     @property
     def type(self):
@@ -123,7 +123,7 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(self, msg_broker, Attribute.boosterness)
+        SlotIndexRestrictionRegister.__init__(self, msg_broker, AttributeId.boosterness)
 
     @property
     def type(self):

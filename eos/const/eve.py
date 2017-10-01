@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 """
@@ -28,7 +28,8 @@ from enum import IntEnum, unique
 
 
 @unique
-class Attribute(IntEnum):
+class AttributeId(IntEnum):
+    """Contains necessary attribute IDs."""
     # Resources
     cpu = 50
     cpu_output = 48
@@ -164,7 +165,8 @@ class Attribute(IntEnum):
 
 
 @unique
-class Type(IntEnum):
+class TypeId(IntEnum):
+    """Contains necessary eve type IDs."""
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
     nanite_repair_paste = 28668
@@ -172,7 +174,8 @@ class Type(IntEnum):
 
 
 @unique
-class Group(IntEnum):
+class GroupId(IntEnum):
+    """Contains necessary group IDs."""
     character = 1
     effect_beacon = 920
     energy_weapon = 53
@@ -183,7 +186,8 @@ class Group(IntEnum):
 
 
 @unique
-class Category(IntEnum):
+class CategoryId(IntEnum):
+    """Contains necessary category IDs."""
     charge = 8
     drone = 18
     fighter = 87
@@ -195,7 +199,8 @@ class Category(IntEnum):
 
 
 @unique
-class Effect(IntEnum):
+class EffectId(IntEnum):
+    """Contains necessary effect IDs."""
     adaptive_armor_hardener = 4928
     bomb_launching = 2971
     emp_wave = 38
@@ -225,7 +230,8 @@ class Effect(IntEnum):
 
 
 @unique
-class EffectCategory(IntEnum):
+class EffectCategoryId(IntEnum):
+    """Contains necessary effect category IDs."""
     passive = 0
     active = 1
     target = 2
@@ -237,7 +243,8 @@ class EffectCategory(IntEnum):
 
 
 @unique
-class Operand(IntEnum):
+class OperandId(IntEnum):
+    """Contains necessary expression operand IDs."""
     add_dom_grp_mod = 7
     add_dom_mod = 8
     add_dom_srq_mod = 9

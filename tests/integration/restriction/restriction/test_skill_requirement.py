@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -31,7 +31,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that error is raised when skill requirement is not met
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={
-            Attribute.required_skill_1: 50, Attribute.required_skill_1_level: 3
+            AttributeId.required_skill_1: 50, AttributeId.required_skill_1_level: 3
         }).id)
         fit.modules.high.append(item)
         # Action
@@ -47,8 +47,8 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that multiple errors are shown as iterable
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={
-            Attribute.required_skill_1: 48, Attribute.required_skill_1_level: 1,
-            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 5
+            AttributeId.required_skill_1: 48, AttributeId.required_skill_1_level: 1,
+            AttributeId.required_skill_2: 50, AttributeId.required_skill_2_level: 5
         }).id)
         fit.modules.high.append(item)
         fit.skills.add(Skill(self.ch.type(type_id=50).id, level=2))
@@ -66,8 +66,8 @@ class TestSkillRequirement(RestrictionTestCase):
         # up in error
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={
-            Attribute.required_skill_1: 48, Attribute.required_skill_1_level: 1,
-            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 5
+            AttributeId.required_skill_1: 48, AttributeId.required_skill_1_level: 1,
+            AttributeId.required_skill_2: 50, AttributeId.required_skill_2_level: 5
         }).id)
         fit.modules.high.append(item)
         fit.skills.add(Skill(self.ch.type(type_id=48).id, level=5))
@@ -84,7 +84,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that failed attempt to replace skill doesn't affect restriction
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={
-            Attribute.required_skill_1: 50, Attribute.required_skill_1_level: 3
+            AttributeId.required_skill_1: 50, AttributeId.required_skill_1_level: 3
         }).id)
         fit.modules.high.append(item)
         skill_eve_type = self.ch.type(type_id=50)
@@ -105,7 +105,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # are met
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={
-            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 3
+            AttributeId.required_skill_2: 50, AttributeId.required_skill_2_level: 3
         }).id)
         fit.modules.high.append(item)
         fit.skills.add(Skill(self.ch.type(type_id=50).id, level=3))
@@ -121,7 +121,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Check that skillreqs on rigs are not checked
         fit = Fit()
         item = Rig(self.ch.type(attributes={
-            Attribute.required_skill_2: 50, Attribute.required_skill_2_level: 3
+            AttributeId.required_skill_2: 50, AttributeId.required_skill_2_level: 3
         }).id)
         fit.rigs.add(item)
         # Action
@@ -135,7 +135,7 @@ class TestSkillRequirement(RestrictionTestCase):
     def test_pass_no_source(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={
-            Attribute.required_skill_1: 50, Attribute.required_skill_1_level: 3
+            AttributeId.required_skill_1: 50, AttributeId.required_skill_1_level: 3
         }).id)
         fit.modules.high.append(item)
         fit.source = None

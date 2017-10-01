@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Effect
+from eos.const.eve import EffectId
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -115,7 +115,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.fit.ship = ship_item
         rah_item = ModuleLow(rah_eve_type.id, state=State.active)
         # RAH is detected using effect, thus if item doesn't have RAH effect, it's not RAH
-        rah_item.set_effect_run_mode(Effect.adaptive_armor_hardener, EffectRunMode.force_stop)
+        rah_item.set_effect_run_mode(EffectId.adaptive_armor_hardener, EffectRunMode.force_stop)
         # Action
         self.fit.modules.low.equip(rah_item)
         # Verification

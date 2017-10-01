@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,10 +16,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import Drone, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
@@ -37,7 +37,7 @@ class DronebayVolumeStatRegister(BaseResourceStatRegister, InheritableVolatileMi
 
     @volatile_property
     def used(self):
-        return sum(item.attributes[Attribute.volume] for item in self.__resource_users)
+        return sum(item.attributes[AttributeId.volume] for item in self.__resource_users)
 
     @volatile_property
     def output(self):
@@ -47,7 +47,7 @@ class DronebayVolumeStatRegister(BaseResourceStatRegister, InheritableVolatileMi
             return None
         else:
             try:
-                return ship_attribs[Attribute.drone_capacity]
+                return ship_attribs[AttributeId.drone_capacity]
             except KeyError:
                 return None
 
@@ -56,7 +56,7 @@ class DronebayVolumeStatRegister(BaseResourceStatRegister, InheritableVolatileMi
         return self.__resource_users
 
     def _handle_item_addition(self, message):
-        if isinstance(message.item, Drone) and Attribute.volume in message.item._eve_type.attributes:
+        if isinstance(message.item, Drone) and AttributeId.volume in message.item._eve_type.attributes:
             self.__resource_users.add(message.item)
         elif isinstance(message.item, Ship):
             self.__current_ship = message.item

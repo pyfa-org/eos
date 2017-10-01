@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -29,14 +29,14 @@ class TestCalibration(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.upgrade_capacity)
-        self.ch.attribute(attribute_id=Attribute.upgrade_cost)
-        self.effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+        self.ch.attribute(attribute_id=AttributeId.upgrade_capacity)
+        self.ch.attribute(attribute_id=AttributeId.upgrade_cost)
+        self.effect = self.ch.effect(effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 350}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.upgrade_capacity: 350}).id)
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.output, 350)
         # Cleanup
@@ -66,7 +66,7 @@ class TestCalibration(StatTestCase):
     def test_use_single_no_rounding(self):
         fit = Fit()
         fit.rigs.add(Rig(self.ch.type(
-            attributes={Attribute.upgrade_cost: 55.5555555555}, effects=[self.effect]
+            attributes={AttributeId.upgrade_cost: 55.5555555555}, effects=[self.effect]
         ).id))
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 55.5555555555)
@@ -76,8 +76,8 @@ class TestCalibration(StatTestCase):
 
     def test_use_multiple(self):
         fit = Fit()
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id))
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={AttributeId.upgrade_cost: 50}, effects=[self.effect]).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={AttributeId.upgrade_cost: 30}, effects=[self.effect]).id))
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 80)
         # Cleanup
@@ -86,8 +86,8 @@ class TestCalibration(StatTestCase):
 
     def test_use_disabled_effect(self):
         fit = Fit()
-        item1 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id)
-        item2 = Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id)
+        item1 = Rig(self.ch.type(attributes={AttributeId.upgrade_cost: 50}, effects=[self.effect]).id)
+        item2 = Rig(self.ch.type(attributes={AttributeId.upgrade_cost: 30}, effects=[self.effect]).id)
         item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.rigs.add(item1)
         fit.rigs.add(item2)
@@ -106,9 +106,9 @@ class TestCalibration(StatTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.upgrade_capacity: 350}).id)
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 50}, effects=[self.effect]).id))
-        fit.rigs.add(Rig(self.ch.type(attributes={Attribute.upgrade_cost: 30}, effects=[self.effect]).id))
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.upgrade_capacity: 350}).id)
+        fit.rigs.add(Rig(self.ch.type(attributes={AttributeId.upgrade_cost: 50}, effects=[self.effect]).id))
+        fit.rigs.add(Rig(self.ch.type(attributes={AttributeId.upgrade_cost: 30}, effects=[self.effect]).id))
         fit.source = None
         # Verification
         self.assertAlmostEqual(fit.stats.calibration.used, 0)

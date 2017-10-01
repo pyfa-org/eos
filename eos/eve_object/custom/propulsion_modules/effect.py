@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from logging import getLogger
 
 from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from .modifier import PropulsionModuleVelocityBoostModifier
 from ...modifier import DogmaModifier
 
@@ -37,9 +37,9 @@ def add_ab_modifiers(effect):
     mass_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        tgt_attr=Attribute.mass,
+        tgt_attr=AttributeId.mass,
         operator=ModifierOperator.mod_add,
-        src_attr=Attribute.mass_addition
+        src_attr=AttributeId.mass_addition
     )
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, velocity_modifier)
@@ -53,16 +53,16 @@ def add_mwd_modifiers(effect):
     mass_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        tgt_attr=Attribute.mass,
+        tgt_attr=AttributeId.mass,
         operator=ModifierOperator.mod_add,
-        src_attr=Attribute.mass_addition
+        src_attr=AttributeId.mass_addition
     )
     signature_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        tgt_attr=Attribute.signature_radius,
+        tgt_attr=AttributeId.signature_radius,
         operator=ModifierOperator.post_percent,
-        src_attr=Attribute.signature_radius_bonus
+        src_attr=AttributeId.signature_radius_bonus
     )
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, signature_modifier, velocity_modifier)

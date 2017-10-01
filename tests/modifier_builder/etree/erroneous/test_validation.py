@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import logging
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import Operand
+from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -30,33 +30,33 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
 
     def setUp(self):
         super().setUp()
-        e_tgt_own = self.ef.make(1, operandID=Operand.def_dom, expressionValue='Ship')
-        e_tgt_srq = self.ef.make(2, operandID=Operand.def_type, expressionTypeID=3412)
-        e_tgt_attr = self.ef.make(3, operandID=Operand.def_attr, expressionAttributeID=1372)
-        e_optr = self.ef.make(4, operandID=Operand.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(5, operandID=Operand.def_attr, expressionAttributeID=1156)
+        e_tgt_own = self.ef.make(1, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_srq = self.ef.make(2, operandID=OperandId.def_type, expressionTypeID=3412)
+        e_tgt_attr = self.ef.make(3, operandID=OperandId.def_attr, expressionAttributeID=1372)
+        e_optr = self.ef.make(4, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(5, operandID=OperandId.def_attr, expressionAttributeID=1156)
         e_tgt_itms = self.ef.make(
-            6, operandID=Operand.dom_srq,
+            6, operandID=OperandId.dom_srq,
             arg1=e_tgt_own['expressionID'],
             arg2=e_tgt_srq['expressionID']
         )
         e_tgt_spec = self.ef.make(
-            7, operandID=Operand.itm_attr,
+            7, operandID=OperandId.itm_attr,
             arg1=e_tgt_itms['expressionID'],
             arg2=e_tgt_attr['expressionID']
         )
         e_optr_tgt = self.ef.make(
-            8, operandID=Operand.optr_tgt,
+            8, operandID=OperandId.optr_tgt,
             arg1=e_optr['expressionID'],
             arg2=e_tgt_spec['expressionID']
         )
         self.e_add_mod_invalid = self.ef.make(
-            9, operandID=Operand.add_own_srq_mod,
+            9, operandID=OperandId.add_own_srq_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         self.e_rm_mod_invalid = self.ef.make(
-            10, operandID=Operand.rm_own_srq_mod,
+            10, operandID=OperandId.rm_own_srq_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
@@ -77,37 +77,37 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         self.assertEqual(log_record.msg, expected)
 
     def test_partial_invalid_first(self):
-        e_tgt = self.ef.make(11, operandID=Operand.def_dom, expressionValue='Ship')
-        e_tgt_attr = self.ef.make(12, operandID=Operand.def_attr, expressionAttributeID=9)
-        e_optr = self.ef.make(13, operandID=Operand.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(14, operandID=Operand.def_attr, expressionAttributeID=327)
+        e_tgt = self.ef.make(11, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(12, operandID=OperandId.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(13, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(14, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            15, operandID=Operand.itm_attr,
+            15, operandID=OperandId.itm_attr,
             arg1=e_tgt['expressionID'],
             arg2=e_tgt_attr['expressionID']
         )
         e_optr_tgt = self.ef.make(
-            16, operandID=Operand.optr_tgt,
+            16, operandID=OperandId.optr_tgt,
             arg1=e_optr['expressionID'],
             arg2=e_tgt_spec['expressionID']
         )
         e_add_mod_valid = self.ef.make(
-            17, operandID=Operand.add_itm_mod,
+            17, operandID=OperandId.add_itm_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         e_rm_mod_valid = self.ef.make(
-            18, operandID=Operand.rm_itm_mod,
+            18, operandID=OperandId.rm_itm_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         e_add_splice = self.ef.make(
-            19, operandID=Operand.splice,
+            19, operandID=OperandId.splice,
             arg1=self.e_add_mod_invalid['expressionID'],
             arg2=e_add_mod_valid['expressionID']
         )
         e_rm_splice = self.ef.make(
-            20, operandID=Operand.splice,
+            20, operandID=OperandId.splice,
             arg1=self.e_rm_mod_invalid['expressionID'],
             arg2=e_rm_mod_valid['expressionID']
         )
@@ -126,37 +126,37 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         self.assertEqual(log_record.msg, expected)
 
     def test_partial_invalid_last(self):
-        e_tgt = self.ef.make(11, operandID=Operand.def_dom, expressionValue='Ship')
-        e_tgt_attr = self.ef.make(12, operandID=Operand.def_attr, expressionAttributeID=9)
-        e_optr = self.ef.make(13, operandID=Operand.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(14, operandID=Operand.def_attr, expressionAttributeID=327)
+        e_tgt = self.ef.make(11, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(12, operandID=OperandId.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(13, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(14, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            15, operandID=Operand.itm_attr,
+            15, operandID=OperandId.itm_attr,
             arg1=e_tgt['expressionID'],
             arg2=e_tgt_attr['expressionID']
         )
         e_optr_tgt = self.ef.make(
-            16, operandID=Operand.optr_tgt,
+            16, operandID=OperandId.optr_tgt,
             arg1=e_optr['expressionID'],
             arg2=e_tgt_spec['expressionID']
         )
         e_add_mod_valid = self.ef.make(
-            17, operandID=Operand.add_itm_mod,
+            17, operandID=OperandId.add_itm_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         e_rm_mod_valid = self.ef.make(
-            18, operandID=Operand.rm_itm_mod,
+            18, operandID=OperandId.rm_itm_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         e_add_splice = self.ef.make(
-            19, operandID=Operand.splice,
+            19, operandID=OperandId.splice,
             arg1=e_add_mod_valid['expressionID'],
             arg2=self.e_add_mod_invalid['expressionID']
         )
         e_rm_splice = self.ef.make(
-            20, operandID=Operand.splice,
+            20, operandID=OperandId.splice,
             arg1=e_rm_mod_valid['expressionID'],
             arg2=self.e_rm_mod_invalid['expressionID']
         )
@@ -175,48 +175,48 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         self.assertEqual(log_record.msg, expected)
 
     def test_building_and_validation_failure(self):
-        e_tgt = self.ef.make(11, operandID=Operand.def_dom, expressionValue='Ship')
-        e_tgt_attr = self.ef.make(12, operandID=Operand.def_attr, expressionAttributeID=9)
-        e_optr = self.ef.make(13, operandID=Operand.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(14, operandID=Operand.def_attr, expressionAttributeID=327)
+        e_tgt = self.ef.make(11, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(12, operandID=OperandId.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(13, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(14, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            15, operandID=Operand.itm_attr,
+            15, operandID=OperandId.itm_attr,
             arg1=e_tgt['expressionID'],
             arg2=e_tgt_attr['expressionID']
         )
         e_optr_tgt = self.ef.make(
-            16, operandID=Operand.optr_tgt,
+            16, operandID=OperandId.optr_tgt,
             arg1=e_optr['expressionID'],
             arg2=e_tgt_spec['expressionID']
         )
         e_add_mod_valid = self.ef.make(
-            17, operandID=Operand.add_itm_mod,
+            17, operandID=OperandId.add_itm_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
         e_rm_mod_valid = self.ef.make(
-            18, operandID=Operand.rm_itm_mod,
+            18, operandID=OperandId.rm_itm_mod,
             arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID']
         )
-        e_mod_error = self.ef.make(19, operandID=Operand.def_grp)
+        e_mod_error = self.ef.make(19, operandID=OperandId.def_grp)
         e_add_splice1 = self.ef.make(
-            20, operandID=Operand.splice,
+            20, operandID=OperandId.splice,
             arg1=self.e_add_mod_invalid['expressionID'],
             arg2=e_add_mod_valid['expressionID']
         )
         e_rm_splice1 = self.ef.make(
-            21, operandID=Operand.splice,
+            21, operandID=OperandId.splice,
             arg1=self.e_rm_mod_invalid['expressionID'],
             arg2=e_rm_mod_valid['expressionID']
         )
         e_add_splice2 = self.ef.make(
-            22, operandID=Operand.splice,
+            22, operandID=OperandId.splice,
             arg1=e_mod_error['expressionID'],
             arg2=e_add_splice1['expressionID']
         )
         e_rm_splice2 = self.ef.make(
-            23, operandID=Operand.splice,
+            23, operandID=OperandId.splice,
             arg1=e_mod_error['expressionID'],
             arg2=e_rm_splice1['expressionID']
         )

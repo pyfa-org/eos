@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from collections import namedtuple
@@ -25,7 +25,7 @@ from logging import getLogger
 from math import exp
 
 from eos.const.eos import ModifierOperator
-from eos.const.eve import Attribute, Category
+from eos.const.eve import AttributeId, CategoryId
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.pubsub.message import InstrAttrValueChanged, InstrAttrValueChangedMasked
 from eos.util.keyed_set import KeyedSet
@@ -44,11 +44,11 @@ PENALTY_BASE = 1 / exp((1 / 2.67) ** 2)
 # Items belonging to these categories never have
 # their effects stacking penalized
 PENALTY_IMMUNE_CATEGORIES = (
-    Category.ship,
-    Category.charge,
-    Category.skill,
-    Category.implant,
-    Category.subsystem
+    CategoryId.ship,
+    CategoryId.charge,
+    CategoryId.skill,
+    CategoryId.implant,
+    CategoryId.subsystem
 )
 
 # Tuple with penalizable operators
@@ -95,10 +95,10 @@ MULTIPLICATIONS = (
 # Following attributes have limited precision - only
 # to second number after point
 LIMITED_PRECISION = (
-    Attribute.cpu,
-    Attribute.power,
-    Attribute.cpu_output,
-    Attribute.power_output
+    AttributeId.cpu,
+    AttributeId.power,
+    AttributeId.cpu_output,
+    AttributeId.power_output
 )
 
 # List of exceptions calculate method may throw

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,10 +16,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
@@ -86,16 +86,16 @@ class OrderedShipSlotStatRegister(BaseSlotStatRegister, InheritableVolatileMixin
 class HighSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(self, msg_broker, Effect.hi_power, Attribute.hi_slots)
+        OrderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.hi_power, AttributeId.hi_slots)
 
 
 class MediumSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(self, msg_broker, Effect.med_power, Attribute.med_slots)
+        OrderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.med_power, AttributeId.med_slots)
 
 
 class LowSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(self, msg_broker, Effect.lo_power, Attribute.low_slots)
+        OrderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.lo_power, AttributeId.low_slots)

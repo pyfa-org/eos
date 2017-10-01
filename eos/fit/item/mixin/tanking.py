@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,10 +16,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
 from .base import BaseItemMixin
@@ -40,9 +40,9 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         .total -- total amount of HP, if data for some layer
             is not available, defaults hp of this layer to 0
         """
-        hull = self.attributes.get(Attribute.hp, None)
-        armor = self.attributes.get(Attribute.armor_hp, None)
-        shield = self.attributes.get(Attribute.shield_capacity, None)
+        hull = self.attributes.get(AttributeId.hp, None)
+        armor = self.attributes.get(AttributeId.armor_hp, None)
+        shield = self.attributes.get(AttributeId.shield_capacity, None)
         return TankingLayersTotal(hull=hull, armor=armor, shield=shield)
 
     @volatile_property
@@ -56,22 +56,22 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         resistance.
         """
         hull = DamageTypes(
-            em=self.__get_resistance_by_attr(Attribute.em_damage_resonance),
-            thermal=self.__get_resistance_by_attr(Attribute.thermal_damage_resonance),
-            kinetic=self.__get_resistance_by_attr(Attribute.kinetic_damage_resonance),
-            explosive=self.__get_resistance_by_attr(Attribute.explosive_damage_resonance)
+            em=self.__get_resistance_by_attr(AttributeId.em_damage_resonance),
+            thermal=self.__get_resistance_by_attr(AttributeId.thermal_damage_resonance),
+            kinetic=self.__get_resistance_by_attr(AttributeId.kinetic_damage_resonance),
+            explosive=self.__get_resistance_by_attr(AttributeId.explosive_damage_resonance)
         )
         armor = DamageTypes(
-            em=self.__get_resistance_by_attr(Attribute.armor_em_damage_resonance),
-            thermal=self.__get_resistance_by_attr(Attribute.armor_thermal_damage_resonance),
-            kinetic=self.__get_resistance_by_attr(Attribute.armor_kinetic_damage_resonance),
-            explosive=self.__get_resistance_by_attr(Attribute.armor_explosive_damage_resonance)
+            em=self.__get_resistance_by_attr(AttributeId.armor_em_damage_resonance),
+            thermal=self.__get_resistance_by_attr(AttributeId.armor_thermal_damage_resonance),
+            kinetic=self.__get_resistance_by_attr(AttributeId.armor_kinetic_damage_resonance),
+            explosive=self.__get_resistance_by_attr(AttributeId.armor_explosive_damage_resonance)
         )
         shield = DamageTypes(
-            em=self.__get_resistance_by_attr(Attribute.shield_em_damage_resonance),
-            thermal=self.__get_resistance_by_attr(Attribute.shield_thermal_damage_resonance),
-            kinetic=self.__get_resistance_by_attr(Attribute.shield_kinetic_damage_resonance),
-            explosive=self.__get_resistance_by_attr(Attribute.shield_explosive_damage_resonance)
+            em=self.__get_resistance_by_attr(AttributeId.shield_em_damage_resonance),
+            thermal=self.__get_resistance_by_attr(AttributeId.shield_thermal_damage_resonance),
+            kinetic=self.__get_resistance_by_attr(AttributeId.shield_kinetic_damage_resonance),
+            explosive=self.__get_resistance_by_attr(AttributeId.shield_explosive_damage_resonance)
         )
         return TankingLayers(hull=hull, armor=armor, shield=shield)
 

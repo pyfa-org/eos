@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos.const.eos import State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import Drone, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
@@ -38,7 +38,7 @@ class DroneBandwidthStatRegister(BaseResourceStatRegister, InheritableVolatileMi
 
     @volatile_property
     def used(self):
-        return sum(item.attributes[Attribute.drone_bandwidth_used] for item in self.__resource_users)
+        return sum(item.attributes[AttributeId.drone_bandwidth_used] for item in self.__resource_users)
 
     @volatile_property
     def output(self):
@@ -48,7 +48,7 @@ class DroneBandwidthStatRegister(BaseResourceStatRegister, InheritableVolatileMi
             return None
         else:
             try:
-                return ship_attribs[Attribute.drone_bandwidth]
+                return ship_attribs[AttributeId.drone_bandwidth]
             except KeyError:
                 return None
 
@@ -67,7 +67,7 @@ class DroneBandwidthStatRegister(BaseResourceStatRegister, InheritableVolatileMi
     def _handle_item_states_activation(self, message):
         if (
             isinstance(message.item, Drone) and State.online in message.states and
-            Attribute.drone_bandwidth_used in message.item._eve_type.attributes
+            AttributeId.drone_bandwidth_used in message.item._eve_type.attributes
         ):
             self.__resource_users.add(message.item)
 

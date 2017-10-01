@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -37,7 +37,7 @@ class TestRahSimAttributeOverride(RahSimTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=skill_attr.id
         ) for attr in (self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id))
-        skill_effect = self.ch.effect(category=EffectCategory.passive, modifiers=skill_modifiers)
+        skill_effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=skill_modifiers)
         skill_eve_type = self.ch.type(attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item

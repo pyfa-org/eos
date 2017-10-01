@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -29,13 +29,13 @@ class TestStatsDamageVolley(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.em_damage)
-        self.ch.attribute(attribute_id=Attribute.thermal_damage)
-        self.ch.attribute(attribute_id=Attribute.kinetic_damage)
-        self.ch.attribute(attribute_id=Attribute.explosive_damage)
-        self.ch.attribute(attribute_id=Attribute.damage_multiplier)
+        self.ch.attribute(attribute_id=AttributeId.em_damage)
+        self.ch.attribute(attribute_id=AttributeId.thermal_damage)
+        self.ch.attribute(attribute_id=AttributeId.kinetic_damage)
+        self.ch.attribute(attribute_id=AttributeId.explosive_damage)
+        self.ch.attribute(attribute_id=AttributeId.damage_multiplier)
         self.dd_effect = self.ch.effect(
-            effect_id=Effect.projectile_fired, category=EffectCategory.active
+            effect_id=EffectId.projectile_fired, category=EffectCategoryId.active
         )
 
     def test_empty(self):
@@ -57,19 +57,19 @@ class TestStatsDamageVolley(StatTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=Attribute.damage_multiplier,
+            tgt_attr=AttributeId.damage_multiplier,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2, src_attr.id: 1.5},
+            attributes={AttributeId.damage_multiplier: 2, src_attr.id: 1.5},
             effects=(self.dd_effect, effect), default_effect=self.dd_effect
         ).id, state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.thermal_damage: 2.4,
-            Attribute.kinetic_damage: 4.8, Attribute.explosive_damage: 9.6
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item)
         # Action
@@ -87,19 +87,19 @@ class TestStatsDamageVolley(StatTestCase):
     def test_multiple(self):
         fit = Fit()
         item1 = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item1.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.thermal_damage: 2.4,
-            Attribute.kinetic_damage: 4.8, Attribute.explosive_damage: 9.6
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item2.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 12, Attribute.thermal_damage: 24,
-            Attribute.kinetic_damage: 48, Attribute.explosive_damage: 96
+            AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
+            AttributeId.kinetic_damage: 48, AttributeId.explosive_damage: 96
         }).id)
         fit.modules.high.append(item2)
         # Action
@@ -117,11 +117,11 @@ class TestStatsDamageVolley(StatTestCase):
     def test_arguments_custom_profile(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.thermal_damage: 2.4,
-            Attribute.kinetic_damage: 4.8, Attribute.explosive_damage: 9.6
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item)
         # Action
@@ -139,21 +139,21 @@ class TestStatsDamageVolley(StatTestCase):
     def test_arguments_custom_filter(self):
         fit = Fit()
         item1 = ModuleHigh(self.ch.type(
-            group=55, attributes={Attribute.damage_multiplier: 2},
+            group=55, attributes={AttributeId.damage_multiplier: 2},
             effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item1.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.thermal_damage: 2.4,
-            Attribute.kinetic_damage: 4.8, Attribute.explosive_damage: 9.6
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
-            group=54, attributes={Attribute.damage_multiplier: 2},
+            group=54, attributes={AttributeId.damage_multiplier: 2},
             effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item2.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 12, Attribute.thermal_damage: 24,
-            Attribute.kinetic_damage: 48, Attribute.explosive_damage: 96
+            AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
+            AttributeId.kinetic_damage: 48, AttributeId.explosive_damage: 96
         }).id)
         fit.modules.high.append(item2)
         # Action
@@ -171,11 +171,11 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_none_em(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            Attribute.thermal_damage: 2.4, Attribute.kinetic_damage: 4.8,
-            Attribute.explosive_damage: 9.6
+            AttributeId.thermal_damage: 2.4, AttributeId.kinetic_damage: 4.8,
+            AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item)
         # Action
@@ -194,11 +194,11 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_none_therm(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.kinetic_damage: 4.8,
-            Attribute.explosive_damage: 9.6
+            AttributeId.em_damage: 1.2, AttributeId.kinetic_damage: 4.8,
+            AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item)
         # Action
@@ -217,11 +217,11 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_none_kin(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.thermal_damage: 2.4,
-            Attribute.explosive_damage: 9.6
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item)
         # Action
@@ -240,11 +240,11 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_none_expl(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.thermal_damage: 2.4,
-            Attribute.kinetic_damage: 4.8
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8
         }).id)
         fit.modules.high.append(item)
         # Action
@@ -263,7 +263,7 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_none_all(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item.charge = Charge(self.ch.type().id)
         fit.modules.high.append(item)
@@ -283,9 +283,9 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_zero_em(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={Attribute.em_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attributes={AttributeId.em_damage: 0}).id)
         fit.modules.high.append(item)
         # Action
         stats_volley = fit.stats.get_nominal_volley()
@@ -303,9 +303,9 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_zero_therm(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={Attribute.thermal_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attributes={AttributeId.thermal_damage: 0}).id)
         fit.modules.high.append(item)
         # Action
         stats_volley = fit.stats.get_nominal_volley()
@@ -323,9 +323,9 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_zero_kin(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={Attribute.kinetic_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attributes={AttributeId.kinetic_damage: 0}).id)
         fit.modules.high.append(item)
         # Action
         stats_volley = fit.stats.get_nominal_volley()
@@ -343,9 +343,9 @@ class TestStatsDamageVolley(StatTestCase):
     def test_single_zero_expl(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={Attribute.explosive_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attributes={AttributeId.explosive_damage: 0}).id)
         fit.modules.high.append(item)
         # Action
         stats_volley = fit.stats.get_nominal_volley()
@@ -366,15 +366,15 @@ class TestStatsDamageVolley(StatTestCase):
         # it won't fail each run)
         fit = Fit()
         item1 = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item1.charge = Charge(self.ch.type(attributes={
-            Attribute.em_damage: 1.2, Attribute.thermal_damage: 2.4,
-            Attribute.kinetic_damage: 4.8, Attribute.explosive_damage: 9.6
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
         }).id)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
-            attributes={Attribute.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
+            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
         ).id, state=State.active)
         item2.charge = Charge(self.ch.type().id)
         fit.modules.high.append(item2)

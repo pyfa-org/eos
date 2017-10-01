@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,14 +28,14 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.hp)
-        self.ch.attribute(attribute_id=Attribute.armor_hp)
-        self.ch.attribute(attribute_id=Attribute.shield_capacity)
+        self.ch.attribute(attribute_id=AttributeId.hp)
+        self.ch.attribute(attribute_id=AttributeId.armor_hp)
+        self.ch.attribute(attribute_id=AttributeId.shield_capacity)
 
     def test_generic(self):
         fit = Fit()
         item = Ship(self.ch.type(
-            attributes={Attribute.hp: 8, Attribute.armor_hp: 10, Attribute.shield_capacity: 12}
+            attributes={AttributeId.hp: 8, AttributeId.armor_hp: 10, AttributeId.shield_capacity: 12}
         ).id)
         fit.ship = item
         # Verification
@@ -63,7 +63,7 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
     def test_no_source(self):
         fit = Fit(source=None)
         item = Ship(self.ch.type(
-            attributes={Attribute.hp: 8, Attribute.armor_hp: 10, Attribute.shield_capacity: 12}
+            attributes={AttributeId.hp: 8, AttributeId.armor_hp: 10, AttributeId.shield_capacity: 12}
         ).id)
         fit.ship = item
         # Verification

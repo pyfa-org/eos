@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -37,9 +37,9 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        mod_effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        mod_effect2 = self.ch.effect(category=EffectCategory.online, modifiers=[modifier])
-        def_effect = self.ch.effect(category=EffectCategory.active, **{defeff_attrib_name: attr.id})
+        mod_effect1 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
+        mod_effect2 = self.ch.effect(category=EffectCategoryId.online, modifiers=[modifier])
+        def_effect = self.ch.effect(category=EffectCategoryId.active, **{defeff_attrib_name: attr.id})
         item = ModuleHigh(self.ch.type(
             attributes={attr.id: 50, src_attr.id: 2}, effects=(mod_effect1, mod_effect2, def_effect),
             default_effect=def_effect
@@ -100,7 +100,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def test_optimal_no_defeff(self):
         attr = self.ch.attribute()
-        effect = self.ch.effect(category=EffectCategory.active, range_attribute=attr.id)
+        effect = self.ch.effect(category=EffectCategoryId.active, range_attribute=attr.id)
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={attr.id: 50}, effects=[effect]).id)
         fit.modules.high.append(item)
@@ -112,7 +112,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def test_optimal_no_description(self):
         attr = self.ch.attribute()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         fit = Fit()
         item = ModuleHigh(self.ch.type(attributes={attr.id: 50}, effects=[effect], default_effect=effect).id)
         fit.modules.high.append(item)
@@ -124,7 +124,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def test_optimal_no_attr(self):
         attr = self.ch.attribute()
-        effect = self.ch.effect(category=EffectCategory.active, range_attribute=attr.id)
+        effect = self.ch.effect(category=EffectCategoryId.active, range_attribute=attr.id)
         fit = Fit()
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id)
         fit.modules.high.append(item)

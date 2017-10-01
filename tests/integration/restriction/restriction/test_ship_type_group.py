@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -29,16 +29,16 @@ class TestShipTypeGroup(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.can_fit_ship_type_1)
-        self.ch.attribute(attribute_id=Attribute.can_fit_ship_type_2)
-        self.ch.attribute(attribute_id=Attribute.can_fit_ship_group_1)
-        self.ch.attribute(attribute_id=Attribute.can_fit_ship_group_2)
+        self.ch.attribute(attribute_id=AttributeId.can_fit_ship_type_1)
+        self.ch.attribute(attribute_id=AttributeId.can_fit_ship_type_2)
+        self.ch.attribute(attribute_id=AttributeId.can_fit_ship_group_1)
+        self.ch.attribute(attribute_id=AttributeId.can_fit_ship_group_2)
 
     def test_fail_type(self):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.can_fit_ship_type_1: 10}).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
@@ -57,7 +57,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 11}
+            attributes={AttributeId.can_fit_ship_type_1: 10, AttributeId.can_fit_ship_type_2: 11}
         ).id)
         fit.modules.high.append(item)
         # Action
@@ -77,7 +77,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.can_fit_ship_type_1: 10, Attribute.can_fit_ship_type_2: 10}
+            attributes={AttributeId.can_fit_ship_type_1: 10, AttributeId.can_fit_ship_type_2: 10}
         ).id)
         fit.modules.high.append(item)
         # Action
@@ -96,7 +96,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_group_1: 38}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.can_fit_ship_group_1: 38}).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
@@ -115,7 +115,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 83}
+            attributes={AttributeId.can_fit_ship_group_1: 38, AttributeId.can_fit_ship_group_2: 83}
         ).id)
         fit.modules.high.append(item)
         # Action
@@ -135,7 +135,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.can_fit_ship_group_1: 38, Attribute.can_fit_ship_group_2: 38}
+            attributes={AttributeId.can_fit_ship_group_1: 38, AttributeId.can_fit_ship_group_2: 38}
         ).id)
         fit.modules.high.append(item)
         # Action
@@ -157,7 +157,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23}
+            attributes={AttributeId.can_fit_ship_type_1: 1089, AttributeId.can_fit_ship_group_1: 23}
         ).id)
         fit.modules.high.append(item)
         # Action
@@ -175,7 +175,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_fail_no_ship(self):
         # Absent ship should trigger this error too
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.can_fit_ship_type_1: 10}).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
@@ -195,7 +195,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit = Fit()
         ship_eve_type = self.ch.type(group=23)
         fit.ship = Ship(ship_eve_type.id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: ship_eve_type.id}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.can_fit_ship_type_1: ship_eve_type.id}).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
@@ -210,7 +210,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # no error should be raised
         fit = Fit()
         fit.ship = Ship(self.ch.type(group=23).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_group_1: 23}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.can_fit_ship_group_1: 23}).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
@@ -227,7 +227,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.can_fit_ship_type_1: ship_eve_type.id, Attribute.can_fit_ship_group_1: 38}
+            attributes={AttributeId.can_fit_ship_type_1: ship_eve_type.id, AttributeId.can_fit_ship_group_1: 38}
         ).id)
         fit.modules.high.append(item)
         # Action
@@ -244,7 +244,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit = Fit()
         fit.ship = Ship(self.ch.type(group=23).id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.can_fit_ship_type_1: 1089, Attribute.can_fit_ship_group_1: 23}
+            attributes={AttributeId.can_fit_ship_type_1: 1089, AttributeId.can_fit_ship_group_1: 23}
         ).id)
         fit.modules.high.append(item)
         # Action
@@ -258,7 +258,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     def test_pass_item_other_class(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type(group=31).id)
-        item = Rig(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        item = Rig(self.ch.type(attributes={AttributeId.can_fit_ship_type_1: 10}).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.ship_type_group)
@@ -272,7 +272,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         fit = Fit()
         ship_eve_type = self.ch.type(group=31)
         fit.ship = Ship(ship_eve_type.id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.can_fit_ship_type_1: 10}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.can_fit_ship_type_1: 10}).id)
         fit.modules.high.append(item)
         fit.source = None
         # Action

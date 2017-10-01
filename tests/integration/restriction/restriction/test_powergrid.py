@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -30,16 +30,16 @@ class TestPowerGrid(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.power)
-        self.ch.attribute(attribute_id=Attribute.power_output)
-        self.effect = self.ch.effect(effect_id=Effect.online, category=EffectCategory.active, customize=True)
+        self.ch.attribute(attribute_id=AttributeId.power)
+        self.ch.attribute(attribute_id=AttributeId.power_output)
+        self.effect = self.ch.effect(effect_id=EffectId.online, category=EffectCategoryId.active, customize=True)
 
     def test_fail_excess_single(self):
         # When ship provides powergrid output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 40}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.power: 50}, effects=[self.effect]).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 40}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.power: 50}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.powergrid)
@@ -56,7 +56,7 @@ class TestPowerGrid(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={Attribute.power: 5}, effects=[self.effect]).id, state=State.online)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.power: 5}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.powergrid)
@@ -74,13 +74,13 @@ class TestPowerGrid(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 40}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 40}).id)
         item1 = ModuleHigh(self.ch.type(
-            attributes={Attribute.power: 25}, effects=[self.effect]
+            attributes={AttributeId.power: 25}, effects=[self.effect]
         ).id, state=State.online)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
-            attributes={Attribute.power: 20}, effects=[self.effect]
+            attributes={AttributeId.power: 20}, effects=[self.effect]
         ).id, state=State.online)
         fit.modules.high.append(item2)
         # Action
@@ -104,18 +104,18 @@ class TestPowerGrid(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified powergrid values are taken
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 50}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 50}).id)
         src_attr = self.ch.attribute()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=Attribute.power,
+            tgt_attr=AttributeId.power,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.power: 50, src_attr.id: 2}, effects=(self.effect, mod_effect)
+            attributes={AttributeId.power: 50, src_attr.id: 2}, effects=(self.effect, mod_effect)
         ).id, state=State.online)
         fit.modules.high.append(item)
         # Action
@@ -134,12 +134,12 @@ class TestPowerGrid(RestrictionTestCase):
         # still raised, check it's not raised for item with
         # zero usage
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 50}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 50}).id)
         item1 = ModuleHigh(self.ch.type(
-            attributes={Attribute.power: 100}, effects=[self.effect]
+            attributes={AttributeId.power: 100}, effects=[self.effect]
         ).id, state=State.online)
         fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(attributes={Attribute.power: 0}, effects=[self.effect]).id, state=State.online)
+        item2 = ModuleHigh(self.ch.type(attributes={AttributeId.power: 0}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.powergrid)
@@ -160,13 +160,13 @@ class TestPowerGrid(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 50}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 50}).id)
         item1 = ModuleHigh(self.ch.type(
-            attributes={Attribute.power: 25}, effects=[self.effect]
+            attributes={AttributeId.power: 25}, effects=[self.effect]
         ).id, state=State.online)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
-            attributes={Attribute.power: 20}, effects=[self.effect]
+            attributes={AttributeId.power: 20}, effects=[self.effect]
         ).id, state=State.online)
         fit.modules.high.append(item2)
         # Action
@@ -184,9 +184,9 @@ class TestPowerGrid(RestrictionTestCase):
     def test_pass_state(self):
         # When item isn't online, it shouldn't consume anything
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 40}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 40}).id)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.power: 50}, effects=[self.effect]
+            attributes={AttributeId.power: 50}, effects=[self.effect]
         ).id, state=State.offline)
         fit.modules.high.append(item)
         # Action
@@ -199,8 +199,8 @@ class TestPowerGrid(RestrictionTestCase):
 
     def test_pass_disabled_effect(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 40}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.power: 50}, effects=[self.effect]).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 40}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.power: 50}, effects=[self.effect]).id, state=State.online)
         item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Action
@@ -213,8 +213,8 @@ class TestPowerGrid(RestrictionTestCase):
 
     def test_pass_no_source(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.power_output: 40}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.power: 50}, effects=[self.effect]).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.power_output: 40}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.power: 50}, effects=[self.effect]).id, state=State.online)
         fit.modules.high.append(item)
         fit.source = None
         # Action

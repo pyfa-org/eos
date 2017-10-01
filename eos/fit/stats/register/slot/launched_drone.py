@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos.const.eos import State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import Character, Drone
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
@@ -48,7 +48,7 @@ class LaunchedDroneStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
             return None
         else:
             try:
-                return int(char_attribs[Attribute.max_active_drones])
+                return int(char_attribs[AttributeId.max_active_drones])
             except KeyError:
                 return None
 

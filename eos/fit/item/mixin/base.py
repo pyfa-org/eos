@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from abc import ABCMeta, abstractmethod
 
 from eos.const.eos import EffectRunMode, State
-from eos.const.eve import Effect
+from eos.const.eve import EffectId
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved, InstrRefreshSource
 from eos.fit.pubsub.subscriber import BaseSubscriber
@@ -156,15 +156,15 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         new_running = set()
         # Process 'online' effect separately, as it's needed for all
         # other effects from online categories
-        if Effect.online in eve_type_effects:
-            online_running = self.__get_wanted_effect_run_status(eve_type_effects[Effect.online], None)
+        if EffectId.online in eve_type_effects:
+            online_running = self.__get_wanted_effect_run_status(eve_type_effects[EffectId.online], None)
             if online_running is True:
-                new_running.add(Effect.online)
+                new_running.add(EffectId.online)
         else:
             online_running = False
         # Do a pass over regular effects
         for effect_id, effect in eve_type_effects.items():
-            if effect_id == Effect.online:
+            if effect_id == EffectId.online:
                 continue
             if self.__get_wanted_effect_run_status(effect, online_running) is True:
                 new_running.add(effect_id)
@@ -197,7 +197,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             elif effect_state == State.online:
                 # If we've been requested for 'online' effect status, it has
                 # no additional restrictions
-                if effect.id == Effect.online:
+                if effect.id == EffectId.online:
                     return True
                 # For regular online effects, check if 'online' is running
                 else:

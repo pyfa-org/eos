@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -29,8 +29,8 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_fail_greater(self):
         fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={Attribute.capacity: 1}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 1}).id, state=State.offline)
         container_item.charge = charge_item
         fit.modules.high.append(container_item)
         # Action
@@ -49,7 +49,7 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_no_capacity(self):
         fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
+        charge_item = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
         container_item = ModuleHigh(self.ch.type().id, state=State.offline)
         container_item.charge = charge_item
         fit.modules.high.append(container_item)
@@ -70,7 +70,7 @@ class TestChargeVolume(RestrictionTestCase):
     def test_pass_no_volume(self):
         fit = Fit()
         charge_item = Charge(self.ch.type().id)
-        container_item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3}).id, state=State.offline)
+        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 3}).id, state=State.offline)
         container_item.charge = charge_item
         fit.modules.high.append(container_item)
         # Action
@@ -87,8 +87,8 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_equal(self):
         fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={Attribute.capacity: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 2}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(attributes={AttributeId.capacity: 2}).id)
+        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 2}).id, state=State.offline)
         container_item.charge = charge_item
         fit.modules.high.append(container_item)
         # Action
@@ -105,8 +105,8 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_lesser(self):
         fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={Attribute.capacity: 3}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 3}).id, state=State.offline)
         container_item.charge = charge_item
         fit.modules.high.append(container_item)
         # Action
@@ -123,8 +123,8 @@ class TestChargeVolume(RestrictionTestCase):
 
     def test_pass_no_source(self):
         fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={Attribute.capacity: 1}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 1}).id, state=State.offline)
         container_item.charge = charge_item
         fit.modules.high.append(container_item)
         fit.source = None

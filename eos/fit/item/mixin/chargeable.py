@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,10 +16,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.container import ItemDescriptorOnItem
 from eos.fit.item import Charge
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
@@ -62,8 +62,8 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         """
         if self.charge is None:
             return None
-        container_capacity = self.attributes.get(Attribute.capacity)
-        charge_volume = self.charge.attributes.get(Attribute.volume)
+        container_capacity = self.attributes.get(AttributeId.capacity)
+        charge_volume = self.charge.attributes.get(AttributeId.volume)
         if container_capacity is None or charge_volume is None:
             return None
         charges = _float_to_int(container_capacity / charge_volume)
@@ -87,19 +87,19 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
             eve_type_attribs = self._eve_type.attributes
         except AttributeError:
             return None
-        if Attribute.charge_rate in eve_type_attribs:
+        if AttributeId.charge_rate in eve_type_attribs:
             return self.__get_ammo_cycles()
         # Detect crystal-based eve types using effects
         try:
             defeff_id = self._eve_type.default_effect.id
         except AttributeError:
             defeff_id = None
-        if defeff_id in (Effect.target_attack, Effect.mining_laser):
+        if defeff_id in (EffectId.target_attack, EffectId.mining_laser):
             return self.__get_crystal_mean_cycles()
         return None
 
     def __get_ammo_cycles(self):
-        charge_rate = self.attributes.get(Attribute.charge_rate)
+        charge_rate = self.attributes.get(AttributeId.charge_rate)
         if not charge_rate or self.charge_quantity is None:
             return None
         cycles = self.charge_quantity // int(charge_rate)
@@ -107,10 +107,10 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     def __get_crystal_mean_cycles(self):
         charge_attribs = self.charge.attributes
-        damageable = charge_attribs.get(Attribute.crystals_get_damaged)
-        hp = charge_attribs.get(Attribute.hp)
-        chance = charge_attribs.get(Attribute.crystal_volatility_chance)
-        damage = charge_attribs.get(Attribute.crystal_volatility_damage)
+        damageable = charge_attribs.get(AttributeId.crystals_get_damaged)
+        hp = charge_attribs.get(AttributeId.hp)
+        chance = charge_attribs.get(AttributeId.crystal_volatility_chance)
+        damage = charge_attribs.get(AttributeId.crystal_volatility_damage)
         if (
             not damageable or
             hp is None or chance is None or
@@ -133,9 +133,9 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         except AttributeError:
             pass
         else:
-            if defeff_id in (Effect.target_attack, Effect.mining_laser):
+            if defeff_id in (EffectId.target_attack, EffectId.mining_laser):
                 return 1.0
-        reload_ms = self.attributes.get(Attribute.reload_time)
+        reload_ms = self.attributes.get(AttributeId.reload_time)
         if reload_ms is None:
             return None
         return reload_ms / 1000

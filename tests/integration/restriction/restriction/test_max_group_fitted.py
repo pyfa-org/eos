@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -31,7 +31,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Make sure error is raised for all items exceeding
         # their group restriction
         fit = Fit()
-        eve_type = self.ch.type(group=6, attributes={Attribute.max_group_fitted: 1})
+        eve_type = self.ch.type(group=6, attributes={AttributeId.max_group_fitted: 1})
         item1 = ModuleHigh(eve_type.id)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id)
@@ -58,9 +58,9 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Make sure error is raised for just items which excess
         # restriction, even if both are from the same group
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type(group=92, attributes={Attribute.max_group_fitted: 1}).id)
+        item1 = ModuleHigh(self.ch.type(group=92, attributes={AttributeId.max_group_fitted: 1}).id)
         fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(group=92, attributes={Attribute.max_group_fitted: 2}).id)
+        item2 = ModuleHigh(self.ch.type(group=92, attributes={AttributeId.max_group_fitted: 2}).id)
         fit.modules.high.append(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.max_group_fitted)
@@ -81,7 +81,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Make sure no errors are raised when number of added
         # items doesn't exceed any restrictions
         fit = Fit()
-        eve_type = self.ch.type(group=860, attributes={Attribute.max_group_fitted: 2})
+        eve_type = self.ch.type(group=860, attributes={AttributeId.max_group_fitted: 2})
         item1 = ModuleHigh(eve_type.id)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id)
@@ -101,7 +101,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
     def test_pass_item_none_group(self):
         # Check that items with None group are not affected
         fit = Fit()
-        eve_type = self.ch.type(group=None, attributes={Attribute.max_group_fitted: 1})
+        eve_type = self.ch.type(group=None, attributes={AttributeId.max_group_fitted: 1})
         item1 = ModuleHigh(eve_type.id)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id)
@@ -120,7 +120,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
 
     def test_pass_item_other_class(self):
         fit = Fit()
-        eve_type = self.ch.type(group=12, attributes={Attribute.max_group_fitted: 1})
+        eve_type = self.ch.type(group=12, attributes={AttributeId.max_group_fitted: 1})
         item1 = Drone(eve_type.id)
         fit.drones.add(item1)
         item2 = Drone(eve_type.id)
@@ -141,7 +141,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Make sure error is raised for all items exceeding
         # their group restriction
         fit = Fit()
-        eve_type = self.ch.type(group=6, attributes={Attribute.max_group_fitted: 1})
+        eve_type = self.ch.type(group=6, attributes={AttributeId.max_group_fitted: 1})
         item1 = ModuleHigh(eve_type.id)
         fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id)

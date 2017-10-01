@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,21 +28,21 @@ class TestItemDamageDrone(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.damage_multiplier)
-        self.ch.attribute(attribute_id=Attribute.em_damage)
-        self.ch.attribute(attribute_id=Attribute.thermal_damage)
-        self.ch.attribute(attribute_id=Attribute.kinetic_damage)
-        self.ch.attribute(attribute_id=Attribute.explosive_damage)
+        self.ch.attribute(attribute_id=AttributeId.damage_multiplier)
+        self.ch.attribute(attribute_id=AttributeId.em_damage)
+        self.ch.attribute(attribute_id=AttributeId.thermal_damage)
+        self.ch.attribute(attribute_id=AttributeId.kinetic_damage)
+        self.ch.attribute(attribute_id=AttributeId.explosive_damage)
         self.cycle_attr = self.ch.attribute()
         self.effect = self.ch.effect(
-            effect_id=Effect.target_attack, category=EffectCategory.active, duration_attribute=self.cycle_attr.id
+            effect_id=EffectId.target_attack, category=EffectCategoryId.active, duration_attribute=self.cycle_attr.id
         )
 
     def test_nominal_volley_generic(self):
         fit = Fit()
         item = Drone(self.ch.type(attributes={
-            Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52, Attribute.thermal_damage: 63,
-            Attribute.kinetic_damage: 74, Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
+            AttributeId.damage_multiplier: 2.5, AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+            AttributeId.kinetic_damage: 74, AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
         fit.drones.add(item)
         # Verification
@@ -59,8 +59,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
     def test_no_multiplier(self):
         fit = Fit()
         item = Drone(self.ch.type(attributes={
-            Attribute.em_damage: 52, Attribute.thermal_damage: 63, Attribute.kinetic_damage: 74,
-            Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
+            AttributeId.em_damage: 52, AttributeId.thermal_damage: 63, AttributeId.kinetic_damage: 74,
+            AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
         fit.drones.add(item)
         # Verification
@@ -77,8 +77,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
         item = Drone(self.ch.type(attributes={
-            Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52, Attribute.thermal_damage: 63,
-            Attribute.kinetic_damage: 74, Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
+            AttributeId.damage_multiplier: 2.5, AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+            AttributeId.kinetic_damage: 74, AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.online)
         fit.drones.add(item)
         # Verification
@@ -95,8 +95,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
     def test_nominal_voley_disabled_effect(self):
         fit = Fit()
         item = Drone(self.ch.type(attributes={
-            Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52, Attribute.thermal_damage: 63,
-            Attribute.kinetic_damage: 74, Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
+            AttributeId.damage_multiplier: 2.5, AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+            AttributeId.kinetic_damage: 74, AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
         item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.drones.add(item)
@@ -114,8 +114,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
     def test_nominal_dps_no_reload(self):
         fit = Fit()
         item = Drone(self.ch.type(attributes={
-            Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52, Attribute.thermal_damage: 63,
-            Attribute.kinetic_damage: 74, Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
+            AttributeId.damage_multiplier: 2.5, AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+            AttributeId.kinetic_damage: 74, AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
         fit.drones.add(item)
         # Verification
@@ -132,8 +132,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
     def test_nominal_dps_reload(self):
         fit = Fit()
         item = Drone(self.ch.type(attributes={
-            Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52, Attribute.thermal_damage: 63,
-            Attribute.kinetic_damage: 74, Attribute.explosive_damage: 85, self.cycle_attr.id: 4000
+            AttributeId.damage_multiplier: 2.5, AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+            AttributeId.kinetic_damage: 74, AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000
         }, effects=[self.effect], default_effect=self.effect).id, state=State.active)
         fit.drones.add(item)
         # Verification

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2017 Anton Vorobyov
 #
 # This file is part of Eos.
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import yaml
@@ -26,106 +26,121 @@ from ..exception import YamlParsingError
 
 
 class ModifierInfoConverter:
-    """
-    Parse modifierInfos into actual Modifier objects.
-    """
+    """Parses modifierInfos into modifiers."""
 
-    def convert(self, modifier_infos_yaml):
+    @classmethod
+    def convert(cls, mod_infos_yaml):
+        """Generate modifiers out of YAML data.
+
+        Args:
+            mod_infos_yaml: string with YAML modifier data.
+
+        Returns:
+            Tuple with iterable which contains modifiers, and amount of modifier
+            build failures we recorded.
+
+        Raises:
+            YamlParsingError: raised when YAML parses fails
         """
-        Parse YAML and handle overall workflow and error handling
-        flow for modifier info-to-modifier conversion process.
-        """
-        # Parse modifier infos (which are in YAML format)
         try:
-            modifier_infos = yaml.safe_load(modifier_infos_yaml)
+            mod_infos = yaml.safe_load(mod_infos_yaml)
         except KeyboardInterrupt:
             raise
-        # We cannot recover any data in case of YAML parsing
-        # failure, thus return empty list
+        # We cannot recover any data in case of YAML parsing failure
         except Exception as e:
             raise YamlParsingError('failed to parse YAML') from e
-        # Go through modifier objects and attempt to convert them one-by-one
-        modifiers = []
-        build_failures = 0
+        mods = []
+        fails = 0
         # Get handler according to function specified in info
-        for modifier_info in modifier_infos:
+        for mod_info in mod_infos:
             try:
-                modifier_func = modifier_info['func']
+                mod_func = mod_info['func']
             except (KeyError, TypeError):
-                build_failures += 1
+                fails += 1
                 continue
             handler_map = {
-                'ItemModifier': self._handle_item_modifier,
-                'LocationModifier': self._handle_domain_modifier,
-                'LocationGroupModifier': self._handle_domain_group_modifier,
-                'LocationRequiredSkillModifier': self._handle_domain_skillrq_modifer,
-                'OwnerRequiredSkillModifier': self._handle_owner_skillrq_modifer
+                'ItemModifier':
+                    cls._handle_item_modifier,
+                'LocationModifier':
+                    cls._handle_domain_modifier,
+                'LocationGroupModifier':
+                    cls._handle_domain_group_modifier,
+                'LocationRequiredSkillModifier':
+                    cls._handle_domain_skillrq_modifer,
+                'OwnerRequiredSkillModifier':
+                    cls._handle_owner_skillrq_modifer
             }
-            # Compose and verify handler, record if we failed to do so
+            # Compose and verify modifier, record if we failed to do so
             try:
-                handler = handler_map[modifier_func]
+                handler = handler_map[mod_func]
             except KeyError:
-                build_failures += 1
+                fails += 1
             else:
                 try:
-                    modifier = handler(modifier_info)
+                    mod = handler(mod_info)
                 except KeyboardInterrupt:
                     raise
                 except Exception:
-                    build_failures += 1
+                    fails += 1
                 else:
-                    modifiers.append(modifier)
-        return modifiers, build_failures
+                    mods.append(mod)
+        return mods, fails
 
-    def _handle_item_modifier(self, modifier_info):
+    @classmethod
+    def _handle_item_modifier(cls, mod_info):
         return DogmaModifier(
             tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=self._get_domain(modifier_info),
-            tgt_attr=int(modifier_info['modifiedAttributeID']),
-            operator=self._get_operator(modifier_info),
-            src_attr=int(modifier_info['modifyingAttributeID'])
+            tgt_domain=cls._get_domain(mod_info),
+            tgt_attr=int(mod_info['modifiedAttributeID']),
+            operator=cls._get_operator(mod_info),
+            src_attr=int(mod_info['modifyingAttributeID'])
         )
 
-    def _handle_domain_modifier(self, modifier_info):
+    @classmethod
+    def _handle_domain_modifier(cls, mod_info):
         return DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
-            tgt_domain=self._get_domain(modifier_info),
-            tgt_attr=int(modifier_info['modifiedAttributeID']),
-            operator=self._get_operator(modifier_info),
-            src_attr=int(modifier_info['modifyingAttributeID'])
+            tgt_domain=cls._get_domain(mod_info),
+            tgt_attr=int(mod_info['modifiedAttributeID']),
+            operator=cls._get_operator(mod_info),
+            src_attr=int(mod_info['modifyingAttributeID'])
         )
 
-    def _handle_domain_group_modifier(self, modifier_info):
+    @classmethod
+    def _handle_domain_group_modifier(cls, mod_info):
         return DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain_group,
-            tgt_domain=self._get_domain(modifier_info),
-            tgt_filter_extra_arg=int(modifier_info['groupID']),
-            tgt_attr=int(modifier_info['modifiedAttributeID']),
-            operator=self._get_operator(modifier_info),
-            src_attr=int(modifier_info['modifyingAttributeID'])
+            tgt_domain=cls._get_domain(mod_info),
+            tgt_filter_extra_arg=int(mod_info['groupID']),
+            tgt_attr=int(mod_info['modifiedAttributeID']),
+            operator=cls._get_operator(mod_info),
+            src_attr=int(mod_info['modifyingAttributeID'])
         )
 
-    def _handle_domain_skillrq_modifer(self, modifier_info):
+    @classmethod
+    def _handle_domain_skillrq_modifer(cls, mod_info):
         return DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain_skillrq,
-            tgt_domain=self._get_domain(modifier_info),
-            tgt_filter_extra_arg=int(modifier_info['skillTypeID']),
-            tgt_attr=int(modifier_info['modifiedAttributeID']),
-            operator=self._get_operator(modifier_info),
-            src_attr=int(modifier_info['modifyingAttributeID'])
+            tgt_domain=cls._get_domain(mod_info),
+            tgt_filter_extra_arg=int(mod_info['skillTypeID']),
+            tgt_attr=int(mod_info['modifiedAttributeID']),
+            operator=cls._get_operator(mod_info),
+            src_attr=int(mod_info['modifyingAttributeID'])
         )
 
-    def _handle_owner_skillrq_modifer(self, modifier_info):
+    @classmethod
+    def _handle_owner_skillrq_modifer(cls, mod_info):
         return DogmaModifier(
             tgt_filter=ModifierTargetFilter.owner_skillrq,
-            tgt_domain=self._get_domain(modifier_info),
-            tgt_filter_extra_arg=int(modifier_info['skillTypeID']),
-            tgt_attr=int(modifier_info['modifiedAttributeID']),
-            operator=self._get_operator(modifier_info),
-            src_attr=int(modifier_info['modifyingAttributeID'])
+            tgt_domain=cls._get_domain(mod_info),
+            tgt_filter_extra_arg=int(mod_info['skillTypeID']),
+            tgt_attr=int(mod_info['modifiedAttributeID']),
+            operator=cls._get_operator(mod_info),
+            src_attr=int(mod_info['modifyingAttributeID'])
         )
 
-    def _get_domain(self, modifier_info):
+    @staticmethod
+    def _get_domain(mod_info):
         conversion_map = {
             None: ModifierDomain.self,
             'itemID': ModifierDomain.self,
@@ -134,10 +149,11 @@ class ModifierInfoConverter:
             'targetID': ModifierDomain.target,
             'otherID': ModifierDomain.other
         }
-        return conversion_map[modifier_info['domain']]
+        return conversion_map[mod_info['domain']]
 
-    def _get_operator(self, modifier_info):
-        # Format: {CCP operator ID: eos operator ID}
+    @staticmethod
+    def _get_operator(mod_info):
+        # Format: {CCP YAML operator ID: eos operator ID}
         conversion_map = {
             -1: ModifierOperator.pre_assign,
             0: ModifierOperator.pre_mul,
@@ -149,4 +165,4 @@ class ModifierInfoConverter:
             6: ModifierOperator.post_percent,
             7: ModifierOperator.post_assign,
         }
-        return conversion_map[modifier_info['operator']]
+        return conversion_map[mod_info['operator']]

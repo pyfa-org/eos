@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,28 +16,22 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos.exception import EosError
 
 
 class ModifierBuilderError(EosError):
-    """
-    All exceptions raised by modifier builder are based on this class.
-    """
+    """All exceptions raised by modifier builder are based on this class."""
     ...
 
 
 class UnknownEtreeRootOperandError(ModifierBuilderError):
-    """
-    Raised when expression tree root operand cannot be handled by converter.
-    """
+    """Raised when expression tree root operand cannot be handled."""
     ...
 
 
 class YamlParsingError(ModifierBuilderError):
-    """
-    Raised when YAML parser fails to parse modifierInfo.
-    """
+    """Raised when YAML parser fails to parse modifierInfo."""
     ...

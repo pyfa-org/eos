@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -42,7 +42,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.source_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        self.effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
 
     def test_cap_default(self):
         # Check that cap is applied properly when item
@@ -82,7 +82,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.source_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         item = Implant(self.ch.type(
             attributes={self.capped_attr.id: 3, self.source_attr.id: 6, self.capping_attr.id: 0.1},
             effects=(self.effect, effect)
@@ -113,7 +113,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.source_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         cap_updater = Implant(self.ch.type(attributes={self.source_attr.id: 3.5}, effects=[effect]).id)
         self.fit.implants.add(cap_updater)
         # Verification

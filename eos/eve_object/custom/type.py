@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,16 +16,16 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eve import Group
+from eos.const.eve import GroupId
 from .character_missile_damage import add_character_missile_damage_multiplier
 
 
 # Format: {type group ID: customization method}
 _type_group_map = {
-    Group.character: add_character_missile_damage_multiplier
+    GroupId.character: add_character_missile_damage_multiplier
 }
 
 

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 __all__ = [
@@ -27,12 +27,12 @@ __all__ = [
 ]
 
 
-from eos.const.eve import Category, Effect, Type
+from eos.const.eve import CategoryId, EffectId, TypeId
 
 
 def turret_filter(item):
     """True for all items which occupy turret hardpoint"""
-    if Effect.turret_fitted in item._running_effects:
+    if EffectId.turret_fitted in item._running_effects:
         return True
     else:
         return False
@@ -40,7 +40,7 @@ def turret_filter(item):
 
 def missile_filter(item):
     """True for all items which occupy launcher hardpoint"""
-    if Effect.launcher_fitted in item._running_effects:
+    if EffectId.launcher_fitted in item._running_effects:
         return True
     else:
         return False
@@ -54,7 +54,7 @@ def drone_filter(item):
         category = item._eve_type.category
     except AttributeError:
         return False
-    if category == Category.drone:
+    if category == CategoryId.drone:
         return True
     else:
         return False
@@ -70,7 +70,7 @@ def sentry_drone_filter(item):
         skillrqs = item._eve_type.required_skills
     except AttributeError:
         return False
-    if Type.sentry_drone_interfacing in skillrqs:
+    if TypeId.sentry_drone_interfacing in skillrqs:
         return True
     else:
         return False

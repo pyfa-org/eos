@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,12 +28,12 @@ class TestRig(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.rig_slots)
-        self.effect = self.ch.effect(effect_id=Effect.rig_slot, category=EffectCategory.passive)
+        self.ch.attribute(attribute_id=AttributeId.rig_slots)
+        self.effect = self.ch.effect(effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
 
     def test_output(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 3}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.rig_slots: 3}).id)
         # Verification
         self.assertEqual(fit.stats.rig_slots.total, 3)
         # Cleanup
@@ -102,7 +102,7 @@ class TestRig(StatTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.rig_slots: 3}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.rig_slots: 3}).id)
         fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
         fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
         fit.source = None

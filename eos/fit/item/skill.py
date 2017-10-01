@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos.const.eos import ModifierDomain, State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InputSkillLevelChanged
 from eos.util.repr import make_repr_str
 from .mixin.state import ImmutableStateMixin
@@ -44,7 +44,7 @@ class Skill(ImmutableStateMixin):
     def __init__(self, type_id, level=0, **kwargs):
         super().__init__(type_id=type_id, state=State.offline, **kwargs)
         self.__level = level
-        self.attributes._set_override_callback(Attribute.skill_level, (getattr, (self, 'level'), {}))
+        self.attributes._set_override_callback(AttributeId.skill_level, (getattr, (self, 'level'), {}))
 
     @property
     def level(self):
@@ -56,7 +56,7 @@ class Skill(ImmutableStateMixin):
         if new_lvl == old_lvl:
             return
         self.__level = new_lvl
-        self.attributes._override_value_may_change(Attribute.skill_level)
+        self.attributes._override_value_may_change(AttributeId.skill_level)
         fit = self._fit
         if fit is not None:
             fit._publish(InputSkillLevelChanged(self))

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from logging import getLogger
 from numbers import Real
 
-from eos.const.eve import Effect
+from eos.const.eve import EffectId
 from eos.util.frozen_dict import FrozenDict
 
 
@@ -108,7 +108,7 @@ class ValidatorPreConversion:
         and want to remove to avoid printing unnecessary log entries.
         """
         table = data['dgmtypeeffects']
-        rack_effects = (Effect.hi_power, Effect.med_power, Effect.lo_power)
+        rack_effects = (EffectId.hi_power, EffectId.med_power, EffectId.lo_power)
         racked_items = set()
         invalid_rows = set()
         for row in sorted(table, key=lambda r: r['table_pos']):

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,20 +16,20 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import logging
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import Operand
+from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
 
     def test_int_stub(self):
-        e_stub = self.ef.make(1, operandID=Operand.def_int, expressionValue='0')
+        e_stub = self.ef.make(1, operandID=OperandId.def_int, expressionValue='0')
         effect_row = {
             'preExpression': e_stub['expressionID'],
             'postExpression': e_stub['expressionID']
@@ -41,7 +41,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.INFO)
-        expected = 'failed to build modifiers for effect 1: unknown root operand 27'
+        expected = 'failed to build modifiers for effect 1: unknown root operand ID 27'
         self.assertEqual(log_record.msg, expected)
 
     def test_other(self):
@@ -57,5 +57,5 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.INFO)
-        expected = 'failed to build modifiers for effect 1: unknown root operand 567'
+        expected = 'failed to build modifiers for effect 1: unknown root operand ID 567'
         self.assertEqual(log_record.msg, expected)

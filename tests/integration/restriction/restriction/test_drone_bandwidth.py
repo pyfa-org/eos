@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import AttributeId, EffectCategoryId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -30,15 +30,15 @@ class TestDroneBandwidth(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.drone_bandwidth)
-        self.ch.attribute(attribute_id=Attribute.drone_bandwidth_used)
+        self.ch.attribute(attribute_id=AttributeId.drone_bandwidth)
+        self.ch.attribute(attribute_id=AttributeId.drone_bandwidth_used)
 
     def test_fail_excess_single(self):
         # When ship provides drone bandwidth output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 40}).id)
-        item = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 50}).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_bandwidth: 40}).id)
+        item = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 50}).id, state=State.online)
         fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.drone_bandwidth)
@@ -55,7 +55,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         fit = Fit()
-        item = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 5}).id, state=State.online)
+        item = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 5}).id, state=State.online)
         fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.drone_bandwidth)
@@ -73,10 +73,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 40}).id)
-        item1 = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 25}).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_bandwidth: 40}).id)
+        item1 = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 25}).id, state=State.online)
         fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 20}).id, state=State.online)
+        item2 = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 20}).id, state=State.online)
         fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.drone_bandwidth)
@@ -99,18 +99,18 @@ class TestDroneBandwidth(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified drone bandwidth values are taken
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 50}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_bandwidth: 50}).id)
         src_attr = self.ch.attribute()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=Attribute.drone_bandwidth_used,
+            tgt_attr=AttributeId.drone_bandwidth_used,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         item = Drone(self.ch.type(
-            attributes={Attribute.drone_bandwidth_used: 50, src_attr.id: 2}, effects=[effect]
+            attributes={AttributeId.drone_bandwidth_used: 50, src_attr.id: 2}, effects=[effect]
         ).id, state=State.online)
         fit.drones.add(item)
         # Action
@@ -129,10 +129,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         # still raised, check it's not raised for item with
         # zero usage
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 50}).id)
-        item1 = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 100}).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_bandwidth: 50}).id)
+        item1 = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 100}).id, state=State.online)
         fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 0}).id, state=State.online)
+        item2 = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 0}).id, state=State.online)
         fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.drone_bandwidth)
@@ -153,10 +153,10 @@ class TestDroneBandwidth(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 50}).id)
-        item1 = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 25}).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_bandwidth: 50}).id)
+        item1 = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 25}).id, state=State.online)
         fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 20}).id, state=State.online)
+        item2 = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 20}).id, state=State.online)
         fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.drone_bandwidth)
@@ -173,8 +173,8 @@ class TestDroneBandwidth(RestrictionTestCase):
     def test_pass_state(self):
         # When item isn't online, it shouldn't consume anything
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 40}).id)
-        item = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 50}).id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_bandwidth: 40}).id)
+        item = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 50}).id, state=State.offline)
         fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.drone_bandwidth)
@@ -186,8 +186,8 @@ class TestDroneBandwidth(RestrictionTestCase):
 
     def test_pass_no_source(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_bandwidth: 40}).id)
-        item = Drone(self.ch.type(attributes={Attribute.drone_bandwidth_used: 50}).id, state=State.online)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_bandwidth: 40}).id)
+        item = Drone(self.ch.type(attributes={AttributeId.drone_bandwidth_used: 50}).id, state=State.online)
         fit.drones.add(item)
         fit.source = None
         # Action

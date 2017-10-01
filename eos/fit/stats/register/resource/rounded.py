@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,10 +16,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
@@ -85,10 +85,10 @@ class RoundedResourceStatRegister(BaseResourceStatRegister, InheritableVolatileM
 class CpuStatRegister(RoundedResourceStatRegister):
 
     def __init__(self, msg_broker):
-        RoundedResourceStatRegister.__init__(self, msg_broker, Attribute.cpu_output, Effect.online, Attribute.cpu)
+        RoundedResourceStatRegister.__init__(self, msg_broker, AttributeId.cpu_output, EffectId.online, AttributeId.cpu)
 
 
 class PowergridStatRegister(RoundedResourceStatRegister):
 
     def __init__(self, msg_broker):
-        RoundedResourceStatRegister.__init__(self, msg_broker, Attribute.power_output, Effect.online, Attribute.power)
+        RoundedResourceStatRegister.__init__(self, msg_broker, AttributeId.power_output, EffectId.online, AttributeId.power)

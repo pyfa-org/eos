@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos.const.eos import ModifierDomain, State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.util.repr import make_repr_str
 from .mixin.side_effect import SideEffectMixin
 from .mixin.state import ImmutableStateMixin
@@ -43,7 +43,7 @@ class Booster(ImmutableStateMixin, SideEffectMixin):
 
     @property
     def slot(self):
-        return self.attributes.get(Attribute.boosterness)
+        return self.attributes.get(AttributeId.boosterness)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character

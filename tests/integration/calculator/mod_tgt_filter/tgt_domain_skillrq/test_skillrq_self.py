@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eos import EosType, ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eos import EosTypeId, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eve import AttributeId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -34,19 +34,19 @@ class TestTgtDomainSkillrqSkillrqSelf(CalculatorTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=ModifierDomain.ship,
-            tgt_filter_extra_arg=EosType.current_self,
+            tgt_filter_extra_arg=EosTypeId.current_self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         self.source_eve_type = self.ch.type(attributes={src_attr.id: 20}, effects=[effect])
         self.influence_source = Implant(self.source_eve_type.id)
 
     def test_match(self):
         influence_target = Rig(self.ch.type(attributes={
-            self.tgt_attr.id: 100, Attribute.required_skill_1: self.source_eve_type.id,
-            Attribute.required_skill_1_level: 1
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: self.source_eve_type.id,
+            AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.rigs.add(influence_target)
         # Action
@@ -63,7 +63,7 @@ class TestTgtDomainSkillrqSkillrqSelf(CalculatorTestCase):
 
     def test_skill_other(self):
         influence_target = Rig(self.ch.type(attributes={
-            self.tgt_attr.id: 100, Attribute.required_skill_1: 87, Attribute.required_skill_1_level: 1
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 87, AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.rigs.add(influence_target)
         # Action

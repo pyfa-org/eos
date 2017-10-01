@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 """
@@ -29,16 +29,14 @@ from enum import IntEnum, unique
 
 @unique
 class State(IntEnum):
+    """Contains possible item states.
+
+    Also used as effects' attribute to determine when this effect should be run.
     """
-    Possible item states, used as part of public API and
-    internally by Modifier class and classes interacting with
-    it
-    """
-    # Values assigned to states are not deliberate, they must
-    # be in ascending order. It means that e.g. online module
-    # state, which should trigger modules' online and offline
-    # effects/modifiers, must have higher value than offline,
-    # and so on.
+    # Values assigned to states are not deliberate, they must be in ascending
+    # order. It means that e.g. online module state, which should trigger
+    # modules' online and offline effects/modifiers, must have higher value
+    # than offline, and so on.
     offline = 1
     online = 2
     active = 3
@@ -47,19 +45,22 @@ class State(IntEnum):
 
 @unique
 class EffectRunMode(IntEnum):
+    """Contains possible effect run modes.
+
+    Run modes define under which conditions effects are run.
     """
-    Run mode defines under which conditions effect is run.
-    """
-    # In this mode rules are different, depending on effect category:
-    # - Offline: effects from this category are run when item is in offline+ state,
-    # and when they do not have fitting usage chance specified
-    # - Online: effects from this category are run when item is in online+ state,
-    # and when item has runnable 'online' effect
-    # - Active: effects from this category are run when item is in active+ state,
-    # and only when effect is default item effect
-    # - Overload: effects from this category are run when item is in overload+ state
+    # In this mode rules vary, depending on effect category:
+    # - Offline: effects from this category are run when item is in offline+
+    # state, and when they do not have fitting usage chance specified
+    # - Online: effects from this category are run when item is in online+
+    # state, and when item has runnable 'online' effect
+    # - Active: effects from this category are run when item is in active+
+    # state, and only when effect is default item effect
+    # - Overload: effects from this category are run when item is in overload+
+    # state
     full_compliance = 1
-    # Effects in this mode are always run if item's state is high enough to run it
+    # Effects in this mode are always run if item's state is high enough to run
+    # it
     state_compliance = 2
     # Effects in this mode are always running no matter what
     force_run = 3
@@ -69,6 +70,10 @@ class EffectRunMode(IntEnum):
 
 @unique
 class EffectBuildStatus(IntEnum):
+    """Contains possible effect build statuses.
+
+    Used for informational purposes only.
+    """
     skipped = 1
     error = 2
     success_partial = 3
@@ -78,6 +83,10 @@ class EffectBuildStatus(IntEnum):
 
 @unique
 class ModifierTargetFilter(IntEnum):
+    """Contains possible modifier target filter types.
+
+    Used during attribute calculation.
+    """
     item = 1
     domain = 2  # Domain children only, excluding parent item
     domain_group = 3  # Domain children only, excluding parent item
@@ -87,6 +96,10 @@ class ModifierTargetFilter(IntEnum):
 
 @unique
 class ModifierDomain(IntEnum):
+    """Contains possible modifier domains.
+
+    Used during attribute calculation.
+    """
     self = 1  # Self, i.e. carrier of modification source
     character = 2
     ship = 3
@@ -96,13 +109,18 @@ class ModifierDomain(IntEnum):
 
 @unique
 class ModifierOperator(IntEnum):
+    """Contains possible modifier operator types.
+
+    Used during attribute calculation. Must be ordered in this way to preserve
+    operator precedence.
+    """
     pre_assign = 1
     pre_mul = 2
     pre_div = 3
     mod_add = 4
     mod_sub = 5
     post_mul = 6
-    post_mul_immune = 7  # Immune to penalization
+    post_mul_immune = 7  # Eos-specific, immune to penalization
     post_div = 8
     post_percent = 9
     post_assign = 10
@@ -110,6 +128,10 @@ class ModifierOperator(IntEnum):
 
 @unique
 class Restriction(IntEnum):
+    """Contains possible restriction types.
+
+    Used for fit validation.
+    """
     cpu = 1
     powergrid = 2
     calibration = 3
@@ -139,22 +161,21 @@ class Restriction(IntEnum):
     charge_group = 28
     charge_size = 29
     charge_volume = 30
-    booster_effect = 31
 
 
 @unique
-class EosType(IntEnum):
-    """
-    Container for Eos-specific type IDs. Any values defined
-    here must not overlap with regular eve type IDs.
+class EosTypeId(IntEnum):
+    """Contains Eos-specific eve type IDs.
+
+    Any values defined here must not overlap with regular eve type IDs.
     """
     current_self = -1
 
 
 @unique
-class EosEffect(IntEnum):
-    """
-    Container for Eos-specific effect IDs. Any values defined
-    here must not overlap with regular eve effect IDs.
+class EosEffectId(IntEnum):
+    """Contains Eos-specific effect IDs.
+
+    Any values defined here must not overlap with regular effect IDs.
     """
     char_missile_dmg = -1

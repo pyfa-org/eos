@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import AttributeId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -39,12 +39,12 @@ class TestTgtOwnerSkillrqDomainChar(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         self.influence_source = Rig(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
 
     def test_owner_modifiable(self):
         influence_target = Drone(self.ch.type(attributes={
-            self.tgt_attr.id: 100, Attribute.required_skill_1: 56, Attribute.required_skill_1_level: 1
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56, AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.drones.add(influence_target)
         # Action
@@ -61,7 +61,7 @@ class TestTgtOwnerSkillrqDomainChar(CalculatorTestCase):
 
     def test_not_owner_modifiable(self):
         influence_target = Rig(self.ch.type(attributes={
-            self.tgt_attr.id: 100, Attribute.required_skill_1: 56, Attribute.required_skill_1_level: 1
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56, AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.rigs.add(influence_target)
         # Action
@@ -74,7 +74,7 @@ class TestTgtOwnerSkillrqDomainChar(CalculatorTestCase):
 
     def test_skill_other(self):
         influence_target = Drone(self.ch.type(attributes={
-            self.tgt_attr.id: 100, Attribute.required_skill_1: 87, Attribute.required_skill_1_level: 1
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 87, AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.drones.add(influence_target)
         # Action

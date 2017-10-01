@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,10 +16,10 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
@@ -86,5 +86,5 @@ class CalibrationStatRegister(UnroundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         UnroundedResourceStatRegister.__init__(
-            self, msg_broker, Attribute.upgrade_capacity, Effect.rig_slot, Attribute.upgrade_cost
+            self, msg_broker, AttributeId.upgrade_capacity, EffectId.rig_slot, AttributeId.upgrade_cost
         )

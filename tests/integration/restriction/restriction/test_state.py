@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -29,7 +29,7 @@ class TestState(RestrictionTestCase):
 
     def test_fail_state_higher(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.overload)
         fit.modules.high.append(item)
         # Action
@@ -44,7 +44,7 @@ class TestState(RestrictionTestCase):
 
     def test_pass_state_lower(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.online)
         fit.modules.high.append(item)
         # Action
@@ -57,7 +57,7 @@ class TestState(RestrictionTestCase):
 
     def test_pass_state_equal(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.active)
         fit.modules.high.append(item)
         # Action
@@ -70,7 +70,7 @@ class TestState(RestrictionTestCase):
 
     def test_pass_no_source(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.overload)
         fit.modules.high.append(item)
         fit.source = None

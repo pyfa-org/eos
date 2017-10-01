@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import logging
@@ -24,7 +24,7 @@ from unittest.mock import patch
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -354,7 +354,7 @@ class TestRahSimResult(RahSimTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=skill_attr.id
         )
-        skill_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[skill_modifier])
+        skill_effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[skill_modifier])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
         rah_item = ModuleLow(self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 0).id, state=State.active)

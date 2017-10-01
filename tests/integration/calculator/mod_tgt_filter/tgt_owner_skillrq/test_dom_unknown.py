@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import AttributeId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,10 +38,10 @@ class TestTgtOwnerSkillrqDomainTarget(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         influence_source = Implant(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
         influence_target = Rig(self.ch.type(attributes={
-            tgt_attr.id: 100, Attribute.required_skill_1: 56, Attribute.required_skill_1_level: 1
+            tgt_attr.id: 100, AttributeId.required_skill_1: 56, AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.rigs.add(influence_target)
         # Action

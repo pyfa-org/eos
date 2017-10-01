@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import logging
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
@@ -38,7 +38,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(self.types[1].attributes[Attribute.radius], 50.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.radius], 50.0)
 
     def test_basic_attr_mass(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0})
@@ -50,7 +50,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(self.types[1].attributes[Attribute.mass], 5.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.mass], 5.0)
 
     def test_basic_attr_volume(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'volume': 500.0})
@@ -62,7 +62,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(self.types[1].attributes[Attribute.volume], 500.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.volume], 500.0)
 
     def test_basic_attr_capacity(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'capacity': 0.5})
@@ -74,12 +74,12 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(self.types[1].attributes[Attribute.capacity], 0.5)
+        self.assertEqual(self.types[1].attributes[AttributeId.capacity], 0.5)
 
     def test_duplicate_definition(self):
         # Check what happens if attribute is defined in both dgmtypeattribs and evetypes
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1, 'mass': 5.0})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': Attribute.mass, 'value': 6.0})
+        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': AttributeId.mass, 'value': 6.0})
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         duplicate_error = self.log[0]
@@ -93,4 +93,4 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(self.types[1].attributes[Attribute.mass], 6.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.mass], 6.0)

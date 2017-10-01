@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,7 +38,7 @@ class TestOperatorPreDiv(CalculatorTestCase):
             operator=ModifierOperator.post_div,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         self.influence_source1 = Implant(self.ch.type(attributes={src_attr.id: 1.2}, effects=[effect]).id)
         self.influence_source2 = Implant(self.ch.type(attributes={src_attr.id: 1.5}, effects=[effect]).id)
         self.influence_source3 = Implant(self.ch.type(attributes={src_attr.id: 0.1}, effects=[effect]).id)

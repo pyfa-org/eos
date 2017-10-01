@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, EosEffect, ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, EffectCategory, Type
+from eos.const.eos import EffectBuildStatus, EosEffectId, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eve import AttributeId, EffectCategoryId, TypeId
 from ...effect import Effect
 from ...modifier import DogmaModifier
 
@@ -35,17 +35,17 @@ def add_character_missile_damage_multiplier(eve_type):
     """
     modifiers = []
     for damage_attr in (
-        Attribute.em_damage, Attribute.thermal_damage,
-        Attribute.kinetic_damage, Attribute.explosive_damage
+            AttributeId.em_damage, AttributeId.thermal_damage,
+            AttributeId.kinetic_damage, AttributeId.explosive_damage
     ):
         modifiers.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.owner_skillrq, tgt_domain=ModifierDomain.character,
-            tgt_filter_extra_arg=Type.missile_launcher_operation, tgt_attr=damage_attr,
-            operator=ModifierOperator.pre_mul, src_attr=Attribute.missile_damage_multiplier
+            tgt_filter_extra_arg=TypeId.missile_launcher_operation, tgt_attr=damage_attr,
+            operator=ModifierOperator.pre_mul, src_attr=AttributeId.missile_damage_multiplier
         ))
     effect = Effect(
-        effect_id=EosEffect.char_missile_dmg,
-        category=EffectCategory.passive,
+        effect_id=EosEffectId.char_missile_dmg,
+        category=EffectCategoryId.passive,
         is_offensive=False,
         is_assistance=False,
         build_status=EffectBuildStatus.custom,

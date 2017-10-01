@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,15 +28,15 @@ class TestHp(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.hp)
-        self.ch.attribute(attribute_id=Attribute.armor_hp)
-        self.ch.attribute(attribute_id=Attribute.shield_capacity)
+        self.ch.attribute(attribute_id=AttributeId.hp)
+        self.ch.attribute(attribute_id=AttributeId.armor_hp)
+        self.ch.attribute(attribute_id=AttributeId.shield_capacity)
 
     def test_relay(self):
         # Check that stats service relays hp stats properly
         fit = Fit()
         fit.ship = Ship(self.ch.type(
-            attributes={Attribute.hp: 10, Attribute.armor_hp: 15, Attribute.shield_capacity: 20}
+            attributes={AttributeId.hp: 10, AttributeId.armor_hp: 15, AttributeId.shield_capacity: 20}
         ).id)
         # Action
         hp_stats = fit.stats.hp
@@ -67,7 +67,7 @@ class TestHp(StatTestCase):
         # Check that stats service relays hp stats properly
         fit = Fit()
         fit.ship = Ship(self.ch.type(
-            attributes={Attribute.hp: 10, Attribute.armor_hp: 15, Attribute.shield_capacity: 20}
+            attributes={AttributeId.hp: 10, AttributeId.armor_hp: 15, AttributeId.shield_capacity: 20}
         ).id)
         fit.source = None
         # Action

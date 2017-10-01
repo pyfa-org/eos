@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, Type
+from eos.const.eve import AttributeId, TypeId
 from eos.fit.pubsub.message import InstrAttrValueChanged, InstrItemAdd, InstrItemRemove
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
@@ -31,7 +31,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
     def __init__(self):
         BasePythonModifier.__init__(
             self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.self,
-            tgt_filter_extra_arg=None, tgt_attr=Attribute.armor_damage_amount
+            tgt_filter_extra_arg=None, tgt_attr=AttributeId.armor_damage_amount
         )
 
     def get_modification(self, carrier_item, _):
@@ -40,13 +40,13 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         rep amount multiplier, otherwise do nothing (multipy by 1).
         """
         charge = getattr(carrier_item, 'charge', None)
-        if charge is not None and charge._eve_type_id == Type.nanite_repair_paste:
+        if charge is not None and charge._eve_type_id == TypeId.nanite_repair_paste:
             try:
                 carrier_attributes = carrier_item.attributes
             except AttributeError as e:
                 raise ModificationCalculationError from e
             try:
-                multiplier = carrier_attributes[Attribute.charged_armor_damage_multiplier]
+                multiplier = carrier_attributes[AttributeId.charged_armor_damage_multiplier]
             except KeyError as e:
                 raise ModificationCalculationError from e
         else:
@@ -60,7 +60,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         """
         if (
             getattr(carrier_item, 'charge', None) is message.item and
-            message.item._eve_type_id == Type.nanite_repair_paste
+            message.item._eve_type_id == TypeId.nanite_repair_paste
         ):
             return True
         return False
@@ -70,7 +70,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         If armor rep multiplier changes, then result of modification
         also should change.
         """
-        if message.item is carrier_item and message.attr == Attribute.charged_armor_damage_multiplier:
+        if message.item is carrier_item and message.attr == AttributeId.charged_armor_damage_multiplier:
             return True
         return False
 

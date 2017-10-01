@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -55,7 +55,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         if not hasattr(message.item, 'charge'):
             return
         # And without size specification
-        if Attribute.charge_size not in message.item._eve_type.attributes:
+        if AttributeId.charge_size not in message.item._eve_type.attributes:
             return
         self.__restricted_containers.add(message.item)
 
@@ -75,8 +75,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            container_size = container._eve_type.attributes[Attribute.charge_size]
-            charge_size = charge._eve_type.attributes.get(Attribute.charge_size)
+            container_size = container._eve_type.attributes[AttributeId.charge_size]
+            charge_size = charge._eve_type.attributes.get(AttributeId.charge_size)
             if container_size != charge_size:
                 tainted_items[charge] = ChargeSizeErrorData(
                     item_size=charge_size,

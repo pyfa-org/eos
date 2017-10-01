@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from logging import getLogger
@@ -30,80 +30,81 @@ logger = getLogger(__name__)
 
 
 class ModifierBuilder:
-    """
-    Class which is used for building Eos modifiers out of
-    effect data.
+    """Builds modifiers out of effect data.
+
+    Args:
+        exp_rows: iterable with expression rows.
     """
 
-    def __init__(self, expressions):
-        self._tree = ExpressionTreeConverter(expressions)
-        self._info = ModifierInfoConverter()
+    def __init__(self, exp_rows):
+        self._tree = ExpressionTreeConverter(exp_rows)
 
     def build(self, effect_row):
-        """
-        Generate modifiers using passed data.
+        """Generate modifiers using passed data.
 
-        Required arguments:
-        effect_row -- effect row with effect category, pre-/post-
-        expression ID, modifier info data.
+        Args:
+            effect_row: effect row with effect category, pre-/post-expression
+                IDs, modifier info data.
 
-        Return value:
-        Tuple with list of modifiers and effect build status
+        Returns:
+            Tuple with with iterable which contains modifiers and effect's
+            modifier build status.
         """
-        modifier_info = effect_row.get('modifierInfo')
-        pre_expression = effect_row.get('preExpression')
-        if modifier_info:
+        modinfo = effect_row.get('modifierInfo')
+        pre_exp = effect_row.get('preExpression')
+        # modifierInfo takes a priority
+        if modinfo:
             try:
-                modifiers, build_failures = self._info.convert(modifier_info)
+                mods, fails = ModifierInfoConverter.convert(modinfo)
             except YamlParsingError as e:
                 effect_id = effect_row['effectID']
-                msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
+                msg = 'failed to build modifiers for effect {}: {}'.format(
+                    effect_id, e.args[0])
                 logger.error(msg)
                 return (), EffectBuildStatus.error
         # When no modifierInfo specified, use expression trees
-        # to make modifiers
-        elif pre_expression:
+        elif pre_exp:
             try:
-                modifiers, build_failures = self._tree.convert(pre_expression)
-            # There're quite many root-level operands we do not
-            # handle and do not want to handle. Special effects,
-            # non-modifier definitions. Handle these somewhat
-            # gracefully and mark such effects as skipped
+                mods, fails = self._tree.convert(pre_exp)
+            # There're quite many root-level operands we do not handle and do
+            # not want to handle. Special effects, non-modifier definitions.
+            # Handle these somewhat gracefully and mark such effects as skipped
             except UnknownEtreeRootOperandError as e:
                 effect_id = effect_row['effectID']
-                msg = 'failed to build modifiers for effect {}: {}'.format(effect_id, e.args[0])
+                msg = 'failed to build modifiers for effect {}: {}'.format(
+                    effect_id, e.args[0])
                 logger.info(msg)
                 return (), EffectBuildStatus.skipped
-        # We tried and didn't find anythingto do, that's a success
+        # We tried and didn't find anything to do, that's a success
         else:
             return (), EffectBuildStatus.success
         # Validate all the modifiers after building
-        valid_modifiers, validation_failures = self.__get_valid_modifiers(modifiers)
+        valid_mods, valid_fails = self.__get_valid_modifiers(mods)
         # Logging and reporting
-        if build_failures == 0 and validation_failures == 0:
-            return valid_modifiers, EffectBuildStatus.success
+        if fails == 0 and valid_fails == 0:
+            return valid_mods, EffectBuildStatus.success
         else:
             effect_id = effect_row['effectID']
-            total_modifiers = build_failures + validation_failures + len(valid_modifiers)
-            msg_segments = []
-            if build_failures > 0:
-                msg_segments.append('{} build errors'.format(build_failures))
-            if validation_failures > 0:
-                msg_segments.append('{} validation failures'.format(validation_failures))
+            total_mods = fails + valid_fails + len(valid_mods)
+            msg_parts = []
+            if fails > 0:
+                msg_parts.append('{} build errors'.format(fails))
+            if valid_fails > 0:
+                msg_parts.append('{} validation failures'.format(valid_fails))
             msg = 'effect {}, building {} modifiers: {}'.format(
-                effect_id, total_modifiers, ', '.join(msg_segments))
+                effect_id, total_mods, ', '.join(msg_parts))
             logger.error(msg)
-            if len(valid_modifiers) > 0:
-                return valid_modifiers, EffectBuildStatus.success_partial
+            if valid_mods:
+                return valid_mods, EffectBuildStatus.success_partial
             else:
                 return (), EffectBuildStatus.error
 
-    def __get_valid_modifiers(self, modifiers):
-        valid_modifiers = []
-        validation_failures = 0
-        for modifier in modifiers:
-            if modifier._valid is True:
-                valid_modifiers.append(modifier)
+    def __get_valid_modifiers(self, mods):
+        valid_mods = []
+        valid_fails = 0
+        for mod in mods:
+            if mod._valid:
+                valid_mods.append(mod)
             else:
-                validation_failures += 1
-        return valid_modifiers, validation_failures
+                valid_fails += 1
+        return valid_mods, valid_fails

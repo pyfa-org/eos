@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from logging import getLogger
 
 from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from ...modifier import DogmaModifier
 
 
@@ -41,8 +41,8 @@ def add_rah_modifiers(effect):
             operator=ModifierOperator.pre_mul,
             src_attr=attr
         ) for attr in (
-            Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-            Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
+            AttributeId.armor_em_damage_resonance, AttributeId.armor_thermal_damage_resonance,
+            AttributeId.armor_kinetic_damage_resonance, AttributeId.armor_explosive_damage_resonance
         )
     )
     effect.build_status = EffectBuildStatus.custom

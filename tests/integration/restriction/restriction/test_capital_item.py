@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -31,7 +31,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Check that error is raised on attempt
         # to add capital item to fit w/o ship
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3501}).id, state=State.offline)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 3501}).id, state=State.offline)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
@@ -46,7 +46,7 @@ class TestCapitalItem(RestrictionTestCase):
     def test_fail_subcap(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type().id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3501}).id, state=State.offline)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 3501}).id, state=State.offline)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
@@ -62,8 +62,8 @@ class TestCapitalItem(RestrictionTestCase):
         # Make sure that mere presence of isCapital attr
         # on a ship (with zero value) doesn't make it capital
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.is_capital_size: 0.0}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3501}).id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.is_capital_size: 0.0}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 3501}).id, state=State.offline)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
@@ -79,7 +79,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Make sure no error raised when non-capital
         # item is added to fit
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3500}).id, state=State.offline)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 3500}).id, state=State.offline)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
@@ -107,8 +107,8 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_capital(self):
         # Check that capital items can be added to capital ship
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.is_capital_size: 1.0}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3501}).id, state=State.offline)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.is_capital_size: 1.0}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 3501}).id, state=State.offline)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
@@ -121,7 +121,7 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_item_other_class(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type().id)
-        item = Rig(self.ch.type(attributes={Attribute.volume: 3501}).id)
+        item = Rig(self.ch.type(attributes={AttributeId.volume: 3501}).id)
         fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
@@ -134,7 +134,7 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_no_source(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type().id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3501}).id, state=State.offline)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 3501}).id, state=State.offline)
         fit.modules.high.append(item)
         fit.source = None
         # Action

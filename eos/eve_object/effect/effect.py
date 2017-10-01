@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos.const.eos import State
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from eos.data.cachable import BaseCachable
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
@@ -88,12 +88,12 @@ class Effect(BaseCachable):
 
     # Format: {effect category ID: state ID}
     __effect_state_map = {
-        EffectCategory.passive: State.offline,
-        EffectCategory.active: State.active,
-        EffectCategory.target: State.active,
-        EffectCategory.online: State.online,
-        EffectCategory.overload: State.overload,
-        EffectCategory.system: State.offline
+        EffectCategoryId.passive: State.offline,
+        EffectCategoryId.active: State.active,
+        EffectCategoryId.target: State.active,
+        EffectCategoryId.online: State.online,
+        EffectCategoryId.overload: State.overload,
+        EffectCategoryId.system: State.offline
     }
 
     @cached_property

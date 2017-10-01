@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,12 +28,12 @@ class TestSubsystem(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.max_subsystems)
-        self.effect = self.ch.effect(effect_id=Effect.subsystem, category=EffectCategory.passive)
+        self.ch.attribute(attribute_id=AttributeId.max_subsystems)
+        self.effect = self.ch.effect(effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
 
     def test_output(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.max_subsystems: 3}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.max_subsystems: 3}).id)
         # Verification
         self.assertEqual(fit.stats.subsystem_slots.total, 3)
         # Cleanup
@@ -102,7 +102,7 @@ class TestSubsystem(StatTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.max_subsystems: 3}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.max_subsystems: 3}).id)
         fit.subsystems.add(Subsystem(self.ch.type(effects=[self.effect]).id))
         fit.subsystems.add(Subsystem(self.ch.type(effects=[self.effect]).id))
         fit.source = None

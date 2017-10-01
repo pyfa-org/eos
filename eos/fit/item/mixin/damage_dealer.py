@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from enum import IntEnum, unique
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.helper import DamageTypesTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
 from .base import BaseItemMixin
@@ -46,22 +46,22 @@ class WeaponType(IntEnum):
 
 
 BASIC_EFFECT_WEAPON_MAP = {
-    Effect.target_attack: WeaponType.turret,
-    Effect.projectile_fired: WeaponType.turret,
-    Effect.emp_wave: WeaponType.untargeted_aoe,
+    EffectId.target_attack: WeaponType.turret,
+    EffectId.projectile_fired: WeaponType.turret,
+    EffectId.emp_wave: WeaponType.untargeted_aoe,
     # TODO: instant missile was assigned just to fighter bombers
-    Effect.fighter_missile: WeaponType.instant_missile,
-    Effect.super_weapon_amarr: WeaponType.direct,
-    Effect.super_weapon_caldari: WeaponType.direct,
-    Effect.super_weapon_gallente: WeaponType.direct,
-    Effect.super_weapon_minmatar: WeaponType.direct
+    EffectId.fighter_missile: WeaponType.instant_missile,
+    EffectId.super_weapon_amarr: WeaponType.direct,
+    EffectId.super_weapon_caldari: WeaponType.direct,
+    EffectId.super_weapon_gallente: WeaponType.direct,
+    EffectId.super_weapon_minmatar: WeaponType.direct
 }
 
 CHARGE_EFFECT_WEAPON_MAP = {
-    Effect.use_missiles: {
-        Effect.missile_launching: WeaponType.guided_missile,
-        Effect.fof_missile_launching: WeaponType.guided_missile,
-        Effect.bomb_launching: WeaponType.bomb
+    EffectId.use_missiles: {
+        EffectId.missile_launching: WeaponType.guided_missile,
+        EffectId.fof_missile_launching: WeaponType.guided_missile,
+        EffectId.bomb_launching: WeaponType.bomb
     }
 }
 
@@ -137,10 +137,10 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
         """
         Get damage per type as tuple for passed item.
         """
-        em = item.attributes.get(Attribute.em_damage)
-        therm = item.attributes.get(Attribute.thermal_damage)
-        kin = item.attributes.get(Attribute.kinetic_damage)
-        expl = item.attributes.get(Attribute.explosive_damage)
+        em = item.attributes.get(AttributeId.em_damage)
+        therm = item.attributes.get(AttributeId.thermal_damage)
+        kin = item.attributes.get(AttributeId.kinetic_damage)
+        expl = item.attributes.get(AttributeId.explosive_damage)
         return em, therm, kin, expl
 
     # Format: {weapon type: (function which fetches base damage, damage multiplier flag)}
@@ -166,7 +166,7 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
             em, therm, kin, expl = volley_fetcher(self)
             if multiply:
                 try:
-                    multiplier = self.attributes[Attribute.damage_multiplier]
+                    multiplier = self.attributes[AttributeId.damage_multiplier]
                 except KeyError:
                     pass
                 else:

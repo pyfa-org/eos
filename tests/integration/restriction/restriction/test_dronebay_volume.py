@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -29,15 +29,15 @@ class TestDroneBayVolume(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.volume)
-        self.ch.attribute(attribute_id=Attribute.drone_capacity)
+        self.ch.attribute(attribute_id=AttributeId.volume)
+        self.ch.attribute(attribute_id=AttributeId.drone_capacity)
 
     def test_fail_excess_single(self):
         # When ship provides dronebay volume output, but single consumer
         # demands for more, error should be raised
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 40}).id)
-        item = Drone(self.ch.type(attributes={Attribute.volume: 50}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_capacity: 40}).id)
+        item = Drone(self.ch.type(attributes={AttributeId.volume: 50}).id)
         fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
@@ -54,7 +54,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When stats module does not specify output, make sure
         # it's assumed to be 0
         fit = Fit()
-        item = Drone(self.ch.type(attributes={Attribute.volume: 5}).id)
+        item = Drone(self.ch.type(attributes={AttributeId.volume: 5}).id)
         fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
@@ -72,10 +72,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # alone, but in sum want more than total output, it should
         # be erroneous situation
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 40}).id)
-        item1 = Drone(self.ch.type(attributes={Attribute.volume: 25}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_capacity: 40}).id)
+        item1 = Drone(self.ch.type(attributes={AttributeId.volume: 25}).id)
         fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attributes={Attribute.volume: 20}).id)
+        item2 = Drone(self.ch.type(attributes={AttributeId.volume: 20}).id)
         fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.dronebay_volume)
@@ -100,10 +100,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # still raised, check it's not raised for item with
         # zero usage
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 50}).id)
-        item1 = Drone(self.ch.type(attributes={Attribute.volume: 100}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_capacity: 50}).id)
+        item1 = Drone(self.ch.type(attributes={AttributeId.volume: 100}).id)
         fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attributes={Attribute.volume: 0}).id)
+        item2 = Drone(self.ch.type(attributes={AttributeId.volume: 0}).id)
         fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.dronebay_volume)
@@ -124,10 +124,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When total consumption is less than output,
         # no errors should be raised
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 50}).id)
-        item1 = Drone(self.ch.type(attributes={Attribute.volume: 25}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_capacity: 50}).id)
+        item1 = Drone(self.ch.type(attributes={AttributeId.volume: 25}).id)
         fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attributes={Attribute.volume: 20}).id)
+        item2 = Drone(self.ch.type(attributes={AttributeId.volume: 20}).id)
         fit.drones.add(item2)
         # Action
         restriction_error1 = self.get_restriction_error(fit, item1, Restriction.dronebay_volume)
@@ -144,8 +144,8 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_pass_other_class(self):
         # Make sure non-drones are not affected
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 40}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 50}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_capacity: 40}).id)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.volume: 50}).id)
         fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(fit, item, Restriction.dronebay_volume)
@@ -157,8 +157,8 @@ class TestDroneBayVolume(RestrictionTestCase):
 
     def test_pass_no_source(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.drone_capacity: 40}).id)
-        item = Drone(self.ch.type(attributes={Attribute.volume: 50}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.drone_capacity: 40}).id)
+        item = Drone(self.ch.type(attributes={AttributeId.volume: 50}).id)
         fit.drones.add(item)
         fit.source = None
         # Action

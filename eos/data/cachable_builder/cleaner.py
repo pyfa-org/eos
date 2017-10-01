@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,14 +16,14 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import yaml
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eve import Category, Group
+from eos.const.eve import CategoryId, GroupId
 from eos.util.cached_property import cached_property
 
 
@@ -57,18 +57,18 @@ class Cleaner:
         """
         # Tuple with category IDs of eve types we want to keep
         strong_categories = (
-            Category.charge,
-            Category.drone,
-            Category.fighter,
-            Category.implant,
-            Category.module,
-            Category.ship,
-            Category.skill,
-            Category.subsystem
+            CategoryId.charge,
+            CategoryId.drone,
+            CategoryId.fighter,
+            CategoryId.implant,
+            CategoryId.module,
+            CategoryId.ship,
+            CategoryId.skill,
+            CategoryId.subsystem
         )
         # Set with group IDs of eve types we want to keep
         # It is set because we will need to modify it
-        strong_groups = {Group.character, Group.effect_beacon}
+        strong_groups = {GroupId.character, GroupId.effect_beacon}
         # Go through table data, filling valid groups set according to valid categories
         for datarow in self.data['evegroups']:
             if datarow.get('categoryID') in strong_categories:

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
@@ -62,7 +62,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # Ignore items with no volume attribute and items with
         # volume which satisfies us regardless of ship type
         try:
-            item_volume = message.item._eve_type.attributes[Attribute.volume]
+            item_volume = message.item._eve_type.attributes[AttributeId.volume]
         except KeyError:
             return
         if item_volume <= MAX_SUBCAP_VOLUME:
@@ -87,14 +87,14 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         except AttributeError:
             pass
         else:
-            if ship_eve_type.attributes.get(Attribute.is_capital_size):
+            if ship_eve_type.attributes.get(AttributeId.is_capital_size):
                 return
         # If we got here, then we're dealing with non-capital
         # ship, and all registered items are tainted
         if self.__capital_items:
             tainted_items = {}
             for item in self.__capital_items:
-                item_volume = item._eve_type.attributes[Attribute.volume]
+                item_volume = item._eve_type.attributes[AttributeId.volume]
                 tainted_items[item] = CapitalItemErrorData(
                     item_volume=item_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -76,7 +76,7 @@ class CpuRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'cpu', Attribute.cpu)
+        ResourceRestriction.__init__(self, stats, 'cpu', AttributeId.cpu)
 
     @property
     def type(self):
@@ -94,7 +94,7 @@ class PowergridRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'powergrid', Attribute.power)
+        ResourceRestriction.__init__(self, stats, 'powergrid', AttributeId.power)
 
     @property
     def type(self):
@@ -112,7 +112,7 @@ class CalibrationRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'calibration', Attribute.upgrade_cost)
+        ResourceRestriction.__init__(self, stats, 'calibration', AttributeId.upgrade_cost)
 
     @property
     def type(self):
@@ -131,7 +131,7 @@ class DroneBayVolumeRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'dronebay', Attribute.volume)
+        ResourceRestriction.__init__(self, stats, 'dronebay', AttributeId.volume)
 
     @property
     def type(self):
@@ -149,7 +149,7 @@ class DroneBandwidthRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'drone_bandwidth', Attribute.drone_bandwidth_used)
+        ResourceRestriction.__init__(self, stats, 'drone_bandwidth', AttributeId.drone_bandwidth_used)
 
     @property
     def type(self):

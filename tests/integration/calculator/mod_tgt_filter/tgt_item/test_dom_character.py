@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -40,7 +40,7 @@ class TestTgtItemDomainChar(CalculatorTestCase):
         )
         self.influence_source = Rig(self.ch.type(
             attributes={src_attr.id: 20},
-            effects=(self.ch.effect(category=EffectCategory.passive, modifiers=[modifier]),)
+            effects=(self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier]),)
         ).id)
 
     def test_character(self):

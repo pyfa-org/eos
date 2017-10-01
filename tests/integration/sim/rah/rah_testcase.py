@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import Fit
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
@@ -42,17 +42,17 @@ class RahSimTestCase(IntegrationTestCase):
         self.cycle_attr = self.ch.attribute(high_is_good=False, stackable=True)
         self.heat_attr = self.ch.attribute(high_is_good=False, stackable=True)
         self.shift_attr = self.ch.attribute(
-            attribute_id=Attribute.resistance_shift_amount, high_is_good=True, stackable=True
+            attribute_id=AttributeId.resistance_shift_amount, high_is_good=True, stackable=True
         )
         self.armor_em, self.armor_therm, self.armor_kin, self.armor_exp = (self.ch.attribute(
             attribute_id=attr, max_attribute=self.max_attr.id, high_is_good=False, stackable=False
         ) for attr in (
-            Attribute.armor_em_damage_resonance, Attribute.armor_thermal_damage_resonance,
-            Attribute.armor_kinetic_damage_resonance, Attribute.armor_explosive_damage_resonance
+            AttributeId.armor_em_damage_resonance, AttributeId.armor_thermal_damage_resonance,
+            AttributeId.armor_kinetic_damage_resonance, AttributeId.armor_explosive_damage_resonance
         ))
         # Effect setup
         self.rah_effect = self.ch.effect(
-            effect_id=Effect.adaptive_armor_hardener, category=EffectCategory.active,
+            effect_id=EffectId.adaptive_armor_hardener, category=EffectCategoryId.active,
             duration_attribute=self.cycle_attr.id, customize=True
         )
         heat_modifier = self.mod(
@@ -62,7 +62,7 @@ class RahSimTestCase(IntegrationTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.heat_attr.id
         )
-        self.heat_effect = self.ch.effect(category=EffectCategory.overload, modifiers=[heat_modifier])
+        self.heat_effect = self.ch.effect(category=EffectCategoryId.overload, modifiers=[heat_modifier])
         # Cleanup
         self.fit = Fit()
 

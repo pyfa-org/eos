@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import math
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
@@ -183,8 +183,8 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         except AttributeError:
             return None
         try:
-            agility = ship_attribs[Attribute.agility]
-            mass = ship_attribs[Attribute.mass]
+            agility = ship_attribs[AttributeId.agility]
+            mass = ship_attribs[AttributeId.mass]
         except KeyError:
             return None
         real_agility = -math.log(0.25) * agility * mass / 1000000

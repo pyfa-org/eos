@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,14 +16,14 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import logging
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import AttributeId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -41,13 +41,13 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         self.source_eve_type = self.ch.type(attributes={src_attr.id: 20}, effects=[effect])
 
     def test_ship(self):
         influence_source = Ship(self.source_eve_type.id)
         influence_target = Rig(self.ch.type(attributes={
-            self.tgt_attr.id: 100, Attribute.required_skill_1: 56, Attribute.required_skill_1_level: 1
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56, AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.rigs.add(influence_target)
         # Action
@@ -65,7 +65,7 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
     def test_character(self):
         influence_source = Character(self.source_eve_type.id)
         influence_target = Implant(self.ch.type(attributes={
-            self.tgt_attr.id: 100, Attribute.required_skill_1: 56, Attribute.required_skill_1_level: 1
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56, AttributeId.required_skill_1_level: 1
         }).id)
         self.fit.implants.add(influence_target)
         # Action

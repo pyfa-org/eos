@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -39,9 +39,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect1 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1.id)
-        effect2 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr2.id)
-        effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect1 = self.ch.effect(category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr1.id)
+        effect2 = self.ch.effect(category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr2.id)
+        effect3 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         fit = Fit()
         item = Booster(self.ch.type(
             attributes={chance_attr1.id: 0.5, chance_attr2.id: 0.1, src_attr.id: -25},
@@ -78,9 +78,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id
         )
-        effect1 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1.id)
-        effect2 = self.ch.effect(category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr2.id)
-        effect3 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        effect1 = self.ch.effect(category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr1.id)
+        effect2 = self.ch.effect(category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr2.id)
+        effect3 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         fit = Fit(source=None)
         item = Booster(self.ch.type(
             attributes={chance_attr1.id: 0.5, chance_attr2.id: 0.1, src_attr.id: -25},
@@ -110,21 +110,21 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # 1st effect exists as side-effect in both sources
         effect1_id = self.allocate_effect_id(self.ch, self.ch2)
         effect1_src1 = self.ch.effect(
-            effect_id=effect1_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1_id
+            effect_id=effect1_id, category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr1_id
         )
         effect1_src2 = self.ch2.effect(
-            effect_id=effect1_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr1_id
+            effect_id=effect1_id, category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr1_id
         )
         # 2nd effect exists as side-effect in src1, and as regular effect in src2
         effect2_id = self.allocate_effect_id(self.ch, self.ch2)
         effect2_src1 = self.ch.effect(
-            effect_id=effect2_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr2.id
+            effect_id=effect2_id, category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr2.id
         )
-        effect2_src2 = self.ch2.effect(effect_id=effect2_id, category=EffectCategory.passive)
+        effect2_src2 = self.ch2.effect(effect_id=effect2_id, category=EffectCategoryId.passive)
         # 3rd effect exists as side-effect in src1 and doesn't exist in src2 at all
         effect3_id = self.allocate_effect_id(self.ch, self.ch2)
         effect3_src1 = self.ch.effect(
-            effect_id=effect3_id, category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr3.id
+            effect_id=effect3_id, category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr3.id
         )
         eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(
@@ -185,7 +185,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(
-            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+            category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
         )
         fit = Fit()
         item = Booster(self.ch.type(
@@ -215,7 +215,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(
-            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+            category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
         )
         fit = Fit()
         item = Booster(self.ch.type(
@@ -244,7 +244,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(
-            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+            category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
         )
         fit = Fit()
         item = Booster(self.ch.type(
@@ -275,7 +275,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(
-            category=EffectCategory.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
+            category=EffectCategoryId.passive, fitting_usage_chance_attribute=chance_attr.id, modifiers=[modifier]
         )
         fit = Fit()
         item = Booster(self.ch.type(

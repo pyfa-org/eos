@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import RestrictionTestCase
 
 
@@ -29,7 +29,7 @@ class TestBoosterIndex(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.index_attr = self.ch.attribute(attribute_id=Attribute.boosterness)
+        self.index_attr = self.ch.attribute(attribute_id=AttributeId.boosterness)
 
     def test_fail(self):
         # Check that if 2 or more items are put into single slot

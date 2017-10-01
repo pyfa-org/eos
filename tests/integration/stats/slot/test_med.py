@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -29,8 +29,8 @@ class TestMedSlot(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.med_slots)
-        self.effect = self.ch.effect(effect_id=Effect.med_power, category=EffectCategory.passive)
+        self.ch.attribute(attribute_id=AttributeId.med_slots)
+        self.effect = self.ch.effect(effect_id=EffectId.med_power, category=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -38,13 +38,13 @@ class TestMedSlot(StatTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=Attribute.med_slots,
+            tgt_attr=AttributeId.med_slots,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id
         )
-        mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        mod_effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 3, src_attr.id: 2}, effects=[mod_effect]).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.med_slots: 3, src_attr.id: 2}, effects=[mod_effect]).id)
         # Verification
         self.assertEqual(fit.stats.med_slots.total, 6)
         # Cleanup
@@ -123,7 +123,7 @@ class TestMedSlot(StatTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.med_slots: 3}).id)
+        fit.ship = Ship(self.ch.type(attributes={AttributeId.med_slots: 3}).id)
         fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.effect]).id))
         fit.modules.med.append(ModuleMed(self.ch.type(effects=[self.effect]).id))
         fit.source = None

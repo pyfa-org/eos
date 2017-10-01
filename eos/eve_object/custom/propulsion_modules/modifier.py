@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from logging import getLogger
 
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InstrAttrValueChanged
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
@@ -36,7 +36,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
     def __init__(self):
         BasePythonModifier.__init__(
             self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.ship,
-            tgt_filter_extra_arg=None, tgt_attr=Attribute.max_velocity
+            tgt_filter_extra_arg=None, tgt_attr=AttributeId.max_velocity
         )
 
     def get_modification(self, carrier_item, ship):
@@ -48,9 +48,9 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             raise ModificationCalculationError from e
         # Same for necessary attribute values
         try:
-            mass = ship_attributes[Attribute.mass]
-            speed_boost = carrier_attributes[Attribute.speed_factor]
-            thrust = carrier_attributes[Attribute.speed_boost_factor]
+            mass = ship_attributes[AttributeId.mass]
+            speed_boost = carrier_attributes[AttributeId.speed_factor]
+            thrust = carrier_attributes[AttributeId.speed_boost_factor]
         except KeyError as e:
             raise ModificationCalculationError from e
         try:
@@ -68,9 +68,9 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         then modification value can be changed as well.
         """
         if (
-            (message.item is ship and message.attr == Attribute.mass) or
-            (message.item is carrier_item and message.attr == Attribute.speed_factor) or
-            (message.item is carrier_item and message.attr == Attribute.speed_boost_factor)
+            (message.item is ship and message.attr == AttributeId.mass) or
+            (message.item is carrier_item and message.attr == AttributeId.speed_factor) or
+            (message.item is carrier_item and message.attr == AttributeId.speed_boost_factor)
         ):
             return True
         return False

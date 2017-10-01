@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from logging import getLogger
 
-from eos.const.eve import Attribute, Group, Operand
+from eos.const.eve import AttributeId, GroupId, OperandId
 from eos.util.frozen_dict import FrozenDict
 
 
@@ -43,10 +43,10 @@ class Normalizer:
         to move them to dgmtypeattribs table.
         """
         atrrib_map = {
-            'radius': Attribute.radius,
-            'mass': Attribute.mass,
-            'volume': Attribute.volume,
-            'capacity': Attribute.capacity
+            'radius': AttributeId.radius,
+            'mass': AttributeId.mass,
+            'volume': AttributeId.volume,
+            'capacity': AttributeId.capacity
         }
         attr_ids = tuple(atrrib_map.values())
         # Here we will store pairs (typeID, attrID) already
@@ -102,18 +102,18 @@ class Normalizer:
         dgmexpressions = data['dgmexpressions']
         # Format: ((operator, column name for entity ID, {replacement_map}, (ignored names, ...)), ...)
         replacement_spec = (
-            (Operand.def_attr, 'expressionAttributeID', {}, ('shieldDamage',)),
+            (OperandId.def_attr, 'expressionAttributeID', {}, ('shieldDamage',)),
             (
-                Operand.def_grp, 'expressionGroupID',
+                OperandId.def_grp, 'expressionGroupID',
                 {
-                    'EnergyWeapon': Group.energy_weapon,
-                    'HybridWeapon': Group.hydrid_weapon,
-                    'MiningLaser': Group.mining_laser,
-                    'ProjectileWeapon': Group.projectile_weapon
+                    'EnergyWeapon': GroupId.energy_weapon,
+                    'HybridWeapon': GroupId.hydrid_weapon,
+                    'MiningLaser': GroupId.mining_laser,
+                    'ProjectileWeapon': GroupId.projectile_weapon
                 },
                 ('Structure', 'PowerCore', '    None')
             ),
-            (Operand.def_type, 'expressionTypeID', {}, ('Acceration Control',))
+            (OperandId.def_type, 'expressionTypeID', {}, ('Acceration Control',))
         )
         for operand, id_column_name, replacements, ignored_names in replacement_spec:
             used_replacements = set()

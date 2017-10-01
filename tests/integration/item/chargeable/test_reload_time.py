@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,13 +28,13 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.reload_time)
+        self.ch.attribute(attribute_id=AttributeId.reload_time)
 
     def test_generic(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+            attributes={AttributeId.reload_time: 5000.0}, effects=[effect], default_effect=effect
         ).id)
         fit.modules.high.append(item)
         # Verification
@@ -45,7 +45,7 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_generic_no_attribute(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -56,8 +56,8 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_generic_no_default_effect(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.reload_time: 5000.0}, effects=[effect]).id)
+        effect = self.ch.effect(category=EffectCategoryId.active)
+        item = ModuleHigh(self.ch.type(attributes={AttributeId.reload_time: 5000.0}, effects=[effect]).id)
         fit.modules.high.append(item)
         # Verification
         self.assertAlmostEqual(item.reload_time, 5.0)
@@ -67,9 +67,9 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_combat_combat_laser(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=Effect.target_attack, category=EffectCategory.active)
+        effect = self.ch.effect(effect_id=EffectId.target_attack, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+            attributes={AttributeId.reload_time: 5000.0}, effects=[effect], default_effect=effect
         ).id)
         fit.modules.high.append(item)
         # Verification
@@ -80,9 +80,9 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_combat_mining_laser(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=Effect.mining_laser, category=EffectCategory.active)
+        effect = self.ch.effect(effect_id=EffectId.mining_laser, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+            attributes={AttributeId.reload_time: 5000.0}, effects=[effect], default_effect=effect
         ).id)
         fit.modules.high.append(item)
         # Verification
@@ -93,9 +93,9 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        effect = self.ch.effect(category=EffectCategory.active)
+        effect = self.ch.effect(category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={Attribute.reload_time: 5000.0}, effects=[effect], default_effect=effect
+            attributes={AttributeId.reload_time: 5000.0}, effects=[effect], default_effect=effect
         ).id)
         fit.modules.high.append(item)
         fit.source = None

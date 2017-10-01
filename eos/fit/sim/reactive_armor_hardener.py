@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,14 +16,14 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from copy import copy
 from logging import getLogger
 from math import ceil, floor
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrAttrValueChangedMasked, InputDefaultIncomingDamageChanged,
     InstrEffectsStart, InstrEffectsStop
@@ -42,15 +42,15 @@ SIG_DIGITS = 10
 # When equal damage is received across several damage types, those which
 # come earlier in this list will be picked as donors
 res_attrs = (
-    Attribute.armor_em_damage_resonance, Attribute.armor_explosive_damage_resonance,
-    Attribute.armor_kinetic_damage_resonance, Attribute.armor_thermal_damage_resonance
+    AttributeId.armor_em_damage_resonance, AttributeId.armor_explosive_damage_resonance,
+    AttributeId.armor_kinetic_damage_resonance, AttributeId.armor_thermal_damage_resonance
 )
 # Format: {resonance attribute: damage profile field}
 profile_attrib_map = {
-    Attribute.armor_em_damage_resonance: 'em',
-    Attribute.armor_thermal_damage_resonance: 'thermal',
-    Attribute.armor_kinetic_damage_resonance: 'kinetic',
-    Attribute.armor_explosive_damage_resonance: 'explosive'
+    AttributeId.armor_em_damage_resonance: 'em',
+    AttributeId.armor_thermal_damage_resonance: 'thermal',
+    AttributeId.armor_kinetic_damage_resonance: 'kinetic',
+    AttributeId.armor_explosive_damage_resonance: 'explosive'
 }
 
 
@@ -171,7 +171,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 # If RAH just finished its cycle, make resist switch - get new resonances
                 new_resonances = self.__get_next_resonances(
                     self.__data[item], cycle_damage_data[item],
-                    item.attributes[Attribute.resistance_shift_amount] / 100
+                    item.attributes[AttributeId.resistance_shift_amount] / 100
                 )
 
                 # Then write these resonances to dictionary with results and notify
@@ -332,7 +332,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # (lowest resonance) to be exhausted
             exhaustion_cycles[item] = max(ceil(
                 (1 - item.attributes._get_without_overrides(attr)) /
-                (item.attributes[Attribute.resistance_shift_amount] / 100)
+                (item.attributes[AttributeId.resistance_shift_amount] / 100)
             ) for attr in res_attrs)
         # Slowest RAH is the one which takes the most time to exhaust
         # its highest resistance when it's used strictly as donor
@@ -364,14 +364,14 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     # Message handling
     def _handle_effects_activation(self, message):
-        if Effect.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
+        if EffectId.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
             for attr in res_attrs:
                 message.item.attributes._set_override_callback(attr, (self.get_resonance, (message.item, attr), {}))
             self.__data.setdefault(message.item, {})
         self.__clear_results()
 
     def _handle_effects_deactivation(self, message):
-        if Effect.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
+        if EffectId.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
             for attr in res_attrs:
                 message.item.attributes._del_override_callback(attr)
             try:
@@ -386,7 +386,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__clear_results()
         # RAH shift amount or cycle time
         elif message.item in self.__data and (
-            message.attr == Attribute.resistance_shift_amount or
+            message.attr == AttributeId.resistance_shift_amount or
             # Duration change invalidates results only when there're
             # more than 1 RAHs
             (message.attr == self.__get_duration_attr_id(message.item) and len(self.__data) > 1)

@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -48,8 +48,8 @@ class TestSourceSwitch(CalculatorTestCase):
             src_attr=src_attr_id
         )
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
-        effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
+        effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
+        effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         ship1 = Ship(self.ch.type(type_id=ship_eve_type_id, attributes={src_attr_id: 10}, effects=[effect_src1]).id)
         ship2 = Ship(self.ch2.type(type_id=ship_eve_type_id, attributes={src_attr_id: 20}, effects=[effect_src2]).id)
@@ -93,8 +93,8 @@ class TestSourceSwitch(CalculatorTestCase):
             src_attr=src_attr_id
         )
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
-        effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategory.passive, modifiers=[modifier])
+        effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
+        effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(type_id=ship_eve_type_id, attributes={src_attr_id: 10}, effects=[effect_src1])
         self.ch2.type(type_id=ship_eve_type_id, attributes={src_attr_id: 20}, effects=[effect_src2])

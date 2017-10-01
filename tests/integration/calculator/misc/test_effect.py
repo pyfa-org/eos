@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -55,9 +55,9 @@ class TestEffectToggling(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id
         )
-        self.effect1 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier1])
-        self.effect2 = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier2])
-        self.effect_active = self.ch.effect(category=EffectCategory.active, modifiers=[modifier_active])
+        self.effect1 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier1])
+        self.effect2 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier2])
+        self.effect_active = self.ch.effect(category=EffectCategoryId.active, modifiers=[modifier_active])
         self.item = ModuleHigh(self.ch.type(
             attributes={self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3, src_attr3.id: 2},
             effects=(self.effect1, self.effect2, self.effect_active), default_effect=self.effect_active

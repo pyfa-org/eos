@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,13 +16,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 import logging
 from unittest.mock import patch
 
-from eos.const.eve import Operand
+from eos.const.eve import OperandId
 from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
 
 
@@ -35,7 +35,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'EnergyWeapon', 'expressionTypeID': 567,
             'expressionGroupID': None, 'expressionAttributeID': 102
         })
@@ -53,7 +53,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007, 'arg2': 66,
             'expressionValue': None, 'expressionTypeID': 567, 'expressionGroupID': 53,
             'expressionAttributeID': 102, 'table_pos': 0
         }
@@ -64,7 +64,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'PowerCore', 'expressionTypeID': 567,
             'expressionGroupID': None, 'expressionAttributeID': 102
         })
@@ -82,7 +82,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007, 'arg2': 66,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007, 'arg2': 66,
             'expressionValue': 'PowerCore', 'expressionTypeID': 567, 'expressionGroupID': None,
             'expressionAttributeID': 102, 'table_pos': 0
         }
@@ -107,7 +107,7 @@ class TestNormalizationIdzing(CachableBuilderTestCase):
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
         self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'EnergyWeaponry', 'expressionTypeID': 567,
             'expressionGroupID': None, 'expressionAttributeID': 102
         })

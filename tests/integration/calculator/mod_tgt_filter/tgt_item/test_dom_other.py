@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,7 +38,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.src_attr.id
         )
-        self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
+        self.effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
 
     def test_other_domain_container(self):
         influence_source = ModuleHigh(self.ch.type(attributes={self.src_attr.id: 20}, effects=[self.effect]).id)

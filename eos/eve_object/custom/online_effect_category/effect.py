@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,12 +16,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from logging import getLogger
 
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 
 
 logger = getLogger(__name__)
@@ -34,8 +34,8 @@ def fix_online_category(effect):
     all eve types with it to be in active state. We do not want any
     special processing, thus just fix it here.
     """
-    if effect.category == EffectCategory.online:
+    if effect.category == EffectCategoryId.online:
         msg = 'online effect category does not need to be adjusted'
         logger.info(msg)
     else:
-        effect.category = EffectCategory.online
+        effect.category = EffectCategoryId.online

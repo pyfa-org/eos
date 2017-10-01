@@ -1,4 +1,4 @@
-# ===============================================================================
+# ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov
 #
@@ -16,11 +16,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
-# ===============================================================================
+# ==============================================================================
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,29 +28,29 @@ class TestResistances(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=Attribute.em_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.thermal_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.explosive_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.armor_em_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.armor_thermal_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.armor_kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.armor_explosive_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.shield_em_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.shield_thermal_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.shield_kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=Attribute.shield_explosive_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.em_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.thermal_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.kinetic_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.explosive_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.armor_em_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.armor_thermal_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.armor_kinetic_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.armor_explosive_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.shield_em_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.shield_thermal_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.shield_kinetic_damage_resonance)
+        self.ch.attribute(attribute_id=AttributeId.shield_explosive_damage_resonance)
 
     def test_relay(self):
         # Check that stats service relays resistance stats properly
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={
-            Attribute.em_damage_resonance: 0.05, Attribute.thermal_damage_resonance: 0.06,
-            Attribute.kinetic_damage_resonance: 0.07, Attribute.explosive_damage_resonance: 0.08,
-            Attribute.armor_em_damage_resonance: 0.09, Attribute.armor_thermal_damage_resonance: 0.1,
-            Attribute.armor_kinetic_damage_resonance: 0.11, Attribute.armor_explosive_damage_resonance: 0.12,
-            Attribute.shield_em_damage_resonance: 0.13, Attribute.shield_thermal_damage_resonance: 0.14,
-            Attribute.shield_kinetic_damage_resonance: 0.15, Attribute.shield_explosive_damage_resonance: 0.16
+            AttributeId.em_damage_resonance: 0.05, AttributeId.thermal_damage_resonance: 0.06,
+            AttributeId.kinetic_damage_resonance: 0.07, AttributeId.explosive_damage_resonance: 0.08,
+            AttributeId.armor_em_damage_resonance: 0.09, AttributeId.armor_thermal_damage_resonance: 0.1,
+            AttributeId.armor_kinetic_damage_resonance: 0.11, AttributeId.armor_explosive_damage_resonance: 0.12,
+            AttributeId.shield_em_damage_resonance: 0.13, AttributeId.shield_thermal_damage_resonance: 0.14,
+            AttributeId.shield_kinetic_damage_resonance: 0.15, AttributeId.shield_explosive_damage_resonance: 0.16
         }).id)
         # Action
         res_stats = fit.stats.resistances
@@ -96,12 +96,12 @@ class TestResistances(StatTestCase):
     def test_no_source(self):
         fit = Fit()
         fit.ship = Ship(self.ch.type(attributes={
-            Attribute.em_damage_resonance: 0.05, Attribute.thermal_damage_resonance: 0.06,
-            Attribute.kinetic_damage_resonance: 0.07, Attribute.explosive_damage_resonance: 0.08,
-            Attribute.armor_em_damage_resonance: 0.09, Attribute.armor_thermal_damage_resonance: 0.1,
-            Attribute.armor_kinetic_damage_resonance: 0.11, Attribute.armor_explosive_damage_resonance: 0.12,
-            Attribute.shield_em_damage_resonance: 0.13, Attribute.shield_thermal_damage_resonance: 0.14,
-            Attribute.shield_kinetic_damage_resonance: 0.15, Attribute.shield_explosive_damage_resonance: 0.16
+            AttributeId.em_damage_resonance: 0.05, AttributeId.thermal_damage_resonance: 0.06,
+            AttributeId.kinetic_damage_resonance: 0.07, AttributeId.explosive_damage_resonance: 0.08,
+            AttributeId.armor_em_damage_resonance: 0.09, AttributeId.armor_thermal_damage_resonance: 0.1,
+            AttributeId.armor_kinetic_damage_resonance: 0.11, AttributeId.armor_explosive_damage_resonance: 0.12,
+            AttributeId.shield_em_damage_resonance: 0.13, AttributeId.shield_thermal_damage_resonance: 0.14,
+            AttributeId.shield_kinetic_damage_resonance: 0.15, AttributeId.shield_explosive_damage_resonance: 0.16
         }).id)
         fit.source = None
         # Action
