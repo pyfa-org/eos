@@ -41,7 +41,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
 
     def test_other_domain_container(self):
-        influence_source = ModuleHigh(self.ch.type(effects=[self.effect], attributes={self.src_attr.id: 20}).id)
+        influence_source = ModuleHigh(self.ch.type(attributes={self.src_attr.id: 20}, effects=[self.effect]).id)
         influence_target = Charge(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         influence_source.charge = influence_target
         # Action
@@ -53,7 +53,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_other_domain_charge(self):
-        influence_source = Charge(self.ch.type(effects=[self.effect], attributes={self.src_attr.id: 20}).id)
+        influence_source = Charge(self.ch.type(attributes={self.src_attr.id: 20}, effects=[self.effect]).id)
         influence_target = ModuleHigh(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.modules.high.append(influence_target)
         # Action
@@ -71,7 +71,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
     def test_self(self):
         # Check that source item isn't modified
         influence_source = ModuleHigh(self.ch.type(
-            effects=[self.effect], attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}, effects=[self.effect]
         ).id)
         influence_target = Charge(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         influence_source.charge = influence_target
@@ -85,7 +85,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
 
     def test_other_item(self):
         # Here we check some "random" item, w/o linking items
-        influence_source = ModuleHigh(self.ch.type(effects=[self.effect], attributes={self.src_attr.id: 20}).id)
+        influence_source = ModuleHigh(self.ch.type(attributes={self.src_attr.id: 20}, effects=[self.effect]).id)
         influence_target = Ship(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.ship = influence_target
         # Action

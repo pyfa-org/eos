@@ -75,23 +75,6 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
 
-    def test_fail_subcap_capattr_value_none(self):
-        # Check that error is raised when ship has isCapitalShip
-        # attribute, but its value is None
-        fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={Attribute.is_capital_size: None}).id)
-        item = ModuleHigh(self.ch.type(attributes={Attribute.volume: 3501}).id, state=State.offline)
-        fit.modules.high.append(item)
-        # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.capital_item)
-        # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.max_subcap_volume, 3500)
-        self.assertEqual(restriction_error.item_volume, 3501)
-        # Cleanup
-        self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
-
     def test_pass_subcap_volume_subcap(self):
         # Make sure no error raised when non-capital
         # item is added to fit

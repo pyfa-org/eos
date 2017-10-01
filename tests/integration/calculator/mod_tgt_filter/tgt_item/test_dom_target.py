@@ -38,7 +38,7 @@ class TestTgtItemDomainTarget(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        influence_source = Ship(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
+        influence_source = Ship(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
         # Action
         self.fit.ship = influence_source
         # No checks - nothing should happen

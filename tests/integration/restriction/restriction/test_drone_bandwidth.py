@@ -110,7 +110,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         item = Drone(self.ch.type(
-            effects=[effect], attributes={Attribute.drone_bandwidth_used: 50, src_attr.id: 2}
+            attributes={Attribute.drone_bandwidth_used: 50, src_attr.id: 2}, effects=[effect]
         ).id, state=State.online)
         fit.drones.add(item)
         # Action

@@ -43,7 +43,7 @@ class TestLaunchedDrone(StatTestCase):
         mod_effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
         fit = Fit()
         fit.character = Character(self.ch.type(
-            effects=[mod_effect], attributes={Attribute.max_active_drones: 3, src_attr.id: 2}
+            attributes={Attribute.max_active_drones: 3, src_attr.id: 2}, effects=[mod_effect]
         ).id)
         # Verification
         self.assertEqual(fit.stats.launched_drones.total, 6)

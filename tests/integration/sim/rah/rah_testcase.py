@@ -68,7 +68,7 @@ class RahSimTestCase(IntegrationTestCase):
 
     def make_ship_eve_type(self, resonances):
         attr_order = (self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id)
-        return self.ch.type(attributes=dict(zip(attr_order, resonances)), effects=())
+        return self.ch.type(attributes=dict(zip(attr_order, resonances)))
 
     def make_rah_eve_type(self, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
         attr_order = (
@@ -76,6 +76,6 @@ class RahSimTestCase(IntegrationTestCase):
             self.shift_attr.id, self.cycle_attr.id, self.heat_attr.id
         )
         return self.ch.type(
-            effects=(self.rah_effect, self.heat_effect), default_effect=self.rah_effect,
-            attributes=dict(zip(attr_order, (*resonances, shift_amount, cycle_time, heat_cycle_mod)))
+            attributes=dict(zip(attr_order, (*resonances, shift_amount, cycle_time, heat_cycle_mod))),
+            effects=(self.rah_effect, self.heat_effect), default_effect=self.rah_effect
         )

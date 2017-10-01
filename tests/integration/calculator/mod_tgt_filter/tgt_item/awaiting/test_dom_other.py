@@ -38,7 +38,7 @@ class TestTgtItemAwaitingDomainOther(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        influence_source = ModuleHigh(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
+        influence_source = ModuleHigh(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
         self.fit.modules.high.append(influence_source)
         influence_target = Charge(self.ch.type(attributes={tgt_attr.id: 100}).id)
         # Action

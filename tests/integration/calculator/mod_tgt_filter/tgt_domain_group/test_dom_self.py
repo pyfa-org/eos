@@ -42,7 +42,7 @@ class TestTgtDomainGroupDomainSelf(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        self.source_eve_type = self.ch.type(effects=[effect], attributes={src_attr.id: 20})
+        self.source_eve_type = self.ch.type(attributes={src_attr.id: 20}, effects=[effect])
 
     def test_ship(self):
         influence_source = Ship(self.source_eve_type.id)

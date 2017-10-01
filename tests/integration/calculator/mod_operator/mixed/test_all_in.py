@@ -41,7 +41,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_pre_ass = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_pre_ass])
         value_pre_ass = 5
         influence_source_pre_ass = Implant(self.ch.type(
-            effects=[effect_pre_ass], attributes={src_attr.id: value_pre_ass}
+            attributes={src_attr.id: value_pre_ass}, effects=[effect_pre_ass]
         ).id)
         self.fit.implants.add(influence_source_pre_ass)
         modifier_pre_mul = self.mod(
@@ -54,7 +54,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_pre_mul = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_pre_mul])
         value_pre_mul = 50
         influence_source_pre_mul = Implant(self.ch.type(
-            effects=[effect_pre_mul], attributes={src_attr.id: value_pre_mul}
+            attributes={src_attr.id: value_pre_mul}, effects=[effect_pre_mul]
         ).id)
         self.fit.implants.add(influence_source_pre_mul)
         modifier_pre_div = self.mod(
@@ -67,7 +67,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_pre_div = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_pre_div])
         value_pre_div = 0.5
         influence_source_pre_div = Implant(self.ch.type(
-            effects=[effect_pre_div], attributes={src_attr.id: value_pre_div}
+            attributes={src_attr.id: value_pre_div}, effects=[effect_pre_div]
         ).id)
         self.fit.implants.add(influence_source_pre_div)
         modifier_mod_add = self.mod(
@@ -80,7 +80,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_mod_add = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_mod_add])
         value_mod_add = 10
         influence_source_mod_add = Implant(self.ch.type(
-            effects=[effect_mod_add], attributes={src_attr.id: value_mod_add}
+            attributes={src_attr.id: value_mod_add}, effects=[effect_mod_add]
         ).id)
         self.fit.implants.add(influence_source_mod_add)
         modifier_mod_sub = self.mod(
@@ -93,7 +93,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_mod_sub = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_mod_sub])
         value_mod_sub = 63
         influence_source_mod_sub = Implant(self.ch.type(
-            effects=[effect_mod_sub], attributes={src_attr.id: value_mod_sub}
+            attributes={src_attr.id: value_mod_sub}, effects=[effect_mod_sub]
         ).id)
         self.fit.implants.add(influence_source_mod_sub)
         modifier_post_mul = self.mod(
@@ -106,7 +106,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_post_mul = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_post_mul])
         value_post_mul = 1.35
         influence_source_post_mul = Implant(self.ch.type(
-            effects=[effect_post_mul], attributes={src_attr.id: value_post_mul}
+            attributes={src_attr.id: value_post_mul}, effects=[effect_post_mul]
         ).id)
         self.fit.implants.add(influence_source_post_mul)
         modifier_post_div = self.mod(
@@ -119,7 +119,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_post_div = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_post_div])
         value_post_div = 2.7
         influence_source_post_div = Implant(self.ch.type(
-            effects=[effect_post_div], attributes={src_attr.id: value_post_div}
+            attributes={src_attr.id: value_post_div}, effects=[effect_post_div]
         ).id)
         self.fit.implants.add(influence_source_post_div)
         modifier_post_perc = self.mod(
@@ -132,7 +132,7 @@ class TestOperatorAllIn(CalculatorTestCase):
         effect_post_perc = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier_post_perc])
         value_post_perc = 15
         influence_source_post_perc = Implant(self.ch.type(
-            effects=[effect_post_perc], attributes={src_attr.id: value_post_perc}
+            attributes={src_attr.id: value_post_perc}, effects=[effect_post_perc]
         ).id)
         self.fit.implants.add(influence_source_post_perc)
         influence_target = Rig(self.ch.type(attributes={tgt_attr.id: 100}).id)

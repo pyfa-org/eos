@@ -39,7 +39,7 @@ class TestTgtDomainDomainShip(CalculatorTestCase):
             src_attr=src_attr.id
         )
         effect = self.ch.effect(category=EffectCategory.passive, modifiers=[modifier])
-        self.influence_source = Implant(self.ch.type(effects=[effect], attributes={src_attr.id: 20}).id)
+        self.influence_source = Implant(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
 
     def test_parent_domain_ship(self):
         influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
