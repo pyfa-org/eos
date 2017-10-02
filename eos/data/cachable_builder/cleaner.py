@@ -31,30 +31,33 @@ logger = getLogger(__name__)
 
 
 class Cleaner:
-    """
-    Class responsible for cleaning up unnecessary data
-    from the database in automatic mode, using several
-    pre-defined data relations.
-    """
+    """Removes unnecessary data."""
 
     def clean(self, data):
+        """Remove unnecessary data.
+
+        Process is automatic and needs no external configuration, it uses data
+        relationships hardcoded in class' methods.
+
+        Args:
+            data: dictionary in {table name: {table, rows}} format, which will
+                be cleaned up.
+        """
         self.data = data
-        # Container to store signs of so-called strong data,
-        # such rows are immune to removal. Dictionary structure
-        # is the same as structure of general data container
+        # Container to store signs of so-called strong data, such rows are
+        # immune to removal. Dictionary structure is the same as structure of
+        # general data container
         self.strong_data = {}
         # Move some rows to strong data container
         self._pump_evetypes()
-        # Also contains data in the very same format, but tables/rows
-        # in this table are considered as pending for removal
+        # Also contains data in the very same format, but tables/rows in this
+        # table are considered as pending for removal
         self.trashed_data = {}
         self._autocleanup()
         self._report_results()
 
     def _pump_evetypes(self):
-        """
-        Mark some hardcoded evetypes as strong.
-        """
+        """Mark some hardcoded eve types as strong."""
         # Tuple with category IDs of eve types we want to keep
         strong_categories = (
             CategoryId.charge,
@@ -80,9 +83,7 @@ class Cleaner:
         self._pump_data('evetypes', rows_to_pump)
 
     def _autocleanup(self):
-        """
-        Define auto-cleanup workflow.
-        """
+        """Run auto-cleanup"""
         self._kill_weak()
         self._changed = True
         # Cycle as long as we have changes during previous iteration.
@@ -94,9 +95,7 @@ class Cleaner:
             self._reestablish_broken_relationships()
 
     def _kill_weak(self):
-        """
-        Trash all data which isn't marked as strong.
-        """
+        """Trash all data which isn't marked as strong."""
         for table_name, table in self.data.items():
             to_trash = set()
             strong_rows = self.strong_data.get(table_name, set())
@@ -104,13 +103,14 @@ class Cleaner:
             self._trash_data(table_name, to_trash)
 
     def _reanimate_auxiliary_friends(self):
-        """
-        Restore rows in tables, which complement evetypes
-        or serve as m:n mapping between evetypes and other tables.
+        """Move auxiliary rows from trash into actual data.
+
+        Restore rows in tables, which complement evetypes or serve as m:n
+        mapping between evetypes and other tables.
         """
         # As we filter whole database using evetypes table,
         # gather evetype IDs we currently have in there
-        type_ids = set(row['typeID'] for row in self.data['evetypes'])
+        type_ids = {row['typeID'] for row in self.data['evetypes']}
         # Auxiliary tables are those which do not define
         # any entities, they just map one entities to others
         # or complement entities with additional data
@@ -126,12 +126,9 @@ class Cleaner:
                 self._restore_data(table_name, to_restore)
 
     def _reestablish_broken_relationships(self):
-        """
-        Restore all rows targeted by references of rows, which
-        exist in actual data.
-        """
-        # Container for 'target data', matches with which are
-        # going to be restored
+        """Restore all trashed rows which are referenced from actual data."""
+        # Container for 'target data', matches with which are going to be
+        # restored
         # Format: {(target table name, target column name): {values to have}}}
         tgt_data = {}
         self._get_targets_relational(tgt_data)
@@ -149,9 +146,16 @@ class Cleaner:
                 self._restore_data(tgt_table_name, to_restore)
 
     def _get_targets_relational(self, tgt_data):
-        """
-        Fill dictionary with target references taken from data
-        stored in relational format
+        """Find out which data relationally is referenced from actual data.
+
+        In this method, we get only references defined in 'relational' format,
+        that is, references defined as foreign keys. Foreign keys scheme is
+        hardcoded in this method and needs to be updated if it changes.
+
+        Args:
+            tgt_data: dictionary which will be filled during the process. Its
+                contents should specify target field and which values this field
+                should have.
         """
         # Format:
         # {source table: {source column: (target table, target column)}}
@@ -196,16 +200,24 @@ class Cleaner:
                 tgt_table_name, tgt_column_name = fk_target
                 for row in self.data[src_table_name]:
                     fk_value = row.get(src_column_name)
-                    # If there's no such field in a row or it is None,
-                    # this is not a valid FK reference
+                    # If there's no such field in a row or it is None, this is
+                    # not a valid FK reference
                     if fk_value is None:
                         continue
-                    tgt_data.setdefault((tgt_table_name, tgt_column_name), set()).add(fk_value)
+                    tgt_spec = (tgt_table_name, tgt_column_name)
+                    tgt_data.setdefault(tgt_spec, set()).add(fk_value)
 
     def _get_targets_yaml(self, tgt_data):
-        """
-        Fill dictionary with target references taken from data
-        stored in YAML format
+        """Find out which data is referenced from YAML in actual data.
+
+        Method knows where to look for YAML data and which references it
+        contains. If YAML data format is somehow changed, this method also needs
+        to be updated.
+
+        Args:
+            tgt_data: dictionary which will be filled during the process. Its
+                contents should specify target field and which values this field
+                should have.
         """
         for effect_row in self.data['dgmeffects']:
             effect_id = effect_row['effectID']
@@ -221,21 +233,24 @@ class Cleaner:
                 # If there're any references for given entity, add them to
                 # dictionary
                 if len(references) > 0:
-                    tgt_data.setdefault((tgt_table_name, tgt_column_name), set()).update(references)
+                    tgt_spec = (tgt_table_name, tgt_column_name)
+                    tgt_data.setdefault(tgt_spec, set()).update(references)
 
     @cached_property
     def _yaml_modinfo_relations(self):
-        """
-        Generate auxiliary map to avoid re-parsing YAML
-        on each cleanup cycle. It is used when collecting
-        data about references from modifier info YAMLs.
+        """Helper method for YAML reference getter.
+
+        Generates auxiliary map to avoid re-parsing YAML on each cleanup cycle.
+
+        Returns:
+            Dictionary in {effect ID: ({types}, {groups}, {attribs})} format,
+            where inner sets contain IDs of corresponding referenced entities.
         """
 
-        # Helper function to fetch actual attribute values
-        # from modinfo dicts
-        def add_entity(modinfo, attr_name, entities):
+        # Helper function to fetch actual attribute values from modinfo dicts
+        def add_entity(mod_info, attr_name, entities):
             try:
-                entity_id = modinfo[attr_name]
+                entity_id = mod_info[attr_name]
             except KeyError:
                 pass
             else:
@@ -253,25 +268,25 @@ class Cleaner:
                 continue
             # Skip row in case of any YAML parsing errors
             try:
-                modinfos = yaml.safe_load(modinfos_yaml)
+                mod_infos = yaml.safe_load(modinfos_yaml)
             except KeyboardInterrupt:
                 raise
             except:
                 continue
-            # Modinfos should be basic python iterable
-            if not isinstance(modinfos, (list, tuple, set)):
+            # Modifier infos should be basic python iterable
+            if not isinstance(mod_infos, (list, tuple, set)):
                 continue
             types = set()
             groups = set()
             attrs = set()
             # Fill in sets with IDs from each modifier info dict
-            for modinfo in modinfos:
-                add_entity(modinfo, 'skillTypeID', types)
-                add_entity(modinfo, 'groupID', groups)
-                add_entity(modinfo, 'modifyingAttributeID', attrs)
-                add_entity(modinfo, 'modifiedAttributeID', attrs)
-            # If all of the sets are empty, do not add anything to
-            # primary container
+            for mod_info in mod_infos:
+                add_entity(mod_info, 'skillTypeID', types)
+                add_entity(mod_info, 'groupID', groups)
+                add_entity(mod_info, 'modifyingAttributeID', attrs)
+                add_entity(mod_info, 'modifiedAttributeID', attrs)
+            # If all of the sets are empty, do not add anything to primary
+            # container
             if len(types) == 0 and len(groups) == 0 and len(attrs) == 0:
                 continue
             # Otherwise, add all the data we've gathered for current
