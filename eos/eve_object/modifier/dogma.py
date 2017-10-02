@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from numbers import Integral
+
 from eos.const.eos import ModifierOperator
 from eos.data.cachable import BaseCachable
 from eos.util.repr import make_repr_str
@@ -62,7 +64,7 @@ class DogmaModifier(BaseModifier, BaseCachable):
         return all((
             self._validate_base(),
             self.operator in ModifierOperator.__members__.values(),
-            isinstance(self.src_attr, int)
+            isinstance(self.src_attr, Integral)
         ))
 
     # Cache-related methods

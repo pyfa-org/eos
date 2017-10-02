@@ -20,6 +20,7 @@
 
 
 import yaml
+from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
 
@@ -274,7 +275,7 @@ class Cleaner:
             except:
                 continue
             # Modifier infos should be basic python iterable
-            if not isinstance(mod_infos, (list, tuple, set)):
+            if not isinstance(mod_infos, Iterable):
                 continue
             types = set()
             groups = set()

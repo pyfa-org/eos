@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from collections import Iterable
+from collections.abc import Iterable
 from copy import deepcopy
 from logging import getLogger, DEBUG
 from logging.handlers import BufferingHandler

@@ -20,6 +20,7 @@
 
 import json
 import os.path
+from collections.abc import Mapping
 
 from eos.util.repr import make_repr_str
 from .base import BaseDataHandler
@@ -77,7 +78,7 @@ class JsonDataHandler(BaseDataHandler):
         Convert multi-level dictionary to single-level one.
         """
         for k, v in source.items():
-            if isinstance(v, dict):
+            if isinstance(v, Mapping):
                 self.__collapse_dict(v, target)
             elif k not in target:
                 target[k] = v
