@@ -47,7 +47,7 @@ class BaseCacheHandler(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def update_cache(self, cachable_data, fingerprint):
+    def update_cache(self, eve_objects, fingerprint):
         """
         Update cache with passed data.
 

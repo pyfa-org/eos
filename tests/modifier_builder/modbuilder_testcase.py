@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.data.cachable_builder.modifier_builder import ModifierBuilder
+from eos.data.eve_obj_builder.modifier_builder import ModifierBuilder
 from tests.eos_testcase import EosTestCase
 from .environment import ExpressionFactory
 

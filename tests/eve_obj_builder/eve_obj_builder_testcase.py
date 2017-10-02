@@ -19,4 +19,32 @@
 # ==============================================================================
 
 
-from .builder import CachableBuilder
+from eos.data.eve_obj_builder import EveObjBuilder
+from eos.eve_object.modifier import DogmaModifier
+from tests.eos_testcase import EosTestCase
+from .environment import DataHandler
+
+
+class EveObjBuilderTestCase(EosTestCase):
+    """
+    Additional functionality provided:
+
+    self.dh -- default data handler
+    self.run_builder -- shortcut to running eve object
+        builder on the data provided by data handler self.dh
+    self.mod -- instantiate dogma modifier
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.dh = DataHandler()
+
+    def run_builder(self):
+        """
+        Run builder and store data on test object so that
+        it's easier to access.
+        """
+        self.types, self.attributes, self.effects = EveObjBuilder.run(self.dh)
+
+    def mod(self, *args, **kwargs):
+        return DogmaModifier(*args, **kwargs)

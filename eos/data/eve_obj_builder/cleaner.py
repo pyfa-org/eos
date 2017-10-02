@@ -41,8 +41,7 @@ class Cleaner:
         relationships hardcoded in class' methods.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format, which will
-                be cleaned up.
+            data: dictionary in {table name: {table, rows}} format
         """
         self.data = data
         # Container to store signs of so-called strong data, such rows are
@@ -73,7 +72,8 @@ class Cleaner:
         # Set with group IDs of eve types we want to keep
         # It is set because we will need to modify it
         strong_groups = {GroupId.character, GroupId.effect_beacon}
-        # Go through table data, filling valid groups set according to valid categories
+        # Go through table data, filling valid groups set according to valid
+        # categories
         for datarow in self.data['evegroups']:
             if datarow.get('categoryID') in strong_categories:
                 strong_groups.add(datarow['groupID'])
@@ -158,8 +158,7 @@ class Cleaner:
                 contents should specify target field and which values this field
                 should have.
         """
-        # Format:
-        # {source table: {source column: (target table, target column)}}
+        # Format: {source table: {source column: (target table, target column)}}
         foreign_keys = {
             'dgmattribs': {
                 'maxAttributeID': ('dgmattribs', 'attributeID')
@@ -244,8 +243,8 @@ class Cleaner:
         Generates auxiliary map to avoid re-parsing YAML on each cleanup cycle.
 
         Returns:
-            Dictionary in {effect ID: ({types}, {groups}, {attribs})} format,
-            where inner sets contain IDs of corresponding referenced entities.
+            Dictionary in {effect ID: ({type IDs}, {group IDs}, {attrib IDs})}
+            format.
         """
 
         # Helper function to fetch actual attribute values from modinfo dicts
@@ -257,19 +256,21 @@ class Cleaner:
             else:
                 entities.add(entity_id)
 
-        # Format:
-        # {effect ID: ({types}, {groups}, {attribs})}
+        # Format: {effect ID: ({type IDs}, {group IDs}, {attrib IDs})}
         relations = {}
         # Cycle through both data and trashed data, to make sure all rows are
         # processed regardless of stage during which this property is accessed
-        for effect_row in chain(self.data['dgmeffects'], self.trashed_data['dgmeffects']):
+        for effect_row in chain(
+            self.data['dgmeffects'],
+            self.trashed_data['dgmeffects']
+        ):
             # We do not need anything here if modifier info is empty
-            modinfos_yaml = effect_row.get('modifierInfo')
-            if modinfos_yaml is None:
+            mod_infos_yaml = effect_row.get('modifierInfo')
+            if mod_infos_yaml is None:
                 continue
             # Skip row in case of any YAML parsing errors
             try:
-                mod_infos = yaml.safe_load(modinfos_yaml)
+                mod_infos = yaml.safe_load(mod_infos_yaml)
             except KeyboardInterrupt:
                 raise
             except:
@@ -288,18 +289,15 @@ class Cleaner:
                 add_entity(mod_info, 'modifiedAttributeID', attrs)
             # If all of the sets are empty, do not add anything to primary
             # container
-            if len(types) == 0 and len(groups) == 0 and len(attrs) == 0:
+            if not types and not groups and not attrs:
                 continue
-            # Otherwise, add all the data we've gathered for current
-            # effect to container
+            # Otherwise, add all the data we've gathered for current effect to
+            # container
             relations[effect_row['effectID']] = (types, groups, attrs)
         return relations
 
     def _report_results(self):
-        """
-        Run calculations to report about cleanup results
-        to the logger.
-        """
+        """Log cleanup results."""
         table_msgs = []
         for table_name in sorted(self.data):
             datalen = len(self.data[table_name])
@@ -315,40 +313,38 @@ class Cleaner:
             logger.info(msg)
 
     def _pump_data(self, table_name, datarows):
-        """
-        Auxiliary method, mark data rows as strong.
+        """Mark data rows as strong.
 
-        Required arguments:
-        table_name -- name of table for which we're pumping data
-        datarows -- set with rows to pump
+        Rows marked as strong are immune to removal.
+
+        Args:
+            table_name: name of a table where data for marking resides.
+            datarows: iterable with data rows from the table.
         """
         self.strong_data.setdefault(table_name, set()).update(datarows)
 
     def _trash_data(self, table_name, datarows):
-        """
-        Auxiliary method, mark data rows as pending removal.
+        """Move data rows into trash.
 
-        Required arguments:
-        table_name -- name of table for which we're removing data
-        datarows -- set with rows to remove
+        Data is moved into trash with ability to be restored later, if needed.
+
+        Args:
+            table_name: name of a table where data for marking resides.
+            datarows: iterable with data rows from the table.
         """
         data_table = self.data[table_name]
         trash_table = self.trashed_data.setdefault(table_name, set())
-        # Update both trashed data and source data
         trash_table.update(datarows)
         data_table.difference_update(datarows)
 
     def _restore_data(self, table_name, datarows):
-        """
-        Auxiliary method, move data from trash back to actual
-        data container.
+        """Restore data rows from trash into actual data.
 
-        Required arguments:
-        table_name -- name of table for which we're restoring data
-        datarows -- set with rows to restore
+        Args:
+            table_name: name of a table where data for marking resides.
+            datarows: iterable with data rows from the table.
         """
         data_table = self.data[table_name]
         trash_table = self.trashed_data[table_name]
-        # Update both trashed data and source data
         data_table.update(datarows)
         trash_table.difference_update(datarows)

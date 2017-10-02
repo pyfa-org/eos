@@ -43,7 +43,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'effect 1, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
@@ -61,7 +61,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'effect 1, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
@@ -80,7 +80,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'effect 22, building 2 modifiers: 1 build errors'
         self.assertEqual(log_record.msg, expected)
@@ -98,7 +98,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'effect 1, building 2 modifiers: 1 validation failures'
         self.assertEqual(log_record.msg, expected)
@@ -118,7 +118,7 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.modifier_builder.builder')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         expected = 'effect 1, building 3 modifiers: 1 build errors, 1 validation failures'
         self.assertEqual(log_record.msg, expected)

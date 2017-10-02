@@ -34,28 +34,35 @@ class Converter:
 
     @staticmethod
     def run(data):
+        """Convert data into eve objects.
+
+        Args:
+            data: dictionary in {table name: {table, rows}} format
+
+        Returns:
+            Tuple with 3 dictionaries, which contain types, attributes and
+            effects, keyed against their representative IDs.
         """
-        Convert data into Eos cachable objects.
-        """
-        # Before actually instantiating anything, we need to collect
-        # some data in convenient form
+        # Before actually instantiating anything, we need to collect some data
+        # in convenient form
         # Format: {group ID: group row}
         evegroups_keyed = {}
         for row in data['evegroups']:
             evegroups_keyed[row['groupID']] = row
         # Format: {type ID: default effect ID}
-        type_defeff_map = {}
+        types_defeff_map = {}
         for row in data['dgmtypeeffects']:
             if row.get('isDefault') is True:
-                type_defeff_map[row['typeID']] = row['effectID']
-        # Format: {type ID: [effect IDs]}
-        type_effects = {}
+                types_defeff_map[row['typeID']] = row['effectID']
+        # Format: {type ID: {effect IDs}}
+        types_effects = {}
         for row in data['dgmtypeeffects']:
-            type_effects.setdefault(row['typeID'], []).append(row['effectID'])
+            types_effects.setdefault(row['typeID'], set()).add(row['effectID'])
         # Format: {type ID: {attr ID: value}}
-        type_attribs = {}
+        types_attribs = {}
         for row in data['dgmtypeattribs']:
-            type_attribs.setdefault(row['typeID'], {})[row['attributeID']] = row['value']
+            type_attribs = types_attribs.setdefault(row['typeID'], {})
+            type_attribs[row['attributeID']] = row['value']
         # Format: {type ID: {ability ID: ability data}}
         typeabils_reformat = {}
         for row in data['typefighterabils']:
@@ -82,7 +89,7 @@ class Converter:
         effects = {}
         mod_builder = ModifierBuilder(data['dgmexpressions'])
         for row in data['dgmeffects']:
-            modifiers, build_status = mod_builder.build(row)
+            mods, build_status = mod_builder.build(row)
             effect = Effect(
                 effect_id=row['effectID'],
                 category=row.get('effectCategory'),
@@ -93,9 +100,10 @@ class Converter:
                 range_attribute=row.get('rangeAttributeID'),
                 falloff_attribute=row.get('falloffAttributeID'),
                 tracking_speed_attribute=row.get('trackingSpeedAttributeID'),
-                fitting_usage_chance_attribute=row.get('fittingUsageChanceAttributeID'),
+                fitting_usage_chance_attribute=row.get(
+                    'fittingUsageChanceAttributeID'),
                 build_status=build_status,
-                modifiers=tuple(modifiers),
+                modifiers=tuple(mods),
                 customize=False
             )
             effects[effect.id] = effect
@@ -104,14 +112,16 @@ class Converter:
         types = {}
         for row in data['evetypes']:
             type_id = row['typeID']
-            group = row.get('groupID')
+            type_group = row.get('groupID')
+            type_effect_ids = types_effects.get(type_id, set())
+            type_effect_ids.intersection_update(effects)
             eve_type = Type(
                 type_id=type_id,
-                group=group,
-                category=evegroups_keyed.get(group, {}).get('categoryID'),
-                attributes=type_attribs.get(type_id, {}),
-                effects=tuple(effects[eid] for eid in type_effects.get(type_id, ()) if eid in effects),
-                default_effect=effects.get(type_defeff_map.get(type_id)),
+                group=type_group,
+                category=evegroups_keyed.get(type_group, {}).get('categoryID'),
+                attributes=types_attribs.get(type_id, {}),
+                effects=tuple(effects[eid] for eid in type_effect_ids),
+                default_effect=effects.get(types_defeff_map.get(type_id)),
                 fighter_abilities=typeabils_reformat.get(type_id, {}),
                 customize=False
             )

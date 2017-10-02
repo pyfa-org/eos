@@ -22,10 +22,10 @@
 import logging
 from unittest.mock import patch
 
-from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
+from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
-class TestPrimaryKey(CachableBuilderTestCase):
+class TestPrimaryKey(EveObjBuilderTestCase):
     """Check that only valid primary keys pass checks"""
 
     def test_single_proper_pk(self):
@@ -34,10 +34,10 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertIn(1, self.types)
         self.assertIn(2, self.types)
@@ -47,11 +47,11 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(len(self.types), 0)
 
@@ -60,11 +60,11 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(len(self.types), 0)
 
@@ -74,14 +74,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].group, 1)
@@ -93,14 +93,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].group, 920)
@@ -112,14 +112,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 0)
 
@@ -130,10 +130,10 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         type_attributes = self.types[1].attributes
         self.assertEqual(type_attributes[100], 50.0)
@@ -145,14 +145,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types[1].attributes), 0)
 
@@ -162,14 +162,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types[1].attributes), 0)
 
@@ -180,14 +180,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         type_attributes = self.types[1].attributes
         self.assertEqual(len(type_attributes), 1)
@@ -201,14 +201,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 0)
 
@@ -220,14 +220,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         type_attributes = self.types[1].attributes
         self.assertEqual(len(type_attributes), 1)
@@ -243,14 +243,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table evegroups have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].category, 7)
@@ -263,14 +263,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.attributes), 1)
         self.assertEqual(self.attributes[7].max_attribute, 50)
@@ -283,14 +283,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmeffects have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.effects), 1)
         self.assertEqual(self.effects[7].category, 50)
@@ -303,19 +303,19 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmtypeeffects have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].default_effect.id, 100)
 
-    @patch('eos.data.cachable_builder.converter.ModifierBuilder')
+    @patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
     def test_dgmexpressions(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 7, 'isDefault': False})
@@ -334,14 +334,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table dgmexpressions have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
@@ -362,14 +362,14 @@ class TestPrimaryKey(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preclean')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preclean')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, '1 rows in table typefighterabils have invalid PKs, removing them')
         idzing_stats = self.log[1]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 1)
         type_fighter_abilities = self.types[1].fighter_abilities

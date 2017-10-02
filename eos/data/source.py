@@ -24,7 +24,7 @@ from collections import namedtuple
 
 from eos import __version__ as eos_version
 from eos.util.repr import make_repr_str
-from .cachable_builder import CachableBuilder
+from .eve_obj_builder import EveObjBuilder
 from .exception import ExistingSourceError, UnknownSourceError
 
 
@@ -84,9 +84,10 @@ class SourceManager:
                     cache_fp, current_fp)
                 logger.info(msg)
 
-            # Generate cachable objects and cache them
-            cachable_data = CachableBuilder.run(data_handler)
-            cache_handler.update_cache(cachable_data, current_fp)
+            # Generate eve objects and cache them, as generation takes
+            # significant amount of time
+            eve_objects = EveObjBuilder.run(data_handler)
+            cache_handler.update_cache(eve_objects, current_fp)
 
         # Finally, add record to list of sources
         source = Source(alias=alias, cache_handler=cache_handler)

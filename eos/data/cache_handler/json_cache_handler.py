@@ -131,11 +131,11 @@ class JsonCacheHandler(BaseCacheHandler):
         else:
             self.__update_memory_cache(cache_data)
 
-    def update_cache(self, cachable_data, fingerprint):
+    def update_cache(self, eve_objects, fingerprint):
         """
         Replace existing cache data with passed data.
         """
-        types, attributes, effects = cachable_data
+        types, attributes, effects = eve_objects
         cache_data = {
             'types': {type_id: eve_type.compress() for type_id, eve_type in types.items()},
             'attributes': {attr_id: attr.compress() for attr_id, attr in attributes.items()},

@@ -23,21 +23,19 @@ from eos.util.frozen_dict import FrozenDict
 from .cleaner import Cleaner
 from .converter import Converter
 from .normalizer import Normalizer
-from .validator_preclean import ValidatorPreCleanup
-from .validator_preconvert import ValidatorPreConversion
+from .validator_preclean import ValidatorPreClean
+from .validator_preconv import ValidatorPreConv
 
 
-class CachableBuilder:
-    """Builds Eos-specific cachable objects from passed data."""
+class EveObjBuilder:
+    """Builds Eos-specific eve objects from passed data."""
 
     @staticmethod
     def run(data_handler):
-        """Run cache building process.
+        """Run eve object building process.
 
         Use data provided by passed cache handler to compose various objects
-        with the help of which eos will oeprate. As building process is quite
-        complex and can take time, objects are cachable, and are intended to be
-        cached later,
+        with the help of which eos will oeprate.
 
         Args:
             data_handler: data handler instance, which should provide access
@@ -79,7 +77,7 @@ class CachableBuilder:
 
         # Run pre-cleanup checks, as cleanup stage and further stages rely on
         # some assumptions about the data
-        ValidatorPreCleanup.run(data)
+        ValidatorPreClean.run(data)
 
         # Normalize the data to make data structure more consistent, making it
         # easier to clean properly
@@ -89,7 +87,7 @@ class CachableBuilder:
         Cleaner().clean(data)
 
         # Verify that our data is ready for conversion
-        ValidatorPreConversion.run(data)
+        ValidatorPreConv.run(data)
 
         # Convert data into Eos-specific objects, stored in several
         # dictionaries, with object IDs being dictionary keys

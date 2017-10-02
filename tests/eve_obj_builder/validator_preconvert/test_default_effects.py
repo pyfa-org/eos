@@ -21,10 +21,10 @@
 
 import logging
 
-from tests.cachable_builder.cachable_builder_testcase import CachableBuilderTestCase
+from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
-class TestDefaultEffects(CachableBuilderTestCase):
+class TestDefaultEffects(EveObjBuilderTestCase):
     """
     Check that filtering out superfluous default effects
     occurs after data filtering, and that it occurs at all.
@@ -47,10 +47,10 @@ class TestDefaultEffects(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertIn(1, self.types)
         self.assertEqual(len(self.effects), 2)
@@ -63,13 +63,13 @@ class TestDefaultEffects(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         log_record = self.log[2]
-        self.assertEqual(log_record.name, 'eos.data.cachable_builder.validator_preconvert')
+        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preconv')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -90,10 +90,10 @@ class TestDefaultEffects(CachableBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.cachable_builder.normalizer')
+        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.cachable_builder.cleaner')
+        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)
