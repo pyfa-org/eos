@@ -27,9 +27,10 @@ from .base import BaseDataHandler
 
 
 class JsonDataHandler(BaseDataHandler):
-    """
-    Implements loading of raw data from JSON files produced by Phobos script, which can be found at
-    https://github.com/pyfa-org/Phobos.
+    """JSON data handler implementation.
+
+    Implements loading of raw data from JSON files produced by Phobos script,
+    which can be found at https://github.com/pyfa-org/Phobos.
     """
 
     def __init__(self, basepath):
@@ -58,7 +59,8 @@ class JsonDataHandler(BaseDataHandler):
 
     def get_typefighterabils(self):
         rows = []
-        for eve_type_id, type_abilities in self.__fetch_file('fighterabilitiesbytype').items():
+        fighter_abils = self.__fetch_file('fighterabilitiesbytype')
+        for eve_type_id, type_abilities in fighter_abils.items():
             eve_type_id = int(eve_type_id)
             for ability_data in type_abilities.values():
                 ability_row = {'typeID': eve_type_id}
@@ -67,16 +69,15 @@ class JsonDataHandler(BaseDataHandler):
         return rows
 
     def __fetch_file(self, filename, values_only=False):
-        with open(os.path.join(self.basepath, '{}.json'.format(filename)), mode='r', encoding='utf8') as file:
+        filepath = os.path.join(self.basepath, '{}.json'.format(filename))
+        with open(filepath, mode='r', encoding='utf8') as file:
             data = json.load(file)
         if values_only:
             data = list(data.values())
         return data
 
     def __collapse_dict(self, source, target):
-        """
-        Convert multi-level dictionary to single-level one.
-        """
+        """Convert multi-level dictionary to single-level one."""
         for k, v in source.items():
             if isinstance(v, Mapping):
                 self.__collapse_dict(v, target)

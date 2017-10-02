@@ -23,7 +23,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseCachable(metaclass=ABCMeta):
-    """Base class for all objects which can be stored in cache"""
+    """Abstract base class for all objects which can be stored in cache"""
 
     @abstractmethod
     def compress(self):

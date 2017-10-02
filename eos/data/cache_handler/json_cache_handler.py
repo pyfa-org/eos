@@ -37,14 +37,14 @@ logger = getLogger(__name__)
 
 
 class JsonCacheHandler(BaseCacheHandler):
-    """
-    This cache handler implements persistent cache store in the form
-    of compressed JSON. To improve performance further, it also keeps
-    loaded data in memory, and uses weakref object cache for assembled
-    objects.
+    """JSON cache storage implementation.
 
-    Required arguments:
-    cache_path -- file path where persistent cache will be stored (.json.bz2)
+    This cache handler implements persistent cache store in the form of
+    compressed JSON. To improve performance further, it also keeps loaded data
+    in memory, and uses weakref object cache for eve objects.
+
+    Args:
+        cache_path: file path where persistent cache will be stored (.json.bz2)
     """
 
     def __init__(self, cache_path):
@@ -132,24 +132,27 @@ class JsonCacheHandler(BaseCacheHandler):
             self.__update_memory_cache(cache_data)
 
     def update_cache(self, eve_objects, fingerprint):
-        """
-        Replace existing cache data with passed data.
-        """
         types, attributes, effects = eve_objects
         cache_data = {
-            'types': {type_id: eve_type.compress() for type_id, eve_type in types.items()},
-            'attributes': {attr_id: attr.compress() for attr_id, attr in attributes.items()},
-            'effects': {effect_id: effect.compress() for effect_id, effect in effects.items()},
+            'types': {
+                type_id: eve_type.compress()
+                for type_id, eve_type in types.items()
+            },
+            'attributes': {
+                attr_id: attr.compress()
+                for attr_id, attr in attributes.items()
+            },
+            'effects': {
+                effect_id: effect.compress()
+                for effect_id, effect in effects.items()
+            },
             'fingerprint': fingerprint
         }
         self.__update_persistent_cache(cache_data)
         self.__update_memory_cache(cache_data)
 
     def __update_persistent_cache(self, cache_data):
-        """
-        Write passed data to persistent storage, possibly
-        overwriting existing data.
-        """
+        """Write passed data to persistent storage."""
         cache_folder = os.path.dirname(self._cache_path)
         if os.path.isdir(cache_folder) is not True:
             os.makedirs(cache_folder, mode=0o755)
@@ -158,14 +161,18 @@ class JsonCacheHandler(BaseCacheHandler):
             file.write(json_cache_data.encode('utf-8'))
 
     def __update_memory_cache(self, cache_data):
-        """
-        Replace existing memory cache data with passed data.
-        """
+        """Replace existing memory cache data with passed data."""
         # Convert keys to ints because we accept cache data decoded
         # from JSON, and in JSON map keys are always strings
-        self.__type_data_cache = {int(k): v for k, v in cache_data['types'].items()}
-        self.__attribute_data_cache = {int(k): v for k, v in cache_data['attributes'].items()}
-        self.__effect_data_cache = {int(k): v for k, v in cache_data['effects'].items()}
+        self.__type_data_cache = {
+            int(k): v for k, v in cache_data['types'].items()
+        }
+        self.__attribute_data_cache = {
+            int(k): v for k, v in cache_data['attributes'].items()
+        }
+        self.__effect_data_cache = {
+            int(k): v for k, v in cache_data['effects'].items()
+        }
         self.__fingerprint = cache_data['fingerprint']
         # Also clear object cache to make sure objects composed
         # from old data are gone

@@ -43,7 +43,7 @@ class EveObjBuilder:
 
         Returns:
             Tuple with 3 dictionaries, which contain types, attributes and
-            effects, keyed against their representative IDs.
+            effects, keyed against their respective IDs.
         """
         # Put all the data we need into single dictionary Format, as usual,
         # {table name: table}, where table is set of rows, which are

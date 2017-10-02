@@ -24,16 +24,10 @@ from eos.exception import EosError
 
 # Source manager exceptions
 class UnknownSourceError(EosError):
-    """
-    Raised when source corresponding to passed alias
-    cannot be found.
-    """
+    """Raised when source corresponding to passed alias cannot be found."""
     ...
 
 
 class ExistingSourceError(EosError):
-    """
-    Raised on attempt to add source with alias which
-    already exists.
-    """
+    """Raised on attempt to add source with alias which already exists."""
     ...

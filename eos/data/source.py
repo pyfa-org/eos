@@ -35,14 +35,14 @@ Source = namedtuple('Source', ('alias', 'cache_handler'))
 
 
 class SourceManager:
-    """
-    Handle and access different sources in an easy way. Useful for cases
-    when you want to work with, for example, Tranquility and Singularity
-    data at the same time.
+    """Manages data sources.
+
+    Handle and access different sources in an easy way. Useful for cases when
+    you want to work with, for example, Tranquility and Singularity data at the
+    same time.
     """
 
-    # Format:
-    # {literal alias: Source}
+    # Format: {literal alias: Source}
     _sources = {}
 
     # Default source, will be used implicitly when instantiating fit
@@ -50,21 +50,18 @@ class SourceManager:
 
     @classmethod
     def add(cls, alias, data_handler, cache_handler, make_default=False):
-        """
-        Add source to source manager - this includes initializing
-        all facilities hidden behind name 'source'. After source
-        has been added, it is accessible with alias.
+        """Add source to source manager.
 
-        Required arguments:
-        alias -- alias under which source will be accessible
-        data_handler -- object which implements standard data interface
-        (returns data rows for several tables as dicts and is able to
-        get data version)
-        cache_handler -- cache handler implementation
+        Adding includes initializing all facilities hidden behind name 'source'.
+        After source has been added, it is accessible with alias.
 
-        Optional arguments:
-        make_default -- marks passed source default; it will be used
-        by default for instantiating new fits
+        Args:
+            alias: alias under which source will be accessible
+            data_handler: data handler instance
+            cache_handler: cache handler instance
+            make_default (optional): do we need to mark passed source as default
+                or not. Default source will be used for instantiating new fits,
+                if no other source is specified.
         """
         logger.info('adding source with alias "{}"'.format(alias))
         if alias in cls._sources:
@@ -80,8 +77,10 @@ class SourceManager:
             if data_version is None:
                 logger.info('data version is None, updating cache')
             else:
-                msg = 'fingerprint mismatch: cache "{}", data "{}", updating cache'.format(
-                    cache_fp, current_fp)
+                msg = (
+                    'fingerprint mismatch: cache "{}", data "{}", '
+                    'updating cache'
+                ).format(cache_fp, current_fp)
                 logger.info(msg)
 
             # Generate eve objects and cache them, as generation takes
@@ -97,16 +96,12 @@ class SourceManager:
 
     @classmethod
     def get(cls, alias):
-        """
-        Using source alias, return source data.
+        """Using source alias, return source.
 
-        Required arguments:
-        alias -- alias of source to return
+        Args:
+            alias: alias of source to return
 
-        Return value:
-        (alias, edb, eos) named tuple with alias,
-        SQL Alchemy database session and Eos instance for requested
-        source
+        Returns: Source instance
         """
         try:
             return cls._sources[alias]
@@ -115,11 +110,10 @@ class SourceManager:
 
     @classmethod
     def remove(cls, alias):
-        """
-        Remove source by alias.
+        """Remove source by alias.
 
-        Required arguments:
-        alias -- alias of source to remove
+        Args:
+            alias: alias of source to remove
         """
         logger.info('removing source with alias "{}"'.format(alias))
         try:
@@ -133,10 +127,6 @@ class SourceManager:
 
     @staticmethod
     def __format_fingerprint(data_version):
-        """
-        Required arguments:
-        data_version -- version from the data handler
-        """
         return '{}_{}'.format(data_version, eos_version)
 
     @classmethod

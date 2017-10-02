@@ -24,18 +24,18 @@ from eos.util.repr import make_repr_str
 from .base import BaseDataHandler
 
 
-# SQLite stores bools as 0 or 1, convert them to python bool
-sqlite3.register_converter('BOOLEAN', lambda v: int(v) == 1)
-
-
 class SQLiteDataHandler(BaseDataHandler):
     """
+    SQLite data handler implementation.
+
     Handler for loading data from SQLite database. Data should be in Phobos-like
     format, for details on it refer to JSON data handler doc string.
     """
 
-    def __init__(self, dbpath):
-        conn = sqlite3.connect(dbpath, detect_types=sqlite3.PARSE_DECLTYPES)
+    def __init__(self, db_path):
+        # SQLite stores bools as 0 or 1, convert them to python bool
+        sqlite3.register_converter('BOOLEAN', lambda v: int(v) == 1)
+        conn = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
         conn.row_factory = sqlite3.Row
         self.cursor = conn.cursor()
 
@@ -65,7 +65,10 @@ class SQLiteDataHandler(BaseDataHandler):
         return [dict(row) for row in self.cursor]
 
     def get_version(self):
-        self.cursor.execute('SELECT field_value FROM phbmetadata WHERE field_name = "client_build"')
+        self.cursor.execute(
+            'SELECT field_value FROM phbmetadata '
+            'WHERE field_name = "client_build"'
+        )
         for row in self.cursor:
             return row[0]
         else:

@@ -23,11 +23,10 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseCacheHandler(metaclass=ABCMeta):
-    """
-    Abstract base class for cache handlers. Most of
-    its methods (type, attribute, effect and modifier
-    getters) should return "assembled" objects for
-    use in Eos; fingerprint is single string.
+    """Abstract base class for cache handlers.
+
+    Handles cache management - fetching objects from cache and updating cached
+    data.
     """
 
     @abstractmethod
@@ -48,11 +47,12 @@ class BaseCacheHandler(metaclass=ABCMeta):
 
     @abstractmethod
     def update_cache(self, eve_objects, fingerprint):
-        """
-        Update cache with passed data.
+        """Update cache.
 
-        Required arguments:
-        data -- format: {entity type: [{field name: field value}]
-        fingerprint -- unique ID of data in the form of string
+        Args:
+            eve_objects: tuple with data to cache. Should be in form of three
+            dictionaries, which contain types, attributes and effects, keyed
+            against their respective IDs.
+            fingerprint: unique ID of data in the form of string
         """
         ...

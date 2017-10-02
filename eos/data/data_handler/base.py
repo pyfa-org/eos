@@ -23,12 +23,12 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseDataHandler(metaclass=ABCMeta):
-    """
-    Abstract base class, it handles fetching 'raw' data from
-    external source. Its abstract methods are named against
-    data structures (usually tables) they request, returning
-    iterable with rows, each row being dictionary in
-    {field name: field value} format.
+    """Abstract base class for data handlers.
+
+    Data handlers fetch 'raw' data from external source. Its abstract methods
+    are named against data structures (usually tables) they request, returning
+    iterable with rows, each row being dictionary in {field name: field value}
+    format.
     """
 
     @abstractmethod
@@ -65,10 +65,8 @@ class BaseDataHandler(metaclass=ABCMeta):
 
     @abstractmethod
     def get_version(self):
-        """
-        Get version of data.
+        """Get version of data.
 
-        Return value:
-        string with version
+        Returns: string with version
         """
         ...
