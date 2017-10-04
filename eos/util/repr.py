@@ -20,17 +20,18 @@
 
 
 def make_repr_str(instance, spec=None):
-    """
-    Return single string which includes object class name and
-    attribute names/values from spec.
+    """Prepare string for printing info about passed object.
 
-    Required arguments:
-    instance -- instance for which line will be built
+    Args:
+        instance: object which we should get info from.
+        spec (optional): iterable which defines which fields we should include
+            in info string. Each iterable element can be single attribute name,
+            or tuple/list with two elements, where first defines reference name
+            for info string, and second defines actual attribute name.
 
-    Optional arguments:
-    spec -- specification of what to print in ((field spec), ...) format,
-    where field spec is (print name, attribute name) tuple if those two
-    differ, or simply string if they match.
+    Returns:
+        String, which includes object's class name and requested additional
+        fields.
     """
     arg_list = []
     for field in spec or ():

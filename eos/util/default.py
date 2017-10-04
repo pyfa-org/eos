@@ -20,4 +20,9 @@
 
 
 class DEFAULT:
+    """Default value of something.
+
+    Eos-specific singleton. Used mostly when you want to specify default value
+    of optional argument, but want to keep all the values open.
+    """
     ...

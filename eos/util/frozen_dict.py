@@ -20,7 +20,8 @@
 
 
 """
-Recipe taken from http://code.activestate.com/recipes/414283-frozen-dictionaries/
+Recipe taken from
+http://code.activestate.com/recipes/414283-frozen-dictionaries/
 """
 
 
@@ -35,7 +36,8 @@ class FrozenDict(dict):
         raise TypeError('frozendict cannot be modified')
 
     # Prohibit use of methods which modify dictionary
-    __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = __blocked_attribute
+    __delitem__ = __setitem__ = __blocked_attribute
+    clear = pop = popitem = setdefault = update = __blocked_attribute
 
     def __hash__(self):
         return hash(frozenset(self.items()))

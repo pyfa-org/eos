@@ -24,8 +24,8 @@ from math import floor, log10
 
 def sig_round(x, sig_digits):
     """
-    Keep passed amount of highest significant digits of
-    passed number and round everything past them.
+    Keep passed amount of highest significant digits of passed number and round
+    everything past them.
     """
     highest_magnitude = floor(log10(abs(x)))
     return round(x, -highest_magnitude - 1 + sig_digits)

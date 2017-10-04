@@ -20,10 +20,7 @@
 
 
 class AttributeDict(dict):
-    """
-    Allows to refer dictionary values via keys
-    as object attributes.
-    """
+    """Allows to refer dictionary values via keys as object attributes."""
 
     def __getattr__(self, attr, default=None):
         try:

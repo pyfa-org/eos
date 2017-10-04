@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
-"""Find all defined constants which are not actually used in eos code"""
+"""
+Find all constants defined in eos.const package, which are not used in eos'
+and tests' code.
+"""
 
 
 import ast
@@ -47,7 +50,8 @@ class EnumSeeker(ast.NodeVisitor):
                 if not isinstance(enum_item_name_node, ast.Name):
                     continue
                 # Get data about enum entries into container
-                item_names = self.enum_data.setdefault(enum_class_node.name, set())
+                item_names = self.enum_data.setdefault(
+                    enum_class_node.name, set())
                 item_names.add(enum_item_name_node.id)
 
 
@@ -102,7 +106,7 @@ class ReferenceSeeker(ast.NodeVisitor):
 
 
 def get_enum_data(path):
-    """Return data about fields used in const enums as map"""
+    """Return data about fields used in const enums as map."""
     # Format: {enum name: {enum item names}}
     enum_data = {}
     for ast_root in _get_asts_in_dir(path):
@@ -111,7 +115,7 @@ def get_enum_data(path):
 
 
 def get_used_enums(path, enum_data):
-    """Find out which fields from passed enums are used"""
+    """Find out which fields from passed enums are used."""
     # Format: {enum name: {enum item names}}
     used_enums = {}
     for ast_root in _get_asts_in_dir(path):
@@ -120,7 +124,7 @@ def get_used_enums(path, enum_data):
 
 
 def _get_asts_in_dir(path):
-    """Iterate through all source files' ASTs"""
+    """Iterate through all source files' ASTs."""
     for dir_path, dirs, files in os.walk(path):
         for file in filter(lambda f: os.path.splitext(f)[1] == '.py', files):
             with open(os.path.join(dir_path, file)) as f:
@@ -130,7 +134,8 @@ def _get_asts_in_dir(path):
             except KeyboardInterrupt:
                 raise
             except:
-                print('failed to parse source for {}'.format(os.path.join(dir_path, file)))
+                print('failed to parse source for {}'.format(
+                    os.path.join(dir_path, file)))
             else:
                 yield ast_root
 

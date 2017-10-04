@@ -20,19 +20,20 @@
 
 
 class KeyedSet(dict):
-    """
-    Dictionary-like class, with couple of additional methods which
-    make it easier to use it, given that its values are sets with data.
+    """Container for sets with keyed access.
+
+    Access to sets in container is provided only via keys. In other words,
+    regular dictionary with values being sets.
     """
 
     def add_data_set(self, key, data_set):
-        """
-        Add data set to dictionary, with proper creation jobs
-        if necessary.
+        """Add data set.
 
-        Required arguments:
-        key -- key to access dictionary value (data set)
-        data_set -- set with data to add to value
+        If set accessed by passed key doesn't exist, create it.
+
+        Args:
+            key: defines into which set we should add new data.
+            data_set: iterable with data to add.
         """
         try:
             self[key].update(data_set)
@@ -40,13 +41,15 @@ class KeyedSet(dict):
             self[key] = set(data_set)
 
     def rm_data_set(self, key, data_set):
-        """
-        Remove data set from dictionary, with proper cleanup
-        jobs if necessary.
+        """Remove data set.
 
-        Required arguments:
-        key -- key to access dictionary value (data set)
-        data_set -- set with data to remove from value
+        If requested data doesn't exit in target set, silently ignore it, remove
+        only stuff which is stored. If after removal set contains no data, run
+        cleanup jobs.
+
+        Args:
+            key: defines from which set we should remove data.
+            data_set: iterable with data to remove.
         """
         try:
             value = self[key]
@@ -58,13 +61,13 @@ class KeyedSet(dict):
                 del self[key]
 
     def add_data(self, key, data):
-        """
-        Add single object to dictionary, with proper creation
-        jobs if necessary.
+        """Add data entry.
 
-        Required arguments:
-        key -- key to access dictionary value (data set)
-        data -- object to add to value
+        If set accessed by passed key doesn't exist, create it.
+
+        Args:
+            key: defines into which set we should add new data.
+            data: single data entry to add.
         """
         try:
             self[key].add(data)
@@ -72,13 +75,15 @@ class KeyedSet(dict):
             self[key] = {data}
 
     def rm_data(self, key, data):
-        """
-        Remove single object from dictionary, with proper
-        cleanup jobs if necessary.
+        """Remove data entry.
 
-        Required arguments:
-        key -- key to access dictionary value (data set)
-        dataSet -- object to remove from value
+        If requested data doesn't exit in target set, silently ignore it, remove
+        only stuff which is stored. If after removal set contains no data, run
+        cleanup jobs.
+
+        Args:
+            key: defines from which set we should remove data.
+            data: single data entry to remove.
         """
         try:
             value = self[key]
@@ -90,13 +95,11 @@ class KeyedSet(dict):
                 del self[key]
 
     def get_data(self, key):
-        """
-        Get data set with safe fallback.
+        """Get data set.
 
-        Required arguments:
-        key -- key to access dictionary value (data set)
+        Args:
+            key: defines which set to retrieve.
 
-        Return value:
-        set with data
+        Returns: set with data, or empty set if no set found for requested key.
         """
         return self.get(key) or set()
