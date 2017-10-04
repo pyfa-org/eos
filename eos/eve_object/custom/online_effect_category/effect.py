@@ -29,10 +29,10 @@ logger = getLogger(__name__)
 
 def fix_online_category(effect):
     """
-    In CCP code, 'online' effect has custom processing within dogma
-    code. Actual effect has 'active' effect category, which lets
-    all eve types with it to be in active state. We do not want any
-    special processing, thus just fix it here.
+    In CCP code, 'online' effect has custom processing within dogma code. Actual
+    effect has 'active' effect category, which lets all eve types with it to be
+    in active state. We do not want any special processing, thus just fix it
+    here.
     """
     if effect.category == EffectCategoryId.online:
         msg = 'online effect category does not need to be adjusted'

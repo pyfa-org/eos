@@ -21,7 +21,9 @@
 
 from logging import getLogger
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+)
 from eos.const.eve import AttributeId
 from ...modifier import DogmaModifier
 
@@ -30,7 +32,7 @@ logger = getLogger(__name__)
 
 
 def add_rah_modifiers(effect):
-    if len(effect.modifiers) > 0:
+    if effect.modifiers:
         msg = 'reactive armor hardener effect has modifiers, overwriting them'
         logger.info(msg)
     effect.modifiers = tuple(
@@ -41,8 +43,10 @@ def add_rah_modifiers(effect):
             operator=ModifierOperator.pre_mul,
             src_attr=attr
         ) for attr in (
-            AttributeId.armor_em_damage_resonance, AttributeId.armor_thermal_damage_resonance,
-            AttributeId.armor_kinetic_damage_resonance, AttributeId.armor_explosive_damage_resonance
+            AttributeId.armor_em_damage_resonance,
+            AttributeId.armor_thermal_damage_resonance,
+            AttributeId.armor_kinetic_damage_resonance,
+            AttributeId.armor_explosive_damage_resonance
         )
     )
     effect.build_status = EffectBuildStatus.custom

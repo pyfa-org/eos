@@ -21,7 +21,9 @@
 
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, TypeId
-from eos.fit.pubsub.message import InstrAttrValueChanged, InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import (
+    InstrAttrValueChanged, InstrItemAdd, InstrItemRemove
+)
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
 
@@ -30,23 +32,26 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.self,
+            self, tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
             tgt_filter_extra_arg=None, tgt_attr=AttributeId.armor_damage_amount
         )
 
     def get_modification(self, carrier_item, _):
-        """
-        If carrier item has charge and it's paste, use on-carrier
-        rep amount multiplier, otherwise do nothing (multipy by 1).
-        """
+        # If carrier item has charge and it's paste, use on-carrier rep amount
+        # multiplier, otherwise do nothing (multipy by 1).
         charge = getattr(carrier_item, 'charge', None)
-        if charge is not None and charge._eve_type_id == TypeId.nanite_repair_paste:
+        if (
+            charge is not None and
+            charge._eve_type_id == TypeId.nanite_repair_paste
+        ):
             try:
                 carrier_attributes = carrier_item.attributes
             except AttributeError as e:
                 raise ModificationCalculationError from e
+            mult_attr_id = AttributeId.charged_armor_damage_multiplier
             try:
-                multiplier = carrier_attributes[AttributeId.charged_armor_damage_multiplier]
+                multiplier = carrier_attributes[mult_attr_id]
             except KeyError as e:
                 raise ModificationCalculationError from e
         else:
@@ -54,10 +59,8 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         return ModifierOperator.post_mul_immune, multiplier
 
     def __revise_on_item_add_remove(self, message, carrier_item, _):
-        """
-        If added/removed item is charge of effect carrier and charge
-        is paste, then modification value changes.
-        """
+        # If added/removed item is charge of effect carrying item and charge is
+        # paste, then modification value changes
         if (
             getattr(carrier_item, 'charge', None) is message.item and
             message.item._eve_type_id == TypeId.nanite_repair_paste
@@ -66,11 +69,12 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         return False
 
     def __revise_on_attr_change(self, message, carrier_item, _):
-        """
-        If armor rep multiplier changes, then result of modification
-        also should change.
-        """
-        if message.item is carrier_item and message.attr == AttributeId.charged_armor_damage_multiplier:
+        # If armor rep multiplier changes, then result of modification also
+        # should change
+        if (
+            message.item is carrier_item and
+            message.attr == AttributeId.charged_armor_damage_multiplier
+        ):
             return True
         return False
 

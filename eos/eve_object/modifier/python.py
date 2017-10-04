@@ -26,14 +26,15 @@ from .base import BaseModifier
 
 
 class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
-    """
-    Python modifiers offer more capabilities than dogma modifiers,
-    but it comes at performance cost.
+    """Defines one of modifier types, python modifier.
+
+    Python modifiers offer more capabilities than dogma modifiers, but it comes
+    at performance cost.
     """
 
     def __init__(
-            self, tgt_filter=None, tgt_domain=None,
-            tgt_filter_extra_arg=None, tgt_attr=None
+        self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
+        tgt_attr=None
     ):
         BaseModifier.__init__(
             self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
@@ -43,19 +44,27 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
     @property
     @abstractmethod
     def revise_message_types(self):
-        """
-        Iterable with message types which potentially may change
-        modification provided by this modifier.
+        """Get types of messages which this modifier cares about.
+
+        Returns:
+            Iterable with message types which potentially may change
+            modification.
         """
         ...
 
     @abstractmethod
     def revise_modification(self, message, carrier_item, ship):
-        """
+        """Decide if modification value may change.
+
         Rely on provided event and context for it, decide if modification
         provided by modifier can change or it cannot. If it can, calculated
         value of target attribute on all items targeted by modifier will be
-        removed to force recalculation.
+        removed to force recalculation, which in turn will force modification
+        to be recalculated.
+
+        Returns:
+            Boolean flag which tells if modification may change (True) or it
+            cannot (False).
         """
         ...
 

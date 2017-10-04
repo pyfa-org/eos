@@ -21,7 +21,9 @@
 
 from logging import getLogger
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+)
 from eos.const.eve import AttributeId
 from .modifier import PropulsionModuleVelocityBoostModifier
 from ...modifier import DogmaModifier
@@ -31,7 +33,7 @@ logger = getLogger(__name__)
 
 
 def add_ab_modifiers(effect):
-    if len(effect.modifiers) > 0:
+    if effect.modifiers:
         msg = 'afterburner effect has modifiers, overwriting them'
         logger.info(msg)
     mass_modifier = DogmaModifier(
@@ -47,7 +49,7 @@ def add_ab_modifiers(effect):
 
 
 def add_mwd_modifiers(effect):
-    if len(effect.modifiers) > 0:
+    if effect.modifiers:
         msg = 'microwarpdrive effect has modifiers, overwriting them'
         logger.info(msg)
     mass_modifier = DogmaModifier(

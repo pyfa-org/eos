@@ -50,7 +50,7 @@ class FitMessageBroker:
             except KeyError:
                 continue
             subscribers.discard(subscriber)
-            if len(subscribers) == 0:
+            if not subscribers:
                 msgtypes_to_remove.add(message_type)
         for message_type in msgtypes_to_remove:
             del self.__subscribers[message_type]

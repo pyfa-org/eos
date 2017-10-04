@@ -29,60 +29,56 @@ from ..modifier import DogmaModifier
 
 
 class Effect(BaseCachable):
-    """
-    Represents a single effect. Effects are the building blocks which describe what its carrier
-    does with other items.
+    """Represents single eve effect.
+
+    Effects are the building blocks which describe what its carrier does with
+    other items.
+
+    Attributes:
+        id: identifier of the effect.
+        category: defines effect category, which influences when and how effect
+            is applied - always, when item is active, overloaded, etc.
+        is_offensive: whether effect is offensive (e.g. guns).
+        is_assistance: whether the effect is assistance (e.g. remote repairers).
+        duration_attribute: value of attribute with this ID on carrier item
+            defines effect cycle time.
+        discharge_attribute: value of attribute with this ID on carrier item
+            defines how much cap does this effect take per cycle.
+        range_attribute: value of attribute with this ID on carrier item defines
+            max range where effect is applied to its full potency.
+        falloff_attribute: value of attribute with this ID on carrier item
+            defines additional range where effect is still applied, but with
+            diminished potency.
+        tracking_speed_attribute: value of attribute with this ID on carrier item
+            defines tracking speed which reduces effect efficiency vs targets
+            which are small and have decent angular velocity.
+        fitting_usage_chance_attribute: value of attribute with this ID on
+            carrier item defines chance of this effect being applied when item
+            is added to fit, e.g. booster side-effects.
+        build_status: effect->modifier build status.
+        modifiers: iterable with modifiers. It's actually not effect which
+            describes modifications this item does, but these child objects.
     """
 
     def __init__(
-        self, effect_id, category=None, is_offensive=None, is_assistance=None,
+        self, effect_id, category=None, is_offensive=False, is_assistance=False,
         duration_attribute=None, discharge_attribute=None, range_attribute=None,
         falloff_attribute=None, tracking_speed_attribute=None,
-        fitting_usage_chance_attribute=None, build_status=None,
-        modifiers=(), customize=True
+        fitting_usage_chance_attribute=None, build_status=None, modifiers=(),
+        customize=True
     ):
         self.id = effect_id
-
-        # Effect category actually describes type of effect, which determines
-        # when it is applied - always, when item is active, overloaded, etc.
         self.category = category
-
-        # Whether the effect is offensive (e.g. guns)
-        self.is_offensive = bool(is_offensive) if is_offensive is not None else None
-
-        # Whether the effect is helpful (e.g. remote repairers)
-        self.is_assistance = bool(is_assistance) if is_assistance is not None else None
-
-        # If effect is default effect of eve type, attribute with this ID
-        # on item defines cycle time
+        self.is_offensive = bool(is_offensive)
+        self.is_assistance = bool(is_assistance)
         self.duration_attribute = duration_attribute
-
-        # If effect is default effect of eve type, attribute with this ID
-        # on item defines ship's cap drained per cycle
         self.discharge_attribute = discharge_attribute
-
-        # If effect needs to know its optimal range, attribute value on
-        # item referenced by this ID will contain it
         self.range_attribute = range_attribute
-
-        # If effect needs to know its falloff range, attribute value on
-        # item referenced by this ID will contain it
         self.falloff_attribute = falloff_attribute
-
-        # If effect needs to know its tracking speed, attribute value on
-        # item referenced by this ID will contain it
         self.tracking_speed_attribute = tracking_speed_attribute
-
-        # Refers attribute, which determines chance of effect
-        # getting applied when its carrier is added to fit
         self.fitting_usage_chance_attribute = fitting_usage_chance_attribute
-
-        # Stores expression->modifiers parsing status
         self.build_status = build_status
-
-        # Stores Modifiers which are assigned to given effect
         self.modifiers = modifiers
-
         if customize:
             customize_effect(self)
 
@@ -98,9 +94,12 @@ class Effect(BaseCachable):
 
     @cached_property
     def _state(self):
-        """
-        Return state of effect - if eve type takes this state or
-        higher, effect activates.
+        """Returns 'state' of effect.
+
+        It means if carrier item takes this state or higher, effect activates.
+
+        Returns:
+            State in the form of ID, as defined in State enum.
         """
         return self.__effect_state_map[self.category]
 
@@ -148,7 +147,11 @@ class Effect(BaseCachable):
             self.tracking_speed_attribute,
             self.fitting_usage_chance_attribute,
             self.build_status,
-            tuple(m.compress() for m in self.modifiers if isinstance(m, DogmaModifier))
+            tuple(
+                m.compress()
+                for m in self.modifiers
+                if isinstance(m, DogmaModifier)
+            )
         )
 
     @classmethod
@@ -165,7 +168,10 @@ class Effect(BaseCachable):
             tracking_speed_attribute=compressed[8],
             fitting_usage_chance_attribute=compressed[9],
             build_status=compressed[10],
-            modifiers=tuple(DogmaModifier.decompress(cache_handler, cm) for cm in compressed[11])
+            modifiers=tuple(
+                DogmaModifier.decompress(cache_handler, cm)
+                for cm in compressed[11]
+            )
         )
 
     # Auxiliary methods

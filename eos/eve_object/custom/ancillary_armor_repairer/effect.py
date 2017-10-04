@@ -29,7 +29,7 @@ logger = getLogger(__name__)
 
 
 def add_aar_modifier(effect):
-    if len(effect.modifiers) > 0:
+    if effect.modifiers:
         msg = 'ancillary armor repair effect has modifiers, overwriting them'
         logger.info(msg)
     effect.modifiers = (AncillaryRepAmountModifier(),)

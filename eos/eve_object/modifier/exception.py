@@ -23,7 +23,5 @@ from eos.exception import EosError
 
 
 class ModificationCalculationError(EosError):
-    """
-    Raised when modifier is unable to calculate modification value.
-    """
+    """Raised when modifier is unable to calculate modification value."""
     ...

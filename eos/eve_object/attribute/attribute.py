@@ -35,18 +35,18 @@ class Attribute(BaseCachable):
         high_is_good: boolean flag which defines if it's good when attribute has
             high value or not. Used in calculation process.
         stackable: boolean flag which defines if attribute can be stacking
-            penalized (False) or not (True)
+            penalized (False) or not (True).
     """
 
     def __init__(
-        self, attribute_id, max_attribute=None,
-        default_value=None, high_is_good=None, stackable=None
+        self, attribute_id, max_attribute=None, default_value=None,
+        high_is_good=True, stackable=True
     ):
         self.id = attribute_id
         self.max_attribute = max_attribute
         self.default_value = default_value
-        self.high_is_good = bool(high_is_good) if high_is_good is not None else None
-        self.stackable = bool(stackable) if stackable is not None else None
+        self.high_is_good = bool(high_is_good)
+        self.stackable = bool(stackable)
 
     # Cache-related methods
     def compress(self):

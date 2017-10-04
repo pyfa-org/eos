@@ -42,10 +42,10 @@ class InputItemAdded(BaseInputMessage):
         instructions.append(InstrStatesActivate(item, states))
         # Handle effect activation
         to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
-        if len(to_start_effects) > 0:
+        if to_start_effects:
             item._running_effects.update(to_start_effects)
             instructions.append(InstrEffectsStart(item, to_start_effects))
-        if len(to_stop_effects) > 0:
+        if to_stop_effects:
             instructions.append(InstrEffectsStop(item, to_stop_effects))
             item._running_effects.difference_update(to_stop_effects)
         return instructions
@@ -69,7 +69,7 @@ class InputItemRemoved(BaseInputMessage):
         states = {s for s in State if s <= item.state}
         # Handle effect deactivation
         running_effects_copy = set(item._running_effects)
-        if len(running_effects_copy) > 0:
+        if running_effects_copy:
             instructions.append(InstrEffectsStop(item, running_effects_copy))
             item._running_effects.clear()
         # Handle state deactivation
@@ -107,10 +107,10 @@ class InputStateChanged(BaseInputMessage):
             instructions.append(InstrStatesDeactivate(item, states))
         # Effect changes
         to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
-        if len(to_start_effects) > 0:
+        if to_start_effects:
             item._running_effects.update(to_start_effects)
             instructions.append(InstrEffectsStart(item, to_start_effects))
-        if len(to_stop_effects) > 0:
+        if to_stop_effects:
             instructions.append(InstrEffectsStop(item, to_stop_effects))
             item._running_effects.difference_update(to_stop_effects)
         return instructions
@@ -132,10 +132,10 @@ class InputEffectsRunModeChanged(BaseInputMessage):
             return ()
         instructions = []
         to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
-        if len(to_start_effects) > 0:
+        if to_start_effects:
             item._running_effects.update(to_start_effects)
             instructions.append(InstrEffectsStart(item, to_start_effects))
-        if len(to_stop_effects) > 0:
+        if to_stop_effects:
             instructions.append(InstrEffectsStop(item, to_stop_effects))
             item._running_effects.difference_update(to_stop_effects)
         return instructions

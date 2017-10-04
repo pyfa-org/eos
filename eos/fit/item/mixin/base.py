@@ -268,7 +268,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 self.__effect_mode_overrides[effect_id] = effect_mode
         # After all the changes we did, check if there's any data in overrides
         # map, if there's no data, replace it with None to save memory
-        if len(self.__effect_mode_overrides) == 0:
+        if not self.__effect_mode_overrides:
             self.__effect_mode_overrides = None
         fit = self._fit
         if fit is not None:

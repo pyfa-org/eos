@@ -377,7 +377,7 @@ class MutableAttributeMap:
             return
         del overrides[attr_id]
         # Set overrides map to None if there're none left to save some memory
-        if len(overrides) == 0:
+        if not overrides:
             self.__override_callbacks = None
         # Exposed attribute value may change after removing override
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
@@ -417,7 +417,7 @@ class MutableAttributeMap:
 
     def _cap_del(self, capping_attr, capped_attr):
         self.__cap_map.rm_data(capping_attr, capped_attr)
-        if len(self.__cap_map) == 0:
+        if not self.__cap_map:
             self.__cap_map = None
 
     # Auxiliary methods

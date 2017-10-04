@@ -29,22 +29,23 @@ from .exception import ModificationCalculationError
 
 
 class DogmaModifier(BaseModifier, BaseCachable):
-    """
-    Dogma modifiers are the most typical modifier type. They always
-    take attribute value which describes modification strength from
-    item which carries modifier - it makes them less flexible, but
-    they can be processed efficiently.
+    """Defines one of modifier types, dogma modifier.
+
+    Dogma modifiers are the most typical modifier type. They always take
+    attribute value which describes modification strength from item which
+    carries modifier - it makes them less flexible, but they can be processed
+    efficiently.
     """
 
     def __init__(
-            self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
-            tgt_attr=None, operator=None, src_attr=None
+        self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
+        tgt_attr=None, operator=None, src_attr=None
     ):
         BaseModifier.__init__(
             self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
             tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr=tgt_attr
         )
-        # Class-specific attributes
+        # Dogma modifier-specific attributes
         self.operator = operator
         self.src_attr = src_attr
 
@@ -91,4 +92,4 @@ class DogmaModifier(BaseModifier, BaseCachable):
 
     # Auxiliary methods
     def __repr__(self):
-        return make_repr_str(self, ())
+        return make_repr_str(self)

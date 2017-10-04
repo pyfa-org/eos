@@ -35,12 +35,14 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.ship,
-            tgt_filter_extra_arg=None, tgt_attr=AttributeId.max_velocity
+            self, tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.ship, tgt_filter_extra_arg=None,
+            tgt_attr=AttributeId.max_velocity
         )
 
     def get_modification(self, carrier_item, ship):
-        # If attributes of any necessary items are not available, do not calculate anything
+        # If attributes of any necessary items are not available, do not
+        # calculate anything
         try:
             ship_attributes = ship.attributes
             carrier_attributes = carrier_item.attributes
@@ -57,7 +59,9 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             ship_speed_percentage = speed_boost * thrust / mass
         # Log warning for zero ship mass, as it's abnormal situation
         except ZeroDivisionError as e:
-            msg = 'cannot calculate propulsion speed boost due to zero ship mass'
+            msg = (
+                'cannot calculate propulsion speed boost due to zero ship mass'
+            )
             logger.warning(msg)
             raise ModificationCalculationError from e
         return ModifierOperator.post_percent, ship_speed_percentage
@@ -69,8 +73,13 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         """
         if (
             (message.item is ship and message.attr == AttributeId.mass) or
-            (message.item is carrier_item and message.attr == AttributeId.speed_factor) or
-            (message.item is carrier_item and message.attr == AttributeId.speed_boost_factor)
+            (
+                message.item is carrier_item and
+                message.attr == AttributeId.speed_factor
+            ) or (
+                message.item is carrier_item and
+                message.attr == AttributeId.speed_boost_factor
+            )
         ):
             return True
         return False
@@ -81,7 +90,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     @property
     def revise_message_types(self):
-        return set(self.__revision_map.keys())
+        return set(self.__revision_map)
 
     def revise_modification(self, message, carrier_item, ship):
         revision_func = self.__revision_map[type(message)]

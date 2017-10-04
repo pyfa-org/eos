@@ -30,43 +30,50 @@ from eos.util.repr import make_repr_str
 from ..custom.type import customize_type
 
 
-FighterAbility = namedtuple('FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))
+FighterAbility = namedtuple(
+    'FighterAbility',
+    ('cooldown_time', 'charge_quantity', 'rearm_time')
+)
 
 
 class Type(BaseCachable):
-    """
-    Type represents any eve type. All characters, ships,
-    incursion system-wide effects are actually eve types.
+    """Represents eve type with all its metadata.
+
+    All characters, ships, incursion system-wide effects are actually eve types.
+
+    Attributes:
+        id: identifier of the eve type.
+        group: group ID of the eve type.
+        category: category ID of the eve type. Normally it's attribute of group,
+            but as we do not need groups as separate objects, categories were
+            'demoted' into type attribute.
+        attributes: map with base attribute values for this type in {attribute
+            ID: attribute value} format.
+        effects: map with effects this type has in {effect ID: effect} format.
+        default_effect: default effect of the type. When item is activated, it
+            gets run.
+        fighter_abilities: map with fighter abilities in {ability ID: (cooldown
+            time, charge amount, rearm time) format.
     """
 
     def __init__(
-        self, type_id, group=None, category=None, attributes=DEFAULT, effects=(),
-        default_effect=None, fighter_abilities=DEFAULT, customize=True
+        self, type_id, group=None, category=None, attributes=DEFAULT,
+        effects=(), default_effect=None, fighter_abilities=DEFAULT,
+        customize=True
     ):
         self.id = type_id
-
-        # The groupID of the type, integer
         self.group = group
-
-        # The category ID of the type, integer
         self.category = category
-
-        # The attributes of this type, used as base for calculation of modified
-        # attributes, thus they should stay immutable
-        # Format: {attribute ID: attribute value}
-        self.attributes = {} if attributes is DEFAULT else attributes
-
-        # Map with effects this type has
-        # Format: {effect ID: effect object}
+        if attributes is DEFAULT:
+            self.attributes = {}
+        else:
+            self.attributes = attributes
         self.effects = {e.id: e for e in effects}
-
-        # Default effect of eve type, which defines its several major properties
         self.default_effect = default_effect
-
-        # Iterable with tuples which describe fighter abilities, in format
-        # (ability ID, cooldown time, charge amount, rearm time)
-        self.fighter_abilities = {} if fighter_abilities is DEFAULT else fighter_abilities
-
+        if fighter_abilities is DEFAULT:
+            self.fighter_abilities = {}
+        else:
+            self.fighter_abilities = fighter_abilities
         if customize:
             customize_type(self)
 
@@ -83,17 +90,16 @@ class Type(BaseCachable):
 
     @cached_property
     def required_skills(self):
-        """
-        Get skill requirements.
+        """Get skill requirements.
 
-        Return value:
-        Dictionary with IDs of skills and corresponding skill levels,
-        which are required to use type
+        Returns:
+            Map between skill eve type IDs and corresponding skill levels, which
+            are required to use type.
         """
         required_skills = {}
         for srq_attr in self.__skillrq_attrs:
-            # Skip skill requirement attribute pair if any
-            # of them is not available
+            # Skip skill requirement attribute pair if any of them is not
+            # available
             try:
                 srq = self.attributes[srq_attr]
             except KeyError:
@@ -107,33 +113,16 @@ class Type(BaseCachable):
 
     @cached_property
     def max_state(self):
+        """Get highest state this type is allowed to take.
+
+        Returns:
+            State in the form of ID, as defined in State enum.
         """
-        Get highest state this type is allowed to take.
-        """
-        # All types can be at least offline,
-        # even when they have no effects
+        # All types can be at least offline, even when they have no effects
         max_state = State.offline
         for effect in self.effects.values():
             max_state = max(max_state, effect._state)
         return max_state
-
-    @cached_property
-    def is_targeted(self):
-        """
-        Report if type is targeted or not. Targeted types cannot be
-        activated w/o target selection.
-
-        Return value:
-        Boolean targeted flag
-        """
-        # Assume type is unable to target by default
-        targeted = False
-        for effect in self.effects.values():
-            # If any of effects is targeted, then type is targeted
-            if effect.category == EffectCategoryId.target:
-                targeted = True
-                break
-        return targeted
 
     # Cache-related methods
     def compress(self):
@@ -149,13 +138,21 @@ class Type(BaseCachable):
 
     @classmethod
     def decompress(cls, cache_handler, compressed):
+        defeff_id = compressed[5]
+        if defeff_id is None:
+            default_effect = None
+        else:
+            default_effect = cache_handler.get_effect(defeff_id)
         return cls(
             type_id=compressed[0],
             group=compressed[1],
             category=compressed[2],
             attributes={k: v for k, v in compressed[3]},
-            effects=tuple(cache_handler.get_effect(eid) for eid in compressed[4]),
-            default_effect=None if compressed[5] is None else cache_handler.get_effect(compressed[5]),
+            effects=tuple(
+                cache_handler.get_effect(eid)
+                for eid in compressed[4]
+            ),
+            default_effect=default_effect,
             fighter_abilities={k: v for k, v in compressed[6]}
         )
 

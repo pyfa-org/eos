@@ -232,7 +232,7 @@ class Cleaner:
             ):
                 # If there're any references for given entity, add them to
                 # dictionary
-                if len(references) > 0:
+                if references:
                     tgt_spec = (tgt_table_name, tgt_column_name)
                     tgt_data.setdefault(tgt_spec, set()).update(references)
 

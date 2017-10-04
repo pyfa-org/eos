@@ -80,4 +80,4 @@ class SQLiteDataHandler(BaseDataHandler):
             return None
 
     def __repr__(self):
-        return make_repr_str(self, ())
+        return make_repr_str(self)

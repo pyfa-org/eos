@@ -136,7 +136,7 @@ def _get_asts_in_dir(path):
 
 
 def print_results(enum_data, header):
-    if len(enum_data) > 0:
+    if enum_data:
         print('{}:'.format(header))
         for enum_name in sorted(enum_data):
             print('  {}'.format(enum_name))

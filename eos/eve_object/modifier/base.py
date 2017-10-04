@@ -26,10 +26,10 @@ from eos.const.eos import ModifierDomain, ModifierTargetFilter
 
 
 class BaseModifier(metaclass=ABCMeta):
-    """
-    Modifiers are part of effects; one modifier describes one
-    modification - when it should be applied, on which items,
-    how to apply it, and so on.
+    """Define base functionality for all modifier types.
+
+    Modifiers are part of effects; one modifier describes one modification -
+    when it should be applied, on which items, how to apply it, and so on.
     """
 
     def __init__(self, tgt_filter, tgt_domain, tgt_filter_extra_arg, tgt_attr):
@@ -40,21 +40,33 @@ class BaseModifier(metaclass=ABCMeta):
 
     @abstractmethod
     def get_modification(self, carrier_item, ship):
-        """
-        Return tuple (operator, modification value) which is result
-        of applying modifier from the passed carrier item within
-        scope of the passed context.
+        """Get modification parameters.
+
+        Args:
+            carrier_item: item which carries the modifier.
+            ship: ship of fit which is being modified.
+
+        Returns:
+            Tuple (operator, modification value) which is intermediate result of
+            applying modification - only first half of process is complete, when
+            modification source value is calculated and operator is defined.
+
         """
         ...
 
     # Validation-related methods
     def _validate_base(self):
         tgt_validators = {
-            ModifierTargetFilter.item: self.__validate_tgt_filter_item,
-            ModifierTargetFilter.domain: self.__validate_tgt_filter_domain,
-            ModifierTargetFilter.domain_group: self.__validate_tgt_filter_domain_group,
-            ModifierTargetFilter.domain_skillrq: self.__validate_tgt_filter_domain_skillrq,
-            ModifierTargetFilter.owner_skillrq: self.__validate_tgt_filter_owner_skillrq
+            ModifierTargetFilter.item:
+                self.__validate_tgt_filter_item,
+            ModifierTargetFilter.domain:
+                self.__validate_tgt_filter_domain,
+            ModifierTargetFilter.domain_group:
+                self.__validate_tgt_filter_domain_group,
+            ModifierTargetFilter.domain_skillrq:
+                self.__validate_tgt_filter_domain_skillrq,
+            ModifierTargetFilter.owner_skillrq:
+                self.__validate_tgt_filter_owner_skillrq
         }
         try:
             tgt_validator = tgt_validators[self.tgt_filter]
@@ -76,8 +88,9 @@ class BaseModifier(metaclass=ABCMeta):
     def __validate_tgt_filter_item(self):
         return all((
             self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character, ModifierDomain.ship,
-                ModifierDomain.target, ModifierDomain.other
+                ModifierDomain.self, ModifierDomain.character,
+                ModifierDomain.ship, ModifierDomain.target,
+                ModifierDomain.other
             ),
             self.tgt_filter_extra_arg is None
         ))

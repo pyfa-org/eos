@@ -19,19 +19,23 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, EosEffectId, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, EosEffectId, ModifierDomain, ModifierOperator,
+    ModifierTargetFilter
+)
 from eos.const.eve import AttributeId, EffectCategoryId, TypeId
 from ...effect import Effect
 from ...modifier import DogmaModifier
 
 
 def add_character_missile_damage_multiplier(eve_type):
-    """
-    Some modules, like ballistic control systems, do not affect
-    missile attributes directly; instead, they affect an attribute
-    on the character, which, in turn, should affect missiles. The
-    problem is that it doesn't affect missiles (probably some
-    hardcoding on CCP's part), so we're adding it manually.
+    """Apply message damage multiplier to missiles.
+
+    Some modules, like ballistic control systems, do not affect missile
+    attributes directly; instead, they affect an attribute on the character,
+    which, in turn, should affect missiles. The problem is that it doesn't
+    affect missiles (probably some hardcoding on CCP's part), so we're adding it
+    manually.
     """
     modifiers = []
     for damage_attr in (
@@ -39,9 +43,12 @@ def add_character_missile_damage_multiplier(eve_type):
             AttributeId.kinetic_damage, AttributeId.explosive_damage
     ):
         modifiers.append(DogmaModifier(
-            tgt_filter=ModifierTargetFilter.owner_skillrq, tgt_domain=ModifierDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation, tgt_attr=damage_attr,
-            operator=ModifierOperator.pre_mul, src_attr=AttributeId.missile_damage_multiplier
+            tgt_filter=ModifierTargetFilter.owner_skillrq,
+            tgt_domain=ModifierDomain.character,
+            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
+            tgt_attr=damage_attr,
+            operator=ModifierOperator.pre_mul,
+            src_attr=AttributeId.missile_damage_multiplier
         ))
     effect = Effect(
         effect_id=EosEffectId.char_missile_dmg,
