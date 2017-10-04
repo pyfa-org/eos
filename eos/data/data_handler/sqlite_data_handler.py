@@ -33,6 +33,11 @@ class SQLiteDataHandler(BaseDataHandler):
     """
 
     def __init__(self, db_path):
+        """Initialize data handler.
+
+        Args:
+            db_path: path to database file.
+        """
         # SQLite stores bools as 0 or 1, convert them to python bool
         sqlite3.register_converter('BOOLEAN', lambda v: int(v) == 1)
         conn = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)

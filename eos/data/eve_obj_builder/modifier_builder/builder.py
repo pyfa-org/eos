@@ -32,11 +32,16 @@ logger = getLogger(__name__)
 class ModifierBuilder:
     """Builds modifiers out of effect data.
 
-    Args:
-        exp_rows: iterable with expression rows.
+    This class actually doesn't do much: routes tasks between two child
+    converters and reports results.
     """
 
     def __init__(self, exp_rows):
+        """Initialize builder.
+
+        Args:
+            exp_rows: iterable with expression rows.
+        """
         self._tree = ExpressionTreeConverter(exp_rows)
 
     def build(self, effect_row):

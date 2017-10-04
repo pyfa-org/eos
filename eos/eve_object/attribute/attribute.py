@@ -24,28 +24,28 @@ from eos.util.repr import make_repr_str
 
 
 class Attribute(BaseCachable):
-    """Class which holds attribute metadata"""
+    """Represents eve attribute with all its metadata.
+
+    Attributes:
+        id: identifier of the attribute.
+        max_attribute: when specified, value of current attribute on an item
+            cannot exceed value of this attribute on the very same item.
+        default_value: base value for attribute. Used when value of the
+            attribute with this ID is not specified on item.
+        high_is_good: boolean flag which defines if it's good when attribute has
+            high value or not. Used in calculation process.
+        stackable: boolean flag which defines if attribute can be stacking
+            penalized (False) or not (True)
+    """
 
     def __init__(
         self, attribute_id, max_attribute=None,
         default_value=None, high_is_good=None, stackable=None
     ):
         self.id = attribute_id
-
-        # When value of this attribute is calculated on any item, it cannot
-        # be bigger than value of attribute referenced by ID stored here
         self.max_attribute = max_attribute
-
-        # Default value of this attribute, used when base attribute value
-        # is not available on eve type during calculation process
         self.default_value = default_value
-
-        # Boolean describing if it's good when attribute is high or not,
-        # used in calculation process
         self.high_is_good = bool(high_is_good) if high_is_good is not None else None
-
-        # Boolean which defines if attribute can be stacking penalized (False)
-        # or not (True)
         self.stackable = bool(stackable) if stackable is not None else None
 
     # Cache-related methods

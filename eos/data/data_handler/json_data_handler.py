@@ -34,6 +34,11 @@ class JsonDataHandler(BaseDataHandler):
     """
 
     def __init__(self, basepath):
+        """Initialize data handler.
+
+        Args:
+            basepath: path to folder with JSON files.
+        """
         self.basepath = os.path.abspath(basepath)
 
     def get_evetypes(self):

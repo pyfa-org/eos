@@ -29,14 +29,15 @@ from ..exception import UnknownEtreeRootOperandError
 
 
 class ExpressionTreeConverter:
-    """Converts expression tree into modifiers.
-
-    Args:
-        exp_rows: iterable with expression rows which should be used as data
-            source.
-    """
+    """Converts expression tree into modifiers."""
 
     def __init__(self, exp_rows):
+        """Initialize converter.
+
+        Args:
+            exp_rows: iterable with expression rows which should be used as data
+                source.
+        """
         self._fails = None
         self._mods = None
         self.__exp_rows = self.__prepare_exp_rows(exp_rows)
