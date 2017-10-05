@@ -24,11 +24,16 @@ from eos.data.source import Source, SourceManager
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
-from .container import ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
+from .container import (
+    ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
+)
 from .helper import DamageTypes
 from .item import *
 from .pubsub.broker import FitMessageBroker
-from .pubsub.message import InputDefaultIncomingDamageChanged, InputItemAdded, InputItemRemoved, InputSourceChanged
+from .pubsub.message import (
+    InputDefaultIncomingDamageChanged, InputItemAdded, InputItemRemoved,
+    InputSourceChanged
+)
 from .pubsub.subscriber import BaseSubscriber
 from .restriction import RestrictionService
 from .sim import *
@@ -37,17 +42,52 @@ from .volatile import FitVolatileManager
 
 
 class Fit(FitMessageBroker, BaseSubscriber):
-    """
-    Fit holds all fit items and facilities to calculate their attributes.
+    """Definition of fit.
 
-    Optional arguments:
-    source -- source to use for this fit
+    Fit is one of eos' central objects - it holds all fit items and facilities
+    to calculate their attributes and do many other tasks.
+
+    Attributes:
+        ship: access point for ship.
+        stance: access point for ship stance, also known as tactical mode.
+        subsystems: set for subsystems.
+        modules.high: list for high-slot modules.
+        modules.med: list for med-slot modules.
+        modules.low: list for low-slot modules.
+        rigs: set for rigs.
+        drones: set for drones.
+        fighters: set for fighter squads.
+        character: access point for character.
+        skills: restricted set for skills.
+        implants: set for implants.
+        boosters: set for boosters.
+        effect_beacon: access point for effect beacons (e.g. wormhole effects).
+        default_incoming_damage: access point for default incoming damage
+            pattern. This pattern will be used by default for things like EHP
+            calculation, RAH adaptation, etc.
+        source: access point for fit's source. Source 'fills' fit with actual
+            eve objects, which carry info about attributes, how they should be
+            modified, and other important data. Without source set, calculating
+            anything meaningful is not possible.
+        stats: all aggregated stats for fit are accessible via this access
+            point.
     """
 
     def __init__(self, source=DEFAULT):
+        """Initialize fit.
+
+        Also sets up some sane default values, namely uniform incoming damage
+        pattern and sets character item.
+
+        Args:
+            source (optional): source to use with this fit. When not specified,
+                source which is set as default in source manager will be used.
+
+        """
         FitMessageBroker.__init__(self)
         self.__source = None
-        self.__default_incoming_damage = DamageTypes(em=25, thermal=25, kinetic=25, explosive=25)
+        self.__default_incoming_damage = DamageTypes(
+            em=25, thermal=25, kinetic=25, explosive=25)
         # Keep list of all items which belong to this fit
         self.__items = set()
         self._subscribe(self, self._handler_map.keys())
@@ -65,18 +105,14 @@ class Fit(FitMessageBroker, BaseSubscriber):
         self.rigs = ItemSet(self, Rig)
         self.drones = ItemSet(self, Drone)
         self.fighters = ItemSet(self, FighterSquad)
-        # Initialize services. Some of services rely on fit structure
-        # (module racks, implant set) even during initialization, thus
-        # they have to be initialized after item containers
+        # Initialize services
         self._calculator = CalculationService(self)
         self.stats = StatService(self)
         self._restriction = RestrictionService(self, self.stats)
         self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
-        # Use default source, unless specified otherwise. Source setting may
-        # enable services (if there's source), thus it has to be after service
-        # initialization
+        # Initialize source
         if source is DEFAULT:
             source = SourceManager.default
         self.source = source
@@ -91,14 +127,16 @@ class Fit(FitMessageBroker, BaseSubscriber):
     effect_beacon = ItemDescriptorOnFit('_effect_beacon', EffectBeacon)
 
     def validate(self, skip_checks=()):
-        """
-        Run fit validation.
+        """Run fit validation.
 
-        Optional arguments:
-        skip_checks -- iterable with checks to be skipped
+        Args:
+            skip_checks (optional): iterable with restriction types validation
+                should ignore. By default, nothing is ignored.
 
-        Possible exceptions:
-        ValidationError -- raised when validation fails
+        Raises:
+            ValidationError: raised when validation fails. Its single argument
+                contains extensive data on reason of failure. Refer to
+                restriction service docs for format of the data.
         """
         self._restriction.validate(skip_checks)
 
@@ -108,12 +146,11 @@ class Fit(FitMessageBroker, BaseSubscriber):
 
     @source.setter
     def source(self, new_source):
-        # Attempt to fetch source from source manager if passed object
-        # is not instance of source class
+        # Attempt to fetch source from source manager if passed object is not
+        # instance of source class
         if not isinstance(new_source, Source) and new_source is not None:
             new_source = SourceManager.get(new_source)
         old_source = self.source
-        # Do not update anything if sources are the same
         if new_source is old_source:
             return
         # Assign new source and send message about update
@@ -131,10 +168,11 @@ class Fit(FitMessageBroker, BaseSubscriber):
         if new_profile != old_profile:
             self._publish(InputDefaultIncomingDamageChanged())
 
-    # This property is necessary to find fit for items
-    # which are stored directly on the fit
     @property
     def _fit(self):
+        # Items which are stored directly on the fit (e.g. ship, character)
+        # refer to fit as to their container. To get fit to which item belongs,
+        # container's fit is used, thus fit's fit is self
         return self
 
     # Message handling
@@ -152,7 +190,8 @@ class Fit(FitMessageBroker, BaseSubscriber):
     # Auxiliary methods
     def __repr__(self):
         spec = [
-            'source', 'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
-            'character', 'skills', 'implants', 'boosters'
+            'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
+            'fighters', 'character', 'skills', 'implants', 'boosters',
+            'effect_beacon', 'default_incoming_damage', 'source'
         ]
         return make_repr_str(self, spec)

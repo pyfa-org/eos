@@ -101,7 +101,8 @@ class SourceManager:
         Args:
             alias: alias of source to return
 
-        Returns: Source instance
+        Returns:
+            Source instance.
         """
         try:
             return cls._sources[alias]

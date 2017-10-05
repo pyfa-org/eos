@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import State
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eve import AttributeId
 from eos.data.cachable import BaseCachable
 from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT

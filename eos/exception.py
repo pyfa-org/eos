@@ -20,8 +20,5 @@
 
 
 class EosError(Exception):
-    """
-    All public exceptions raised by Eos during its normal
-    operation are based on this class.
-    """
+    """Base class for all Eos exceptions."""
     ...

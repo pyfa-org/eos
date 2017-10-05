@@ -20,28 +20,32 @@
 
 
 from .pubsub.message import (
-    InputDefaultIncomingDamageChanged, InputEffectsRunModeChanged, InputItemAdded,
-    InputItemRemoved, InputSkillLevelChanged, InputSourceChanged, InputStateChanged
+    InputDefaultIncomingDamageChanged, InputEffectsRunModeChanged,
+    InputItemAdded, InputItemRemoved, InputSkillLevelChanged,
+    InputSourceChanged, InputStateChanged
 )
 from .pubsub.subscriber import BaseSubscriber
-from eos.util.volatile_cache import CooperativeVolatileMixin, InheritableVolatileMixin
+from eos.util.volatile_cache import (
+    CooperativeVolatileMixin, InheritableVolatileMixin
+)
 
 
 class FitVolatileManager(BaseSubscriber):
-    """
-    Class which tracks on-fit objects with volatile
-    data and clears this data when requested.
+    """Manage on-fit objects with volatile data.
 
-    Required arguments:
-    msg_broker -- object which handles message publication
-    and subscriptions
-
-    Optional arguments:
-    volatiles -- iterable with objects which carry volatile
-    attributes, which will be tracked permanently
+    Tracks objects which potentially may carry volatile data and clear volatile
+    data when requested.
     """
 
     def __init__(self, msg_broker, volatiles=()):
+        """Initialize volatile manager.
+
+        Args:
+            msg_broker: object which handles message publication and
+                subscriptions
+            volatiles: iterable with objects which carry volatile attributes,
+                which will be tracked permanently
+        """
         self.__msg_broker = msg_broker
         self.__volatile_objects = set()
         msg_broker._subscribe(self, self._handler_map.keys())
@@ -72,23 +76,17 @@ class FitVolatileManager(BaseSubscriber):
 
     # Private methods for message handlers
     def __add_volatile_object(self, object):
-        """
-        Add passed object to internal storage in case it
-        carries any volatile attributes.
-        """
         if isinstance(object, (InheritableVolatileMixin, CooperativeVolatileMixin)):
             self.__volatile_objects.add(object)
 
     def __remove_volatile_object(self, object):
-        """
-        Remove passed object from internal storage
-        """
         self.__volatile_objects.discard(object)
 
     def __clear_volatile_attrs(self):
-        """
-        Go through objects in internal storage and clear
-        volatile attribs stored on them.
+        """Clear volatile data.
+
+        Go through objects in internal storage and clear volatile attribs stored
+        on them.
         """
         for volatile in self.__volatile_objects:
             volatile._clear_volatile_attrs()

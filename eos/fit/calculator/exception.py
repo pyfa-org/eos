@@ -29,31 +29,30 @@ class AttributeCalculatorError(EosError):
 
 # Exception classes used by affection register
 class UnexpectedDomainError(AttributeCalculatorError):
-    """
-    Raised when domain in Modifier object being processed cannot
-    have this domain (which domains are supported depends on
-    modifier target filter and its context).
+    """Raised when modifier domain has unexpected value.
+
+    Raised when modifier being processed cannot have this domain (which domains
+    are supported depends on modifier target filter and its context).
     """
     ...
 
 
 class UnknownTargetFilterError(AttributeCalculatorError):
-    """Raised when modifier has unknown target filter type"""
+    """Raised when modifier has unknown target filter type."""
     ...
 
 
 # Exception classes used by map's calculation method
 class AttributeMetaError(AttributeCalculatorError):
-    """
-    Raised when attribute being calculated cannot be found in
-    attribute database.
-    """
+    """Raised when attribute cannot be found in attribute database."""
     ...
 
 
 class BaseValueError(AttributeCalculatorError):
-    """
-    Raised when value, upon which attribute calculation should be based,
-    cannot be determined, thus making it impossible to calculate attribute.
+    """Raised when base value of attribute cannot be calculated.
+
+    WHen calculating modified value of an attribute, we can take initial value
+    from the item or from default value of the attribute. If neither is defined,
+    this exception is raised.
     """
     ...

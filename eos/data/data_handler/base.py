@@ -67,6 +67,7 @@ class BaseDataHandler(metaclass=ABCMeta):
     def get_version(self):
         """Get version of data.
 
-        Returns: string with version
+        Returns:
+            String with version.
         """
         ...

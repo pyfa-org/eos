@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 
-# Each affector must have 2 components - modifier (which describes whom
-# and how to modify), and carrier item (item which carries modifier and
-# serves as part of context for its application)
+# Affector is calculator-specific entity. Each affector must have 2 components -
+# modifier (which describes whom and how to modify), and carrier item (item
+# which carries modifier and serves as part of context for its application)
 Affector = namedtuple('Affector', ('modifier', 'carrier_item'))

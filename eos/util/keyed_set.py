@@ -100,6 +100,7 @@ class KeyedSet(dict):
         Args:
             key: defines which set to retrieve.
 
-        Returns: set with data, or empty set if no set found for requested key.
+        Returns:
+            Set with data, or empty set if no set found for requested key.
         """
         return self.get(key) or set()

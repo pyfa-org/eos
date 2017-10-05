@@ -27,7 +27,9 @@ from math import exp
 from eos.const.eos import ModifierOperator
 from eos.const.eve import AttributeId, CategoryId
 from eos.data.cache_handler.exception import AttributeFetchError
-from eos.fit.pubsub.message import InstrAttrValueChanged, InstrAttrValueChangedMasked
+from eos.fit.pubsub.message import (
+    InstrAttrValueChanged, InstrAttrValueChangedMasked
+)
 from eos.util.keyed_set import KeyedSet
 from .exception import AttributeMetaError, BaseValueError
 
@@ -41,9 +43,9 @@ logger = getLogger(__name__)
 # Stacking penalty base constant, used in attribute calculations
 PENALTY_BASE = 1 / exp((1 / 2.67) ** 2)
 
-# Items belonging to these categories never have
-# their effects stacking penalized
-PENALTY_IMMUNE_CATEGORIES = (
+# Items belonging to these categories never have their effects stacking
+# penalized
+PENALTY_IMMUNE_CATS = (
     CategoryId.ship,
     CategoryId.charge,
     CategoryId.skill,
@@ -92,8 +94,8 @@ MULTIPLICATIONS = (
     ModifierOperator.post_percent
 )
 
-# Following attributes have limited precision - only
-# to second number after point
+# Following attributes have limited precision - only to second number after
+# decimal separator
 LIMITED_PRECISION = (
     AttributeId.cpu,
     AttributeId.power,
@@ -106,29 +108,29 @@ CALCULATE_RAISABLE_EXCEPTIONS = (AttributeMetaError, BaseValueError)
 
 
 class MutableAttributeMap:
-    """
-    Calculate, store and provide access to modified attribute values.
+    """Map which contains modified attribute values.
 
-    Required arguments:
-    item -- item, to which this map is assigned
+    It provides some of facilities which help to calculate, store and provide
+    access to modified attribute values.
     """
 
     def __init__(self, item):
-        # Reference to item for internal needs
         self.__item = item
-        # Actual container of calculated attributes
+        # Actual container of calculated attributes.
         # Format: {attribute ID: value}
         self.__modified_attributes = {}
-        # Override and cap maps are initialized as None
-        # to save memory, as they are not needed most of
-        # the time
+        # Override and cap maps are initialized as None to save memory, as they
+        # are not needed most of the time
         self.__override_callbacks = None
         self.__cap_map = None
 
     def __getitem__(self, attr_id):
-        # Overridden values are priority. Access 'private' override callbacks map
-        # directly due to performance reasons
-        if self.__override_callbacks is not None and attr_id in self.__override_callbacks:
+        # Overridden values are priority. Access 'private' override callbacks
+        # map directly due to performance reasons
+        if (
+            self.__override_callbacks is not None and
+            attr_id in self.__override_callbacks
+        ):
             callback, args, kwargs = self.__override_callbacks[attr_id]
             return callback(*args, **kwargs)
         # If no override is set, use modified value. If value is stored in
@@ -138,9 +140,11 @@ class MutableAttributeMap:
         # Else, we have to run full calculation process
         except KeyError:
             try:
-                val = self.__modified_attributes[attr_id] = self.__calculate(attr_id)
+                val = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS as e:
                 raise KeyError(attr_id) from e
+            else:
+                self.__modified_attributes[attr_id] = val
         return val
 
     def __len__(self):
@@ -160,30 +164,42 @@ class MutableAttributeMap:
         # Do nothing if it wasn't calculated
         except KeyError:
             return
-        # Launch message which notifies that attribute value may change (normally calculated
-        # values are removed if their dependencies change)
+        # Launch message which notifies that attribute value may change
+        # (normally calculated values are removed if their dependencies change)
         else:
-            # Special message type if modified attribute is masked by override. While
-            # exposed value cannot change in this case, underlying modified value can
-            if self.__override_callbacks is not None and attr_id in self.__override_callbacks:
-                self.__publish(InstrAttrValueChangedMasked(item=self.__item, attr=attr_id))
+            # Special message type if modified attribute is masked by override.
+            # While exposed value cannot change in this case, underlying
+            # modified value can
+            if (
+                self.__override_callbacks is not None and
+                attr_id in self.__override_callbacks
+            ):
+                msg = InstrAttrValueChangedMasked(
+                    item=self.__item, attr=attr_id)
+                self.__publish(msg)
             else:
-                self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
+                msg = InstrAttrValueChanged(item=self.__item, attr=attr_id)
+                self.__publish(msg)
 
     def get(self, attr_id, default=None):
-        # Almost copy-paste of __getitem__ due to performance reasons - attribute
-        # getters should make as few calls as possible, especially when attribute
-        # is already calculated
-        if self.__override_callbacks is not None and attr_id in self.__override_callbacks:
+        # Almost copy-paste of __getitem__ due to performance reasons -
+        # attribute getters should make as few calls as possible, especially
+        # when attribute is already calculated
+        if (
+            self.__override_callbacks is not None and
+            attr_id in self.__override_callbacks
+        ):
             callback, args, kwargs = self.__override_callbacks[attr_id]
             return callback(*args, **kwargs)
         try:
             val = self.__modified_attributes[attr_id]
         except KeyError:
             try:
-                val = self.__modified_attributes[attr_id] = self.__calculate(attr_id)
+                val = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
+            else:
+                self.__modified_attributes[attr_id] = val
         return val
 
     def keys(self):
@@ -192,7 +208,10 @@ class MutableAttributeMap:
         except AttributeError:
             base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
-        return set(chain(base_attrs, self.__modified_attributes, self.__override_callbacks or {}))
+        return set(chain(
+            base_attrs, self.__modified_attributes,
+            self.__override_callbacks or {}
+        ))
 
     def items(self):
         return set((attr_id, self.get(attr_id)) for attr_id in self.keys())
@@ -204,49 +223,48 @@ class MutableAttributeMap:
         self.__cap_map = None
 
     def __calculate(self, attr_id):
+        """Run calculations to find the actual value of attribute.
+
+        Args:
+            attr_id: ID of attribute to be calculated.
+
+        Returns:
+            Calculated attribute value.
+
+        Raises:
+            AttributeMetaError: cannot fetch metadata of attribute being
+                calculated
+            BaseValueError: cannot find base value for attribute being
+                calculated
         """
-        Run calculations to find the actual value of attribute.
-
-        Required arguments:
-        attr_id -- ID of attribute to be calculated
-
-        Return value:
-        Calculated attribute value
-
-        Possible exceptions:
-        AttributeMetaError -- cannot fetch metadata of attribute
-            being calculated
-        BaseValueError -- cannot find base value for attribute
-            being calculated
-        """
-        # Assign eve type attributes first to make sure than in case when we're
-        # calculating attribute for item without source, it fails with null
-        # source error (triggered by accessing eve type attribute)
+        item = self.__item
         try:
-            base_attrs = self.__item._eve_type.attributes
+            base_attr_map = item._eve_type.attributes
         except AttributeError:
-            base_attrs = {}
+            base_attr_map = {}
         # Attribute object for attribute being calculated
         try:
-            attr_meta = self.__item._fit.source.cache_handler.get_attribute(attr_id)
+            attr_meta = item._fit.source.cache_handler.get_attribute(attr_id)
         # Raise error if we can't get metadata for requested attribute
         except (AttributeError, AttributeFetchError) as e:
-            msg = 'unable to fetch metadata for attribute {}, requested for eve type {}'.format(
-                attr_id, self.__item._eve_type_id)
+            msg = (
+                'unable to fetch metadata for attribute {}, '
+                'requested for eve type {}'
+            ).format(attr_id, item._eve_type_id)
             logger.warning(msg)
             raise AttributeMetaError(attr_id) from e
         # Base attribute value which we'll use for modification
         try:
-            result = base_attrs[attr_id]
+            result = base_attr_map[attr_id]
         # If attribute isn't available on eve type, base off its default value
         except KeyError:
             result = attr_meta.default_value
-            # If eve type attribute is not specified and default
-            # value isn't available, raise error - without valid
-            # base we can't go on
+            # If eve type attribute is not specified and default value isn't
+            # available, raise error - without valid base we can't keep going
             if result is None:
-                msg = 'unable to find base value for attribute {} on eve type {}'.format(
-                    attr_id, self.__item._eve_type_id)
+                msg = (
+                    'unable to find base value for attribute {} on eve type {}'
+                ).format(attr_id, item._eve_type_id)
                 logger.info(msg)
                 raise BaseValueError(attr_id)
         # Container for non-penalized modifications
@@ -256,111 +274,116 @@ class MutableAttributeMap:
         # Format: {operator: [values]}
         penalized_mods = {}
         # Now, go through all affectors affecting our item
-        for operator, mod_value, carrier_item in self.__item._fit._calculator.get_modifications(self.__item, attr_id):
-            # Decide if it should be stacking penalized or not, based on stackable property,
-            # carrier item eve type category and operator
+        for mod_data in item._fit._calculator.get_modifications(item, attr_id):
+            operator, mod_value, carrier_item = mod_data
+            # Decide if it should be stacking penalized or not, based on
+            # stackable property, carrier item eve type category and operator
             penalize = (
-                attr_meta.stackable is False and
-                carrier_item._eve_type.category not in PENALTY_IMMUNE_CATEGORIES and
+                not attr_meta.stackable and
+                carrier_item._eve_type.category not in PENALTY_IMMUNE_CATS and
                 operator in PENALIZABLE_OPERATORS
             )
-            # Normalize operations to just three types:
-            # assignments, additions, multiplications
+            # Normalize operations to just three types: assignments, additions,
+            # multiplications
             try:
                 normalization_func = NORMALIZATION_MAP[operator]
             # Log error on any unknown operator types
             except KeyError:
-                msg = 'malformed modifier on eve type {}: unknown operator {}'.format(
-                    carrier_item._eve_type_id, operator)
+                msg = (
+                    'malformed modifier on eve type {}: unknown operator {}'
+                ).format(carrier_item._eve_type_id, operator)
                 logger.warning(msg)
                 continue
             mod_value = normalization_func(mod_value)
             # Add value to appropriate dictionary
-            if penalize is True:
+            if penalize:
                 mod_list = penalized_mods.setdefault(operator, [])
             else:
                 mod_list = normal_mods.setdefault(operator, [])
             mod_list.append(mod_value)
-        # When data gathering is complete, process penalized modifications
-        # They are penalized on per-operator basis
+        # When data gathering is complete, process penalized modifications. They
+        # are penalized on per-operator basis
         for operator, mod_list in penalized_mods.items():
             penalized_value = self.__penalize_values(mod_list)
             normal_mods.setdefault(operator, []).append(penalized_value)
         # Calculate result of normal dictionary, according to operator order
         for operator in sorted(normal_mods):
             mod_list = normal_mods[operator]
-            # Pick best modification for assignments, based on high_is_good value
+            # Pick best modification for assignments, based on high_is_good
+            # value
             if operator in ASSIGNMENTS:
-                result = max(mod_list) if attr_meta.high_is_good is True else min(mod_list)
+                if attr_meta.high_is_good:
+                    result = max(mod_list)
+                else:
+                    result = min(mod_list)
             elif operator in ADDITIONS:
                 for mod_val in mod_list:
                     result += mod_val
             elif operator in MULTIPLICATIONS:
                 for mod_val in mod_list:
                     result *= mod_val
-        # If attribute has upper cap, do not let
-        # its value to grow above it
+        # If attribute has upper cap, do not let its value to grow above it
         if attr_meta.max_attribute is not None:
             try:
                 max_value = self[attr_meta.max_attribute]
-            # If max value isn't available, don't
-            # cap anything
+            # If max value isn't available, don't cap anything
             except KeyError:
                 pass
             else:
                 result = min(result, max_value)
-                # Let map know that capping attribute
-                # restricts current attribute
+                # Let map know that capping attribute restricts current
+                # attribute
                 self._cap_set(attr_meta.max_attribute, attr_id)
-        # Some of attributes are rounded for whatever reason,
-        # deal with it after all the calculations
+        # Some of attributes are rounded for whatever reason, deal with it
+        # after all the calculations
         if attr_id in LIMITED_PRECISION:
             result = round(result, 2)
         return result
 
     def __penalize_values(self, mod_list):
-        """
-        Calculate aggregated factor of passed factors, taking into
-        consideration stacking penalty.
+        """Calculate aggregated multiplier from list of multipliers.
 
-        Positional argument:
-        mod_list -- list of factors
+        Assuming all multipliers received should be stacking penalized, and that
+        they are normalized to multiplier form, calculate final multiplier.
 
-        Return value:
-        Final aggregated factor of passed mod_list
+        Args:
+            mod_list: iterable with multipliers.
+
+        Returns:
+            Final aggregated multiplier.
+
         """
-        # Gather positive modifications into one chain, negative
-        # into another
-        chain_positive = []
-        chain_negative = []
+        # Gather positive multipliers into one chain, negative into another
+        chain_pos = []
+        chain_neg = []
         for mod_val in mod_list:
-            # Transform value into form of multiplier - 1 for ease of
-            # stacking chain calculation
+            # Transform value into form of multiplier - 1 for ease of stacking
+            # chain calculation
             mod_val -= 1
             if mod_val >= 0:
-                chain_positive.append(mod_val)
+                chain_pos.append(mod_val)
             else:
-                chain_negative.append(mod_val)
+                chain_neg.append(mod_val)
         # Strongest modifications always go first
-        chain_positive.sort(reverse=True)
-        chain_negative.sort()
+        chain_pos.sort(reverse=True)
+        chain_neg.sort()
         # Base final multiplier on 1
-        list_result = 1
-        for penalty_chain in (chain_positive, chain_negative):
+        res = 1
+        for pen_chain in (chain_pos, chain_neg):
             # Same for intermediate per-chain result
-            chain_result = 1
-            for position, modification in enumerate(penalty_chain):
+            chain_res = 1
+            for pos, mod in enumerate(pen_chain):
                 # Ignore 12th modification and further as non-significant
-                if position > 10:
+                if pos > 10:
                     break
                 # Apply stacking penalty based on modification position
-                chain_result *= 1 + modification * PENALTY_BASE ** (position ** 2)
-            list_result *= chain_result
-        return list_result
+                chain_res *= 1 + mod * PENALTY_BASE ** (pos ** 2)
+            res *= chain_res
+        return res
 
     # Override-related methods
     def _set_override_callback(self, attr_id, callback):
-        """Set override for the attribute in the form of callback"""
+        """Set override for the attribute in the form of callback."""
         if self.__override_callbacks is None:
             self.__override_callbacks = {}
         # If the same callback is set, do nothing
@@ -371,7 +394,7 @@ class MutableAttributeMap:
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
 
     def _del_override_callback(self, attr_id):
-        """Remove override callback from attribute"""
+        """Remove override callback from attribute."""
         overrides = self.__override_callbacks or {}
         if attr_id not in overrides:
             return
@@ -383,30 +406,33 @@ class MutableAttributeMap:
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
 
     def _override_value_may_change(self, attr_id):
+        """Notify everyone that callback value may change.
+
+        When originator of callback knows that callback return value may (or
+        will) change for an attribute, it should invoke this method.
         """
-        When originator of callback knows that callback return
-        value may (or will) change for an attribute, it should
-        invoke this method.
-        """
+
         self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
 
     def _get_without_overrides(self, attr_id, default=None):
-        """Get attribute value without using overrides"""
+        """Get attribute value without using overrides."""
         # Partially borrowed from get() method
         try:
             val = self.__modified_attributes[attr_id]
         except KeyError:
             try:
-                val = self.__modified_attributes[attr_id] = self.__calculate(attr_id)
+                val = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
+            else:
+                self.__modified_attributes[attr_id] = val
         return val
 
     # Cap-related methods
     @property
     def _cap_map(self):
-        # Returns map of attributes which cap something, and attributes
-        # capped by them
+        # Returns map of attributes which cap something, and attributes capped
+        # by them
         # Format {capping attribute ID: {capped attribute IDs}}
         return self.__cap_map or {}
 
