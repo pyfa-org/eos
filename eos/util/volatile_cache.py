@@ -20,10 +20,10 @@
 
 
 class volatile_property:
-    """
-    Caches attribute on instance and adds note
-    about it to special set, which should be added
-    by VolatileMixin.
+    """Decorator which caches call result and provides facilities to clear it.
+
+    Adds note on cached result to special set which is used by volatile mixins
+    to clear cache.
     """
 
     def __init__(self, method):
@@ -40,21 +40,16 @@ class volatile_property:
 
 
 class InheritableVolatileMixin:
-    """
-    Should be added as base class for all
-    classes using volatile_property on them.
-    This mixin is to be used in classical
-    inheritance trees.
+    """Inheritable volatile cache mixin.
+
+    Should be added as parent class for all classes using volatile property on
+    them. This mixin is for classical inheritance trees.
     """
 
     def __init__(self):
         self._volatile_attrs = set()
 
     def _clear_volatile_attrs(self):
-        """
-        Remove all the cached values which were
-        stored since the last cleanup.
-        """
         for attr_name in self._volatile_attrs:
             try:
                 delattr(self, attr_name)
@@ -64,14 +59,13 @@ class InheritableVolatileMixin:
 
 
 class CooperativeVolatileMixin:
-    """
-    Should be added as base class for all
-    classes using volatile_property on them.
-    This mixin is to be used in cooperative
-    classes (see super() docs).
+    """Cooperative volatile cache mixin.
+
+    Should be added as parent class for all classes using volatile property on
+    them. This mixin is for cooperative-style inheritance.
 
     Cooperative methods:
-    __init__
+        __init__
     """
 
     def __init__(self, **kwargs):
@@ -79,10 +73,6 @@ class CooperativeVolatileMixin:
         super().__init__(**kwargs)
 
     def _clear_volatile_attrs(self):
-        """
-        Remove all the cached values which were
-        stored since the last cleanup.
-        """
         for attr_name in self._volatile_attrs:
             try:
                 delattr(self, attr_name)

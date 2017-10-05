@@ -25,12 +25,12 @@ Original code by Entity, as seen in reverence.
 
 
 class cached_property:
-    """
-    Decorator class, imitates property behavior, but additionally caches results
-    returned by decorated method as attribute of instance to which decorated
-    method belongs. As python, when getting attribute with certain name, seeks
-    for class instance's attributes first, then for methods, it gets cached
-    result. To clear cache, just delete cached attribute.
+    """Decorator which stores call return value on instance.
+
+    Caches results returned by decorated method as attribute of instance to
+    which decorated method belongs. As python, when getting attribute with
+    certain name, seeks for class instance's attributes first, then for methods,
+    it gets cached result. To clear cache, just delete cached attribute.
     """
 
     def __init__(self, method):
