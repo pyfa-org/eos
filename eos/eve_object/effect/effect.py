@@ -35,28 +35,28 @@ class Effect(BaseCachable):
     other items.
 
     Attributes:
-        id: identifier of the effect.
-        category: defines effect category, which influences when and how effect
+        id: Identifier of the effect.
+        category: Defines effect category, which influences when and how effect
             is applied - always, when item is active, overloaded, etc.
-        is_offensive: whether effect is offensive (e.g. guns).
-        is_assistance: whether the effect is assistance (e.g. remote repairers).
-        duration_attribute: value of attribute with this ID on carrier item
+        is_offensive: Whether effect is offensive (e.g. guns).
+        is_assistance: Whether the effect is assistance (e.g. remote repairers).
+        duration_attribute: Value of attribute with this ID on carrier item
             defines effect cycle time.
-        discharge_attribute: value of attribute with this ID on carrier item
+        discharge_attribute: Value of attribute with this ID on carrier item
             defines how much cap does this effect take per cycle.
-        range_attribute: value of attribute with this ID on carrier item defines
+        range_attribute: Value of attribute with this ID on carrier item defines
             max range where effect is applied to its full potency.
-        falloff_attribute: value of attribute with this ID on carrier item
+        falloff_attribute: Value of attribute with this ID on carrier item
             defines additional range where effect is still applied, but with
             diminished potency.
-        tracking_speed_attribute: value of attribute with this ID on carrier item
+        tracking_speed_attribute: Value of attribute with this ID on carrier item
             defines tracking speed which reduces effect efficiency vs targets
             which are small and have decent angular velocity.
-        fitting_usage_chance_attribute: value of attribute with this ID on
+        fitting_usage_chance_attribute: Value of attribute with this ID on
             carrier item defines chance of this effect being applied when item
             is added to fit, e.g. booster side-effects.
-        build_status: effect->modifier build status.
-        modifiers: iterable with modifiers. It's actually not effect which
+        build_status: Effect->modifier build status.
+        modifiers: Iterable with modifiers. It's actually not effect which
             describes modifications this item does, but these child objects.
     """
 

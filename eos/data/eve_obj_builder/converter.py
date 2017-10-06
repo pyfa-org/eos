@@ -37,7 +37,7 @@ class Converter:
         """Convert data into eve objects.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format
+            data: Dictionary in {table name: {table, rows}} format.
 
         Returns:
             Tuple with 3 dictionaries, which contain types, attributes and

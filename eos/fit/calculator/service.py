@@ -55,8 +55,8 @@ class CalculationService(BaseSubscriber):
         """Get modifications of target attr on target item.
 
         Args:
-            target_item: item, for which we're getting modifications.
-            target_attr: target attribute ID; only modifications which influence
+            target_item: Item, for which we're getting modifications.
+            target_attr: Target attribute ID; only modifications which influence
                 attribute with this ID will be returned.
 
         Returns:
@@ -183,10 +183,10 @@ class CalculationService(BaseSubscriber):
         """Get all affectors spawned by the item.
 
         Args:
-            item: item, for which affectors are generated.
-            effect_ids: iterable with effect IDs which should serve as filter
-                for affectors. If affector's modifier is not part of effect
-                from this iterable, it's filtered out.
+            item: Item, for which affectors are generated.
+            effect_ids: Iterable with effect IDs which should serve as filter
+                for affectors. If affector's modifier is not part of effect from
+                this iterable, it's filtered out.
 
         Return value:
             Set with Affector objects.

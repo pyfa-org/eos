@@ -24,20 +24,18 @@ from .exception import ItemAlreadyAssignedError
 
 
 class ItemDescriptorOnItem(ItemContainerBase):
-    """
-    Container for single item, intended to be used
-    as item attribute for direct access.
-
-    Required arguments:
-    direct_attr_name -- name of instance attribute which
-        should be used to store data processed by descriptor
-    reverse_attr_name -- name of attribute which will be
-        used to refer from contained item to container item
-    item_class -- class of items this container
-        is allowed to contain
-    """
+    """Container for single item, intended to be used as item attribute."""
 
     def __init__(self, direct_attr_name, item_class):
+        """Initialize on-item single item container.
+
+        Args:
+            direct_attr_name: Name of instance attribute which should be used to
+                store data processed by the descriptor.
+            reverse_attr_name: Name of attribute which will be used to refer
+                container item from contained item.
+            item_class: Class of items this container is allowed to contain.
+        """
         ItemContainerBase.__init__(self, item_class)
         self.__attr_name = direct_attr_name
 

@@ -23,16 +23,13 @@ from eos.exception import EosError
 
 
 class ItemAlreadyAssignedError(EosError):
-    """
-    Raised on attempt to set item to container, when
-    it's already assigned to some container.
-    """
+    """Raised on attempt to set already assigned item to container."""
     ...
 
 
 class SlotTakenError(EosError):
-    """
-    When attempt to overwrite another item in ordered container
-    is detected, this exception is raised.
+    """Raised when slot is already taken.
+
+    It happens on attempt to overwrite another item in ordered container.
     """
     ...

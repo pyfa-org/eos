@@ -42,17 +42,17 @@ class Type(BaseCachable):
     All characters, ships, incursion system-wide effects are actually eve types.
 
     Attributes:
-        id: identifier of the eve type.
-        group: group ID of the eve type.
-        category: category ID of the eve type. Normally it's attribute of group,
+        id: Identifier of the eve type.
+        group: Group ID of the eve type.
+        category: Category ID of the eve type. Normally it's attribute of group,
             but as we do not need groups as separate objects, categories were
             'demoted' into type attribute.
-        attributes: map with base attribute values for this type in {attribute
+        attributes: Map with base attribute values for this type in {attribute
             ID: attribute value} format.
-        effects: map with effects this type has in {effect ID: effect} format.
-        default_effect: default effect of the type. When item is activated, it
+        effects: Map with effects this type has in {effect ID: effect} format.
+        default_effect: Default effect of the type. When item is activated, it
             gets run.
-        fighter_abilities: map with fighter abilities in {ability ID: (cooldown
+        fighter_abilities: Map with fighter abilities in {ability ID: (cooldown
             time, charge amount, rearm time) format.
     """
 

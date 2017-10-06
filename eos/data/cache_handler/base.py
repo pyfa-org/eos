@@ -50,9 +50,9 @@ class BaseCacheHandler(metaclass=ABCMeta):
         """Update cache.
 
         Args:
-            eve_objects: tuple with data to cache. Should be in form of three
-            dictionaries, which contain types, attributes and effects, keyed
-            against their respective IDs.
-            fingerprint: unique ID of data in the form of string
+            eve_objects: Tuple with data to cache. Should be in form of three
+                dictionaries, which contain types, attributes and effects, keyed
+                against their respective IDs.
+            fingerprint: Unique ID of data in the form of string
         """
         ...

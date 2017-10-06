@@ -37,7 +37,7 @@ class JsonDataHandler(BaseDataHandler):
         """Initialize data handler.
 
         Args:
-            basepath: path to folder with JSON files.
+            basepath: Path to folder with JSON files.
         """
         self.basepath = os.path.abspath(basepath)
 

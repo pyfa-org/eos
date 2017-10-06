@@ -26,16 +26,18 @@ from .exception import ItemAlreadyAssignedError, SlotTakenError
 
 
 class ItemList(ItemContainerBase):
-    """
-    Ordered container for items.
+    """Ordered container for items.
 
-    Required arguments:
-    fit -- fit, to which container is attached
-    item_class -- class of items this container
-        is allowed to contain
+    Implements list-like interface.
     """
 
     def __init__(self, fit, item_class):
+        """Initialize ordered container.
+
+        Args:
+            fit: Fit, to which container is attached.
+            item_class: Class of items this container is allowed to contain.
+        """
         ItemContainerBase.__init__(self, item_class)
         self.__fit = fit
         self.__list = []
@@ -45,19 +47,20 @@ class ItemList(ItemContainerBase):
         return self.__fit
 
     def insert(self, index, value):
-        """
-        Insert value to given position; if position is
-        out of range of container and value is item,
-        fill container with Nones up to position and
-        put item there. Also value can be None to
-        insert empty slots between items.
+        """Insert value to given position.
 
-        Possible exceptions:
-        TypeError -- raised when item of unacceptable class
-            is passed
-        ValueError -- raised when item is passed as value and
-            it cannot be added to container (e.g. already belongs
-            to some fit)
+        If position is out of range of container and value is item, fill
+        container with Nones up to position and put item there.
+
+        Args:
+            index: Position to insert value to.
+            value: Item or None. None can be used to insert empty slots between
+                items.
+
+        Raises:
+            TypeError: If item of unacceptable class is passed.
+            ValueError: If item is passed as value and it cannot be added to
+                the container (e.g. already belongs to other container).
         """
         self._check_class(value, allow_none=True)
         self._allocate(index - 1)
@@ -73,14 +76,15 @@ class ItemList(ItemContainerBase):
                 raise ValueError(*e.args) from e
 
     def append(self, item):
-        """
-        Append item to the end of container.
+        """Append item to the end of the container.
+
+        Args:
+            item: Item to append.
 
         Possible exceptions:
-        TypeError -- raised when item of unacceptable class
-            is passed
-        ValueError -- raised when item cannot be added to container
-            (e.g. already belongs to some fit)
+            TypeError: If item of unacceptable class is passed.
+            ValueError: If item cannot be added to the container (e.g. already
+                belongs to other container).
         """
         self._check_class(item)
         self.__list.append(item)
@@ -91,18 +95,21 @@ class ItemList(ItemContainerBase):
             raise ValueError(*e.args) from e
 
     def place(self, index, item):
-        """
-        Put item to given position; if position is out of
-        range of container, fill it with Nones up to position
-        and put item there.
+        """Put item to given position.
 
-        Possible exceptions:
-        TypeError -- raised when item of unacceptable class
-            is passed
-        ValueError -- raised when item cannot be added to
-            container (e.g. already belongs to some fit)
-        SlotTakenError -- raised when slot at specified index
-            is already taken by other item
+        If position is out of range of container, fill it with Nones up to
+        position and put item there.
+
+        Args:
+            index: Position to put item to.
+            item: Item to put.
+
+        Raises:
+            TypeError: If item of unacceptable class is passed.
+            ValueError: If item cannot be added to the container (e.g. already
+                belongs to other container).
+            SlotTakenError: If slot at specified index is already taken by other
+                item.
         """
         self._check_class(item)
         try:
@@ -121,16 +128,18 @@ class ItemList(ItemContainerBase):
             raise ValueError(*e.args) from e
 
     def equip(self, item):
-        """
-        Put item to first free slot in container; if
-        container doesn't have free slots, append item
-        to the end of container.
+        """Put item to first free slot in container.
 
-        Possible exceptions:
-        TypeError -- raised when item of unacceptable class
-            is passed
-        ValueError -- raised when item cannot be added to
-            container (e.g. already belongs to some fit)
+        If container doesn't have free slots, append item to the end of the
+        container.
+
+        Args:
+            item: Item to put.
+
+        Raises:
+            TypeError: If item of unacceptable class is passed.
+            ValueError: If item cannot be added to the container (e.g. already
+                belongs to other container).
         """
         self._check_class(item)
         try:
@@ -149,13 +158,16 @@ class ItemList(ItemContainerBase):
 
     def remove(self, value):
         """
-        Remove item or None from container. Also clean container's
-        tail if it's filled with Nones. Value can be item, None or
-        integer index.
+        Remove item or None from the container.
 
-        Possible exceptions:
-        ValueError -- if passed item cannot be found in container
-        IndexError -- if passed index is out of range of list
+        Also clean container's tail if it's filled with Nones.
+
+        Args:
+            value: Thing to remove. Can be item, None or integer index.
+
+        Raises:
+            ValueError: If passed item cannot be found in container.
+            IndexError: If passed index is out of range of list.
         """
         if isinstance(value, Integral):
             index = value
@@ -169,14 +181,18 @@ class ItemList(ItemContainerBase):
         self._cleanup()
 
     def free(self, value):
-        """
-        Free item's slot (replace it with None). Also clean
-        container's tail if it's filled with Nones. Value can be
-        item or integer index.
+        """Free item's slot.
 
-        Possible exceptions:
-        ValueError -- if passed item cannot be found in container
-        IndexError -- if passed index is out of range of list
+        Or, in other words, replace it with None, without shifting list tail.
+        Also clean container's tail after replacement, if it's filled with
+        Nones.
+
+        Args:
+            value: Thing to remove. Can be item or integer index.
+
+        Raises:
+            ValueError: If passed item cannot be found in container.
+            IndexError: If passed index is out of range of the list.
         """
         if isinstance(value, Integral):
             index = value
@@ -191,11 +207,11 @@ class ItemList(ItemContainerBase):
         self._cleanup()
 
     def items(self):
-        """Return view over container with just items."""
+        """Return item view over the container."""
         return ListItemView(self.__list)
 
     def clear(self):
-        """Remove everything from container."""
+        """Remove everything from the container."""
         for item in self.__list:
             if item is not None:
                 self._handle_item_removal(item)
@@ -206,7 +222,11 @@ class ItemList(ItemContainerBase):
         return self.__list.__getitem__(index)
 
     def index(self, value):
-        """Get index by item/None."""
+        """Get index of value.
+
+        Args:
+            value: item or None. In case of None, searches for first seen None.
+        """
         return self.__list.index(value)
 
     def __iter__(self):
@@ -219,9 +239,9 @@ class ItemList(ItemContainerBase):
         return self.__list.__len__()
 
     def _allocate(self, index):
-        """
-        If passed index is out of range, complete
-        list with Nones until index becomes available.
+        """Complete list with Nones until passed index becomes accessible.
+
+        Used by other methods if index requested by user is out of range.
         """
         allocated_num = len(self.__list)
         self.__list.extend([None] * max(index - allocated_num + 1, 0))
@@ -231,8 +251,8 @@ class ItemList(ItemContainerBase):
         try:
             while self.__list[-1] is None:
                 del self.__list[-1]
-        # If we get IndexError, we've ran out of list elements
-        # and we're fine with it
+        # If we get IndexError, we've ran out of list elements and we're fine
+        # with it
         except IndexError:
             pass
 
@@ -241,16 +261,20 @@ class ItemList(ItemContainerBase):
 
 
 class ListItemView:
-    """
-    Simple class to implement view-like
-    functionality over passed list.
+    """Item view over passed list container.
+
+    Item view allows you to deal just with items in the list, ignoring empty
+    slots.
     """
 
     def __init__(self, list_):
         self.__list = list_
 
     def __iter__(self):
-        return (item for item in self.__list if item is not None)
+        for item in self.__list:
+            if item is None:
+                continue
+            yield item
 
     def __contains__(self, value):
         if value is None:

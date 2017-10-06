@@ -40,7 +40,7 @@ class ModifierBuilder:
         """Initialize builder.
 
         Args:
-            exp_rows: iterable with expression rows.
+            exp_rows: Iterable with expression rows.
         """
         self._tree = ExpressionTreeConverter(exp_rows)
 
@@ -48,7 +48,7 @@ class ModifierBuilder:
         """Generate modifiers using passed data.
 
         Args:
-            effect_row: effect row with effect category, pre-/post-expression
+            effect_row: Effect row with effect category, pre-/post-expression
                 IDs, modifier info data.
 
         Returns:

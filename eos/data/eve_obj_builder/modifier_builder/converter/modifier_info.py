@@ -33,14 +33,14 @@ class ModifierInfoConverter:
         """Generate modifiers out of YAML data.
 
         Args:
-            mod_infos_yaml: string with YAML modifier data.
+            mod_infos_yaml: String with YAML modifier data.
 
         Returns:
             Tuple with iterable which contains modifiers, and amount of modifier
             build failures we recorded.
 
         Raises:
-            YamlParsingError: raised when YAML parses fails
+            YamlParsingError: If YAML parses fails.
         """
         try:
             mod_infos = yaml.safe_load(mod_infos_yaml)

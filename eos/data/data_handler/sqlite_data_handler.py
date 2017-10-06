@@ -36,7 +36,7 @@ class SQLiteDataHandler(BaseDataHandler):
         """Initialize data handler.
 
         Args:
-            db_path: path to database file.
+            db_path: Path to database file.
         """
         # SQLite stores bools as 0 or 1, convert them to python bool
         sqlite3.register_converter('BOOLEAN', lambda v: int(v) == 1)

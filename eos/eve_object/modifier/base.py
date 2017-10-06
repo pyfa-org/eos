@@ -43,8 +43,8 @@ class BaseModifier(metaclass=ABCMeta):
         """Get modification parameters.
 
         Args:
-            carrier_item: item which carries the modifier.
-            ship: ship of fit which is being modified.
+            carrier_item: Item which carries the modifier.
+            ship: Ship of fit which is being modified.
 
         Returns:
             Tuple (operator, modification value) which is intermediate result of

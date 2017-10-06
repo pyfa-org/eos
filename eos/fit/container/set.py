@@ -24,16 +24,18 @@ from .exception import ItemAlreadyAssignedError
 
 
 class ItemSet(ItemContainerBase):
-    """
-    Unordered container for items.
+    """Unordered container for items.
 
-    Required arguments:
-    fit -- fit, to which container is attached
-    item_class -- class of items this container
-        is allowed to contain
+    Implements set-like interface.
     """
 
     def __init__(self, fit, item_class):
+        """Initialize unordered container.
+
+        Args:
+            fit: Fit, to which container is attached.
+            item_class: Class of items this container is allowed to contain.
+        """
         ItemContainerBase.__init__(self, item_class)
         self.__fit = fit
         self.__set = set()
@@ -43,14 +45,15 @@ class ItemSet(ItemContainerBase):
         return self.__fit
 
     def add(self, item):
-        """
-        Add item to container.
+        """Add item to the container.
 
-        Possible exceptions:
-        TypeError -- raised when item of unacceptable class
-            is passed
-        ValueError -- raised when item cannot be added to container
-            (e.g. already belongs to some fit)
+        Args:
+            item: item to add.
+
+        Raises:
+            TypeError: If item of unacceptable class is passed.
+            ValueError: If item cannot be added to the container (e.g. already
+                belongs to some fit).
         """
         self._check_class(item)
         self.__set.add(item)
@@ -61,12 +64,14 @@ class ItemSet(ItemContainerBase):
             raise ValueError from e
 
     def remove(self, item):
-        """
-        Remove item from container.
+        """Remove item from the container.
 
-        Possible exceptions:
-        KeyError -- raised when item cannot be removed
-            from container (e.g. it doesn't belong to it)
+        Args:
+            item: Item to remove.
+
+        Raises:
+            KeyError: If item cannot be removed from the container (e.g. it
+                doesn't belong to it).
         """
         if item not in self.__set:
             raise KeyError(item)
@@ -74,7 +79,7 @@ class ItemSet(ItemContainerBase):
         self.__set.remove(item)
 
     def clear(self):
-        """Remove everything from container."""
+        """Remove everything from the container."""
         for item in self.__set:
             self._handle_item_removal(item)
         self.__set.clear()

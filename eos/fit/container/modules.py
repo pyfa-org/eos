@@ -25,9 +25,9 @@ from eos.util.repr import make_repr_str
 
 
 class ModuleRacks:
-    """
-    Higher-level container for all module racks
-    (which are containers for items).
+    """Container for all module racks.
+
+    Each rack is actually list container for module items.
     """
 
     def __init__(self, high, med, low):
@@ -45,14 +45,18 @@ class ModuleRacks:
 
 
 class ModuleItemView:
-    """View over all module items within all racks."""
+    """Item view over all module items within all racks."""
 
     def __init__(self, racks):
         self.__racks = racks
 
     def __iter__(self):
-        racks_chain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
-        return (item for item in racks_chain if item is not None)
+        for item in chain(
+            self.__racks.high, self.__racks.med, self.__racks.low
+        ):
+            if item is None:
+                continue
+            yield item
 
     def __contains__(self, value):
         if value is None:
@@ -65,5 +69,6 @@ class ModuleItemView:
         )
 
     def __len__(self):
-        racks_chain = chain(self.__racks.high, self.__racks.med, self.__racks.low)
+        racks_chain = chain(
+            self.__racks.high, self.__racks.med, self.__racks.low)
         return sum(item is not None for item in racks_chain)

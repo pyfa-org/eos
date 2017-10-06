@@ -48,28 +48,28 @@ class Fit(FitMessageBroker, BaseSubscriber):
     to calculate their attributes and do many other tasks.
 
     Attributes:
-        ship: access point for ship.
-        stance: access point for ship stance, also known as tactical mode.
-        subsystems: set for subsystems.
-        modules.high: list for high-slot modules.
-        modules.med: list for med-slot modules.
-        modules.low: list for low-slot modules.
-        rigs: set for rigs.
-        drones: set for drones.
-        fighters: set for fighter squads.
-        character: access point for character.
-        skills: restricted set for skills.
-        implants: set for implants.
-        boosters: set for boosters.
-        effect_beacon: access point for effect beacons (e.g. wormhole effects).
-        default_incoming_damage: access point for default incoming damage
+        ship: Access point for ship.
+        stance: Access point for ship stance, also known as tactical mode.
+        subsystems: Set for subsystems.
+        modules.high: List for high-slot modules.
+        modules.med: List for med-slot modules.
+        modules.low: List for low-slot modules.
+        rigs: Set for rigs.
+        drones: Set for drones.
+        fighters: Set for fighter squads.
+        character: Access point for character.
+        skills: Restricted set for skills.
+        implants: Set for implants.
+        boosters: Set for boosters.
+        effect_beacon: Access point for effect beacons (e.g. wormhole effects).
+        default_incoming_damage: Access point for default incoming damage
             pattern. This pattern will be used by default for things like EHP
             calculation, RAH adaptation, etc.
-        source: access point for fit's source. Source 'fills' fit with actual
+        source: Access point for fit's source. Source 'fills' fit with actual
             eve objects, which carry info about attributes, how they should be
             modified, and other important data. Without source set, calculating
             anything meaningful is not possible.
-        stats: all aggregated stats for fit are accessible via this access
+        stats: All aggregated stats for fit are accessible via this access
             point.
     """
 
@@ -80,7 +80,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
         pattern and sets character item.
 
         Args:
-            source (optional): source to use with this fit. When not specified,
+            source (optional): Source to use with this fit. When not specified,
                 source which is set as default in source manager will be used.
 
         """
@@ -130,11 +130,11 @@ class Fit(FitMessageBroker, BaseSubscriber):
         """Run fit validation.
 
         Args:
-            skip_checks (optional): iterable with restriction types validation
+            skip_checks (optional): Iterable with restriction types validation
                 should ignore. By default, nothing is ignored.
 
         Raises:
-            ValidationError: raised when validation fails. Its single argument
+            ValidationError: If fit validation fails. Its single argument
                 contains extensive data on reason of failure. Refer to
                 restriction service docs for format of the data.
         """

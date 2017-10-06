@@ -23,44 +23,46 @@ from .exception import ItemAlreadyAssignedError
 
 
 class ItemContainerBase:
-    """
-    Base class for any containers which are intended
-    to ease management of items.
-
-    Required arguments:
-    item_class -- class of items this container
-        is allowed to contain
-    """
+    """Base class for item containers."""
 
     def __init__(self, item_class):
+        """Initialize common container functionality.
+
+        Args:
+            item_class: Class of items this container is allowed to contain.
+        """
         self.__item_class = item_class
 
     def _handle_item_addition(self, item, container):
+        """Do all the generic work to add item to container.
+
+        Must be called after item has been assigned to specific container, so
+        that presence checks during addition pass.
         """
-        Do all the generic work to add item to container.
-        Must be called after item has been assigned to
-        specific container, so that presence checks during
-        addition pass.
-        """
-        # Make sure we're not adding item which already
-        # belongs to other container
-        if item._container is not None:
+        # Make sure we're not adding item which already belongs to other
+        # container
+        if item._container:
             raise ItemAlreadyAssignedError(item)
         item._container = container
 
     def _handle_item_removal(self, item):
-        """
-        Do all the generic work to remove item to container.
-        Must be called before item has been removed from
-        specific container, so that presence checks during
-        removal should pass.
+        """Do all the generic work to remove item to container.
+
+        Must be called before item has been removed from specific container, so
+        that presence checks during removal should pass.
         """
         item._container = None
 
     def _check_class(self, item, allow_none=False):
-        """
-        Check if class of passed item corresponds
-        to our expectations.
+        """Check if class of passed item corresponds to our expectations.
+
+        Args:
+            item: Item which should be checked.
+            allow_none (optional): Define if None as item is fine or not. By
+                default, it is not.
+
+        Raises:
+            TypeError: If item class check fails.
         """
         if isinstance(item, self.__item_class):
             return

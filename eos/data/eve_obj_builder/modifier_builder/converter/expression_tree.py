@@ -35,7 +35,7 @@ class ExpressionTreeConverter:
         """Initialize converter.
 
         Args:
-            exp_rows: iterable with expression rows which should be used as data
+            exp_rows: Iterable with expression rows which should be used as data
                 source.
         """
         self._fails = None
@@ -46,7 +46,7 @@ class ExpressionTreeConverter:
         """Generate modifiers.
 
         Args:
-            pre_root_id: pre-expression ID which points to expression tree root,
+            pre_root_id: Pre-expression ID which points to expression tree root,
                 which should be used to generate modifiers. Post-expression part
                 is not needed because it always mirrors pre-expression in cases
                 where source data is not broken.
@@ -56,8 +56,8 @@ class ExpressionTreeConverter:
             build failures we recorded.
 
         Raises:
-            UnknownEtreeRootOperandError: raised when root expression row
-                contains operand with ID we do not know how to handle.
+            UnknownEtreeRootOperandError: If root expression row contains
+                operand with ID we do not know how to handle.
         """
         self._fails = 0
         self._mods = []

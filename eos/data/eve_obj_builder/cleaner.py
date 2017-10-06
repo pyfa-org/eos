@@ -41,7 +41,7 @@ class Cleaner:
         relationships hardcoded in class' methods.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format
+            data: Dictionary in {table name: {table, rows}} format.
         """
         self.data = data
         # Container to store signs of so-called strong data, such rows are
@@ -154,7 +154,7 @@ class Cleaner:
         hardcoded in this method and needs to be updated if it changes.
 
         Args:
-            tgt_data: dictionary which will be filled during the process. Its
+            tgt_data: Dictionary which will be filled during the process. Its
                 contents should specify target field and which values this field
                 should have.
         """
@@ -215,7 +215,7 @@ class Cleaner:
         to be updated.
 
         Args:
-            tgt_data: dictionary which will be filled during the process. Its
+            tgt_data: Dictionary which will be filled during the process. Its
                 contents should specify target field and which values this field
                 should have.
         """
@@ -318,7 +318,7 @@ class Cleaner:
         Rows marked as strong are immune to removal.
 
         Args:
-            table_name: name of a table where data for marking resides.
+            table_name: Name of a table where data for marking resides.
             datarows: iterable with data rows from the table.
         """
         self.strong_data.setdefault(table_name, set()).update(datarows)
@@ -329,7 +329,7 @@ class Cleaner:
         Data is moved into trash with ability to be restored later, if needed.
 
         Args:
-            table_name: name of a table where data for marking resides.
+            table_name: Name of a table where data for marking resides.
             datarows: iterable with data rows from the table.
         """
         data_table = self.data[table_name]
@@ -341,7 +341,7 @@ class Cleaner:
         """Restore data rows from trash into actual data.
 
         Args:
-            table_name: name of a table where data for marking resides.
+            table_name: Name of a table where data for marking resides.
             datarows: iterable with data rows from the table.
         """
         data_table = self.data[table_name]

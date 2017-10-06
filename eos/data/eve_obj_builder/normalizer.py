@@ -39,7 +39,7 @@ class Normalizer:
         data for easier and hack-free code in other parts of Eos.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format
+            data: Dictionary in {table name: {table, rows}} format.
         """
         Normalizer._move_attribs(data)
         Normalizer._convert_expression_symbolic_references(data)
@@ -53,7 +53,7 @@ class Normalizer:
         dgmtypeattribs table, where the rest of attributes are defined.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format
+            data: Dictionary in {table name: {table, rows}} format.
         """
         atrrib_map = {
             'radius': AttributeId.radius,
@@ -116,7 +116,7 @@ class Normalizer:
         their code, thus we have to hardcode it too.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format
+            data: Dictionary in {table name: {table, rows}} format.
         """
         dgmexps = data['dgmexpressions']
         # Replacement specification

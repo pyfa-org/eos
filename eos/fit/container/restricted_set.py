@@ -23,35 +23,40 @@ from .set import ItemSet
 
 
 class ItemRestrictedSet(ItemSet):
-    """
-    Unordered container for items, which can't
-    contain 2 items with the same type ID.
+    """Unordered container for items with few dict-like modifications.
 
-    Required arguments:
-    fit -- fit, to which container is attached
-    item_class -- class of items this container
-        is allowed to contain
+    This container can't hold 2 items with the same type ID, and provides access
+    to items via their type IDs.
     """
 
     def __init__(self, fit, item_class):
+        """Initialize restricted unordered container.
+
+        Args:
+            fit: Fit, to which container is attached.
+            item_class: Class of items this container is allowed to contain.
+        """
         ItemSet.__init__(self, fit, item_class)
         self.__eve_type_id_map = {}
 
     def add(self, item):
-        """
-        Add item to container.
+        """Add item to the container.
 
-        Possible exceptions:
-        TypeError -- raised when item of unacceptable class
-            is passed
-        ValueError -- raised when item cannot be added to container
-            (e.g. already belongs to some fit or item with this
-            type ID exists in container)
+        Args:
+            item: Item to add.
+
+        Raises:
+            TypeError: If item of unacceptable class is passed.
+            ValueError: If item cannot be added to the container (e.g. already
+                belongs to other container or item with this type ID exists in
+                the container).
         """
         self._check_class(item)
         eve_type_id = item._eve_type_id
         if eve_type_id in self.__eve_type_id_map:
-            msg = 'item with type ID {} already exists in this set'.format(eve_type_id)
+            msg = (
+                'item with type ID {} already exists in this set'
+            ).format(eve_type_id)
             raise ValueError(msg)
         self.__eve_type_id_map[eve_type_id] = item
         try:
@@ -61,33 +66,38 @@ class ItemRestrictedSet(ItemSet):
             raise
 
     def remove(self, item):
-        """
-        Remove item from container.
+        """Remove item from the container.
 
-        Possible exceptions:
-        KeyError -- raised when item cannot be removed
-            from container (e.g. it doesn't belong to it)
+        Args:
+            item: Item to remove.
+
+        Raises:
+            KeyError: If item cannot be removed from the container (e.g. it
+                doesn't belong to it).
         """
         ItemSet.remove(self, item)
         del self.__eve_type_id_map[item._eve_type_id]
 
     def clear(self):
-        """Remove everything from container."""
+        """Remove everything from the container."""
         ItemSet.clear(self)
         self.__eve_type_id_map.clear()
 
     def __getitem__(self, eve_type_id):
-        """Get item by type ID"""
+        """Get item by type ID."""
         return self.__eve_type_id_map[eve_type_id]
 
     def __delitem__(self, eve_type_id):
-        """Remove item by type ID"""
+        """Remove item by type ID."""
         item = self.__eve_type_id_map[eve_type_id]
         self.remove(item)
 
-    def __contains__(self, item):
-        """Check if eve type ID or item are present in set"""
-        return self.__eve_type_id_map.__contains__(item) or ItemSet.__contains__(self, item)
+    def __contains__(self, value):
+        """Check if eve type ID or item are present in set."""
+        return (
+            self.__eve_type_id_map.__contains__(value) or
+            ItemSet.__contains__(self, value)
+        )
 
     def __repr__(self):
         return repr(self.__eve_type_id_map)

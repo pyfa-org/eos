@@ -41,10 +41,10 @@ class FitVolatileManager(BaseSubscriber):
         """Initialize volatile manager.
 
         Args:
-            msg_broker: object which handles message publication and
-                subscriptions
-            volatiles: iterable with objects which carry volatile attributes,
-                which will be tracked permanently
+            msg_broker: Object which handles message publication and
+                subscriptions.
+            volatiles: Iterable with objects which carry volatile attributes,
+                which will be tracked permanently.
         """
         self.__msg_broker = msg_broker
         self.__volatile_objects = set()

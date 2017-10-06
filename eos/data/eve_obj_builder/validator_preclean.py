@@ -37,7 +37,7 @@ class ValidatorPreClean:
         will be removed after cleanup.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format
+            data: Dictionary in {table name: {table, rows}} format.
         """
         # Format: {table name: (primary, keys)}
         pk_spec = {
@@ -58,9 +58,9 @@ class ValidatorPreClean:
         """Check if all primary keys in table are integers.
 
         Args:
-            pks: iterable with PK names
-            rows: iterable with table data rows
-            table_name: table name, used just for logging
+            pks: Iterable with PK names.
+            rows: Iterable with table data rows.
+            table_name: Table name, used just for logging.
         """
         # Contains primary keys used in current table
         seen_pks = set()
@@ -84,11 +84,11 @@ class ValidatorPreClean:
         invalid rows container.
 
         Args:
-            pks: iterable with PK names
-            row: data row which we should check
-            seen_pks: iterable with PKs which we already seen when iterating
-                over current table
-            invalid_rows: container for invalid rows
+            pks: Iterable with PK names.
+            row: Data row which we should check.
+            seen_pks: Iterable with PKs which we already seen when iterating
+                over current table.
+            invalid_rows: Container for invalid rows.
         """
         row_pk = []
         for pk_name in pks:

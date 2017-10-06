@@ -274,8 +274,8 @@ class AffectionRegister:
         """Find affectors with specified domain.
 
         Args:
-            affectors: iterable with affectors to filter from.
-            tgt_domain: domain as filter criterion for affectors.
+            affectors: Iterable with affectors to filter from.
+            tgt_domain: Domain as filter criterion for affectors.
 
         Returns:
             Set with affectors which have passed domain.
@@ -296,8 +296,8 @@ class AffectionRegister:
         scope of this method.
 
         Args:
-            affectors: iterable with affectors to filter from..
-            other_item: domain as filter criterion for affectors.
+            affectors: Iterable with affectors to filter from..
+            other_item: Domain as filter criterion for affectors.
 
         Returns:
             Set with valid 'other' affectors.
@@ -439,17 +439,17 @@ class AffectionRegister:
         """Get place where passed affector should be stored.
 
         Args:
-            affector: affector, for which map is looked up.
+            affector: Affector, for which map is looked up.
 
         Returns:
             Tuple in (key, affector map) format, which defines where affector
             should be located.
 
         Raises:
-            UnexpectedDomainError: raised when affector's modifier target domain
-                is not supported for context of passed affector.
-            UnknownTargetFilterError: raised when affector's modifier filter
-                type is not supported.
+            UnexpectedDomainError: If affector's modifier target domain is not
+                supported for context of passed affector.
+            UnknownTargetFilterError: If affector's modifier filter type is not
+                supported.
         """
         try:
             getter = self.__affector_map_getters[affector.modifier.tgt_filter]
@@ -467,8 +467,8 @@ class AffectionRegister:
         item, it should not be handled via this method.
 
         Raises:
-            UnexpectedDomainError: raised when affector's modifier target domain
-            is not supported.
+            UnexpectedDomainError: If affector's modifier target domain is not
+                supported.
         """
         carrier_item = affector.carrier_item
         domain = affector.modifier.tgt_domain

@@ -23,8 +23,8 @@ def make_repr_str(instance, spec=None):
     """Prepare string for printing info about passed object.
 
     Args:
-        instance: object which we should get info from.
-        spec (optional): iterable which defines which fields we should include
+        instance: Object which we should get info from.
+        spec (optional): Iterable which defines which fields we should include
             in info string. Each iterable element can be single attribute name,
             or tuple/list with two elements, where first defines reference name
             for info string, and second defines actual attribute name.

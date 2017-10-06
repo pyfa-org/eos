@@ -32,8 +32,8 @@ class KeyedSet(dict):
         If set accessed by passed key doesn't exist, create it.
 
         Args:
-            key: defines into which set we should add new data.
-            data_set: iterable with data to add.
+            key: Defines into which set we should add new data.
+            data_set: Iterable with data to add.
         """
         try:
             self[key].update(data_set)
@@ -48,8 +48,8 @@ class KeyedSet(dict):
         cleanup jobs.
 
         Args:
-            key: defines from which set we should remove data.
-            data_set: iterable with data to remove.
+            key: Defines from which set we should remove data.
+            data_set: Iterable with data to remove.
         """
         try:
             value = self[key]
@@ -66,8 +66,8 @@ class KeyedSet(dict):
         If set accessed by passed key doesn't exist, create it.
 
         Args:
-            key: defines into which set we should add new data.
-            data: single data entry to add.
+            key: Defines into which set we should add new data.
+            data: Single data entry to add.
         """
         try:
             self[key].add(data)
@@ -82,8 +82,8 @@ class KeyedSet(dict):
         cleanup jobs.
 
         Args:
-            key: defines from which set we should remove data.
-            data: single data entry to remove.
+            key: Defines from which set we should remove data.
+            data: Single data entry to remove.
         """
         try:
             value = self[key]
@@ -98,7 +98,7 @@ class KeyedSet(dict):
         """Get data set.
 
         Args:
-            key: defines which set to retrieve.
+            key: Defines which set to retrieve.
 
         Returns:
             Set with data, or empty set if no set found for requested key.

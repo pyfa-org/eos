@@ -232,10 +232,10 @@ class MutableAttributeMap:
             Calculated attribute value.
 
         Raises:
-            AttributeMetaError: cannot fetch metadata of attribute being
-                calculated
-            BaseValueError: cannot find base value for attribute being
-                calculated
+            AttributeMetaError: If metadata of attribute being calculated cannot
+                be fetched.
+            BaseValueError: If base value for attribute being calculated cannot
+                be found.
         """
         item = self.__item
         try:
@@ -347,11 +347,10 @@ class MutableAttributeMap:
         they are normalized to multiplier form, calculate final multiplier.
 
         Args:
-            mod_list: iterable with multipliers.
+            mod_list: Iterable with multipliers.
 
         Returns:
             Final aggregated multiplier.
-
         """
         # Gather positive multipliers into one chain, negative into another
         chain_pos = []

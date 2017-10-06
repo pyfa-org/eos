@@ -48,8 +48,8 @@ class JsonCacheHandler(BaseCacheHandler):
         """Initialize cache handler.
 
         Args:
-            cache_path: file path where persistent cache will be stored
-                (.json.bz2)
+            cache_path: File path where persistent cache will be stored
+                (.json.bz2).
         """
         self._cache_path = os.path.abspath(cache_path)
         # Initialize memory data cache

@@ -27,14 +27,14 @@ class Attribute(BaseCachable):
     """Represents eve attribute with all its metadata.
 
     Attributes:
-        id: identifier of the attribute.
-        max_attribute: when specified, value of current attribute on an item
+        id: Identifier of the attribute.
+        max_attribute: When specified, value of current attribute on an item
             cannot exceed value of this attribute on the very same item.
-        default_value: base value for attribute. Used when value of the
+        default_value: Base value for attribute. Used when value of the
             attribute with this ID is not specified on item.
-        high_is_good: boolean flag which defines if it's good when attribute has
+        high_is_good: Boolean flag which defines if it's good when attribute has
             high value or not. Used in calculation process.
-        stackable: boolean flag which defines if attribute can be stacking
+        stackable: Boolean flag which defines if attribute can be stacking
             penalized (False) or not (True).
     """
 

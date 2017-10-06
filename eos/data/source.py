@@ -56,10 +56,10 @@ class SourceManager:
         After source has been added, it is accessible with alias.
 
         Args:
-            alias: alias under which source will be accessible
-            data_handler: data handler instance
-            cache_handler: cache handler instance
-            make_default (optional): do we need to mark passed source as default
+            alias: Alias under which source will be accessible.
+            data_handler: Data handler instance.
+            cache_handler: Cache handler instance.
+            make_default (optional): Do we need to mark passed source as default
                 or not. Default source will be used for instantiating new fits,
                 if no other source is specified.
         """
@@ -99,7 +99,7 @@ class SourceManager:
         """Using source alias, return source.
 
         Args:
-            alias: alias of source to return
+            alias: Alias of source to return.
 
         Returns:
             Source instance.
@@ -114,7 +114,7 @@ class SourceManager:
         """Remove source by alias.
 
         Args:
-            alias: alias of source to remove
+            alias: Alias of source to remove.
         """
         logger.info('removing source with alias "{}"'.format(alias))
         try:

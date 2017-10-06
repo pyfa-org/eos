@@ -38,8 +38,8 @@ class EveObjBuilder:
         with the help of which eos will oeprate.
 
         Args:
-            data_handler: data handler instance, which should provide access
-                to raw eve data.
+            data_handler: Data handler instance, which should provide access to
+                raw eve data.
 
         Returns:
             Tuple with 3 dictionaries, which contain types, attributes and

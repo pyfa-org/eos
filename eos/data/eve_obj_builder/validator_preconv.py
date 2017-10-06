@@ -40,7 +40,7 @@ class ValidatorPreConv:
         are correct.
 
         Args:
-            data: dictionary in {table name: {table, rows}} format
+            data: Dictionary in {table name: {table, rows}} format.
         """
         ValidatorPreConv._attribute_value_type(data['dgmtypeattribs'])
         ValidatorPreConv._multiple_default_effects(data['dgmtypeeffects'])
@@ -51,7 +51,7 @@ class ValidatorPreConv:
         """Make sure that all attributes have numeric values.
 
         Args:
-            dta_rows: iterable with data rows from dgmtypeattribs table
+            dta_rows: Iterable with data rows from dgmtypeattribs table.
         """
         invalid_rows = set()
         for row in dta_rows:
@@ -69,7 +69,7 @@ class ValidatorPreConv:
         """Check that each type has one default effect maximum.
 
         Args:
-            dte_rows: iterable with data rows from dgmtypeeffects table
+            dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
         # Set with IDs of eve types, which have default effect
         defeff = set()
@@ -112,7 +112,7 @@ class ValidatorPreConv:
         entries.
 
         Args:
-            dte_rows: iterable with data rows from dgmtypeeffects table
+            dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
         rack_effects = (
             EffectId.hi_power, EffectId.med_power, EffectId.lo_power
