@@ -24,10 +24,7 @@ from eos.util.repr import make_repr_str
 
 
 class TankingLayers:
-    """
-    Base class for all containers with tanking layers. Just stores
-    them and provides few additional methods.
-    """
+    """Helper container for HP data."""
 
     def __init__(self, hull, armor, shield):
         self.__hull = hull
@@ -46,17 +43,22 @@ class TankingLayers:
     def shield(self):
         return self.__shield
 
+    # Iterator is needed to support tuple-style unpacking
     def __iter__(self):
-        """Iterator is needed to support tuple-style unpacking"""
         yield self.hull
         yield self.armor
         yield self.shield
 
     def __eq__(self, other):
-        return all((self.hull == other.hull, self.armor == other.armor, self.shield == other.shield))
+        return all((
+            self.hull == other.hull, self.armor == other.armor,
+            self.shield == other.shield
+        ))
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.hull, self.armor, self.shield))
+        return hash((
+            self.__class__.__name__, self.hull, self.armor, self.shield
+        ))
 
     def __repr__(self):
         spec = ['hull', 'armor', 'shield']
@@ -64,12 +66,15 @@ class TankingLayers:
 
 
 class TankingLayersTotal(TankingLayers):
-    """On top of storing tanking layer amounts, calculates their sum"""
+    """Helper container for HP data, which also calculates total HP."""
 
     @cached_property
     def total(self):
         total = (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
-        if total == 0 and self.hull is None and self.armor is None and self.shield is None:
+        if (
+            total == 0 and self.hull is None and self.armor is None and
+            self.shield is None
+        ):
             return None
         return total
 

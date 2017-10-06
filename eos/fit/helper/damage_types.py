@@ -26,10 +26,7 @@ from eos.util.repr import make_repr_str
 
 
 class DamageTypes:
-    """
-    Base class for all containers with damage types. Just stores
-    them and provides few additional methods.
-    """
+    """Helper container for damage data."""
 
     def __init__(self, em, thermal, kinetic, explosive):
         self.__em = em
@@ -53,8 +50,8 @@ class DamageTypes:
     def explosive(self):
         return self.__explosive
 
+    # Iterator is needed to support tuple-style unpacking
     def __iter__(self):
-        """Iterator is needed to support tuple-style unpacking"""
         yield self.em
         yield self.thermal
         yield self.kinetic
@@ -67,7 +64,10 @@ class DamageTypes:
         ))
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.em, self.thermal, self.kinetic, self.explosive))
+        return hash((
+            self.__class__.__name__, self.em, self.thermal, self.kinetic,
+            self.explosive
+        ))
 
     def __repr__(self):
         spec = ['em', 'thermal', 'kinetic', 'explosive']
@@ -75,11 +75,14 @@ class DamageTypes:
 
 
 class DamageTypesTotal(DamageTypes):
-    """On top of storing damage type amounts, calculates their sum"""
+    """Helper container for damage data, which also calculates total damage.."""
 
     @cached_property
     def total(self):
-        total = (self.em or 0) + (self.thermal or 0) + (self.kinetic or 0) + (self.explosive or 0)
+        total = (
+            (self.em or 0) + (self.thermal or 0) + (self.kinetic or 0) +
+            (self.explosive or 0)
+        )
         if total == 0 and (
             self.em is None and self.thermal is None and
             self.kinetic is None and self.explosive is None
@@ -98,12 +101,14 @@ class DamageTypesTotal(DamageTypes):
 
 
 class DamageProfile(DamageTypes):
-    """
-    Stores damage types and runs additional checks: all of damage
-    values must be non-negative numbers with positive sum.
-    """
+    """Helper container intended to store damage profile."""
 
     def __init__(self, em, thermal, kinetic, explosive):
+        """Initialize damage profile.
+
+        Initialize regular damage type helper container after additional checks:
+        all of damage values must be non-negative numbers with positive sum.
+        """
         if not all((
             isinstance(em, Real), isinstance(thermal, Real),
             isinstance(kinetic, Real), isinstance(explosive, Real)
@@ -113,18 +118,24 @@ class DamageProfile(DamageTypes):
             em >= 0, thermal >= 0, kinetic >= 0, explosive >= 0,
             em + thermal + kinetic + explosive > 0
         )):
-            raise ValueError('all damage types must be non-negative numbers with positive sum')
+            msg = (
+                'all damage types must be non-negative numbers '
+                'with positive sum'
+            )
+            raise ValueError(msg)
         DamageTypes.__init__(self, em, thermal, kinetic, explosive)
 
 
 class ResistanceProfile(DamageTypes):
-    """
-    Stores damage (or, in this case, resitance) types and runs
-    additional checks: all of resistance values must be numbers
-    which are not lesser than 0 and not greater than 1.
-    """
+    """Helper container intended to store resistance profile."""
 
     def __init__(self, em, thermal, kinetic, explosive):
+        """Initialize resistance profile.
+
+        Initialize regular damage type helper container after additional checks:
+        all of resistance values must be not lesser than 0 and not greater than
+        1.
+        """
         if not all((
             isinstance(em, Real), isinstance(thermal, Real),
             isinstance(kinetic, Real), isinstance(explosive, Real)
