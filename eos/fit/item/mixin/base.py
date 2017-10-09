@@ -24,7 +24,10 @@ from abc import ABCMeta, abstractmethod
 from eos.const.eos import EffectRunMode, State
 from eos.const.eve import EffectId
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.pubsub.message import InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved, InstrRefreshSource
+from eos.fit.pubsub.message import (
+    InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved,
+    InstrRefreshSource
+)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
@@ -32,44 +35,48 @@ DEFAULT_EFFECT_MODE = EffectRunMode.full_compliance
 
 
 class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
-    """
-    Base item class which provides all the data needed for attribute
-    calculation to work properly. Not directly subclassed by items,
-    but by other mixins (which implement concrete functionality over
-    it).
+    """Base class for all items.
 
-    Required arguments:
-    type_id -- ID of eve type ID which should serve as base for this
-        item
+    It provides all the data needed for attribute calculation to work properly.
+    Not directly subclassed by items, but by other mixins (which implement
+    concrete functionality over it).
+
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            item.
 
     Cooperative methods:
-    __init__
+        __init__
     """
 
     def __init__(self, type_id, **kwargs):
         self._eve_type_id = type_id
-        # Which container this item is placed to
         self.__container = None
-        # Special dictionary subclass that holds modified attributes
-        # and data related to their calculation
+        # Special dictionary subclass that holds modified attributes and data
+        # related to their calculation
         self.attributes = MutableAttributeMap(self)
         # Container for effects IDs which are currently running
         self._running_effects = set()
-        # Keeps track of effect run modes, if they are any different from default
+        # Effect run modes, if they are any different from default
         # Format: {effect ID: effect run mode}
         self.__effect_mode_overrides = None
-        # Which eve type this item wraps. Use null source item by default,
-        # as item doesn't have fit with source yet
+        # Which eve type this item wraps. Use null source item by default, as
+        # item doesn't have fit with source yet
         self._eve_type = None
         super().__init__(**kwargs)
 
     @property
     def _container(self):
+        """Refers container this item is placed to.
+
+        Can be other fit, various container classes or other item.
+        """
         return self.__container
 
     @_container.setter
     def _container(self, new_container):
         charge = getattr(self, 'charge', None)
+        # Old fit section
         old_fit = self._fit
         if old_fit is not None:
             # Unlink fit and contained items first
@@ -83,7 +90,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         self._refresh_source()
         if charge is not None:
             charge._refresh_source()
-        # New fit
+        # New fit section
         new_fit = self._fit
         if new_fit is not None:
             # Link fit and item itself first
@@ -96,9 +103,10 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     @property
     def _container_position(self):
-        """
-        Index of the item within parent container. Should return
-        position only for ordered containers.
+        """Index of the item within parent container.
+
+        Returns: Position within parent ordered container. If item is not
+        assigned or container is not ordered, returns None.
         """
         try:
             return self._container.index(self)
@@ -138,26 +146,25 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     # Effect methods
     def _get_wanted_effect_run_status_changes(self):
-        """
-        Decide which effects should be running according to current
-        state of item's affairs, compare it to effects which are
-        already running, and return effects which should be started
-        and stopped to actualize list of currently running effects.
+        """Get changes needed to actualize effect running statuses.
+
+        Returns: Tuple with two sets, first with effect IDs which should be
+        started and second with effect IDss which should be stopped to achieve
+        proper state.
         """
         try:
             eve_type_effects = self._eve_type.effects
-        # If eve type effects are not accessible, then we cannot
-        # do anything, as we rely on effect attributes to take
-        # our decisions
+        # If eve type effects are not accessible, then we cannot do anything, as
+        # we rely on effect attributes to take our decisions
         except AttributeError:
             return set(), set()
-        # Set of effects which should be running according to new
-        # conditions
+        # Set of effects which should be running according to new conditions
         new_running = set()
-        # Process 'online' effect separately, as it's needed for all
-        # other effects from online categories
+        # Process 'online' effect separately, as it's needed for all other
+        # effects from online categories
         if EffectId.online in eve_type_effects:
-            online_running = self.__get_wanted_effect_run_status(eve_type_effects[EffectId.online], None)
+            online_running = self.__get_wanted_effect_run_status(
+                eve_type_effects[EffectId.online], None)
             if online_running is True:
                 new_running.add(EffectId.online)
         else:
@@ -166,27 +173,28 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         for effect_id, effect in eve_type_effects.items():
             if effect_id == EffectId.online:
                 continue
-            if self.__get_wanted_effect_run_status(effect, online_running) is True:
+            if self.__get_wanted_effect_run_status(effect, online_running):
                 new_running.add(effect_id)
         to_start = new_running.difference(self._running_effects)
         to_stop = self._running_effects.difference(new_running)
         return to_start, to_stop
 
     def __get_wanted_effect_run_status(self, effect, online_running):
-        """
-        Decide if effect should be running or not, considering
-        current item state.
+        """Decide if effect should be running or not.
 
-        Required arguments:
-        effect -- effect in question
-        online_running -- flag which tells us if 'online' effect
-            is running on this item or not.
+        Decision is taken based on effect's run mode, item's state and multiple
+        less significant factors.
+
+        Args:
+            effect: Effect in question.
+            online_running: Flag which tells us if 'online' effect is running on
+                this item or not.
         """
         # Decide how we handle effect based on its run mode
         effect_run_mode = self.get_effect_run_mode(effect.id)
         if effect_run_mode == EffectRunMode.full_compliance:
-            # Check state restriction first, as it should be checked
-            # regardless of effect category
+            # Check state restriction first, as it should be checked regardless
+            # of effect category
             effect_state = effect._state
             if self.state < effect_state:
                 return False
@@ -195,8 +203,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 return effect.fitting_usage_chance_attribute is None
             # Online effects depend on 'online' effect
             elif effect_state == State.online:
-                # If we've been requested for 'online' effect status, it has
-                # no additional restrictions
+                # If we've been requested 'online' effect status, it has no
+                # additional restrictions
                 if effect.id == EffectId.online:
                     return True
                 # For regular online effects, check if 'online' is running
@@ -211,12 +219,11 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             # For safety, generally should never happen
             else:
                 return False
-        # In state compliance, consider effect running if item's
-        # state is at least as high as required by the effect
+        # In state compliance, consider effect running if item's state is at
+        # least as high as required by the effect
         elif effect_run_mode == EffectRunMode.state_compliance:
             return self.state >= effect._state
-        # If it's supposed to always run, make it so without
-        # a second thought
+        # If it's supposed to always run, make it so without a second thought
         elif effect_run_mode == EffectRunMode.force_run:
             return True
         # Same for always-stop
@@ -227,24 +234,19 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             return False
 
     def get_effect_run_mode(self, effect_id):
-        """
-        Get run mode for passed effect ID. Returns run mode even if
-        there's no such effect on item (default mode in such case).
-        """
         if self.__effect_mode_overrides is None:
             return DEFAULT_EFFECT_MODE
         return self.__effect_mode_overrides.get(effect_id, DEFAULT_EFFECT_MODE)
 
     def set_effect_run_mode(self, effect_id, new_mode):
-        """Set run mode for effect with passed ID."""
         self._set_effects_run_modes({effect_id: new_mode})
 
     def _set_effects_run_modes(self, effects_modes):
         """
         Set modes of multiple effects for this item.
 
-        Required arguments:
-        effects_modes -- map in the form of {effect ID: effect run mode}.
+        Args:
+            effects_modes: Map in the form of {effect ID: effect run mode}.
         """
         for effect_id, effect_mode in effects_modes.items():
             # If new mode is default, then remove it from override map
@@ -254,14 +256,14 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 if self.__effect_mode_overrides is None:
                     return
                 # Try removing value from override map and do nothing if it
-                # fails. It means that default mode was requested for an
-                # effect for which getter will return default anyway
+                # fails. It means that default mode was requested for an effect
+                # for which getter will return default anyway
                 try:
                     del self.__effect_mode_overrides[effect_id]
                 except KeyError:
                     pass
-            # If value is not default, initialize override map if necessary
-            # and store value
+            # If value is not default, initialize override map if necessary and
+            # store value
             else:
                 if self.__effect_mode_overrides is None:
                     self.__effect_mode_overrides = {}
@@ -284,19 +286,15 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     # Private methods for message handlers
     def _refresh_source(self):
-        """
-        Each time item's context is changed (the source it relies on,
-        which may change when item switches fit or its fit switches
-        source), this method should be called; it will refresh data
-        which is source-dependent.
+        """Refresh item's source-dependent data.
+
+        Each time item's context is changed (the source it relies on, which may
+        change when item switches fit or its fit switches source), this method
+        should be called.
         """
         self.attributes.clear()
         try:
             type_getter = self._fit.source.cache_handler.get_type
-        # When we're asked to refresh source, but we have no fit or
-        # fit has no valid source assigned, we assign NullSource object
-        # as eve type - it's needed to raise errors on access to source-
-        # dependent stuff
         except AttributeError:
             self._eve_type = None
         else:

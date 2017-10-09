@@ -27,24 +27,22 @@ from .base import BaseItemMixin
 
 
 def _float_to_int(value):
-    """
-    Function which rounds and ceils value, written to negate
-    float representation inaccuracies, (e.g. to have 2.3 / 0.1
-    at 23, not 22)
+    """Convert number to integer, taking care of float errors.
+
+    Without its use float calculation representation may lead to undesirable
+    results, e.g. int(2.3 / 0.1) = 22.
     """
     return int(round(value, 9))
 
 
 class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
-    """
-    Mixin intended to use with items which can have charge loaded
-    into them.
+    """Supports ability to load charges into items.
 
-    Required arguments:
-    charge -- charge to be loaded into item
+    Args:
+        charge: Charge to be loaded into item.
 
     Cooperative methods:
-    __init__
+        __init__
     """
 
     def __init__(self, charge, **kwargs):
@@ -55,10 +53,13 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     @volatile_property
     def charge_quantity(self):
-        """
-        Return max quantity of loadable charges as integer, based
-        on the container capacity and charge volume. If any of these
-        is not defined, or no charge is found in item, None is returned.
+        """Max quantity of loadable charges.
+
+        It depends on capacity of this item and volume of charge.
+
+        Returns: Amount of loadable charges as integer. If any of necessary
+        attribute values is not defined, or no charge is found in item, None is
+        returned.
         """
         if self.charge is None:
             return None
@@ -71,16 +72,15 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     @volatile_property
     def charged_cycles(self):
+        """Amount of cycles this container can run until charges are depleted.
+
+        If amount of cycles can vary, mean value if taken (t2 laser ammo).
+        Cycles, when amount of charges consumed per cycle is more than left in
+        container, are ignored (possible with ancillary armor repairers). None
+        is returned if container can cycle without ammo consumption.
         """
-        Return amount of cycles this container can run until charges are
-        depleted. If amount of cycles can vary, mean value if taken
-        (t2 laser ammo). Cycles, when amount of charges consumed per
-        cycle is more than left in container, are ignored (possible with
-        ancillary armor repairers). None is returned if container can
-        cycle without ammo consumption.
-        """
-        # Various eve types consume charges during cycle, detect them based
-        # on presence of charge_rate attribute in eve type (modified attribute
+        # Various eve types consume charges during cycle, detect them based on
+        # presence of charge_rate attribute in eve type (modified attribute
         # value is always possible to fetch, as it has base value, so it's not
         # reliable way to detect it)
         try:
@@ -123,9 +123,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     @volatile_property
     def reload_time(self):
-        """
-        Return item reload time in seconds.
-        """
+        """Returns item reload time in seconds."""
         # Return hardcoded 1.0 if item's eve type has target_attack effect
         # (various lasers), else fetch reload time attribute from item
         try:

@@ -23,10 +23,7 @@ from .base import BaseItemMixin
 
 
 class DefaultEffectProxyMixin(BaseItemMixin):
-    """
-    Provides access to various attributes which are exposed by
-    default effect of an eve type of item.
-    """
+    """Provides access to attributes which are exposed by default effect."""
 
     @property
     def cycle_time(self):

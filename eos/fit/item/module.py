@@ -29,8 +29,8 @@ from .mixin.state import MutableStateMixin
 
 
 class Module(
-    MutableStateMixin, ChargeableMixin,
-    DamageDealerMixin, DefaultEffectProxyMixin
+    MutableStateMixin, ChargeableMixin, DamageDealerMixin,
+    DefaultEffectProxyMixin
 ):
     def __init__(self, type_id, state=State.offline, charge=None):
         super().__init__(type_id=type_id, state=state, charge=charge)

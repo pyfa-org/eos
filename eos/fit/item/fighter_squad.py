@@ -28,8 +28,8 @@ from .mixin.tanking import BufferTankingMixin
 
 
 class FighterSquad(
-    MutableStateMixin, DamageDealerMixin,
-    BufferTankingMixin, DefaultEffectProxyMixin
+    MutableStateMixin, DamageDealerMixin, BufferTankingMixin,
+    DefaultEffectProxyMixin
 ):
     """Represents a fighter squad.
 

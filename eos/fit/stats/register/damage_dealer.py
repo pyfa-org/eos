@@ -19,14 +19,14 @@
 # ==============================================================================
 
 
-from eos.fit.item.mixin.damage_dealer import DamageDealerMixin, BASIC_EFFECT_WEAPON_MAP, CHARGE_EFFECT_WEAPON_MAP
+from eos.fit.item.mixin.damage_dealer import DamageDealerMixin, BASIC_MAP, CHARGE_MAP
 from eos.fit.helper import DamageTypesTotal
 from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop
 from eos.util.keyed_set import KeyedSet
 from .base import BaseStatRegister
 
 
-PRIMARY_DAMAGE_EFFECTS = set(BASIC_EFFECT_WEAPON_MAP).union(CHARGE_EFFECT_WEAPON_MAP)
+PRIMARY_DAMAGE_EFFECTS = set(BASIC_MAP).union(CHARGE_MAP)
 
 
 class DamageDealerRegister(BaseStatRegister):

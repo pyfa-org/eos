@@ -33,13 +33,9 @@ class Charge(ImmutableStateMixin):
     Args:
         type_id: Identifier of eve type which should serve as base for this
             charge.
-
-    Attributes:
-        container: Item-container, into which our charge item is "loaded".
     """
 
     def __init__(self, type_id):
-        self.container = None
         super().__init__(type_id=type_id, state=State.offline)
 
     # Attribute calculation-related properties

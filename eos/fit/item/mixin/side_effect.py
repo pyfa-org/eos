@@ -28,7 +28,10 @@ from .base import BaseItemMixin
 
 SideEffectData = namedtuple('SideEffectData', ('effect', 'chance', 'status'))
 
-run_mode_to_side_state = {
+
+# Map which defines run mode into side-effect status conversion rules
+# Format: {run mode: side-effect status}
+mode_conv = {
     EffectRunMode.full_compliance: False,
     EffectRunMode.state_compliance: True,
     EffectRunMode.force_run: True,
@@ -37,19 +40,15 @@ run_mode_to_side_state = {
 
 
 class SideEffectMixin(BaseItemMixin):
-    """
-    Mixin intended to be used for items which can have
-    side-effects.
-    """
+    """Allows to manage item's side-effects."""
 
     @property
     def side_effects(self):
-        """
-        Get map with data about item side-effects.
+        """Get map with data about item side-effects.
 
-        Return data as dictionary:
-        {side-effect ID: (effect=effect object for this side-effect,
-        chance=chance of setting in, enabled=side-effect status)}
+        Returns: Dictionary in {side-effect ID: (effect=effect object for this
+        side-effect, chance=chance of setting in, enabled=side-effect status)}
+        format.
         """
         side_effects = {}
         try:
@@ -64,17 +63,17 @@ class SideEffectMixin(BaseItemMixin):
             chance = effect.get_fitting_usage_chance(self)
             if chance is None:
                 continue
-            side_effect_state = run_mode_to_side_state[self.get_effect_run_mode(effect_id)]
-            side_effects[effect_id] = SideEffectData(effect, chance, side_effect_state)
+            side_effect_state = mode_conv[self.get_effect_run_mode(effect_id)]
+            side_effects[effect_id] = SideEffectData(
+                effect, chance, side_effect_state)
         return side_effects
 
     def set_side_effect_status(self, effect_id, status):
-        """
-        Enable or disable side-effect.
+        """Enable or disable side-effect.
 
-        Required arguments:
-        effect_id -- ID of side-effect
-        status -- True for enabling, False for disabling
+        Args:
+            effect_id: ID of side-effect.
+            status: True for enabling, False for disabling.
         """
         if status:
             run_mode = EffectRunMode.state_compliance
@@ -83,18 +82,15 @@ class SideEffectMixin(BaseItemMixin):
         self.set_effect_run_mode(effect_id, run_mode)
 
     def randomize_side_effects(self):
-        """
-        Randomize side-effects' status according to their
-        chances to set in.
-        """
+        """Randomize side-effects' status according to chances to set in."""
         new_modes = {}
         for effect_id, edata in self.side_effects:
             # If it's supposed to be enabled, set state compliance mode, which
             # will keep effect running if item is in offline or higher state
             if random() < edata.chance:
                 new_modes[effect_id] = EffectRunMode.state_compliance
-            # If it should be disabled, full compliance will keep all chance-based
-            # effects stopped
+            # If it should be disabled, full compliance will keep all chance-
+            # based effects stopped
             else:
                 new_modes[effect_id] = EffectRunMode.full_compliance
         self._set_effects_run_modes(new_modes)

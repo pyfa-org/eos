@@ -45,7 +45,8 @@ class WeaponType(IntEnum):
     untargeted_aoe = 6
 
 
-BASIC_EFFECT_WEAPON_MAP = {
+# Format: {module effect ID: weapon type}
+BASIC_MAP = {
     EffectId.target_attack: WeaponType.turret,
     EffectId.projectile_fired: WeaponType.turret,
     EffectId.emp_wave: WeaponType.untargeted_aoe,
@@ -57,7 +58,8 @@ BASIC_EFFECT_WEAPON_MAP = {
     EffectId.super_weapon_minmatar: WeaponType.direct
 }
 
-CHARGE_EFFECT_WEAPON_MAP = {
+# Format: {module effect ID: {charge effect ID: weapon type}}
+CHARGE_MAP = {
     EffectId.use_missiles: {
         EffectId.missile_launching: WeaponType.guided_missile,
         EffectId.fof_missile_launching: WeaponType.guided_missile,
@@ -66,19 +68,18 @@ CHARGE_EFFECT_WEAPON_MAP = {
 }
 
 
-class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolatileMixin):
-    """
-    Mixin intended to use with all entities which are able
-    to deal damage (modules, drones).
-    """
+class DamageDealerMixin(
+    DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolatileMixin
+):
+    """Support for entities which are capable of dealing damage."""
 
     @volatile_property
     def _pereff_weapon_types(self):
-        """
-        Get weapon types of the item. Weapon types defines mechanics used
-        to deliver damage and attributes used for damage calculation on a
-        per-effect basis. If item is not a weapon or an inactive weapon,
-        empty dictionary is returned.
+        """Get weapon types of the item.
+
+        Weapon types defines mechanics used to deliver damage and attributes
+        used for damage calculation on a per-effect basis. If item is not a
+        weapon or an inactive weapon, empty dictionary is returned.
         """
         # Format: {effect ID: weapon type}
         weapon_types = {}
@@ -86,14 +87,14 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
         # cycle itself, do not consider such item as weapon
         if getattr(self, 'charged_cycles', None) == 0:
             return weapon_types
-        for effect_id in self._running_effects:
+        for eff_id in self._running_effects:
             # Weapon properties are defined by item effects
-            if effect_id in BASIC_EFFECT_WEAPON_MAP:
-                weapon_types[effect_id] = BASIC_EFFECT_WEAPON_MAP[effect_id]
-            # For missiles and bombs, we need to use charge default effect as well
-            # as it defines property of 'projectile' which massively influence type
-            # of weapon
-            elif effect_id in CHARGE_EFFECT_WEAPON_MAP:
+            if eff_id in BASIC_MAP:
+                weapon_types[eff_id] = BASIC_MAP[eff_id]
+            # For missiles and bombs, we need to use charge default effect as
+            # well as it defines property of 'projectile' which massively
+            # influence type of weapon
+            elif eff_id in CHARGE_MAP:
                 charge = getattr(self, 'charge', None)
                 try:
                     charge_defeff_id = charge._eve_type.default_effect.id
@@ -102,31 +103,24 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
                 if charge_defeff_id not in charge._running_effects:
                     continue
                 try:
-                    weapon_types[effect_id] = CHARGE_EFFECT_WEAPON_MAP[effect_id][charge_defeff_id]
+                    weapon_types[eff_id] = CHARGE_MAP[eff_id][charge_defeff_id]
                 except KeyError:
                     continue
         return weapon_types
 
     def __get_volley_self(self):
-        """
-        Return item damage attribs as 4-tuple.
-        """
+        """Return item damage attribs as 4-tuple."""
         return self.__get_volley_item(self)
 
     def __get_volley_charge(self):
-        """
-        Return item's charge damage attribs as 4-tuple.
-        """
+        """Return item's charge damage attribs as 4-tuple."""
         charge = getattr(self, 'charge', None)
         if charge is None:
             return None, None, None, None
         return self.__get_volley_item(charge)
 
     def __get_volley_hybrid(self):
-        """
-        If charge is loaded, return damage attribs, if not -
-         item attribs.
-        """
+        """If charge is loaded, return damage attribs, if not - item attribs."""
         charge = getattr(self, 'charge', None)
         if charge is not None:
             return self.__get_volley_item(charge)
@@ -134,16 +128,15 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
             return self.__get_volley_item(self)
 
     def __get_volley_item(self, item):
-        """
-        Get damage per type as tuple for passed item.
-        """
+        """Get damage per type as tuple for passed item."""
         em = item.attributes.get(AttributeId.em_damage)
         therm = item.attributes.get(AttributeId.thermal_damage)
         kin = item.attributes.get(AttributeId.kinetic_damage)
         expl = item.attributes.get(AttributeId.explosive_damage)
         return em, therm, kin, expl
 
-    # Format: {weapon type: (function which fetches base damage, damage multiplier flag)}
+    # Format: {weapon type: (function which fetches base damage, damage
+    # multiplier flag)}
     __volley_fetchers = {
         WeaponType.turret: (__get_volley_hybrid, True),
         WeaponType.guided_missile: (__get_volley_charge, False),
@@ -155,9 +148,9 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
 
     @volatile_property
     def _pereff_volleys(self):
-        """
-        Return base volleys for all damage-dealing effects of the current item;
-        values returned are nominal volleys, not modified by any resistances.
+        """Return base volleys for all damage-dealing effects.
+
+        Returned volleys are nominal volleys, not modified by any resistances.
         """
         # Format: {effect ID: base volley}
         base_volleys = {}
@@ -187,22 +180,20 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
                         expl *= multiplier
                     except TypeError:
                         pass
-            base_volleys[effect_id] = DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
+            base_volleys[effect_id] = DamageTypesTotal(
+                em=em, thermal=therm, kinetic=kin, explosive=expl
+            )
         return base_volleys
 
     def get_nominal_volley(self, target_resistances=None):
         """
-        Get nominal volley for item, calculated against passed
-        target resistances.
+        Get nominal volley for item, calculated against passed resistances.
 
-        Optional arguments:
-        target_resistances -- object which has following numbers as its attibutes:
-        em, thermal, kinetic and explosive (all in range [0, 1])
-        If none, raw volley damage is calculated. By default None.
+        Args:
+            target_resistances (optional): ResistanceProfile helper container
+                instance.
 
-        Return value:
-        Object with volley damage of current item, accessible via following attributes:
-        em, thermal, kinetic, explosive, total
+        Returns: DamageTypesTotal helper container instance.
         """
         # TODO: Combine multiple volleys into one as temporary measure
         em, therm, kin, expl = None, None, None, None
@@ -235,7 +226,7 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
                     expl += volley.explosive
                 except TypeError:
                     pass
-        if target_resistances is not None:
+        if target_resistances:
             em_resonance = 1 - target_resistances.em
             therm_resonance = 1 - target_resistances.thermal
             kin_resonance = 1 - target_resistances.kinetic
@@ -257,19 +248,25 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
                 expl *= expl_resonance
             except TypeError:
                 expl = None
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
+        return DamageTypesTotal(
+            em=em, thermal=therm, kinetic=kin, explosive=expl
+        )
 
     def get_nominal_dps(self, target_resistances=None, reload=False):
         volley = self.get_nominal_volley(target_resistances=target_resistances)
         # If all attribs of base volley are None, nothing we can do here
-        if (volley.total is None and volley.em is None and volley.thermal is None and
-                volley.kinetic is None and volley.explosive is None):
+        if (
+            volley.total is None and volley.em is None and
+            volley.thermal is None and volley.kinetic is None and
+            volley.explosive is None
+        ):
             return volley
         cycle_time = self.cycle_time
         # Items may have no reactivation attribute, return None or actual value;
         # make sure we use 0 as fallback in all cases
         reactivation_time = getattr(self, 'reactivation_delay', 0) or 0
-        # Time which module should spend on each cycle, regardless of any conditions
+        # Time which module should spend on each cycle, regardless of any
+        # conditions
         full_cycle_time = cycle_time + reactivation_time
         if reload:
             try:
@@ -279,10 +276,13 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
                 pass
             else:
                 if reload_time is not None and charged_cycles is not None:
-                    # To each cycle, add average time which module should spend reloading
-                    # (and take into account that reactivation delay, which we already take
-                    # into account, can cover reload time partially or fully)
-                    full_cycle_time += max(reload_time - reactivation_time, 0) / charged_cycles
+                    # To each cycle, add average time which module should spend
+                    # reloading (and take into account that reactivation delay,
+                    # which we already take into account, can cover reload time
+                    # partially or fully)
+                    full_cycle_time += (
+                        max(reload_time - reactivation_time, 0) / charged_cycles
+                    )
         # Guards against None-valued volley components
         try:
             em = volley.em / full_cycle_time
@@ -300,7 +300,9 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
             expl = volley.explosive / full_cycle_time
         except TypeError:
             expl = None
-        return DamageTypesTotal(em=em, thermal=therm, kinetic=kin, explosive=expl)
+        return DamageTypesTotal(
+            em=em, thermal=therm, kinetic=kin, explosive=expl
+        )
 
     def get_volley_vs_target(self, target_data=None, target_resistances=None):
         # TODO
@@ -310,6 +312,8 @@ class DamageDealerMixin(DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolat
         # TODO
         return
 
-    def get_dps_vs_target(self, target_data=None, target_resistances=None, reload=True):
+    def get_dps_vs_target(
+        self, target_data=None, target_resistances=None, reload=True
+    ):
         # TODO
         return
