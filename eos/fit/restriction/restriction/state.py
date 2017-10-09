@@ -60,7 +60,9 @@ class StateRestrictionRegister(BaseRestrictionRegister):
         tainted_items = {}
         for item in self.__items:
             if item.state > item._eve_type.max_state:
-                allowed_states = tuple(filter(lambda s: s <= item._eve_type.max_state, State))
+                allowed_states = tuple(
+                    s for s in State if s <= item._eve_type.max_state
+                )
                 tainted_items[item] = StateErrorData(
                     current_state=item.state,
                     allowed_states=allowed_states

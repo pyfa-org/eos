@@ -154,7 +154,9 @@ class Normalizer:
             used_repls = set()
             unknown_names = set()
             # We're modifying only rows with specific operands
-            for exp_row in filter(lambda r: r['operandID'] == operand, dgmexps):
+            for exp_row in dgmexps:
+                if exp_row['operandID'] != operand:
+                    continue
                 exp_entity_id = exp_row[id_col_name]
                 # If entity is already referenced via ID, nothing to do here
                 if exp_entity_id is not None:

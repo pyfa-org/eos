@@ -126,7 +126,9 @@ def get_used_enums(path, enum_data):
 def _get_asts_in_dir(path):
     """Iterate through all source files' ASTs."""
     for dir_path, dirs, files in os.walk(path):
-        for file in filter(lambda f: os.path.splitext(f)[1] == '.py', files):
+        for file in files:
+            if os.path.splitext(file)[1] != '.py':
+                continue
             with open(os.path.join(dir_path, file)) as f:
                 data = f.read()
             try:

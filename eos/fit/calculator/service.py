@@ -174,9 +174,9 @@ class CalculationService(BaseSubscriber):
         self._revise_python_attrib_dependents(message)
 
     # Do not process here just target domain
-    _supported_domains = set(filter(
-        lambda d: d != ModifierDomain.target, ModifierDomain
-    ))
+    _supported_domains = set(
+        d for d in ModifierDomain if d != ModifierDomain.target
+    )
 
     # Affector generation and manipulation
     def __generate_affectors(self, item, effect_ids):

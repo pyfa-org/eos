@@ -345,14 +345,16 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
+        actual = expressions[0]
         expected = {
             'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
             'expressionValue': None, 'expressionTypeID': 502,
             'expressionGroupID': 451, 'expressionAttributeID': 90
         }
         # Filter out fields we do not want to check
-        actual = dict((k, expressions[0][k]) for k in filter(lambda k: k in expected, expressions[0]))
-        self.assertEqual(actual, expected)
+        fields_to_check = set(expected).intersection(actual)
+        actual_clean = {k: actual[k] for k in fields_to_check}
+        self.assertEqual(actual_clean, expected)
 
     def test_fighterabilities(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
