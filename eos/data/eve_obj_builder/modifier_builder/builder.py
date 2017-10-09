@@ -34,14 +34,12 @@ class ModifierBuilder:
 
     This class actually doesn't do much: routes tasks between two child
     converters and reports results.
+
+    Args:
+        exp_rows: Iterable with expression rows.
     """
 
     def __init__(self, exp_rows):
-        """Initialize builder.
-
-        Args:
-            exp_rows: Iterable with expression rows.
-        """
         self._tree = ExpressionTreeConverter(exp_rows)
 
     def build(self, effect_row):

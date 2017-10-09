@@ -25,21 +25,22 @@ from .mixin.state import ImmutableStateMixin
 
 
 class Charge(ImmutableStateMixin):
+    """Represents a charge.
+
+    Charges are anything loadabale in other objects, e.g. various ammo types,
+    mining crystals, scanning probes, bombs, etc.
+
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            charge.
+
+    Attributes:
+        container: Item-container, into which our charge item is "loaded".
     """
-    Ammo - crystals, probes, bombs, etc.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this charge.
-
-    Cooperative methods:
-    __init__
-    """
-
-    def __init__(self, type_id, **kwargs):
-        # Item-container, into which our charge item is "loaded"
+    def __init__(self, type_id):
         self.container = None
-        super().__init__(type_id=type_id, state=State.offline, **kwargs)
+        super().__init__(type_id=type_id, state=State.offline)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = None

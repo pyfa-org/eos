@@ -32,8 +32,8 @@ class Module(
     MutableStateMixin, ChargeableMixin,
     DamageDealerMixin, DefaultEffectProxyMixin
 ):
-    def __init__(self, type_id, state=State.offline, charge=None, **kwargs):
-        super().__init__(type_id=type_id, state=state, charge=charge, **kwargs)
+    def __init__(self, type_id, state=State.offline, charge=None):
+        super().__init__(type_id=type_id, state=state, charge=charge)
 
     @property
     def reactivation_delay(self):
@@ -53,60 +53,36 @@ class Module(
 
 
 class ModuleHigh(Module):
-    """
-    Ship's module from high slot.
+    """Represents a high-slot module.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this module.
-
-    Optional arguments:
-    state -- initial state this module takes, default is
-        offline
-    charge -- charge object to load into module, default
-        is None
-
-    Cooperative methods:
-    __init__
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            module.
+        state (optional): Initial state this module takes, default is offline.
+        charge (optional): Charge object to load into module, default is None.
     """
     ...
 
 
 class ModuleMed(Module):
-    """
-    Ship's module from medium slot.
+    """Represents a med-slot module.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this module.
-
-    Optional arguments:
-    state -- initial state this module takes, default is
-        offline
-    charge -- charge object to load into module, default
-        is None
-
-    Cooperative methods:
-    __init__
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            module.
+        state (optional): Initial state this module takes, default is offline.
+        charge (optional): Charge object to load into module, default is None.
     """
     ...
 
 
 class ModuleLow(Module):
-    """
-    Ship's module from low slot.
+    """Represents a low-slot module.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this module.
-
-    Optional arguments:
-    state -- initial state this module takes, default is
-        offline
-    charge -- charge object to load into module, default
-        is None
-
-    Cooperative methods:
-    __init__
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            module.
+        state (optional): Initial state this module takes, default is offline.
+        charge (optional): Charge object to load into module, default is None.
     """
     ...

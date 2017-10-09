@@ -27,15 +27,13 @@ class ItemSet(ItemContainerBase):
     """Unordered container for items.
 
     Implements set-like interface.
+
+    Args:
+        fit: Fit, to which container is attached.
+        item_class: Class of items this container is allowed to contain.
     """
 
     def __init__(self, fit, item_class):
-        """Initialize unordered container.
-
-        Args:
-            fit: Fit, to which container is attached.
-            item_class: Class of items this container is allowed to contain.
-        """
         ItemContainerBase.__init__(self, item_class)
         self.__fit = fit
         self.__set = set()

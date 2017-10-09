@@ -104,7 +104,7 @@ class Effect(BaseCachable):
         return self.__effect_state_map[self.category]
 
     # Getters for effect-referenced attributes
-    def get_cycle_time(self, item):
+    def get_duration(self, item):
         raw_time = self.__safe_get_attr(item, self.duration_attribute)
         # Time is specified in milliseconds, but we want to return seconds
         try:

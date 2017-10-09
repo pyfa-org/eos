@@ -27,22 +27,19 @@ from .mixin.state import ImmutableStateMixin
 
 
 class Booster(ImmutableStateMixin, SideEffectMixin):
-    """
-    Booster with all its special properties.
+    """Represents a booster.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this booster.
-
-    Cooperative methods:
-    __init__
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            booster.
     """
 
-    def __init__(self, type_id, **kwargs):
-        super().__init__(type_id=type_id, state=State.offline, **kwargs)
+    def __init__(self, type_id):
+        super().__init__(type_id=type_id, state=State.offline)
 
     @property
     def slot(self):
+        """Return slot this booster takes."""
         return self.attributes.get(AttributeId.boosterness)
 
     # Attribute calculation-related properties

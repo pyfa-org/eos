@@ -25,19 +25,15 @@ from .mixin.state import ImmutableStateMixin
 
 
 class Subsystem(ImmutableStateMixin):
-    """
-    Tech 3 ship's subsystem.
+    """Represents a subsystem.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this subsystem.
-
-    Cooperative methods:
-    __init__
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            subsystem.
     """
 
-    def __init__(self, type_id, **kwargs):
-        super().__init__(type_id=type_id, state=State.offline, **kwargs)
+    def __init__(self, type_id):
+        super().__init__(type_id=type_id, state=State.offline)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.ship

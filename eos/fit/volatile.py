@@ -35,17 +35,15 @@ class FitVolatileManager(BaseSubscriber):
 
     Tracks objects which potentially may carry volatile data and clear volatile
     data when requested.
+
+    Args:
+        msg_broker: Object which handles message publication and subscriptions.
+        volatiles (optional): Iterable with objects which carry volatile
+            attributes, which will be tracked permanently. By default we assume
+            there're no such objects.
     """
 
     def __init__(self, msg_broker, volatiles=()):
-        """Initialize volatile manager.
-
-        Args:
-            msg_broker: Object which handles message publication and
-                subscriptions.
-            volatiles: Iterable with objects which carry volatile attributes,
-                which will be tracked permanently.
-        """
         self.__msg_broker = msg_broker
         self.__volatile_objects = set()
         msg_broker._subscribe(self, self._handler_map.keys())

@@ -24,16 +24,15 @@ from .exception import ItemAlreadyAssignedError
 
 
 class ItemDescriptorOnFit(ItemContainerBase):
-    """Container for single item, intended to be used as fit attribute."""
+    """Container for single item, intended to be used as fit attribute.
+
+    Args:
+        attr_name: Name of instance attribute which should be used to store data
+            processed by the descriptor.
+        item_class: Class of items this container is allowed to contain.
+    """
 
     def __init__(self, attr_name, item_class):
-        """Initialize on-fit single item container.
-
-        Args:
-            attr_name: Name of instance attribute which should be used to store
-                data processed by the descriptor.
-            item_class: Class of items this container is allowed to contain.
-        """
         ItemContainerBase.__init__(self, item_class)
         self.__attr_name = attr_name
 

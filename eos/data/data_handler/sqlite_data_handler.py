@@ -30,14 +30,12 @@ class SQLiteDataHandler(BaseDataHandler):
 
     Handler for loading data from SQLite database. Data should be in Phobos-like
     format, for details on it refer to JSON data handler doc string.
+
+    Args:
+        db_path: Path to database file.
     """
 
     def __init__(self, db_path):
-        """Initialize data handler.
-
-        Args:
-            db_path: Path to database file.
-        """
         # SQLite stores bools as 0 or 1, convert them to python bool
         sqlite3.register_converter('BOOLEAN', lambda v: int(v) == 1)
         conn = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)

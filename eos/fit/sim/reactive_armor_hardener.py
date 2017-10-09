@@ -286,7 +286,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 raise StopIteration
             # Pick time remaining until some RAH finishes its cycle
             time_passed = min(
-                self.__get_rah_cycle_time(item) - cycling
+                self.__get_rah_duration(item) - cycling
                 for item, cycling in iter_cycle_data.items()
             )
             # Compose set of RAHs which will finish cycle after passed amount of
@@ -300,7 +300,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 # False
                 if (
                     sig_round(cycling + time_passed, SIG_DIGITS) ==
-                    sig_round(self.__get_rah_cycle_time(item), SIG_DIGITS)
+                    sig_round(self.__get_rah_duration(item), SIG_DIGITS)
                 ):
                     cycled.add(item)
             # Update map which tracks RAHs' cycle states
@@ -315,7 +315,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         """Calculate new resonances RAH should take on the next cycle.
 
         Args:
-            current_resos: current RAH resonances in {resonance attribute ID:
+            current_resos: Current RAH resonances in {resonance attribute ID:
                 resonance attribute value} format.
             received_dmg: Damage received by RAH during current cycle.
             shift_amt: Max allowed value of resonance attribute value it can
@@ -401,7 +401,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # highest resistance when it's used strictly as donor
         slowest_item = max(
             self.__data,
-            key=lambda i: exhaustion_cycles[i] * self.__get_rah_cycle_time(i)
+            key=lambda i: exhaustion_cycles[i] * self.__get_rah_duration(i)
         )
         # Multiply amount of resistance exhaustion cycles by 1.5, to give RAH
         # more time for 'finer' adjustments
@@ -498,12 +498,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         except (AttributeError, KeyError):
             return None
 
-    def __get_rah_cycle_time(self, item):
+    def __get_rah_duration(self, item):
         """Get time it takes for RAH effect to complete one cycle."""
         effect = self.__get_rah_effect(item)
         if effect is None:
             return None
-        return effect.get_cycle_time(item)
+        return effect.get_duration(item)
 
     def __clear_results(self):
         """Remove simulation results, if there're any."""

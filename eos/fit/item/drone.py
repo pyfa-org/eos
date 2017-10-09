@@ -31,23 +31,20 @@ class Drone(
     MutableStateMixin, DamageDealerMixin,
     BufferTankingMixin, DefaultEffectProxyMixin
 ):
-    """
-    Single drone.
+    """Represents a single drone.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this drone.
+    Eos doesn't unify multiple drones into stacks, it should be done in services
+    built on top of it.
 
-    Optional arguments:
-    state -- initial state Drone takes, default is offline
-        (drone in drone bay).
-
-    Cooperative methods:
-    __init__
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            drone.
+        state (optional): Initial state this drone takes, default is offline
+            (drone in drone bay).
     """
 
-    def __init__(self, type_id, state=State.offline, **kwargs):
-        super().__init__(type_id=type_id, state=state, **kwargs)
+    def __init__(self, type_id, state=State.offline):
+        super().__init__(type_id=type_id, state=state)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = None

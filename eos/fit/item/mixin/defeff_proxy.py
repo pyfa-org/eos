@@ -30,7 +30,7 @@ class DefaultEffectProxyMixin(BaseItemMixin):
 
     @property
     def cycle_time(self):
-        return self.__safe_get_from_defeff('get_cycle_time')
+        return self.__safe_get_from_defeff('get_duration')
 
     @property
     def optimal_range(self):

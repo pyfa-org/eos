@@ -47,6 +47,10 @@ class Fit(FitMessageBroker, BaseSubscriber):
     Fit is one of eos' central objects - it holds all fit items and facilities
     to calculate their attributes and do many other tasks.
 
+    Args:
+        source (optional): Source to use with this fit. When not specified,
+            source which is set as default in source manager will be used.
+
     Attributes:
         ship: Access point for ship.
         stance: Access point for ship stance, also known as tactical mode.
@@ -62,28 +66,11 @@ class Fit(FitMessageBroker, BaseSubscriber):
         implants: Set for implants.
         boosters: Set for boosters.
         effect_beacon: Access point for effect beacons (e.g. wormhole effects).
-        default_incoming_damage: Access point for default incoming damage
-            pattern. This pattern will be used by default for things like EHP
-            calculation, RAH adaptation, etc.
-        source: Access point for fit's source. Source 'fills' fit with actual
-            eve objects, which carry info about attributes, how they should be
-            modified, and other important data. Without source set, calculating
-            anything meaningful is not possible.
         stats: All aggregated stats for fit are accessible via this access
             point.
     """
 
     def __init__(self, source=DEFAULT):
-        """Initialize fit.
-
-        Also sets up some sane default values, namely uniform incoming damage
-        pattern and sets character item.
-
-        Args:
-            source (optional): Source to use with this fit. When not specified,
-                source which is set as default in source manager will be used.
-
-        """
         FitMessageBroker.__init__(self)
         self.__source = None
         self.__default_incoming_damage = DamageTypes(
@@ -142,6 +129,12 @@ class Fit(FitMessageBroker, BaseSubscriber):
 
     @property
     def source(self):
+        """Access point for fit's source.
+
+        Source 'fills' fit with actual eve objects, which carry info about
+        attributes, how they should be modified, and other important data.
+        Without source set, calculating anything meaningful is not possible.
+        """
         return self.__source
 
     @source.setter
@@ -159,6 +152,11 @@ class Fit(FitMessageBroker, BaseSubscriber):
 
     @property
     def default_incoming_damage(self):
+        """Access point for default incoming damage pattern.
+
+        This pattern will be used by default for things like EHP calculation,
+        RAH adaptation, etc.
+        """
         return self.__default_incoming_damage
 
     @default_incoming_damage.setter

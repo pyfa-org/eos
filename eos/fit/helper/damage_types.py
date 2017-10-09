@@ -101,14 +101,15 @@ class DamageTypesTotal(DamageTypes):
 
 
 class DamageProfile(DamageTypes):
-    """Helper container intended to store damage profile."""
+    """Helper container intended to store damage profile.
+
+    Raises:
+        TypeError: If any of passed values is not a number.
+        ValueError: If any of passed values are less than zero, or if their sum
+            is not strictly greater than zero.
+    """
 
     def __init__(self, em, thermal, kinetic, explosive):
-        """Initialize damage profile.
-
-        Initialize regular damage type helper container after additional checks:
-        all of damage values must be non-negative numbers with positive sum.
-        """
         if not all((
             isinstance(em, Real), isinstance(thermal, Real),
             isinstance(kinetic, Real), isinstance(explosive, Real)
@@ -127,15 +128,14 @@ class DamageProfile(DamageTypes):
 
 
 class ResistanceProfile(DamageTypes):
-    """Helper container intended to store resistance profile."""
+    """Helper container intended to store resistance profile.
+
+    Raises:
+        TypeError: If any of passed values is not a number.
+        ValueError: If any of passed values are less than 0 or greater than 1.
+    """
 
     def __init__(self, em, thermal, kinetic, explosive):
-        """Initialize resistance profile.
-
-        Initialize regular damage type helper container after additional checks:
-        all of resistance values must be not lesser than 0 and not greater than
-        1.
-        """
         if not all((
             isinstance(em, Real), isinstance(thermal, Real),
             isinstance(kinetic, Real), isinstance(explosive, Real)

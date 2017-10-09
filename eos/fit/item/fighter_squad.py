@@ -31,23 +31,19 @@ class FighterSquad(
     MutableStateMixin, DamageDealerMixin,
     BufferTankingMixin, DefaultEffectProxyMixin
 ):
-    """
-    Fighter squad.
+    """Represents a fighter squad.
 
-    Required arguments:
-    type_id -- ID of eve type which should serve as base
-        for this fighter squad.
+    Unlike drones, fighter squad is single entity.
 
-    Optional arguments:
-    state -- initial state fighter squad takes, default is offline
-        (squad in fighter tube).
-
-    Cooperative methods:
-    __init__
+    Args:
+        type_id: Identifier of eve type which should serve as base for this
+            fighter squad.
+        state (optional): Initial state fighter squad takes, default is offline
+            (squad is in fighter tube).
     """
 
-    def __init__(self, type_id, state=State.offline, **kwargs):
-        super().__init__(type_id=type_id, state=state, **kwargs)
+    def __init__(self, type_id, state=State.offline):
+        super().__init__(type_id=type_id, state=state)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = None

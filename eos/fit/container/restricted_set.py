@@ -25,17 +25,15 @@ from .set import ItemSet
 class ItemRestrictedSet(ItemSet):
     """Unordered container for items with few dict-like modifications.
 
-    This container can't hold 2 items with the same type ID, and provides access
-    to items via their type IDs.
+    This container can't hold two items with the same type ID, and provides
+    access to items via their type IDs.
+
+    Args:
+        fit: Fit, to which container is attached.
+        item_class: Class of items this container is allowed to contain.
     """
 
     def __init__(self, fit, item_class):
-        """Initialize restricted unordered container.
-
-        Args:
-            fit: Fit, to which container is attached.
-            item_class: Class of items this container is allowed to contain.
-        """
         ItemSet.__init__(self, fit, item_class)
         self.__eve_type_id_map = {}
 

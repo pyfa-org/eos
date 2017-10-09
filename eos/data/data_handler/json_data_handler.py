@@ -31,14 +31,12 @@ class JsonDataHandler(BaseDataHandler):
 
     Implements loading of raw data from JSON files produced by Phobos script,
     which can be found at https://github.com/pyfa-org/Phobos.
+
+    Args:
+        basepath: Path to folder with JSON files.
     """
 
     def __init__(self, basepath):
-        """Initialize data handler.
-
-        Args:
-            basepath: Path to folder with JSON files.
-        """
         self.basepath = os.path.abspath(basepath)
 
     def get_evetypes(self):

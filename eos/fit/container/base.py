@@ -23,14 +23,13 @@ from .exception import ItemAlreadyAssignedError
 
 
 class ItemContainerBase:
-    """Base class for item containers."""
+    """Base class for item containers.
+
+    Args:
+        item_class: Class of items this container is allowed to contain.
+    """
 
     def __init__(self, item_class):
-        """Initialize common container functionality.
-
-        Args:
-            item_class: Class of items this container is allowed to contain.
-        """
         self.__item_class = item_class
 
     def _handle_item_addition(self, item, container):

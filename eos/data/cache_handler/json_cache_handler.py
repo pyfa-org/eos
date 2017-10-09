@@ -42,15 +42,12 @@ class JsonCacheHandler(BaseCacheHandler):
     This cache handler implements persistent cache store in the form of
     compressed JSON. To improve performance further, it also keeps loaded data
     in memory, and uses weakref object cache for eve objects.
+
+    Args:
+        cache_path: File path where persistent cache will be stored (.json.bz2).
     """
 
     def __init__(self, cache_path):
-        """Initialize cache handler.
-
-        Args:
-            cache_path: File path where persistent cache will be stored
-                (.json.bz2).
-        """
         self._cache_path = os.path.abspath(cache_path)
         # Initialize memory data cache
         self.__type_data_cache = {}
