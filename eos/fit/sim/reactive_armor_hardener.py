@@ -124,7 +124,6 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             reso = resos[attr]
         # If no results are readily available, run simulatiomn
         except KeyError:
-            self.__clear_results()
             self.__running = True
             try:
                 self._run_simulation()
@@ -287,7 +286,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 raise StopIteration
             # Pick time remaining until some RAH finishes its cycle
             time_passed = min(
-                item.cycle_time - cycling
+                self.__get_rah_cycle_time(item) - cycling
                 for item, cycling in iter_cycle_data.items()
             )
             # Compose set of RAHs which will finish cycle after passed amount of
@@ -301,7 +300,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 # False
                 if (
                     sig_round(cycling + time_passed, SIG_DIGITS) ==
-                    sig_round(item.cycle_time, SIG_DIGITS)
+                    sig_round(self.__get_rah_cycle_time(item), SIG_DIGITS)
                 ):
                     cycled.add(item)
             # Update map which tracks RAHs' cycle states
@@ -329,7 +328,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # We borrow resistances from at least 2 resist types, possibly more if
         # ship didn't take damage of these types
         donors = max(2, len(tuple(
-            rah for rah in received_dmg if received_dmg[rah] == 0
+            item for item in received_dmg if received_dmg[item] == 0
         )))
         recipients = 4 - donors
         # Primary key for sorting is received damage, secondary is default
@@ -363,16 +362,18 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         """
         # Container for resonances each RAH used
         # Format: {RAH item: [resonance maps]}
-        used_resos = {}
+        rahs_resos_used = {}
         for tick_state in tick_states:
-            for item_state in tick_state:
+            for rah_state in tick_state:
                 # Add resonances to container only when RAH cycle is just
                 # starting
-                if item_state.cycling == 0:
-                    used_resos.setdefault(item_state.item, []).append(item_state.resos)
+                if rah_state.cycling != 0:
+                    continue
+                rah_resos_used = rahs_resos_used.setdefault(rah_state.item, [])
+                rah_resos_used.append(rah_state.resos)
         # Calculate average values
         avgd_resos = {}
-        for item, resos in used_resos.items():
+        for item, resos in rahs_resos_used.items():
             avgd_resos[item] = {
                 attr: sum(r[attr] for r in resos) / len(resos)
                 for attr in res_attrs
@@ -380,12 +381,13 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         return avgd_resos
 
     def __estimate_initial_adaptation_ticks(self, tick_states):
+        """Estimate how much time RAH takes for initial adaptation.
+
+        Pick RAH which has the slowest adaptation and guesstimate its
+        approximate adaptation period in ticks for the worst-case.
         """
-        Pick RAH which has the slowest adaptation and guesstimate
-        its approximate adaptation period in ticks for the worst-case
-        """
-        # Get max amount of time it takes to exhaust the highest resistance
-        # of each RAH
+        # Get max amount of time it takes to exhaust the highest resistance of
+        # each RAH
         # Format: {RAH item: amount of cycles}
         exhaustion_cycles = {}
         for item in self.__data:
@@ -395,24 +397,27 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 (1 - item.attributes._get_without_overrides(attr)) /
                 (item.attributes[AttributeId.resistance_shift_amount] / 100)
             ) for attr in res_attrs)
-        # Slowest RAH is the one which takes the most time to exhaust
-        # its highest resistance when it's used strictly as donor
-        slowest_item = max(self.__data, key=lambda i: exhaustion_cycles[i] * i.cycle_time)
-        # Multiply amount of resistance exhaustion cycles by 1.5, to give
-        # RAH more time for 'finer' adjustments
+        # Slowest RAH is the one which takes the most time to exhaust its
+        # highest resistance when it's used strictly as donor
+        slowest_item = max(
+            self.__data,
+            key=lambda i: exhaustion_cycles[i] * self.__get_rah_cycle_time(i)
+        )
+        # Multiply amount of resistance exhaustion cycles by 1.5, to give RAH
+        # more time for 'finer' adjustments
         slowest_cycles = ceil(exhaustion_cycles[slowest_item] * 1.5)
         if slowest_cycles == 0:
             return 0
         # We rely on cycling time attribute to be zero in order to determine
-        # that cycle for the slowest RAH has just ended. It is zero for the
-        # very first tick in the history too, thus we skip it, but take it
-        # into initial tick count
+        # that cycle for the slowest RAH has just ended. It is zero for the very
+        # first tick in the history too, thus we skip it, but take it into
+        # initial tick count
         ignored_tick_amt = 1
         tick_count = ignored_tick_amt
         cycle_count = 0
         for tick_state in tick_states[ignored_tick_amt:]:
-            # Once slowest RAH cycles desired amount of times, do not count
-            # this tick and break the loop
+            # Once slowest RAH cycles desired amount of times, do not count this
+            # tick and break the loop
             for item_state in tick_state:
                 if item_state.item is slowest_item:
                     if item_state.cycling == 0:
@@ -425,21 +430,23 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     # Message handling
     def _handle_effects_activation(self, message):
-        if EffectId.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
+        if EffectId.adaptive_armor_hardener in message.effects:
             for attr in res_attrs:
-                message.item.attributes._set_override_callback(attr, (self.get_reso, (message.item, attr), {}))
+                message.item.attributes._set_override_callback(
+                    attr, (self.get_reso, (message.item, attr), {})
+                )
             self.__data.setdefault(message.item, {})
-        self.__clear_results()
+            self.__clear_results()
 
     def _handle_effects_deactivation(self, message):
-        if EffectId.adaptive_armor_hardener in message.effects and hasattr(message.item, 'cycle_time'):
+        if EffectId.adaptive_armor_hardener in message.effects:
             for attr in res_attrs:
                 message.item.attributes._del_override_callback(attr)
             try:
                 del self.__data[message.item]
             except KeyError:
                 pass
-        self.__clear_results()
+            self.__clear_results()
 
     def _handle_attr_change(self, message):
         # Ship resistances
@@ -448,17 +455,21 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # RAH shift amount or cycle time
         elif message.item in self.__data and (
             message.attr == AttributeId.resistance_shift_amount or
-            # Duration change invalidates results only when there're
-            # more than 1 RAHs
-            (message.attr == self.__get_duration_attr_id(message.item) and len(self.__data) > 1)
+            # Cycle time change invalidates results only when there're more than
+            # 1 RAHs
+            (
+                len(self.__data) > 1 and
+                message.attr == self.__get_rah_effect(
+                    message.item).duration_attribute
+            )
         ):
             self.__clear_results()
 
     def _handle_attr_change_masked(self, message):
-        # We've set up overrides on RAHs' resonance attributes, but when
-        # base (not modified by simulator) values of these attributes change,
-        # we should re-run simulator - as now we have different resonance
-        # value to base sim results off
+        # We've set up overrides on RAHs' resonance attributes, but when base
+        # (not modified by simulator) values of these attributes change, we
+        # should re-run simulator - as now we have different resonance value to
+        # base sim results off
         if message.item in self.__data and message.attr in res_attrs:
             self.__clear_results()
 
@@ -480,15 +491,22 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         BaseSubscriber._notify(self, message)
 
     # Auxiliary message handling methods
-    def __get_duration_attr_id(self, item):
-        """Get ID of an attribute which stores cycle time for this module"""
+    def __get_rah_effect(self, item):
+        """Get RAH effect object for passed i."""
         try:
-            return item._eve_type.default_effect.duration_attribute
-        except AttributeError:
+            return item._eve_type.effects[EffectId.adaptive_armor_hardener]
+        except (AttributeError, KeyError):
             return None
 
+    def __get_rah_cycle_time(self, item):
+        """Get time it takes for RAH effect to complete one cycle."""
+        effect = self.__get_rah_effect(item)
+        if effect is None:
+            return None
+        return effect.get_cycle_time(item)
+
     def __clear_results(self):
-        """Remove simulation results, if there're any"""
+        """Remove simulation results, if there're any."""
         for item, resos in self.__data.items():
             resos.clear()
             for attr in res_attrs:
