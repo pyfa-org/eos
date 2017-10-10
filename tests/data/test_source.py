@@ -72,7 +72,9 @@ def test_add_does_not_set_default(mock_data_handler, mock_cache_handler):
     assert SourceManager.default is None
 
 
-def test_add_processes_with_data_version_none(mock_data_handler, mock_cache_handler, caplog):
+def test_add_processes_with_data_version_none(
+    mock_data_handler, mock_cache_handler, caplog
+):
     mock_data_handler.get_version = Mock(return_value=None)
     SourceManager.add('test', mock_data_handler, mock_cache_handler)
 
@@ -80,12 +82,17 @@ def test_add_processes_with_data_version_none(mock_data_handler, mock_cache_hand
     assert 'data version is None, updating cache' in caplog.text
 
 
-def test_add_fingerprint_mismatch(mock_data_handler, mock_cache_handler, caplog):
+def test_add_fingerprint_mismatch(
+    mock_data_handler, mock_cache_handler, caplog
+):
     mock_cache_handler.get_fingerprint = Mock(return_value='cache_fingerprint')
     mock_data_handler.get_version = Mock(return_value='dh_version')
     SourceManager.add('test', mock_data_handler, mock_cache_handler)
 
-    log_msg = 'fingerprint mismatch: cache "cache_fingerprint", data "dh_version_0.0.0.dev10", updating cache'
+    log_msg = (
+        'fingerprint mismatch: cache "cache_fingerprint", '
+        'data "dh_version_0.0.0.dev10", updating cache'
+    )
 
     assert log_msg in caplog.text
 
@@ -124,4 +131,5 @@ def test_list_sources_correctly(mock_data_handler, mock_cache_handler):
 
     sources = SourceManager.list()
 
-    assert sorted(sources) == sorted(['source one', 'source two', 'source three'])
+    assert sorted(sources) == sorted(
+        ['source one', 'source two', 'source three'])

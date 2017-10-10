@@ -26,15 +26,15 @@ import sys
 import unittest
 
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-# As script is in subdirectory. add parent dir to python syspath
-sys.path.insert(0, os.path.abspath(os.path.join(script_dir, '..')))
-
-if __name__ == '__main__':
+def main():
 
     if sys.version_info.major != 3 or sys.version_info.minor < 3:
         sys.stderr.write('Tests require at least python 3.3 to run\n')
         sys.exit()
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # As script is in subdirectory. add parent dir to python syspath
+    sys.path.insert(0, os.path.abspath(os.path.join(script_dir, '..')))
 
     # Parse command line option (which is optional and positional)
     parser = argparse.ArgumentParser(description='Run Eos tests')
@@ -45,8 +45,8 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    # If we have full path to file, adjust pattern so that we execute
-    # tests only from that specific file
+    # If we have full path to file, adjust pattern so that we execute tests only
+    # from that specific file
     suite_path = os.path.expanduser(args.suite)
     if os.path.isfile(suite_path):
         suite, pattern = os.path.split(suite_path)
@@ -54,7 +54,9 @@ if __name__ == '__main__':
         suite = suite_path
         pattern = 'test_*.py'
 
-    # Get all tests into suite
     tests = unittest.TestLoader().discover(suite, pattern=pattern)
-    # Run them
     unittest.TextTestRunner().run(tests)
+
+if __name__ == '__main__':
+    main()
+

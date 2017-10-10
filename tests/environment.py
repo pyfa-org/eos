@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos.data.cache_handler.exception import AttributeFetchError, EffectFetchError, TypeFetchError
+from eos.data.cache_handler.exception import (
+    AttributeFetchError, EffectFetchError, TypeFetchError)
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
 from eos.eve_object.type import Type
@@ -90,16 +91,25 @@ class CacheHandler:
             raise EffectFetchError(eff_id)
 
     def allocate_type_id(self):
-        allocated = max((TEST_ID_START - 1, self.__allocated_type, *self.__type_data.keys())) + 1
+        allocated = max((
+            TEST_ID_START - 1, self.__allocated_type,
+            *self.__type_data.keys()
+        )) + 1
         self.__allocated_type = allocated
         return allocated
 
     def allocate_attribute_id(self):
-        allocated = max((TEST_ID_START - 1, self.__allocated_attribute, *self.__attribute_data.keys())) + 1
+        allocated = max((
+            TEST_ID_START - 1, self.__allocated_attribute,
+            *self.__attribute_data.keys()
+        )) + 1
         self.__allocated_attribute = allocated
         return allocated
 
     def allocate_effect_id(self):
-        allocated = max((TEST_ID_START - 1, self.__allocated_effect, *self.__effect_data.keys())) + 1
+        allocated = max((
+            TEST_ID_START - 1, self.__allocated_effect,
+            *self.__effect_data.keys()
+        )) + 1
         self.__allocated_effect = allocated
         return allocated
