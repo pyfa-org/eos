@@ -23,10 +23,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class BaseSubscriber(metaclass=ABCMeta):
-    """
-    Base class for subscribers. Forces them to
-    implement methods all subscribers should have.
-    """
+    """Base class for subscribers."""
 
     @property
     @abstractmethod

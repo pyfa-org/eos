@@ -42,9 +42,9 @@ class InputSourceChanged(BaseInputMessage):
             for item in self.items:
                 states = {s for s in State if s <= item.state}
                 # Handle effect deactivation
-                running_effects_copy = set(item._running_effects)
-                if running_effects_copy:
-                    instructions.append(InstrEffectsStop(item, running_effects_copy))
+                running_copy = set(item._running_effects)
+                if running_copy:
+                    instructions.append(InstrEffectsStop(item, running_copy))
                     item._running_effects.clear()
                 # Handle state deactivation
                 instructions.append(InstrStatesDeactivate(item, states))
@@ -61,13 +61,13 @@ class InputSourceChanged(BaseInputMessage):
                 states = {s for s in State if s <= item.state}
                 instructions.append(InstrStatesActivate(item, states))
                 # Handle effect activation
-                to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
-                if to_start_effects:
-                    item._running_effects.update(to_start_effects)
-                    instructions.append(InstrEffectsStart(item, to_start_effects))
-                if to_stop_effects:
-                    instructions.append(InstrEffectsStop(item, to_stop_effects))
-                    item._running_effects.difference_update(to_stop_effects)
+                to_start, to_stop = item._get_wanted_effect_run_status_changes()
+                if to_start:
+                    item._running_effects.update(to_start)
+                    instructions.append(InstrEffectsStart(item, to_start))
+                if to_stop:
+                    instructions.append(InstrEffectsStop(item, to_stop))
+                    item._running_effects.difference_update(to_stop)
         return instructions
 
     def __repr__(self):

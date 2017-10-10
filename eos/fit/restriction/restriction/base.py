@@ -25,28 +25,24 @@ from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
 class BaseRestriction(metaclass=ABCMeta):
-    """Base class for all restrictions"""
+    """Base class for all restrictions."""
 
     @abstractmethod
     def validate(self):
-        """
-        Check all registered items for validity. Both mutable
-        and immutable item properties can be used during process.
+        """Check all registered items for validity.
+
+        Both mutable and immutable item properties can be used during the
+        process.
         """
         ...
 
     @property
     @abstractmethod
     def type(self):
-        """
-        Get restriction type this register is dealing with.
-        """
+        """Get restriction type this register is dealing with."""
         ...
 
 
 class BaseRestrictionRegister(BaseRestriction, BaseSubscriber):
-    """
-    Base class for all restrictions which are supposed to
-    store some data on them.
-    """
+    """Base class for all restrictions which store some data on themselves."""
     ...

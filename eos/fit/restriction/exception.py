@@ -23,22 +23,15 @@ from eos.exception import EosError
 
 
 class RestrictionServiceError(EosError):
-    """
-    All restriction service exceptions are based on this class.
-    """
+    """All restriction service exceptions are based on this class."""
     ...
 
 
 class RestrictionValidationError(RestrictionServiceError):
-    """
-    All errors raised during validation process on restriction
-    level are instances of this class.
-    """
+    """Raised if validation on restriction level fails."""
     ...
 
 
 class ValidationError(RestrictionServiceError):
-    """
-    Raised when service-wide validation fails.
-    """
+    """Raised if service-wide validation fails."""
     ...

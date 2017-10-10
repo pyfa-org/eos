@@ -20,10 +20,10 @@
 
 
 """
-There're two message types in eos: input messages and instructions. Input messages
-are always generated as consequence of user activity, one per change he makes.
-One such input message can lead to generation of multiple instructions. Services
-listen to message types according to their needs.
+There're two message types in eos: input messages and instructions. Input
+messages are always generated as consequence of user activity, one per change he
+makes. One such input message can lead to generation of multiple instructions.
+Services listen to message types according to their needs.
 """
 
 
@@ -33,9 +33,7 @@ from eos.util.repr import make_repr_str
 
 
 class BaseInputMessage(metaclass=ABCMeta):
-    """
-    Base class for all input messages.
-    """
+    """Base class for all input messages."""
 
     @abstractmethod
     def get_instructions(self):
@@ -46,9 +44,7 @@ class BaseInputMessage(metaclass=ABCMeta):
 
 
 class BaseInstructionMessage:
-    """
-    Base class for all instruction messages.
-    """
+    """Base class for all instruction messages."""
 
     def __repr__(self):
         return make_repr_str(self)

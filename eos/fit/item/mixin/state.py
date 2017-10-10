@@ -24,15 +24,15 @@ from .base import BaseItemMixin
 
 
 class ImmutableStateMixin(BaseItemMixin):
-    """
-    Mixin intended to be used for items which define
-    state at instantiation time and do not change it later.
+    """Supports immutable item states.
 
-    Required arguments:
-    state -- initial state to take
+    That is, state can be defined at instantiation, and cannot be changed later.
+
+    Args:
+        state: State which should be used for item.
 
     Cooperative methods:
-    __init__
+        __init__
     """
 
     def __init__(self, state, **kwargs):
@@ -41,19 +41,20 @@ class ImmutableStateMixin(BaseItemMixin):
 
     @property
     def state(self):
+        """Access point to get item's state."""
         return self.__state
 
 
 class MutableStateMixin(BaseItemMixin):
-    """
-    Mixin intended to be used for items which can
-    switch state at any time.
+    """Supports mutable item states.
 
-    Required arguments:
-    state -- initial state to take
+    Items based on this class will be able to change state after instantiation.
+
+    Args:
+        state: State which should be used for item initially.
 
     Cooperative methods:
-    __init__
+        __init__
     """
 
     def __init__(self, state, **kwargs):
@@ -62,6 +63,7 @@ class MutableStateMixin(BaseItemMixin):
 
     @property
     def state(self):
+        """Access point to get and set item's state."""
         return self.__state
 
     @state.setter
@@ -70,8 +72,8 @@ class MutableStateMixin(BaseItemMixin):
         if new_state == old_state:
             return
         self.__state = new_state
-        # When item is assigned to some fit, ask fit to perform
-        # fit-specific state switch of our item
+        # When item is assigned to some fit, ask fit to perform fit-specific
+        # state switch of our item
         fit = self._fit
         if fit is not None:
             fit._publish(InputStateChanged(self, old_state, new_state))

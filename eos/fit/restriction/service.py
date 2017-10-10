@@ -25,16 +25,15 @@ from .restriction import *
 
 class RestrictionService:
     """
-    Track all restrictions applied to fitting and expose functionality
-    to validate against various criteria. Actually works as middle-layer
-    between fit and restriction registers, managing them and providing
-    results to fit.
+    Track all restrictions applicable to fit.
 
-    Required arguments:
-    msg_broker -- message broker which is used to deliver
-        all the messages about context changes
-    stats -- stats module to use as data source for some
-        restrictions
+    Works as middle-layer between fit and restriction registers, managing them
+    and providing results to fit.
+
+    Args:
+        msg_broker: message broker which is used to deliver all the messages
+            about context changes.
+        stats: stats module to use as data source for some restrictions.
     """
 
     def __init__(self, msg_broker, stats):
@@ -71,42 +70,40 @@ class RestrictionService:
             TurretSlotRestriction(stats)
         }
 
-    def validate(self, skip_checks):
-        """
-        Validate fit.
+    def validate(self, skip_checks=()):
+        """Validate fit.
 
-        Optional arguments:
-        skip_checks -- iterable with restriction types, for which
-        checks are skipped
+        Args:
+            skip_checks (optional): Iterable with restriction types validation
+                should ignore. By default, nothing is ignored.
 
-        Possible exceptions:
-        ValidationError -- if any failure is occurred during
-        validation, this exception is thrown, with all failure
-        data in its arguments.
+        Raises:
+            ValidationError: If fit validation fails. Its single argument
+                contains extensive data on reason of failure. Refer to
+                restriction service docs for format of the data.
         """
         # Container for validation error data
         # Format: {item: {error type: error data}}
         invalid_items = {}
         # Go through all known registers
         for restriction in self.__restrictions:
-            # Skip check if we're told to do so, based
-            # on exception class assigned to register
+            # Skip check if we're told to do so, based on restriction class
+            # assigned to the register
             restriction_type = restriction.type
             if restriction_type in skip_checks:
                 continue
-            # Run validation for current register, if validation
-            # failure exception is raised - add it to container
+            # Run validation for current register, if validation failure
+            # exception is raised - add it to container
             try:
                 restriction.validate()
             except RestrictionValidationError as e:
-                # All erroneous items should be in 1st argument
-                # of raised exception
+                # All erroneous items should be in 1st argument of raised
+                # exception
                 exception_data = e.args[0]
                 for item in exception_data:
                     item_error = exception_data[item]
-                    # Fill container for invalid items
-                    invalid_items.setdefault(item, {})[restriction_type] = item_error
-        # Raise validation error only if we got any
-        # failures
+                    item_errors = invalid_items.setdefault(item, {})
+                    item_errors[restriction_type] = item_error
+        # Raise validation error only if we got any failures
         if invalid_items:
             raise ValidationError(invalid_items)

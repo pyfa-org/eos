@@ -23,26 +23,19 @@ from ..message.base import BaseInputMessage, BaseInstructionMessage
 
 
 class FitMessageBroker:
-    """
-    Manages subscriptions and dispatches received
-    publications according to active subscriptions.
-    """
+    """Manages message subscriptions and dispatch messages to recipients."""
 
     def __init__(self):
         # Format: {event class: {subscribers}}
         self.__subscribers = {}
 
     def _subscribe(self, subscriber, message_types):
-        """
-        Register subscriber for passed message types.
-        """
+        """Register subscriber for passed message types."""
         for message_type in message_types:
             self.__subscribers.setdefault(message_type, set()).add(subscriber)
 
     def _unsubscribe(self, subscriber, message_types):
-        """
-        Unregister subscriber from passed message types.
-        """
+        """Unregister subscriber from passed message types."""
         msgtypes_to_remove = set()
         for message_type in message_types:
             try:
@@ -56,9 +49,9 @@ class FitMessageBroker:
             del self.__subscribers[message_type]
 
     def _publish(self, message):
-        """
-        Publish message and make sure that all interested
-        subscribers are notified.
+        """Publish message.
+
+        Deliver it to all subscribers.
         """
         if isinstance(message, BaseInputMessage):
             for message in (message, *message.get_instructions()):

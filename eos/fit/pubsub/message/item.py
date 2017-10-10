@@ -41,13 +41,13 @@ class InputItemAdded(BaseInputMessage):
         states = {s for s in State if s <= item.state}
         instructions.append(InstrStatesActivate(item, states))
         # Handle effect activation
-        to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
-        if to_start_effects:
-            item._running_effects.update(to_start_effects)
-            instructions.append(InstrEffectsStart(item, to_start_effects))
-        if to_stop_effects:
-            instructions.append(InstrEffectsStop(item, to_stop_effects))
-            item._running_effects.difference_update(to_stop_effects)
+        to_start, to_stop = item._get_wanted_effect_run_status_changes()
+        if to_start:
+            item._running_effects.update(to_start)
+            instructions.append(InstrEffectsStart(item, to_start))
+        if to_stop:
+            instructions.append(InstrEffectsStop(item, to_stop))
+            item._running_effects.difference_update(to_stop)
         return instructions
 
     def __repr__(self):
@@ -106,13 +106,13 @@ class InputStateChanged(BaseInputMessage):
             states = {s for s in State if self.new < s <= self.old}
             instructions.append(InstrStatesDeactivate(item, states))
         # Effect changes
-        to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
-        if to_start_effects:
-            item._running_effects.update(to_start_effects)
-            instructions.append(InstrEffectsStart(item, to_start_effects))
-        if to_stop_effects:
-            instructions.append(InstrEffectsStop(item, to_stop_effects))
-            item._running_effects.difference_update(to_stop_effects)
+        to_start, to_stop = item._get_wanted_effect_run_status_changes()
+        if to_start:
+            item._running_effects.update(to_start)
+            instructions.append(InstrEffectsStart(item, to_start))
+        if to_stop:
+            instructions.append(InstrEffectsStop(item, to_stop))
+            item._running_effects.difference_update(to_stop)
         return instructions
 
     def __repr__(self):
@@ -131,13 +131,13 @@ class InputEffectsRunModeChanged(BaseInputMessage):
         if item._fit.source is None:
             return ()
         instructions = []
-        to_start_effects, to_stop_effects = item._get_wanted_effect_run_status_changes()
-        if to_start_effects:
-            item._running_effects.update(to_start_effects)
-            instructions.append(InstrEffectsStart(item, to_start_effects))
-        if to_stop_effects:
-            instructions.append(InstrEffectsStop(item, to_stop_effects))
-            item._running_effects.difference_update(to_stop_effects)
+        to_start, to_stop = item._get_wanted_effect_run_status_changes()
+        if to_start:
+            item._running_effects.update(to_start)
+            instructions.append(InstrEffectsStart(item, to_start))
+        if to_stop:
+            instructions.append(InstrEffectsStop(item, to_stop))
+            item._running_effects.difference_update(to_stop)
         return instructions
 
     def __repr__(self):
