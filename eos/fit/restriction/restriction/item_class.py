@@ -29,7 +29,10 @@ from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-ItemClassErrorData = namedtuple('ItemClassErrorData', ('item_class', 'expected_classes'))
+ItemClassErrorData = namedtuple(
+    'ItemClassErrorData',
+    ('item_class', 'expected_classes')
+)
 
 
 CLASS_VALIDATORS = {
@@ -79,15 +82,15 @@ CLASS_VALIDATORS = {
 
 
 class ItemClassRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    Check that eve type is wrapped by corresponding item class
-    instance (e.g. that cybernetic subprocessor is represented
-    by Implant class instance).
+    """Check that eve type is wrapped by corresponding item class instance.
+
+
+    For example, cybernetic subprocessor should be represented by Implant class
+    instance.
 
     Details:
-    To determine item class matching to eve type, only eve type
-    attributes are used.
+        To determine item class matching to eve type, only eve type attributes
+            are used.
     """
 
     def __init__(self, msg_broker):
@@ -108,9 +111,8 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
     def validate(self):
         tainted_items = {}
         for item in self.__items:
-            # Get validator function for class of passed item.
-            # If it is not found or fails, seek for 'right'
-            # item class for the eve type
+            # Get validator function for class of passed item. If it is not
+            # found or fails, seek for 'right' item class for the eve type
             try:
                 validator_func = CLASS_VALIDATORS[type(item)]
             except KeyError:
@@ -123,8 +125,8 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
 
     def __get_error_data(self, item):
         expected_classes = []
-        # Cycle through our class validator dictionary and
-        # seek for acceptable classes for this eve type
+        # Cycle through our class validator dictionary and seek for acceptable
+        # classes for this eve type
         for item_class, validator_func in CLASS_VALIDATORS.items():
             if validator_func(item._eve_type) is True:
                 expected_classes.append(item_class)

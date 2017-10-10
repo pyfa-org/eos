@@ -34,19 +34,19 @@ MAX_SUBCAP_VOLUME = 3500
 TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 
 
-CapitalItemErrorData = namedtuple('CapitalItemErrorData', ('item_volume', 'max_subcap_volume'))
+CapitalItemErrorData = namedtuple(
+    'CapitalItemErrorData',
+    ('item_volume', 'max_subcap_volume')
+)
 
 
 class CapitalItemRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    To fit items with volume bigger than 3500, ship must
-    have IsCapitalShip attribute set to 1.
+    """Do not let to fit capital modules to subcapitals.
 
     Details:
-    Only modules are restricted.
-    For validation, eve type volume value is taken. If volume
-        attribute is absent, item is not restricted.
+        Only modules with eve type volume greater than 3500 are restricted.
+        Capital ships are ships whose eve type has non-zero isCapitalSize
+            attribute value.
     """
 
     def __init__(self, msg_broker):
@@ -59,8 +59,8 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
             self.__current_ship = message.item
         if not isinstance(message.item, TRACKED_ITEM_CLASSES):
             return
-        # Ignore items with no volume attribute and items with
-        # volume which satisfies us regardless of ship type
+        # Ignore items with no volume attribute and items with volume which
+        # satisfies us regardless of ship type
         try:
             item_volume = message.item._eve_type.attributes[AttributeId.volume]
         except KeyError:
@@ -80,8 +80,8 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     }
 
     def validate(self):
-        # Skip validation only if ship has special special attribute set
-        # to true-evaluated value
+        # Skip validation only if ship has special special attribute set value
+        # which is evaluated as True
         try:
             ship_eve_type = self.__current_ship._eve_type
         except AttributeError:
@@ -89,14 +89,14 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         else:
             if ship_eve_type.attributes.get(AttributeId.is_capital_size):
                 return
-        # If we got here, then we're dealing with non-capital
-        # ship, and all registered items are tainted
+        # If we got here, then we're dealing with non-capital ship, and all
+        # registered items are tainted
         if self.__capital_items:
             tainted_items = {}
             for item in self.__capital_items:
-                item_volume = item._eve_type.attributes[AttributeId.volume]
+                eve_type_volume = item._eve_type.attributes[AttributeId.volume]
                 tainted_items[item] = CapitalItemErrorData(
-                    item_volume=item_volume,
+                    item_volume=eve_type_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME
                 )
             raise RestrictionValidationError(tainted_items)

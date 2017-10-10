@@ -27,16 +27,16 @@ from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-StateErrorData = namedtuple('StateErrorData', ('current_state', 'allowed_states'))
+StateErrorData = namedtuple(
+    'StateErrorData',
+    ('current_state', 'allowed_states')
+)
 
 
 class StateRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    Verify that current state of item is not bigger than max state
-    its eve type allows (e.g. passive modules cannot be activated,
-    active modules without overload effects cannot be overloaded,
-    and so on).
+    """Make sure items' states are consistent.
+
+    I.e. check that passive modules are not active, etc.
     """
 
     def __init__(self, msg_broker):
@@ -61,8 +61,7 @@ class StateRestrictionRegister(BaseRestrictionRegister):
         for item in self.__items:
             if item.state > item._eve_type.max_state:
                 allowed_states = tuple(
-                    s for s in State if s <= item._eve_type.max_state
-                )
+                    s for s in State if s <= item._eve_type.max_state)
                 tainted_items[item] = StateErrorData(
                     current_state=item.state,
                     allowed_states=allowed_states

@@ -27,14 +27,17 @@ from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
 
-ResourceErrorData = namedtuple('ResourceErrorData', ('total_use', 'output', 'item_use'))
+ResourceErrorData = namedtuple(
+    'ResourceErrorData',
+    ('total_use', 'output', 'item_use')
+)
 
 
 class ResourceRestriction(BaseRestriction):
-    """
-    Class which implements common functionality for all
-    registers, which restrict amount of resource, which is
-    used by various fit items.
+    """Base class for all resource restrictions.
+
+    Resources in this context is something produced by ship/character and
+    consumed by other items.
     """
 
     def __init__(self, stats, stat_name, usage_attr):
@@ -67,16 +70,15 @@ class ResourceRestriction(BaseRestriction):
 
 
 class CpuRestriction(ResourceRestriction):
-    """
-    Implements restriction:
-    CPU usage by items should not exceed ship CPU output.
+    """CPU usage by items should not exceed ship CPU output.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'cpu', AttributeId.cpu)
+        ResourceRestriction.__init__(
+            self, stats, 'cpu', AttributeId.cpu)
 
     @property
     def type(self):
@@ -84,17 +86,15 @@ class CpuRestriction(ResourceRestriction):
 
 
 class PowergridRestriction(ResourceRestriction):
-    """
-    Implements restriction:
-    Power grid usage by items should not exceed ship
-    power grid output.
+    """Power grid usage by items should not exceed ship power grid output.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'powergrid', AttributeId.power)
+        ResourceRestriction.__init__(
+            self, stats, 'powergrid', AttributeId.power)
 
     @property
     def type(self):
@@ -102,17 +102,15 @@ class PowergridRestriction(ResourceRestriction):
 
 
 class CalibrationRestriction(ResourceRestriction):
-    """
-    Implements restriction:
-    Calibration usage by items should not exceed ship
-    calibration output.
+    """Calibration usage by items should not exceed ship calibration output.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'calibration', AttributeId.upgrade_cost)
+        ResourceRestriction.__init__(
+            self, stats, 'calibration', AttributeId.upgrade_cost)
 
     @property
     def type(self):
@@ -120,18 +118,15 @@ class CalibrationRestriction(ResourceRestriction):
 
 
 class DroneBayVolumeRestriction(ResourceRestriction):
-    """
-    Implements restriction:
-    Drone bay volume usage by items should not exceed ship
-    drone bay volume.
+    """Drone bay volume usage by items should not exceed ship drone bay volume.
 
     Details:
-    Only items of Drone class are restricted.
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'dronebay', AttributeId.volume)
+        ResourceRestriction.__init__(
+            self, stats, 'dronebay', AttributeId.volume)
 
     @property
     def type(self):
@@ -139,17 +134,15 @@ class DroneBayVolumeRestriction(ResourceRestriction):
 
 
 class DroneBandwidthRestriction(ResourceRestriction):
-    """
-    Implements restriction:
-    Drone bandwidth usage by items should not exceed ship
-    drone bandwidth output.
+    """Drone bandwidth usage by items should not exceed ship drone bandwidth.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'drone_bandwidth', AttributeId.drone_bandwidth_used)
+        ResourceRestriction.__init__(
+            self, stats, 'drone_bandwidth', AttributeId.drone_bandwidth_used)
 
     @property
     def type(self):

@@ -24,7 +24,9 @@ from collections import namedtuple
 from eos.const.eos import Restriction, State
 from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
+from eos.fit.pubsub.message import (
+    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate
+)
 from eos.util.keyed_set import KeyedSet
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -33,15 +35,14 @@ from ..exception import RestrictionValidationError
 TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 
 
-MaxGroupErrorData = namedtuple('MaxGroupErrorData', ('item_group', 'max_group', 'group_items'))
+MaxGroupErrorData = namedtuple(
+    'MaxGroupErrorData',
+    ('item_group', 'max_group', 'group_items')
+)
 
 
 class MaxGroupRestrictionRegister(BaseRestrictionRegister):
-    """
-    Class which implements common functionality for all
-    registers, which track maximum number of modules in
-    certain state on per-group basis.
-    """
+    """Base class for all max modules per group restrictions."""
 
     def __init__(self, max_group_attr):
         # Attribute ID whose value contains group restriction of item
@@ -49,8 +50,8 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         # Container for all tracked items, keyed by their group ID
         # Format: {group ID: {items}}
         self.__group_all = KeyedSet()
-        # Container for items, which have max group restriction
-        # to become operational
+        # Container for items, which have max group restriction to become
+        # operational
         # Format: {items}
         self.__group_restricted = set()
 
@@ -58,15 +59,14 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         if not isinstance(item, TRACKED_ITEM_CLASSES):
             return
         group = item._eve_type.group
-        # Ignore items, whose eve type isn't assigned
-        # to any group
+        # Ignore items, whose eve type isn't assigned to any group
         if group is None:
             return
-        # Having group ID is sufficient condition
-        # to enter container of all fitted items
+        # Having group ID is sufficient condition to enter container of all
+        # fitted items
         self.__group_all.add_data(group, item)
-        # To enter restriction container, eve type
-        # must have restriction attribute
+        # To enter restriction container, eve type must have restriction
+        # attribute
         if self.__max_group_attr not in item._eve_type.attributes:
             return
         self.__group_restricted.add(item)
@@ -86,9 +86,10 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             # restricted item, and item's restriction value
             group = item._eve_type.group
             group_items = len(self.__group_all.get(group, ()))
-            max_group_restriction = item._eve_type.attributes[self.__max_group_attr]
-            # If number of registered items from this group is bigger,
-            # then current item is tainted
+            max_group_restriction = (
+                item._eve_type.attributes[self.__max_group_attr])
+            # If number of registered items from this group is bigger, then
+            # current item is tainted
             if group_items > max_group_restriction:
                 tainted_items[item] = MaxGroupErrorData(
                     item_group=group,
@@ -101,15 +102,11 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
 
 
 class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
-    """
-    Implements restriction:
-    If item has max group fitted restriction, number of fitted
-    items of this group should not exceed restriction value,
-    else item with such restriction is tainted.
+    """Prohibit to fit items of certain groups beyond limit.
 
     Details:
-    Only module-class items are restricted.
-    For validation, modified value of restriction attribute is taken.
+        Only module-class items are restricted.
+        For validation, modified value of restriction attribute is taken.
     """
 
     def __init__(self, msg_broker):
@@ -133,15 +130,11 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
 
 
 class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
-    """
-    Implements restriction:
-    If item has max group online restriction, number of online
-    items of this group should not exceed restriction value,
-    else item with such restriction is tainted.
+    """Prohibit to online items of certain groups beyond limit.
 
     Details:
-    Only module-class items are restricted.
-    For validation, modified value of restriction attribute is taken.
+        Only module-class items are restricted.
+        For validation, modified value of restriction attribute is taken.
     """
 
     def __init__(self, msg_broker):
@@ -167,15 +160,11 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
 
 
 class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
-    """
-    Implements restriction:
-    If item has max group active restriction, number of active
-    items of this group should not exceed restriction value,
-    else item with such restriction is tainted.
+    """Prohibit to activate items of certain group beyond limit.
 
     Details:
-    Only module-class items are restricted.
-    For validation, modified value of restriction attribute is taken.
+        Only module-class items are restricted.
+        For validation, modified value of restriction attribute is taken.
     """
 
     def __init__(self, msg_broker):

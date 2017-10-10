@@ -37,18 +37,20 @@ RESTRICTION_ATTRS = (
 )
 
 
-ChargeGroupErrorData = namedtuple('ChargeGroupErrorData', ('charge_group', 'allowed_groups'))
+ChargeGroupErrorData = namedtuple(
+    'ChargeGroupErrorData',
+    ('charge_group', 'allowed_groups')
+)
 
 
 class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    If item can fit charges and specifies group of charges it
-    can fit, other groups cannot be loaded into it.
+    """Do not allow to load charges besides those specified by container.
 
     Details:
-    For validation, allowed charge group attribute values of
-    eve type are taken.
+        If container specifies no charge group preference, validation always
+            passes.
+        For validation, allowed charge group attribute values of eve type are
+            taken.
     """
 
     def __init__(self, msg_broker):
@@ -64,9 +66,10 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         # Compose set of charge groups this container
         # is able to fit
         allowed_groups = set()
+        item_attrs = message.item._eve_type.attributes
         for restriction_attr in RESTRICTION_ATTRS:
             try:
-                restriction_value = message.item._eve_type.attributes[restriction_attr]
+                restriction_value = item_attrs[restriction_attr]
             except KeyError:
                 continue
             else:
@@ -86,8 +89,8 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
 
     def validate(self):
         tainted_items = {}
-        # If item has charge and its group is not allowed,
-        # taint charge (not container) item
+        # If item has charge and its group is not allowed, taint charge item
+        # (not container)
         for container, allowed_groups in self.__restricted_containers.items():
             charge = container.charge
             if charge is None:

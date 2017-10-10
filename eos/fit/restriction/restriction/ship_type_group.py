@@ -74,27 +74,24 @@ ShipTypeGroupErrorData = namedtuple(
 )
 
 
-# Helper class-container for metadata regarding allowed
-# types and groups
+# Helper class-container for metadata regarding allowed types and groups
 AllowedData = namedtuple('AllowedData', ('types', 'groups'))
 
 
 class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    Items, which have certain fittable ship types or ship groups
-    specified, can be fitted only to ships belonging to one of
-    these types or groups.
+    """Make sure that item fits only to ships it can be fitted to.
+
+    Item can specify which ships are suitable via ship group or ship type.
 
     Details:
-    Only module-class items are restricted.
-    It's enough to satisfy any of conditions to make item usable
-        (e.g. ship's group may not satisfy canFitShipGroupX
-        restriction, but its type may be suitable to use item).
-    If item has at least one restriction attribute, it is enabled
-        for tracking by this register.
-    For validation, canFitShipTypeX and canFitShipGroupX attribute
-        values of eve type are taken.
+        Only modules  are restricted.
+        It's enough to satisfy any of conditions to make item usable (e.g.
+            ship's group may not satisfy canFitShipGroupX restriction, but its
+            type may be suitable to use item).
+        If item has at least one restriction attribute, it is enabled for
+            tracking by this register.
+        For validation, canFitShipTypeX and canFitShipGroupX attribute values of
+            eve type are taken.
     """
 
     def __init__(self, msg_broker):
@@ -109,8 +106,8 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             self.__current_ship = message.item
         elif not isinstance(message.item, TRACKED_ITEM_CLASSES):
             return
-        # Containers for type IDs and group IDs of ships, to
-        # which item is allowed to fit
+        # Containers for type IDs and group IDs of ships, to which item is
+        # allowed to fit
         allowed_types = set()
         allowed_groups = set()
         for allowed_container, restriction_attrs in (
@@ -120,7 +117,8 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             # Cycle through IDs of known restriction attributes
             for restriction_attr in restriction_attrs:
                 try:
-                    restriction_value = message.item._eve_type.attributes[restriction_attr]
+                    restriction_value = (
+                        message.item._eve_type.attributes[restriction_attr])
                 except KeyError:
                     continue
                 else:
@@ -146,11 +144,9 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
     }
 
     def validate(self):
-        # Get type ID and group ID of ship, if no ship
-        # available, assume they're None; it's safe to set
-        # them to None because our primary data container
-        # with restricted items can't contain None in its
-        # values anyway
+        # Get type ID and group ID of ship, if no ship available, assume they're
+        # None; it's safe to set them to None because our primary data container
+        # with restricted items can't contain None in its values anyway
         try:
             ship_type_id = self.__current_ship._eve_type_id
             ship_group = self.__current_ship._eve_type.group
@@ -162,9 +158,12 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # Go through all known restricted items
         for item in self.__restricted_items:
             allowed_data = self.__restricted_items[item]
-            # If ship's type isn't in allowed types and ship's
-            # group isn't in allowed groups, item is tainted
-            if ship_type_id not in allowed_data.types and ship_group not in allowed_data.groups:
+            # If ship's type isn't in allowed types and ship's group isn't in
+            # allowed groups, item is tainted
+            if (
+                ship_type_id not in allowed_data.types and
+                ship_group not in allowed_data.groups
+            ):
                 tainted_items[item] = ShipTypeGroupErrorData(
                     ship_type=ship_type_id,
                     ship_group=ship_group,

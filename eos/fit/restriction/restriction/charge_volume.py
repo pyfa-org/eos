@@ -28,20 +28,18 @@ from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-ChargeVolumeErrorData = namedtuple('ChargeVolumeErrorData', ('item_volume', 'max_allowed_volume'))
+ChargeVolumeErrorData = namedtuple(
+    'ChargeVolumeErrorData',
+    ('item_volume', 'max_allowed_volume')
+)
 
 
 class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    Volume of single charge loaded into container should not
-    excess its capacity.
+    """Volume of charge loaded into container should not excess its capacity.
 
     Details:
-    Charge volume and container capacity are taken from
-        eve type attributes.
-    If not specified, volume and/or capacity are assumed
-        to be 0.
+        Charge volume and container capacity are taken from eve type attributes.
+        If not specified, volume and/or capacity are assumed to be 0.
     """
 
     def __init__(self, msg_broker):
@@ -68,10 +66,12 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            # Get volume and capacity with 0 as fallback, and
-            # compare them, raising error when charge can't fit
-            charge_volume = charge._eve_type.attributes.get(AttributeId.volume, 0)
-            container_capacity = container._eve_type.attributes.get(AttributeId.capacity, 0)
+            # Get volume and capacity with 0 as fallback, and compare them,
+            # raising error when charge can't fit
+            charge_volume = (
+                charge._eve_type.attributes.get(AttributeId.volume, 0))
+            container_capacity = (
+                container._eve_type.attributes.get(AttributeId.capacity, 0))
             if charge_volume > container_capacity:
                 tainted_items[charge] = ChargeVolumeErrorData(
                     item_volume=charge_volume,

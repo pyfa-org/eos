@@ -33,11 +33,9 @@ SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('item_slot_index',))
 
 
 class SlotIndexRestrictionRegister(BaseRestrictionRegister):
-    """
-    Class which implements common functionality for all
-    registers, which track indices of occupied slots and
-    disallow multiple items reside within slot with the
-    same index.
+    """Base class for all slot index restrictions.
+
+    It doesn't allow multiple items to take the same numbered slot.
     """
 
     def __init__(self, msg_broker, slot_index_attr):
@@ -50,13 +48,15 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
 
     def _handle_item_addition(self, message):
         # Skip items which don't have index specified
-        slot_index = message.item._eve_type.attributes.get(self.__slot_index_attr)
+        slot_index = message.item._eve_type.attributes.get(
+            self.__slot_index_attr)
         if slot_index is None:
             return
         self.__slotted_items.add_data(slot_index, message.item)
 
     def _handle_item_removal(self, message):
-        slot_index = message.item._eve_type.attributes.get(self.__slot_index_attr)
+        slot_index = message.item._eve_type.attributes.get(
+            self.__slot_index_attr)
         if slot_index is None:
             return
         self.__slotted_items.rm_data(slot_index, message.item)
@@ -70,26 +70,26 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         tainted_items = {}
         for slot_index in self.__slotted_items:
             slot_index_items = self.__slotted_items[slot_index]
-            # If more than one item occupies the same slot, all
-            # items in this slot are tainted
+            # If more than one item occupies the same slot, all items in this
+            # slot are tainted
             if len(slot_index_items) > 1:
                 for item in slot_index_items:
-                    tainted_items[item] = SlotIndexErrorData(item_slot_index=slot_index)
+                    tainted_items[item] = SlotIndexErrorData(
+                        item_slot_index=slot_index)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 
 
 class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
-    """
-    Implements restriction:
-    Multiple subsystems can't be added into the same subsystem slot.
+    """Multiple subsystems can't be added into the same subsystem slot.
 
     Details:
-    Slot to occupy is determined by eve type attributes.
+        Slot to occupy is determined by eve type attributes.
     """
 
     def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(self, msg_broker, AttributeId.subsystem_slot)
+        SlotIndexRestrictionRegister.__init__(
+            self, msg_broker, AttributeId.subsystem_slot)
 
     @property
     def type(self):
@@ -97,16 +97,15 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
 
 class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
-    """
-    Implements restriction:
-    Multiple implants can't be added into the same implant slot.
+    """Multiple implants can't be added into the same implant slot.
 
     Details:
-    Slot to occupy is determined by eve type attributes.
+        Slot to occupy is determined by eve type attributes.
     """
 
     def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(self, msg_broker, AttributeId.implantness)
+        SlotIndexRestrictionRegister.__init__(
+            self, msg_broker, AttributeId.implantness)
 
     @property
     def type(self):
@@ -114,16 +113,15 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
 
 class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
-    """
-    Implements restriction:
-    Multiple boosters can't be added into the same booster slot.
+    """Multiple boosters can't be added into the same booster slot.
 
     Details:
-    Slot to occupy is determined by eve type attributes.
+        Slot to occupy is determined by eve type attributes.
     """
 
     def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(self, msg_broker, AttributeId.boosterness)
+        SlotIndexRestrictionRegister.__init__(
+            self, msg_broker, AttributeId.boosterness)
 
     @property
     def type(self):

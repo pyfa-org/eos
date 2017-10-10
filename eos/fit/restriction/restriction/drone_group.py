@@ -35,21 +35,20 @@ RESTRICTION_ATTRS = (
 )
 
 
-DroneGroupErrorData = namedtuple('DroneGroupErrorData', ('drone_group', 'allowed_groups'))
+DroneGroupErrorData = namedtuple(
+    'DroneGroupErrorData',
+    ('drone_group', 'allowed_groups')
+)
 
 
 class DroneGroupRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    If ship restricts drone group, items from groups which are not
-    allowed cannot be put into drone bay.
+    """Do not allow to use drones besides those specified by ship.
 
     Details:
-    Only items in fit.drones container are restricted.
-    For validation, allowedDroneGroupX attribute values of eve type
-        are taken.
-    Validation fails if ship's eve type has any restriction attribute,
-        and drone group doesn't match to restriction.
+        Only items of Drone class are tracked.
+        For validation, allowedDroneGroupX attribute values of eve type are
+            taken.
+        If ship specifies no drone group preference, validation always passes.
     """
 
     def __init__(self, msg_broker):
@@ -79,7 +78,6 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
             ship_eve_type = self.__current_ship._eve_type
         except AttributeError:
             return
-        # Set with allowed groups
         allowed_groups = []
         # Find out if we have restriction, and which drone groups it allows
         for restriction_attr in RESTRICTION_ATTRS:
@@ -93,9 +91,8 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         if not allowed_groups:
             return
         tainted_items = {}
-        # Convert set to tuple, this way we can use it
-        # multiple times in error data, making sure that
-        # it can't be modified by validation caller
+        # Convert set to tuple, this way we can use it multiple times in error
+        # data, making sure that it can't be modified by validation caller
         allowed_groups = tuple(allowed_groups)
         for drone in self.__drones:
             # Taint items, whose group is not allowed

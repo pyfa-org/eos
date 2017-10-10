@@ -26,11 +26,14 @@ from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
 
-SlotAmountErrorData = namedtuple('SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
+SlotAmountErrorData = namedtuple(
+    'SlotAmountErrorData',
+    ('slots_used', 'slots_max_allowed')
+)
 
 
 class OrderedSlotAmountRestriction(BaseRestriction):
-    """Base class for all ordered slot amount restrictions"""
+    """Base class for all ordered slot amount restrictions."""
 
     def __init__(self, stats, stat_name):
         self.__stats = stats
@@ -42,9 +45,9 @@ class OrderedSlotAmountRestriction(BaseRestriction):
         slots_used = stats.used
         # Can be None, so fall back to 0 in this case
         slots_max = stats.total or 0
-        # If number of items which take this slot is bigger
-        # than number of available slots, then all items which
-        # are positioned higher than available index are tainted
+        # If number of items which take this slot is bigger than number of
+        # available slots, then all items which are positioned higher than
+        # available index are tainted
         if slots_used > slots_max:
             tainted_items = {}
             for item in stats._users:
@@ -58,7 +61,7 @@ class OrderedSlotAmountRestriction(BaseRestriction):
 
 
 class UnorderedSlotAmountRestriction(BaseRestriction):
-    """Base class for all ordered slot amount restrictions"""
+    """Base class for all unordered slot amount restrictions."""
 
     def __init__(self, stats, stat_name):
         self.__stats = stats
@@ -68,9 +71,8 @@ class UnorderedSlotAmountRestriction(BaseRestriction):
         stats = getattr(self.__stats, self.__stat_name)
         slots_used = stats.used
         slots_max = stats.total or 0
-        # If number of items which take this slot is bigger
-        # than number of available slots, then all items
-        # which use this slot are tainted
+        # If number of items which take this slot is bigger than number of
+        # available slots, then all items which use this slot are tainted
         if slots_used > slots_max:
             tainted_items = {}
             for item in stats._users:
@@ -82,13 +84,10 @@ class UnorderedSlotAmountRestriction(BaseRestriction):
 
 
 class HighSlotRestriction(OrderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of high-slot items should not exceed number of
-    high slots ship provides.
+    """Number of high-slot items should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
@@ -100,13 +99,10 @@ class HighSlotRestriction(OrderedSlotAmountRestriction):
 
 
 class MediumSlotRestriction(OrderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of medium-slot items should not exceed number of
-    medium slots ship provides.
+    """Number of med-slot items should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
@@ -118,13 +114,10 @@ class MediumSlotRestriction(OrderedSlotAmountRestriction):
 
 
 class LowSlotRestriction(OrderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of low-slot items should not exceed number of
-    low slots ship provides.
+    """Number of low-slot items should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
@@ -136,15 +129,11 @@ class LowSlotRestriction(OrderedSlotAmountRestriction):
 
 
 class RigSlotRestriction(UnorderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of rig-slot items should not exceed number of
-    rig slots ship provides.
+    """Number of rig items should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
-
     def __init__(self, stats):
         UnorderedSlotAmountRestriction.__init__(self, stats, 'rig_slots')
 
@@ -154,13 +143,10 @@ class RigSlotRestriction(UnorderedSlotAmountRestriction):
 
 
 class SubsystemSlotRestriction(UnorderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of subsystem-slot items should not exceed number of
-    subsystem slots ship provides.
+    """Number of subsystem items should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
@@ -172,13 +158,10 @@ class SubsystemSlotRestriction(UnorderedSlotAmountRestriction):
 
 
 class TurretSlotRestriction(UnorderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of turret-slot items should not exceed number of
-    turret slots ship provides.
+    """Number of turrets should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
@@ -190,13 +173,10 @@ class TurretSlotRestriction(UnorderedSlotAmountRestriction):
 
 
 class LauncherSlotRestriction(UnorderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of launcher-slot items should not exceed number of
-    launcher slots ship provides.
+    """Number of launchers should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):
@@ -208,13 +188,10 @@ class LauncherSlotRestriction(UnorderedSlotAmountRestriction):
 
 
 class LaunchedDroneRestriction(UnorderedSlotAmountRestriction):
-    """
-    Implements restriction:
-    Number of launched drones should not exceed number of
-    drones you're allowed to launch.
+    """Number of launched drones should not exceed limit.
 
     Details:
-    For validation, stats module data is used.
+        For validation, stats module data is used.
     """
 
     def __init__(self, stats):

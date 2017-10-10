@@ -28,22 +28,21 @@ from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-ChargeSizeErrorData = namedtuple('ChargeSizeErrorData', ('item_size', 'allowed_size'))
+ChargeSizeErrorData = namedtuple(
+    'ChargeSizeErrorData',
+    ('item_size', 'allowed_size')
+)
 
 
 class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
-    """
-    Implements restriction:
-    If item can fit charges and specifies size of charges it
-    can fit, other sizes cannot be loaded into it.
+    """Container and charge must be of matching sizes.
 
     Details:
-    If container specifies size and item doesn't specify it,
-        charge is not allowed to be loaded.
-    If container does not specify size, charge of any size
-        can be loaded.
-    To determine allowed size and charge size, eve type attributes
-        are used.
+        If container doesn't specify size, charge always passes validation.
+        If container specifies size and item doesn't specify it, charge is not
+            allowed to be loaded.
+        If container does not specify size, charge of any size can be loaded.
+        To determine allowed size and charge size, eve type attributes are used.
     """
 
     def __init__(self, msg_broker):
@@ -69,14 +68,16 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
 
     def validate(self):
         tainted_items = {}
-        # Go through containers with charges, and if their
-        # sizes mismatch - taint charge items
+        # Go through containers with charges, and if their sizes mismatch, taint
+        # charge items
         for container in self.__restricted_containers:
             charge = container.charge
             if charge is None:
                 continue
-            container_size = container._eve_type.attributes[AttributeId.charge_size]
-            charge_size = charge._eve_type.attributes.get(AttributeId.charge_size)
+            container_size = (
+                container._eve_type.attributes[AttributeId.charge_size])
+            charge_size = (
+                charge._eve_type.attributes.get(AttributeId.charge_size))
             if container_size != charge_size:
                 tainted_items[charge] = ChargeSizeErrorData(
                     item_size=charge_size,
