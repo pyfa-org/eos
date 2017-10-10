@@ -46,5 +46,4 @@ from .slot import (
     HighSlotStatRegister, LaunchedDroneStatRegister, LauncherSlotStatRegister,
     LowSlotStatRegister, MediumSlotStatRegister, RigSlotStatRegister,
     SubsystemSlotStatRegister, TurretSlotStatRegister
-
 )

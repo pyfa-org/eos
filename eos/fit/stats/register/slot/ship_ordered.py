@@ -21,12 +21,15 @@
 
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import (
+    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseSlotStatRegister
 
 
-class OrderedShipSlotStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
+class OrderedShipSlotStatRegister(
+    BaseSlotStatRegister, InheritableVolatileMixin
+):
 
     def __init__(self, msg_broker, slot_effect, slot_attr):
         BaseSlotStatRegister.__init__(self)
@@ -40,7 +43,9 @@ class OrderedShipSlotStatRegister(BaseSlotStatRegister, InheritableVolatileMixin
     @volatile_property
     def used(self):
         return max((
-            i._container_position + 1 for i in self.__slot_users if i._container_position is not None
+            i._container_position + 1
+            for i in self.__slot_users
+            if i._container_position is not None
         ), default=0)
 
     @volatile_property
@@ -86,16 +91,19 @@ class OrderedShipSlotStatRegister(BaseSlotStatRegister, InheritableVolatileMixin
 class HighSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.hi_power, AttributeId.hi_slots)
+        OrderedShipSlotStatRegister.__init__(
+            self, msg_broker, EffectId.hi_power, AttributeId.hi_slots)
 
 
 class MediumSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.med_power, AttributeId.med_slots)
+        OrderedShipSlotStatRegister.__init__(
+            self, msg_broker, EffectId.med_power, AttributeId.med_slots)
 
 
 class LowSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.lo_power, AttributeId.low_slots)
+        OrderedShipSlotStatRegister.__init__(
+            self, msg_broker, EffectId.lo_power, AttributeId.low_slots)

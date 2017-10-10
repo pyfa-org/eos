@@ -30,7 +30,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     @volatile_property
     def hp(self):
-        """Fetch hp stats of the item.
+        """Fetch HP stats of the item.
 
         Returns: TankingLayersTotal helper container instance.
         """
@@ -91,8 +91,8 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         """Get effective HP of an item against passed damage profile.
 
         Args:
-        damage_profile (optional): DamageProfile helper container instance. If
-            not specified, default on-fit damage profile is used.
+            damage_profile (optional): DamageProfile helper container instance.
+                If not specified, default on-fit damage profile is used.
 
         Returns: TankingLayersTotal helper container instance.
         """

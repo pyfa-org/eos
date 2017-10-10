@@ -21,12 +21,15 @@
 
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import (
+    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister
 
 
-class UnroundedResourceStatRegister(BaseResourceStatRegister, InheritableVolatileMixin):
+class UnroundedResourceStatRegister(
+    BaseResourceStatRegister, InheritableVolatileMixin
+):
 
     def __init__(self, msg_broker, output_attr, use_effect, use_attr):
         BaseResourceStatRegister.__init__(self)
@@ -40,7 +43,10 @@ class UnroundedResourceStatRegister(BaseResourceStatRegister, InheritableVolatil
 
     @volatile_property
     def used(self):
-        return sum(item.attributes[self.__use_attr] for item in self.__resource_users)
+        return sum(
+            item.attributes[self.__use_attr]
+            for item in self.__resource_users
+        )
 
     @volatile_property
     def output(self):
@@ -67,7 +73,10 @@ class UnroundedResourceStatRegister(BaseResourceStatRegister, InheritableVolatil
             self.__current_ship = None
 
     def _handle_item_effects_activation(self, message):
-        if self.__use_effect in message.effects and self.__use_attr in message.item._eve_type.attributes:
+        if (
+            self.__use_effect in message.effects and
+            self.__use_attr in message.item._eve_type.attributes
+        ):
             self.__resource_users.add(message.item)
 
     def _handle_item_effects_deactivation(self, message):
@@ -86,5 +95,6 @@ class CalibrationStatRegister(UnroundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         UnroundedResourceStatRegister.__init__(
-            self, msg_broker, AttributeId.upgrade_capacity, EffectId.rig_slot, AttributeId.upgrade_cost
+            self, msg_broker, AttributeId.upgrade_capacity, EffectId.rig_slot,
+            AttributeId.upgrade_cost
         )

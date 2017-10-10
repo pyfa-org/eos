@@ -187,11 +187,12 @@ class DamageDealerMixin(
 
     def get_nominal_volley(self, target_resistances=None):
         """
-        Get nominal volley for item, calculated against passed resistances.
+        Get nominal volley of the item.
 
         Args:
             target_resistances (optional): ResistanceProfile helper container
-                instance.
+                instance. If specified, effective damage against these
+                resistances is calculated.
 
         Returns: DamageTypesTotal helper container instance.
         """
@@ -253,6 +254,18 @@ class DamageDealerMixin(
         )
 
     def get_nominal_dps(self, target_resistances=None, reload=False):
+        """
+        Get nominal DPS of the item.
+
+        Args:
+            target_resistances (optional): ResistanceProfile helper container
+                instance. If specified, effective damage against these
+                resistances is calculated.
+            reload (optional): Boolean flag which controls if reload should be
+                taken into consideration or not. By default, reload is ignored.
+
+        Returns: DamageTypesTotal helper container instance.
+        """
         volley = self.get_nominal_volley(target_resistances=target_resistances)
         # If all attribs of base volley are None, nothing we can do here
         if (

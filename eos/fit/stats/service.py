@@ -31,12 +31,11 @@ from .register import *
 
 
 class StatService(BaseSubscriber, InheritableVolatileMixin):
-    """
-    Object which is used as access points for all fit statistics.
+    """Object which is used as access points for all fit statistics.
 
-    Required arguments:
-    msg_broker -- message broker which is used to deliver
-        all the messages about context changes
+    Args:
+        msg_broker: Message broker which is used to deliver all the messages
+            about context changes.
     """
 
     def __init__(self, msg_broker):
@@ -77,10 +76,10 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
     @volatile_property
     def hp(self):
-        """
-        Fetch current ship HP and return object with hull, armor, shield and
-        total attributes. If fit has no ship or some data cannot be fetched,
-        corresponding attribs will be set to None.
+        """Fetch ship HP stats.
+
+        Returns: TankingLayersTotal helper container instance. If ship data
+        cannot be fetched, HP values will be None.
         """
         try:
             return self.__current_ship.hp
@@ -89,13 +88,11 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
     @volatile_property
     def resistances(self):
-        """
-        Fetch current ship resistances and return object wit following data:
-        .hull.em, .hull.thermal, .hull.kinetic, .hull.explosive,
-        .armor.em, .armor.thermal, .armor.kinetic, .armor.explosive,
-        .shield.em, .shield.thermal, .shield.kinetic, .shield.explosive
-        If fit has no ship or some data cannot be fetched, corresponding attribs
-            will be set to None.
+        """Fetch ship resistances.
+
+        Returns: TankingLayers helper container instance, whose attributes are
+        DamageTypes helper container instances. If ship data cannot be fetched,
+        resistance values will be None.
         """
         try:
             return self.__current_ship.resistances
@@ -104,13 +101,14 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             return TankingLayers(hull=empty, armor=empty, shield=empty)
 
     def get_ehp(self, damage_profile=None):
-        """
-        Same as hp, but takes damage_profile argument which optionally defines
-        damage profile (should have em, thermal, kinetic and explosive arguments
-        defined as numbers). Returns effective HP of a ship against this profile.
-        If fit has no ship or some data cannot be fetched, corresponding attribs
-        will be set to None. If no profile is specified, default fit profile is
-        taken.
+        """Get effective HP of an item against passed damage profile.
+
+        Args:
+            damage_profile (optional): DamageProfile helper container instance.
+                If not specified, default on-fit damage profile is used.
+
+        Returns: TankingLayersTotal helper container instance. If ship data
+        cannot be fetched, EHP values will be None.
         """
         try:
             return self.__current_ship.get_ehp(damage_profile)
@@ -119,10 +117,13 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
     @volatile_property
     def worst_case_ehp(self):
-        """
-        Eve-style EHP for a ship - calculated using worst resistance for each layer.
-        If fit has no ship or some data cannot be fetched, corresponding attribs
-        will be set to None.
+        """Get eve-style effective HP for the item.
+
+        Eve takes the worst resistance and calculates EHP against it, on a per-
+        layer basis.
+
+        Returns: TankingLayersTotal helper container instance. If ship data
+        cannot be fetched, EHP values will be None.
         """
         try:
             return self.__current_ship.worst_case_ehp
@@ -131,18 +132,18 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
     def get_nominal_volley(self, item_filter=None, target_resistances=None):
         """
-        Get nominal volley of whole fit.
+        Get nominal volley of the fit.
 
-        Optional arguments:
-        item_filter -- when iterating over fit item, this function is called.
-            If evaluated as True, this item is taken into consideration, else not.
-            If argument is None, all items 'pass filter'. By default None.
-        target_resistances -- resistance profile to calculate effective volley.
-            Profile should contain em, thermal, kinetic and explosive attributes as
-            numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
+        Args:
+            item_filter (optional): When iterating over fit items, this function
+                is called. If evaluated as True, this item is taken into
+                consideration, else not. If argument is None, all items 'pass
+                filter'. By default None.
+            target_resistances (optional): ResistanceProfile helper container
+                instance. If specified, effective damage against these
+                resistances is calculated.
 
-        Return value:
-        Object with em, thermal, kinetic, explosive and total attributes.
+        Returns: DamageTypesTotal helper container instance.
         """
         volley = self.__dd_reg._collect_damage_stats(
             item_filter,
@@ -151,22 +152,24 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         )
         return volley
 
-    def get_nominal_dps(self, item_filter=None, target_resistances=None, reload=False):
+    def get_nominal_dps(
+        self, item_filter=None, target_resistances=None, reload=False
+    ):
         """
-        Get nominal dps of whole fit.
+        Get nominal DPS of the fit.
 
-        Optional arguments:
-        item_filter -- when iterating over fit item, this function is called.
-            If evaluated as True, this item is taken into consideration, else not.
-            If argument is None, all items 'pass filter'. By default None.
-        target_resistances -- resistance profile to calculate effective dps.
-            Profile should contain em, thermal, kinetic and explosive attributes as
-            numbers in range [0..1]. If None, 'raw' dps is calculated. By default None.
-        reload -- boolean flag, should reload be taken into consideration or not.
-            By default False.
+        Args:
+            item_filter (optional): When iterating over fit items, this function
+                is called. If evaluated as True, this item is taken into
+                consideration, else not. If argument is None, all items 'pass
+                filter'. By default None.
+            target_resistances (optional): ResistanceProfile helper container
+                instance. If specified, effective damage against these
+                resistances is calculated.
+            reload (optional): Boolean flag which controls if reload should be
+                taken into consideration or not. By default, reload is ignored.
 
-        Return value:
-        Object with em, thermal, kinetic, explosive and total attributes.
+        Returns: DamageTypesTotal helper container instance.
         """
         dps = self.__dd_reg._collect_damage_stats(
             item_filter,
@@ -198,9 +201,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             return None
 
     def _clear_volatile_attrs(self):
-        """
-        Clear volatile cache for self and all child objects.
-        """
+        """Clear volatile cache for self and all child objects."""
         for container in self.__volatile_containers:
             container._clear_volatile_attrs()
         InheritableVolatileMixin._clear_volatile_attrs(self)

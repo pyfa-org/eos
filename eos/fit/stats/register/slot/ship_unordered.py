@@ -21,12 +21,15 @@
 
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import (
+    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseSlotStatRegister
 
 
-class UnorderedShipSlotStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
+class UnorderedShipSlotStatRegister(
+    BaseSlotStatRegister, InheritableVolatileMixin
+):
 
     def __init__(self, msg_broker, slot_effect, slot_attr):
         BaseSlotStatRegister.__init__(self)
@@ -84,22 +87,30 @@ class UnorderedShipSlotStatRegister(BaseSlotStatRegister, InheritableVolatileMix
 class RigSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.rig_slot, AttributeId.rig_slots)
+        UnorderedShipSlotStatRegister.__init__(
+            self, msg_broker, EffectId.rig_slot, AttributeId.rig_slots)
 
 
 class SubsystemSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.subsystem, AttributeId.max_subsystems)
+        UnorderedShipSlotStatRegister.__init__(
+            self, msg_broker, EffectId.subsystem, AttributeId.max_subsystems)
 
 
 class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.turret_fitted, AttributeId.turret_slots_left)
+        UnorderedShipSlotStatRegister.__init__(
+            self, msg_broker, EffectId.turret_fitted,
+            AttributeId.turret_slots_left
+        )
 
 
 class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(self, msg_broker, EffectId.launcher_fitted, AttributeId.launcher_slots_left)
+        UnorderedShipSlotStatRegister.__init__(
+            self, msg_broker, EffectId.launcher_fitted,
+            AttributeId.launcher_slots_left
+        )
