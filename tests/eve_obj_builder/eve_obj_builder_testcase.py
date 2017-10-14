@@ -26,13 +26,10 @@ from .environment import DataHandler
 
 
 class EveObjBuilderTestCase(EosTestCase):
-    """
-    Additional functionality provided:
+    """Test case class is used by eve object builder tests.
 
-    self.dh -- default data handler
-    self.run_builder -- shortcut to running eve object
-        builder on the data provided by data handler self.dh
-    self.mod -- instantiate dogma modifier
+    Attributes:
+        dh: Default data handler.
     """
 
     def setUp(self):
@@ -40,11 +37,12 @@ class EveObjBuilderTestCase(EosTestCase):
         self.dh = DataHandler()
 
     def run_builder(self):
-        """
-        Run builder and store data on test object so that
-        it's easier to access.
+        """Shortcut to running eve object builder.
+
+        Builder uses data provided by default data handler,
         """
         self.types, self.attributes, self.effects = EveObjBuilder.run(self.dh)
 
     def mod(self, *args, **kwargs):
+        """Shortcut to instantiating dogma modifier."""
         return DogmaModifier(*args, **kwargs)

@@ -57,6 +57,6 @@ def main():
     tests = unittest.TestLoader().discover(suite, pattern=pattern)
     unittest.TextTestRunner().run(tests)
 
+
 if __name__ == '__main__':
     main()
-

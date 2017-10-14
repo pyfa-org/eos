@@ -25,19 +25,18 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
 class TestAttrValue(EveObjBuilderTestCase):
-    """
-    After cleanup builder should check that all attribute values
-    are integers or floats, rows with other value types should be
-    cleaned up.
-    """
+    """Ensure that attributes values are properly checked."""
 
     def test_int(self):
-        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8})
+        self.dh.data['evetypes'].append(
+            {'typeID': 1, 'groupID': 1})
+        self.dh.data['dgmtypeattribs'].append(
+            {'typeID': 1, 'attributeID': 5, 'value': 8})
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
@@ -47,11 +46,13 @@ class TestAttrValue(EveObjBuilderTestCase):
 
     def test_float(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': 8.5})
+        self.dh.data['dgmtypeattribs'].append(
+            {'typeID': 1, 'attributeID': 5, 'value': 8.5})
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
@@ -61,19 +62,24 @@ class TestAttrValue(EveObjBuilderTestCase):
 
     def test_other(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
+        self.dh.data['dgmtypeattribs'].append(
+            {'typeID': 1, 'attributeID': 5, 'value': None})
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         log_record = self.log[2]
-        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preconv')
+        self.assertEqual(
+            log_record.name, 'eos.data.eve_obj_builder.validator_preconv')
         self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(log_record.msg, '1 attribute rows have non-numeric value, removing them')
+        self.assertEqual(
+            log_record.msg,
+            '1 attribute rows have non-numeric value, removing them')
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         self.assertEqual(len(self.types[1].attributes), 0)
@@ -81,11 +87,13 @@ class TestAttrValue(EveObjBuilderTestCase):
     def test_cleanup(self):
         # Make sure cleanup runs before check being tested
         self.dh.data['evetypes'].append({'typeID': 1})
-        self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'attributeID': 5, 'value': None})
+        self.dh.data['dgmtypeattribs'].append(
+            {'typeID': 1, 'attributeID': 5, 'value': None})
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')

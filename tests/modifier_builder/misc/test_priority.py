@@ -19,47 +19,43 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
 from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderPriority(ModBuilderTestCase):
-    """Check which kind of builder is picked for which case"""
+    """Check which kind of builder is picked for which case."""
 
     def setUp(self):
         super().setUp()
-        e_tgt = self.ef.make(1, operandID=OperandId.def_dom, expressionValue='Ship')
-        e_tgt_attr = self.ef.make(2, operandID=OperandId.def_attr, expressionAttributeID=9)
-        e_optr = self.ef.make(3, operandID=OperandId.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(4, operandID=OperandId.def_attr, expressionAttributeID=327)
+        e_tgt = self.ef.make(
+            1, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(
+            2, operandID=OperandId.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(
+            3, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(
+            4, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            5, operandID=OperandId.itm_attr,
-            arg1=e_tgt['expressionID'],
-            arg2=e_tgt_attr['expressionID']
-        )
+            5, operandID=OperandId.itm_attr, arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            6, operandID=OperandId.optr_tgt,
-            arg1=e_optr['expressionID'],
-            arg2=e_tgt_spec['expressionID']
-        )
+            6, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID'])
         self.e_add_mod = self.ef.make(
-            7, operandID=OperandId.add_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            7, operandID=OperandId.add_itm_mod, arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID'])
         self.e_rm_mod = self.ef.make(
-            8, operandID=OperandId.rm_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            8, operandID=OperandId.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID'])
 
     def test_etree(self):
         effect_row = {
             'preExpression': self.e_add_mod['expressionID'],
             'postExpression': self.e_rm_mod['expressionID'],
-            'modifierInfo': None
-        }
+            'modifierInfo': None}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
@@ -77,9 +73,9 @@ class TestBuilderPriority(ModBuilderTestCase):
             'preExpression': self.e_add_mod['expressionID'],
             'postExpression': self.e_rm_mod['expressionID'],
             'modifierInfo':
-                '- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 164\n'
-                '  modifyingAttributeID: 175\n  operator: 2\n'
-        }
+                '- domain: charID\n  func: ItemModifier\n'
+                '  modifiedAttributeID: 164\n  modifyingAttributeID: 175\n'
+                '  operator: 2\n'}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)

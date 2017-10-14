@@ -30,14 +30,18 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
 
     def setUp(self):
         super().setUp()
-        e_tgt_own = self.ef.make(1, operandID=OperandId.def_dom, expressionValue='Ship')
-        e_tgt_srq = self.ef.make(2, operandID=OperandId.def_type, expressionTypeID=3412)
-        e_tgt_attr = self.ef.make(3, operandID=OperandId.def_attr, expressionAttributeID=1372)
-        e_optr = self.ef.make(4, operandID=OperandId.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(5, operandID=OperandId.def_attr, expressionAttributeID=1156)
+        e_tgt_own = self.ef.make(
+            1, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_srq = self.ef.make(
+            2, operandID=OperandId.def_type, expressionTypeID=3412)
+        e_tgt_attr = self.ef.make(
+            3, operandID=OperandId.def_attr, expressionAttributeID=1372)
+        e_optr = self.ef.make(
+            4, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(
+            5, operandID=OperandId.def_attr, expressionAttributeID=1156)
         e_tgt_itms = self.ef.make(
-            6, operandID=OperandId.dom_srq,
-            arg1=e_tgt_own['expressionID'],
+            6, operandID=OperandId.dom_srq, arg1=e_tgt_own['expressionID'],
             arg2=e_tgt_srq['expressionID']
         )
         e_tgt_spec = self.ef.make(

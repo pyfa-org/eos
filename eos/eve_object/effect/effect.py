@@ -49,9 +49,9 @@ class Effect(BaseCachable):
         falloff_attribute: Value of attribute with this ID on carrier item
             defines additional range where effect is still applied, but with
             diminished potency.
-        tracking_speed_attribute: Value of attribute with this ID on carrier item
-            defines tracking speed which reduces effect efficiency vs targets
-            which are small and have decent angular velocity.
+        tracking_speed_attribute: Value of attribute with this ID on carrier
+            item defines tracking speed which reduces effect efficiency vs
+            targets which are small and have decent angular velocity.
         fitting_usage_chance_attribute: Value of attribute with this ID on
             carrier item defines chance of this effect being applied when item
             is added to fit, e.g. booster side-effects.

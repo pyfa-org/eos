@@ -25,10 +25,7 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
 class TestDefaultEffects(EveObjBuilderTestCase):
-    """
-    Check that filtering out superfluous default effects
-    occurs after data filtering, and that it occurs at all.
-    """
+    """Check that each item can have has max 1 default effect."""
 
     def setUp(self):
         super().setUp()
@@ -38,8 +35,10 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.eff_link2 = {'typeID': 1, 'effectID': 2}
         self.dh.data['dgmtypeeffects'].append(self.eff_link1)
         self.dh.data['dgmtypeeffects'].append(self.eff_link2)
-        self.dh.data['dgmeffects'].append({'effectID': 1, 'falloffAttributeID': 10})
-        self.dh.data['dgmeffects'].append({'effectID': 2, 'falloffAttributeID': 20})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': 1, 'falloffAttributeID': 10})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': 2, 'falloffAttributeID': 20})
 
     def test_normal(self):
         self.eff_link1['isDefault'] = False
@@ -47,7 +46,8 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
@@ -63,17 +63,20 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 3)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
         log_record = self.log[2]
-        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.validator_preconv')
+        self.assertEqual(
+            log_record.name, 'eos.data.eve_obj_builder.validator_preconv')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            'data contains 1 excessive default effects, marking them as non-default'
+            'data contains 1 excessive default effects, '
+            'marking them as non-default'
         )
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
@@ -90,7 +93,8 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')

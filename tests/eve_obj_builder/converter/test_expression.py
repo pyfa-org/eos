@@ -26,20 +26,19 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
 class TestConversionExpression(EveObjBuilderTestCase):
-    """
-    Make sure expression rows are passed to modifier builder
-    in appropriate form.
-    """
+    """Check form of expression rows passed to modifier builder."""
 
     @patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
     def test_fields(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 111})
-        self.dh.data['dgmeffects'].append({'effectID': 111, 'preExpression': 57, 'postExpression': 41})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': 111, 'preExpression': 57, 'postExpression': 41})
         self.dh.data['dgmexpressions'].append({
-            'expressionTypeID': 502, 'expressionValue': None, 'randomField': 'vals',
-            'operandID': 6, 'arg1': 1009, 'expressionID': 41, 'arg2': 15,
-            'expressionAttributeID': 90, 'expressionGroupID': 451
+            'expressionTypeID': 502, 'expressionValue': None,
+            'randomField': 'vals', 'operandID': 6, 'arg1': 1009,
+            'expressionID': 41, 'arg2': 15, 'expressionAttributeID': 90,
+            'expressionGroupID': 451
         })
         self.dh.data['dgmexpressions'].append({
             'expressionGroupID': 567, 'arg2': 66, 'operandID': 33, 'arg1': 5007,
@@ -50,26 +49,29 @@ class TestConversionExpression(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)
-        # As expressions are absent in final container,
-        # check those which were passed to modifier builder
+        # As expressions are absent in final container, check those which were
+        # passed to modifier builder
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 2)
         # It's fine that additional fields get into final expression set,
         # because they will be replaced by modifiers anyway
         expected = {
-            'expressionID': 41, 'operandID': 6, 'arg1': 1009, 'arg2': 15, 'expressionValue': None,
-            'expressionTypeID': 502, 'expressionGroupID': 451, 'expressionAttributeID': 90,
+            'expressionID': 41, 'operandID': 6, 'arg1': 1009, 'arg2': 15,
+            'expressionValue': None, 'expressionTypeID': 502,
+            'expressionGroupID': 451, 'expressionAttributeID': 90,
             'table_pos': 0, 'randomField': 'vals'
         }
         self.assertIn(expected, expressions)
         expected = {
-            'expressionID': 57, 'operandID': 33, 'arg1': 5007, 'arg2': 66, 'expressionValue': 'Kurr',
-            'expressionTypeID': 551, 'expressionGroupID': 567, 'expressionAttributeID': 102,
+            'expressionID': 57, 'operandID': 33, 'arg1': 5007, 'arg2': 66,
+            'expressionValue': 'Kurr', 'expressionTypeID': 551,
+            'expressionGroupID': 567, 'expressionAttributeID': 102,
             'table_pos': 1, 'randoom': True
         }
         self.assertIn(expected, expressions)

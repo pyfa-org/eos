@@ -30,140 +30,129 @@ class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
 
     def setUp(self):
         super().setUp()
-        e_tgt = self.ef.make(1, operandID=OperandId.def_dom, expressionValue='UnknownDomain')
-        e_tgt_attr = self.ef.make(2, operandID=OperandId.def_attr, expressionAttributeID=9)
-        e_optr = self.ef.make(3, operandID=OperandId.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(4, operandID=OperandId.def_attr, expressionAttributeID=327)
+        e_tgt = self.ef.make(
+            1, operandID=OperandId.def_dom, expressionValue='UnknownDomain')
+        e_tgt_attr = self.ef.make(
+            2, operandID=OperandId.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(
+            3, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(
+            4, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            5, operandID=OperandId.itm_attr,
-            arg1=e_tgt['expressionID'],
-            arg2=e_tgt_attr['expressionID']
-        )
+            5, operandID=OperandId.itm_attr, arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            6, operandID=OperandId.optr_tgt,
-            arg1=e_optr['expressionID'],
-            arg2=e_tgt_spec['expressionID']
-        )
+            6, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID'])
         self.e_add_mod_error = self.ef.make(
-            7, operandID=OperandId.add_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            7, operandID=OperandId.add_itm_mod, arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID'])
         self.e_rm_mod_error = self.ef.make(
-            8, operandID=OperandId.rm_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            8, operandID=OperandId.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID'])
 
     def test_single(self):
         effect_row = {
             'preExpression': self.e_add_mod_error['expressionID'],
-            'postExpression': self.e_rm_mod_error['expressionID']
-        }
+            'postExpression': self.e_rm_mod_error['expressionID']}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
+        self.assertEqual(
+            log_record.name,
+            'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'effect 1, building 1 modifiers: 1 build errors'
-        self.assertEqual(log_record.msg, expected)
+        self.assertEqual(
+            log_record.msg, 'effect 1, building 1 modifiers: 1 build errors')
 
     def test_partial_error_first(self):
-        e_tgt = self.ef.make(9, operandID=OperandId.def_dom, expressionValue='Ship')
-        e_tgt_attr = self.ef.make(10, operandID=OperandId.def_attr, expressionAttributeID=9)
-        e_optr = self.ef.make(11, operandID=OperandId.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(12, operandID=OperandId.def_attr, expressionAttributeID=327)
+        e_tgt = self.ef.make(
+            9, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(
+            10, operandID=OperandId.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(
+            11, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(
+            12, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            13, operandID=OperandId.itm_attr,
-            arg1=e_tgt['expressionID'],
-            arg2=e_tgt_attr['expressionID']
-        )
+            13, operandID=OperandId.itm_attr, arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            14, operandID=OperandId.optr_tgt,
-            arg1=e_optr['expressionID'],
-            arg2=e_tgt_spec['expressionID']
-        )
+            14, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID'])
         e_add_mod_valid = self.ef.make(
             15, operandID=OperandId.add_itm_mod,
             arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            arg2=e_src_attr['expressionID'])
         e_rm_mod_valid = self.ef.make(
-            16, operandID=OperandId.rm_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            16, operandID=OperandId.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID'])
         e_add_splice = self.ef.make(
             17, operandID=OperandId.splice,
             arg1=self.e_add_mod_error['expressionID'],
-            arg2=e_add_mod_valid['expressionID']
-        )
+            arg2=e_add_mod_valid['expressionID'])
         e_rm_splice = self.ef.make(
             18, operandID=OperandId.splice,
             arg1=self.e_rm_mod_error['expressionID'],
-            arg2=e_rm_mod_valid['expressionID']
-        )
+            arg2=e_rm_mod_valid['expressionID'])
         effect_row = {
             'preExpression': e_add_splice['expressionID'],
-            'postExpression': e_rm_splice['expressionID']
-        }
+            'postExpression': e_rm_splice['expressionID']}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
+        self.assertEqual(
+            log_record.name,
+            'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'effect 1, building 2 modifiers: 1 build errors'
-        self.assertEqual(log_record.msg, expected)
+        self.assertEqual(
+            log_record.msg, 'effect 1, building 2 modifiers: 1 build errors')
 
     def test_partial_error_last(self):
-        e_tgt = self.ef.make(9, operandID=OperandId.def_dom, expressionValue='Ship')
-        e_tgt_attr = self.ef.make(10, operandID=OperandId.def_attr, expressionAttributeID=9)
-        e_optr = self.ef.make(11, operandID=OperandId.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(12, operandID=OperandId.def_attr, expressionAttributeID=327)
+        e_tgt = self.ef.make(
+            9, operandID=OperandId.def_dom, expressionValue='Ship')
+        e_tgt_attr = self.ef.make(
+            10, operandID=OperandId.def_attr, expressionAttributeID=9)
+        e_optr = self.ef.make(
+            11, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(
+            12, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            13, operandID=OperandId.itm_attr,
-            arg1=e_tgt['expressionID'],
-            arg2=e_tgt_attr['expressionID']
-        )
+            13, operandID=OperandId.itm_attr, arg1=e_tgt['expressionID'],
+            arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            14, operandID=OperandId.optr_tgt,
-            arg1=e_optr['expressionID'],
-            arg2=e_tgt_spec['expressionID']
-        )
+            14, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID'])
         e_add_mod_valid = self.ef.make(
             15, operandID=OperandId.add_itm_mod,
             arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            arg2=e_src_attr['expressionID'])
         e_rm_mod_valid = self.ef.make(
-            16, operandID=OperandId.rm_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            16, operandID=OperandId.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
+            arg2=e_src_attr['expressionID'])
         e_add_splice = self.ef.make(
             17, operandID=OperandId.splice,
             arg1=e_add_mod_valid['expressionID'],
-            arg2=self.e_add_mod_error['expressionID']
-        )
+            arg2=self.e_add_mod_error['expressionID'])
         e_rm_splice = self.ef.make(
-            18, operandID=OperandId.splice,
-            arg1=e_rm_mod_valid['expressionID'],
-            arg2=self.e_rm_mod_error['expressionID']
-        )
+            18, operandID=OperandId.splice, arg1=e_rm_mod_valid['expressionID'],
+            arg2=self.e_rm_mod_error['expressionID'])
         effect_row = {
             'preExpression': e_add_splice['expressionID'],
-            'postExpression': e_rm_splice['expressionID']
-        }
+            'postExpression': e_rm_splice['expressionID']}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
+        self.assertEqual(
+            log_record.name,
+            'eos.data.eve_obj_builder.modifier_builder.builder'
+        )
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'effect 1, building 2 modifiers: 1 build errors'
-        self.assertEqual(log_record.msg, expected)
+        self.assertEqual(
+            log_record.msg, 'effect 1, building 2 modifiers: 1 build errors')

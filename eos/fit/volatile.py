@@ -74,7 +74,9 @@ class FitVolatileManager(BaseSubscriber):
 
     # Private methods for message handlers
     def __add_volatile_object(self, object):
-        if isinstance(object, (InheritableVolatileMixin, CooperativeVolatileMixin)):
+        if isinstance(
+            object, (InheritableVolatileMixin, CooperativeVolatileMixin)
+        ):
             self.__volatile_objects.add(object)
 
     def __remove_volatile_object(self, object):

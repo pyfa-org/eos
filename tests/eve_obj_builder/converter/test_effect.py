@@ -26,20 +26,19 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
 class TestConversionEffect(EveObjBuilderTestCase):
-    """
-    Appropriate data should be saved into appropriate
-    fields of effect object.
-    """
+    """Data should be saved into appropriate fields of an effect."""
 
     @patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
     def test_fields(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 112})
         self.dh.data['dgmeffects'].append({
-            'postExpression': 11, 'effectID': 112, 'isOffensive': True, 'falloffAttributeID': 3,
-            'rangeAttributeID': 2, 'fittingUsageChanceAttributeID': 96, 'preExpression': 1,
-            'durationAttributeID': 781, 'randomField': 666, 'dischargeAttributeID': 72,
-            'isAssistance': False, 'effectCategory': 111, 'trackingSpeedAttributeID': 6,
+            'postExpression': 11, 'effectID': 112, 'isOffensive': True,
+            'falloffAttributeID': 3, 'rangeAttributeID': 2,
+            'fittingUsageChanceAttributeID': 96, 'preExpression': 1,
+            'durationAttributeID': 781, 'randomField': 666,
+            'dischargeAttributeID': 72, 'isAssistance': False,
+            'effectCategory': 111, 'trackingSpeedAttributeID': 6,
             'modifierInfo': None
         })
         mod = self.mod(
@@ -50,7 +49,8 @@ class TestConversionEffect(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
-        self.assertEqual(idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        self.assertEqual(
+            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         clean_stats = self.log[1]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')

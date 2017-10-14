@@ -97,7 +97,8 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         try:
             return self.__current_ship.resistances
         except AttributeError:
-            empty = DamageTypes(em=None, thermal=None, kinetic=None, explosive=None)
+            empty = DamageTypes(
+                em=None, thermal=None, kinetic=None, explosive=None)
             return TankingLayers(hull=empty, armor=empty, shield=empty)
 
     def get_ehp(self, damage_profile=None):

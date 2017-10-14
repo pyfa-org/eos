@@ -47,7 +47,7 @@ class TestLogHandler(BufferingHandler):
 
 
 class EosTestCase(TestCase):
-    """Custom test case class is used by all eos tests.
+    """Test case class is used by all eos tests.
 
     Attributes:
         ch: Default cache handler.

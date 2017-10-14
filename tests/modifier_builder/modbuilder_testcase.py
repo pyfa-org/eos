@@ -25,12 +25,10 @@ from .environment import ExpressionFactory
 
 
 class ModBuilderTestCase(EosTestCase):
-    """
-    Additional functionality provided:
+    """Test case class is used by modifier builder tests.
 
-    self.ef -- factory to generate and store expressions
-    self.run_builder -- run builder using data from
-        expression factory
+    Attributes:
+        ef: Expression factory instance.
     """
 
     def setUp(self):
@@ -38,6 +36,7 @@ class ModBuilderTestCase(EosTestCase):
         self.ef = ExpressionFactory()
 
     def run_builder(self, effect_row):
+        """Run builder using data from expression factory."""
         effect_row.setdefault('effectID', 1)
         effect_row.setdefault('preExpression', None)
         effect_row.setdefault('postExpression', None)
