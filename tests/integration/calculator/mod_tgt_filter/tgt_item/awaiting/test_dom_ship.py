@@ -35,18 +35,19 @@ class TestTgtItemAwaitingDomainShip(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        influence_source = Implant(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
-        self.fit.implants.add(influence_source)
-        influence_target = Ship(self.ch.type(attributes={tgt_attr.id: 100}).id)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        influence_src = Implant(self.ch.type(
+            attributes={src_attr.id: 20}, effects=[effect]).id)
+        self.fit.implants.add(influence_src)
+        influence_tgt = Ship(self.ch.type(attributes={tgt_attr.id: 100}).id)
         # Action
         # Here we add influence target after adding source, to make sure
         # modifiers wait for target to appear, and then are applied onto it
-        self.fit.ship = influence_target
+        self.fit.ship = influence_tgt
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
+        self.assertAlmostEqual(influence_tgt.attributes[tgt_attr.id], 120)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

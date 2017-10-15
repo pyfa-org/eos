@@ -36,18 +36,20 @@ class TestTgtOwnerSkillrqDomainTarget(CalculatorTestCase):
             tgt_filter_extra_arg=56,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        influence_source = Implant(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
-        influence_target = Drone(self.ch.type(attributes={
-            tgt_attr.id: 100, AttributeId.required_skill_1: 56, AttributeId.required_skill_1_level: 1
-        }).id)
-        self.fit.drones.add(influence_target)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        influence_src = Implant(self.ch.type(
+            attributes={src_attr.id: 20}, effects=[effect]).id)
+        influence_tgt = Drone(self.ch.type(
+            attributes={
+                tgt_attr.id: 100, AttributeId.required_skill_1: 56,
+                AttributeId.required_skill_1_level: 1}).id)
+        self.fit.drones.add(influence_tgt)
         # Action
-        self.fit.implants.add(influence_source)
+        self.fit.implants.add(influence_src)
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_tgt.attributes[tgt_attr.id], 100)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

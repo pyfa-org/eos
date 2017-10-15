@@ -36,26 +36,33 @@ class TestOperatorPreDiv(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_div,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        self.influence_source1 = Implant(self.ch.type(attributes={src_attr.id: 1.2}, effects=[effect]).id)
-        self.influence_source2 = Implant(self.ch.type(attributes={src_attr.id: 1.5}, effects=[effect]).id)
-        self.influence_source3 = Implant(self.ch.type(attributes={src_attr.id: 0.1}, effects=[effect]).id)
-        self.influence_source4 = Implant(self.ch.type(attributes={src_attr.id: 0.75}, effects=[effect]).id)
-        self.influence_source5 = Implant(self.ch.type(attributes={src_attr.id: 5}, effects=[effect]).id)
-        self.influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
-        self.fit.implants.add(self.influence_source1)
-        self.fit.implants.add(self.influence_source2)
-        self.fit.implants.add(self.influence_source3)
-        self.fit.implants.add(self.influence_source4)
-        self.fit.implants.add(self.influence_source5)
-        self.fit.rigs.add(self.influence_target)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        self.influence_src1 = Implant(self.ch.type(
+            attributes={src_attr.id: 1.2}, effects=[effect]).id)
+        self.influence_src2 = Implant(self.ch.type(
+            attributes={src_attr.id: 1.5}, effects=[effect]).id)
+        self.influence_src3 = Implant(self.ch.type(
+            attributes={src_attr.id: 0.1}, effects=[effect]).id)
+        self.influence_src4 = Implant(self.ch.type(
+            attributes={src_attr.id: 0.75}, effects=[effect]).id)
+        self.influence_src5 = Implant(self.ch.type(
+            attributes={src_attr.id: 5}, effects=[effect]).id)
+        self.influence_tgt = Rig(self.ch.type(
+            attributes={self.tgt_attr.id: 100}).id)
+        self.fit.implants.add(self.influence_src1)
+        self.fit.implants.add(self.influence_src2)
+        self.fit.implants.add(self.influence_src3)
+        self.fit.implants.add(self.influence_src4)
+        self.fit.implants.add(self.influence_src5)
+        self.fit.rigs.add(self.influence_tgt)
 
     def test_unpenalized(self):
         self.tgt_attr.stackable = True
         # Verification
-        self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 148.148, places=3)
+        self.assertAlmostEqual(
+            self.influence_tgt.attributes[self.tgt_attr.id], 148.148, places=3)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
@@ -63,7 +70,8 @@ class TestOperatorPreDiv(CalculatorTestCase):
     def test_penalized(self):
         self.tgt_attr.stackable = False
         # Verification
-        self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 165.791, places=3)
+        self.assertAlmostEqual(
+            self.influence_tgt.attributes[self.tgt_attr.id], 165.791, places=3)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

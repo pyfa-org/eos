@@ -36,22 +36,27 @@ class TestOperatorPostAssign(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_assign,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        self.influence_source1 = Implant(self.ch.type(attributes={src_attr.id: 10}, effects=[effect]).id)
-        self.influence_source2 = Implant(self.ch.type(attributes={src_attr.id: -20}, effects=[effect]).id)
-        self.influence_source3 = Implant(self.ch.type(attributes={src_attr.id: 53}, effects=[effect]).id)
-        self.influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
-        self.fit.implants.add(self.influence_source1)
-        self.fit.implants.add(self.influence_source2)
-        self.fit.implants.add(self.influence_source3)
-        self.fit.rigs.add(self.influence_target)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        self.influence_src1 = Implant(self.ch.type(
+            attributes={src_attr.id: 10}, effects=[effect]).id)
+        self.influence_src2 = Implant(self.ch.type(
+            attributes={src_attr.id: -20}, effects=[effect]).id)
+        self.influence_src3 = Implant(self.ch.type(
+            attributes={src_attr.id: 53}, effects=[effect]).id)
+        self.influence_tgt = Rig(self.ch.type(
+            attributes={self.tgt_attr.id: 100}).id)
+        self.fit.implants.add(self.influence_src1)
+        self.fit.implants.add(self.influence_src2)
+        self.fit.implants.add(self.influence_src3)
+        self.fit.rigs.add(self.influence_tgt)
 
     def test_high_good(self):
         self.tgt_attr.high_is_good = True
         # Verification
-        self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], 53)
+        self.assertAlmostEqual(
+            self.influence_tgt.attributes[self.tgt_attr.id], 53)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
@@ -59,7 +64,8 @@ class TestOperatorPostAssign(CalculatorTestCase):
     def test_high_bad(self):
         self.tgt_attr.high_is_good = False
         # Verification
-        self.assertAlmostEqual(self.influence_target.attributes[self.tgt_attr.id], -20)
+        self.assertAlmostEqual(
+            self.influence_tgt.attributes[self.tgt_attr.id], -20)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

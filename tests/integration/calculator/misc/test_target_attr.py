@@ -37,19 +37,18 @@ class TestTargetAttribute(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr1.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
+            src_attr=src_attr.id)
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr2.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=(modifier1, modifier2))
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=(modifier1, modifier2))
         item = Rig(self.ch.type(attributes={
-            tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100, src_attr.id: 20
-        }, effects=[effect]).id)
+            tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100,
+            src_attr.id: 20}, effects=[effect]).id)
         # Action
         self.fit.rigs.add(item)
         # Verification

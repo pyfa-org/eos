@@ -38,23 +38,24 @@ class TestTgtDomainSkillrqDomainOther(CalculatorTestCase):
             tgt_filter_extra_arg=56,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        source_eve_type = self.ch.type(attributes={src_attr.id: 20}, effects=[effect])
-        influence_source = Rig(source_eve_type.id)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        src_eve_type = self.ch.type(
+            attributes={src_attr.id: 20}, effects=[effect])
+        influence_src = Rig(src_eve_type.id)
         # Action
-        # Charge's container or module's charge can't be 'owner'
-        # of other items, thus such modification type is unsupported
-        self.fit.rigs.add(influence_source)
+        # Charge's container or module's charge can't be 'owner' of other items,
+        # thus such modification type is unsupported
+        self.fit.rigs.add(influence_src)
         # Verification
         self.assertEqual(len(self.log), 2)
         for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
-                log_record.msg, 'malformed modifier on eve type {}: '
-                'unsupported target domain {}'.format(source_eve_type.id, ModifierDomain.other)
-            )
+                log_record.msg,
+                'malformed modifier on eve type {}: unsupported target '
+                'domain {}'.format(src_eve_type.id, ModifierDomain.other))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

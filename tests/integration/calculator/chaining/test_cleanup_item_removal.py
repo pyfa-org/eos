@@ -26,7 +26,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestCleanupChainRemoval(CalculatorTestCase):
-    """Check that removed item damages all attributes which were relying on its attributes"""
+    """Check that removed item "damages" all neccessary attribute values."""
 
     def test_attribute(self):
         # Setup
@@ -38,19 +38,21 @@ class TestCleanupChainRemoval(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=attr1.id
-        )
-        effect1 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier1])
+            src_attr=attr1.id)
+        effect1 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier1])
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr3.id,
             operator=ModifierOperator.post_percent,
-            src_attr=attr2.id
-        )
-        effect2 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier2])
-        implant_item = Implant(self.ch.type(attributes={attr1.id: 5}, effects=[effect1]).id)
-        ship_item = Ship(self.ch.type(attributes={attr2.id: 7.5}, effects=[effect2]).id)
+            src_attr=attr2.id)
+        effect2 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier2])
+        implant_item = Implant(
+            self.ch.type(attributes={attr1.id: 5}, effects=[effect1]).id)
+        ship_item = Ship(
+            self.ch.type(attributes={attr2.id: 7.5}, effects=[effect2]).id)
         rig_item = Rig(self.ch.type(attributes={attr3.id: 0.5}).id)
         self.fit.implants.add(implant_item)
         self.fit.ship = ship_item
@@ -59,8 +61,8 @@ class TestCleanupChainRemoval(CalculatorTestCase):
         # Action
         self.fit.implants.remove(implant_item)
         # Verification
-        # When item1 is removed, attr2 of item2 and attr3 of item3
-        # must be cleaned to allow recalculation of attr3 based on new data
+        # When item1 is removed, attr2 of item2 and attr3 of item3 must be
+        # cleaned to allow recalculation of attr3 based on new data
         self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.5375)
         # Cleanup
         self.assertEqual(len(self.log), 0)

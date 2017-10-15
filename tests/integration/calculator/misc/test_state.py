@@ -40,54 +40,54 @@ class TestStateSwitching(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr1.id
-        )
+            src_attr=src_attr1.id)
         modifier_on = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr2.id
-        )
+            src_attr=src_attr2.id)
         modifier_act = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr3.id
-        )
+            src_attr=src_attr3.id)
         modifier_over = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr4.id
-        )
+            src_attr=src_attr4.id)
         modifier_disabled = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr3.id
-        )
-        effect_cat_offline = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_off])
-        effect_cat_online = self.ch.effect(category=EffectCategoryId.online, modifiers=[modifier_on])
-        effect_cat_active = self.ch.effect(category=EffectCategoryId.active, modifiers=[modifier_act])
-        effect_cat_overload = self.ch.effect(category=EffectCategoryId.overload, modifiers=[modifier_over])
-        online_effect = self.ch.effect(effect_id=EffectId.online, category=EffectCategoryId.active, customize=True)
-        effect_disabled = self.ch.effect(category=EffectCategoryId.online, modifiers=[modifier_disabled])
+            src_attr=src_attr3.id)
+        effect_cat_offline = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_off])
+        effect_cat_online = self.ch.effect(
+            category=EffectCategoryId.online, modifiers=[modifier_on])
+        effect_cat_active = self.ch.effect(
+            category=EffectCategoryId.active, modifiers=[modifier_act])
+        effect_cat_overload = self.ch.effect(
+            category=EffectCategoryId.overload, modifiers=[modifier_over])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category=EffectCategoryId.active,
+            customize=True)
+        effect_disabled = self.ch.effect(
+            category=EffectCategoryId.online, modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.ch.type(
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
-                src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2
-            },
+                src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2},
             effects=(
                 effect_cat_offline, effect_cat_online, effect_cat_active,
-                effect_cat_overload, online_effect, effect_disabled
-            ),
-            default_effect=effect_cat_active
-        ).id)
-        self.item.set_effect_run_mode(effect_disabled.id, EffectRunMode.force_stop)
+                effect_cat_overload, online_effect, effect_disabled),
+            default_effect=effect_cat_active).id)
+        self.item.set_effect_run_mode(
+            effect_disabled.id, EffectRunMode.force_stop)
 
     def test_fit_offline(self):
         # Setup

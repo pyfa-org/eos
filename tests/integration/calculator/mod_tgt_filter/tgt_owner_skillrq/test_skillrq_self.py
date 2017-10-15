@@ -37,39 +37,43 @@ class TestTgtOwnerSkillrqSkillrqSelf(CalculatorTestCase):
             tgt_filter_extra_arg=EosTypeId.current_self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        self.source_eve_type = self.ch.type(attributes={src_attr.id: 20}, effects=[effect])
-        self.influence_source = Implant(self.source_eve_type.id)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        self.src_eve_type = self.ch.type(
+            attributes={src_attr.id: 20}, effects=[effect])
+        self.influence_src = Implant(self.src_eve_type.id)
 
     def test_match(self):
-        influence_target = Drone(self.ch.type(attributes={
-            self.tgt_attr.id: 100, AttributeId.required_skill_1: self.source_eve_type.id,
-            AttributeId.required_skill_1_level: 1
-        }).id)
-        self.fit.drones.add(influence_target)
+        influence_tgt = Drone(self.ch.type(
+            attributes={
+                self.tgt_attr.id: 100,
+                AttributeId.required_skill_1: self.src_eve_type.id,
+                AttributeId.required_skill_1_level: 1}).id)
+        self.fit.drones.add(influence_tgt)
         # Action
-        self.fit.implants.add(self.influence_source)
+        self.fit.implants.add(self.influence_src)
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 120)
         # Action
-        self.fit.implants.remove(self.influence_source)
+        self.fit.implants.remove(self.influence_src)
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_skill_other(self):
-        influence_target = Drone(self.ch.type(attributes={
-            self.tgt_attr.id: 100, AttributeId.required_skill_1: 87, AttributeId.required_skill_1_level: 1
-        }).id)
-        self.fit.drones.add(influence_target)
+        influence_tgt = Drone(self.ch.type(
+            attributes={
+                self.tgt_attr.id: 100,
+                AttributeId.required_skill_1: 87,
+                AttributeId.required_skill_1_level: 1}).id)
+        self.fit.drones.add(influence_tgt)
         # Action
-        self.fit.implants.add(self.influence_source)
+        self.fit.implants.add(self.influence_src)
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

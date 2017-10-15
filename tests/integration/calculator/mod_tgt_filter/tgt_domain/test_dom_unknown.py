@@ -35,27 +35,26 @@ class TestTgtDomainDomainUnknown(CalculatorTestCase):
             tgt_domain=1972,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
+            src_attr=src_attr.id)
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
+            src_attr=src_attr.id)
         effect = self.ch.effect(
             category=EffectCategoryId.passive,
-            modifiers=(invalid_modifier, valid_modifier)
-        )
-        influence_source = Implant(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
-        influence_target = Rig(self.ch.type(attributes={tgt_attr.id: 100}).id)
-        self.fit.rigs.add(influence_target)
+            modifiers=(invalid_modifier, valid_modifier))
+        influence_src = Implant(self.ch.type(
+            attributes={src_attr.id: 20}, effects=[effect]).id)
+        influence_tgt = Rig(self.ch.type(attributes={tgt_attr.id: 100}).id)
+        self.fit.rigs.add(influence_tgt)
         # Action
-        self.fit.implants.add(influence_source)
+        self.fit.implants.add(influence_src)
         # Verification
-        # Invalid domain in modifier should prevent proper processing of other modifiers
-        self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], 120)
+        # Invalid domain in modifier should prevent proper processing of other
+        # modifiers
+        self.assertAlmostEqual(influence_tgt.attributes[tgt_attr.id], 120)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

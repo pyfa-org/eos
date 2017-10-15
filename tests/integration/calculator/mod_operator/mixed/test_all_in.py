@@ -26,7 +26,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestOperatorAllIn(CalculatorTestCase):
-    """Test interaction of all operators, besides post-assignment"""
+    """Test interaction of all operators, besides post-assignment."""
 
     def test_all_in(self):
         tgt_attr = self.ch.attribute(stackable=0)
@@ -36,115 +36,115 @@ class TestOperatorAllIn(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.pre_assign,
-            src_attr=src_attr.id
-        )
-        effect_pre_ass = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_pre_ass])
+            src_attr=src_attr.id)
+        effect_pre_ass = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_pre_ass])
         value_pre_ass = 5
-        influence_source_pre_ass = Implant(self.ch.type(
-            attributes={src_attr.id: value_pre_ass}, effects=[effect_pre_ass]
-        ).id)
-        self.fit.implants.add(influence_source_pre_ass)
+        influence_src_pre_ass = Implant(self.ch.type(
+            attributes={src_attr.id: value_pre_ass},
+            effects=[effect_pre_ass]).id)
+        self.fit.implants.add(influence_src_pre_ass)
         modifier_pre_mul = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.pre_mul,
-            src_attr=src_attr.id
-        )
-        effect_pre_mul = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_pre_mul])
+            src_attr=src_attr.id)
+        effect_pre_mul = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_pre_mul])
         value_pre_mul = 50
-        influence_source_pre_mul = Implant(self.ch.type(
-            attributes={src_attr.id: value_pre_mul}, effects=[effect_pre_mul]
-        ).id)
-        self.fit.implants.add(influence_source_pre_mul)
+        influence_src_pre_mul = Implant(self.ch.type(
+            attributes={src_attr.id: value_pre_mul},
+            effects=[effect_pre_mul]).id)
+        self.fit.implants.add(influence_src_pre_mul)
         modifier_pre_div = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.pre_div,
-            src_attr=src_attr.id
-        )
-        effect_pre_div = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_pre_div])
+            src_attr=src_attr.id)
+        effect_pre_div = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_pre_div])
         value_pre_div = 0.5
-        influence_source_pre_div = Implant(self.ch.type(
-            attributes={src_attr.id: value_pre_div}, effects=[effect_pre_div]
-        ).id)
-        self.fit.implants.add(influence_source_pre_div)
+        influence_src_pre_div = Implant(self.ch.type(
+            attributes={src_attr.id: value_pre_div},
+            effects=[effect_pre_div]).id)
+        self.fit.implants.add(influence_src_pre_div)
         modifier_mod_add = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.mod_add,
-            src_attr=src_attr.id
-        )
-        effect_mod_add = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_mod_add])
+            src_attr=src_attr.id)
+        effect_mod_add = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_mod_add])
         value_mod_add = 10
-        influence_source_mod_add = Implant(self.ch.type(
-            attributes={src_attr.id: value_mod_add}, effects=[effect_mod_add]
-        ).id)
-        self.fit.implants.add(influence_source_mod_add)
+        influence_src_mod_add = Implant(self.ch.type(
+            attributes={src_attr.id: value_mod_add},
+            effects=[effect_mod_add]).id)
+        self.fit.implants.add(influence_src_mod_add)
         modifier_mod_sub = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.mod_sub,
-            src_attr=src_attr.id
-        )
-        effect_mod_sub = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_mod_sub])
+            src_attr=src_attr.id)
+        effect_mod_sub = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_mod_sub])
         value_mod_sub = 63
-        influence_source_mod_sub = Implant(self.ch.type(
-            attributes={src_attr.id: value_mod_sub}, effects=[effect_mod_sub]
-        ).id)
-        self.fit.implants.add(influence_source_mod_sub)
+        influence_src_mod_sub = Implant(self.ch.type(
+            attributes={src_attr.id: value_mod_sub},
+            effects=[effect_mod_sub]).id)
+        self.fit.implants.add(influence_src_mod_sub)
         modifier_post_mul = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id
-        )
-        effect_post_mul = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_post_mul])
+            src_attr=src_attr.id)
+        effect_post_mul = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_post_mul])
         value_post_mul = 1.35
-        influence_source_post_mul = Implant(self.ch.type(
-            attributes={src_attr.id: value_post_mul}, effects=[effect_post_mul]
-        ).id)
-        self.fit.implants.add(influence_source_post_mul)
+        influence_src_post_mul = Implant(self.ch.type(
+            attributes={src_attr.id: value_post_mul},
+            effects=[effect_post_mul]).id)
+        self.fit.implants.add(influence_src_post_mul)
         modifier_post_div = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_div,
-            src_attr=src_attr.id
-        )
-        effect_post_div = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_post_div])
+            src_attr=src_attr.id)
+        effect_post_div = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_post_div])
         value_post_div = 2.7
-        influence_source_post_div = Implant(self.ch.type(
-            attributes={src_attr.id: value_post_div}, effects=[effect_post_div]
-        ).id)
-        self.fit.implants.add(influence_source_post_div)
+        influence_src_post_div = Implant(self.ch.type(
+            attributes={src_attr.id: value_post_div},
+            effects=[effect_post_div]).id)
+        self.fit.implants.add(influence_src_post_div)
         modifier_post_perc = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect_post_perc = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier_post_perc])
+            src_attr=src_attr.id)
+        effect_post_perc = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier_post_perc])
         value_post_perc = 15
-        influence_source_post_perc = Implant(self.ch.type(
-            attributes={src_attr.id: value_post_perc}, effects=[effect_post_perc]
-        ).id)
-        self.fit.implants.add(influence_source_post_perc)
-        influence_target = Rig(self.ch.type(attributes={tgt_attr.id: 100}).id)
+        influence_src_post_perc = Implant(self.ch.type(
+            attributes={src_attr.id: value_post_perc},
+            effects=[effect_post_perc]).id)
+        self.fit.implants.add(influence_src_post_perc)
+        influence_tgt = Rig(self.ch.type(attributes={tgt_attr.id: 100}).id)
         # Action
-        self.fit.rigs.add(influence_target)
+        self.fit.rigs.add(influence_tgt)
         # Verification
         # Operators shouldn't be penalized and should go in this order
         exp_value = (
-            ((value_pre_ass * value_pre_mul / value_pre_div) + value_mod_add - value_mod_sub) *
-            value_post_mul / value_post_div * (1 + value_post_perc / 100)
-        )
-        self.assertAlmostEqual(influence_target.attributes[tgt_attr.id], exp_value)
+            ((value_pre_ass * value_pre_mul / value_pre_div) +
+            value_mod_add - value_mod_sub) * value_post_mul / value_post_div *
+            (1 + value_post_perc / 100))
+        self.assertAlmostEqual(influence_tgt.attributes[tgt_attr.id], exp_value)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

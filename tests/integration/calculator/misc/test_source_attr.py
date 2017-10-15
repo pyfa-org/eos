@@ -39,17 +39,18 @@ class TestSourceAttribute(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=abs_attr.id
-        )
+            src_attr=abs_attr.id)
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=(invalid_modifier, valid_modifier))
-        item_eve_type = self.ch.type(attributes={src_attr.id: 1.5, tgt_attr.id: 100}, effects=[effect])
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive,
+            modifiers=(invalid_modifier, valid_modifier))
+        item_eve_type = self.ch.type(
+            attributes={src_attr.id: 1.5, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)
@@ -62,7 +63,7 @@ class TestSourceAttribute(CalculatorTestCase):
         self.assertEqual(log_record.levelno, logging.INFO)
         self.assertEqual(
             log_record.msg,
-            'unable to find base value for attribute {} on eve type {}'.format(abs_attr.id, item_eve_type.id)
-        )
+            'unable to find base value for attribute {} '
+            'on eve type {}'.format(abs_attr.id, item_eve_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

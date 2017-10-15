@@ -28,11 +28,11 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestSourceSwitch(CalculatorTestCase):
 
     def test_switch_item(self):
-        # Here we create 2 separate fits with ships affecting it;
-        # each ship affects module with different strength. When we
-        # pass module from one fit to another, its internal attribute
-        # storage should be cleared. If it wasn't cleared, we wouldn't
-        # be able to get refreshed value of attribute
+        # Here we create 2 separate fits with ships affecting it; each ship
+        # affects module with different strength. When we pass module from one
+        # fit to another, its internal attribute storage should be cleared. If
+        # it wasn't cleared, we wouldn't be able to get refreshed value of
+        # attribute
         # Setup
         src_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
         self.ch.attribute(attribute_id=src_attr_id)
@@ -45,14 +45,21 @@ class TestSourceSwitch(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr_id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr_id
-        )
+            src_attr=src_attr_id)
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
-        effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
+        effect_src1 = self.ch.effect(
+            effect_id=effect_id, category=EffectCategoryId.passive,
+            modifiers=[modifier])
+        effect_src2 = self.ch2.effect(
+            effect_id=effect_id, category=EffectCategoryId.passive,
+            modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
-        ship1 = Ship(self.ch.type(type_id=ship_eve_type_id, attributes={src_attr_id: 10}, effects=[effect_src1]).id)
-        ship2 = Ship(self.ch2.type(type_id=ship_eve_type_id, attributes={src_attr_id: 20}, effects=[effect_src2]).id)
+        ship1 = Ship(self.ch.type(
+            type_id=ship_eve_type_id, attributes={src_attr_id: 10},
+            effects=[effect_src1]).id)
+        ship2 = Ship(self.ch2.type(
+            type_id=ship_eve_type_id, attributes={src_attr_id: 20},
+            effects=[effect_src2]).id)
         item_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
         self.ch2.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
@@ -73,8 +80,8 @@ class TestSourceSwitch(CalculatorTestCase):
         self.assert_fit_buffers_empty(fit2)
 
     def test_switch_fit(self):
-        # Here we check if attributes are updated if fit gets new
-        # source instance
+        # Here we check if attributes are updated if fit gets new source
+        # instance
         # Setup
         src_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
         self.ch.attribute(attribute_id=src_attr_id)
@@ -90,14 +97,21 @@ class TestSourceSwitch(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=tgt_attr_id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr_id
-        )
+            src_attr=src_attr_id)
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect_src1 = self.ch.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
-        effect_src2 = self.ch2.effect(effect_id=effect_id, category=EffectCategoryId.passive, modifiers=[modifier])
+        effect_src1 = self.ch.effect(
+            effect_id=effect_id, category=EffectCategoryId.passive,
+            modifiers=[modifier])
+        effect_src2 = self.ch2.effect(
+            effect_id=effect_id, category=EffectCategoryId.passive,
+            modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.type(type_id=ship_eve_type_id, attributes={src_attr_id: 10}, effects=[effect_src1])
-        self.ch2.type(type_id=ship_eve_type_id, attributes={src_attr_id: 20}, effects=[effect_src2])
+        self.ch.type(
+            type_id=ship_eve_type_id, attributes={src_attr_id: 10},
+            effects=[effect_src1])
+        self.ch2.type(
+            type_id=ship_eve_type_id, attributes={src_attr_id: 20},
+            effects=[effect_src2])
         item_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
         self.ch2.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 75})

@@ -36,33 +36,35 @@ class TestTgtDomainDomainChar(CalculatorTestCase):
             tgt_domain=ModifierDomain.character,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        self.influence_source = Rig(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        self.influence_src = Rig(self.ch.type(
+            attributes={src_attr.id: 20}, effects=[effect]).id)
 
     def test_parent_domain_character(self):
-        influence_target = Implant(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
-        self.fit.implants.add(influence_target)
+        influence_tgt = Implant(self.ch.type(
+            attributes={self.tgt_attr.id: 100}).id)
+        self.fit.implants.add(influence_tgt)
         # Action
-        self.fit.rigs.add(self.influence_source)
+        self.fit.rigs.add(self.influence_src)
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 120)
         # Action
-        self.fit.rigs.remove(self.influence_source)
+        self.fit.rigs.remove(self.influence_src)
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_parent_domain_other(self):
-        influence_target = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
-        self.fit.rigs.add(influence_target)
+        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        self.fit.rigs.add(influence_tgt)
         # Action
-        self.fit.rigs.add(self.influence_source)
+        self.fit.rigs.add(self.influence_src)
         # Verification
-        self.assertAlmostEqual(influence_target.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
         self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)

@@ -40,9 +40,11 @@ class TestModifierPython(CalculatorTestCase):
 
             def __init__(self):
                 BasePythonModifier.__init__(
-                    self, tgt_filter=ModifierTargetFilter.item, tgt_domain=ModifierDomain.self,
-                    tgt_filter_extra_arg=None, tgt_attr=attr1.id
-                )
+                    self,
+                    tgt_filter=ModifierTargetFilter.item,
+                    tgt_domain=ModifierDomain.self,
+                    tgt_filter_extra_arg=None,
+                    tgt_attr=attr1.id)
 
             def get_modification(self, carrier_item, ship):
                 try:
@@ -63,20 +65,28 @@ class TestModifierPython(CalculatorTestCase):
 
             def revise_modification(self, message, carrier_item, ship):
                 if (
-                    (message.item is carrier_item and message.attr == attr2.id) or
-                    (message.item is ship and message.attr == attr3.id)
+                    (
+                        message.item is carrier_item and
+                        message.attr == attr2.id
+                    ) or (
+                        message.item is ship and
+                        message.attr == attr3.id
+                    )
                 ):
                     return True
                 return False
 
-        self.python_effect = self.ch.effect(category=EffectCategoryId.online, modifiers=(TestPythonModifier(),))
-        self.online_effect = self.ch.effect(effect_id=EffectId.online, category=EffectCategoryId.active, customize=True)
+        self.python_effect = self.ch.effect(
+            category=EffectCategoryId.online, modifiers=(TestPythonModifier(),))
+        self.online_effect = self.ch.effect(
+            effect_id=EffectId.online, category=EffectCategoryId.active,
+            customize=True)
         self.fit.ship = Ship(self.ch.type(attributes={attr3.id: 3}).id)
 
     def test_enabling(self):
         item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2}, effects=(self.python_effect, self.online_effect)
-        ).id)
+            attributes={self.attr1.id: 100, self.attr2.id: 2},
+            effects=(self.python_effect, self.online_effect)).id)
         self.fit.modules.high.append(item)
         self.assertAlmostEqual(item.attributes[self.attr1.id], 100)
         # Action
@@ -89,8 +99,8 @@ class TestModifierPython(CalculatorTestCase):
 
     def test_disabling(self):
         item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2}, effects=(self.python_effect, self.online_effect)
-        ).id)
+            attributes={self.attr1.id: 100, self.attr2.id: 2},
+            effects=(self.python_effect, self.online_effect)).id)
         self.fit.modules.high.append(item)
         item.state = State.online
         self.assertAlmostEqual(item.attributes[self.attr1.id], 600)
@@ -103,22 +113,22 @@ class TestModifierPython(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_target_recalc_attr_change(self):
-        # Here dogma modifier changes value of one of attributes
-        # which are used as source by python modifier, and sees if
-        # python modifier target value is updated
+        # Here dogma modifier changes value of one of attributes which are used
+        # as source by python modifier, and sees if python modifier target value
+        # is updated
         attr4 = self.ch.attribute()
         dogma_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=attr4.id
-        )
-        dogma_effect = self.ch.effect(category=EffectCategoryId.active, modifiers=[dogma_modifier])
+            src_attr=attr4.id)
+        dogma_effect = self.ch.effect(
+            category=EffectCategoryId.active, modifiers=[dogma_modifier])
         item = ModuleHigh(self.ch.type(
             attributes={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5},
-            effects=(self.python_effect, self.online_effect, dogma_effect), default_effect=dogma_effect
-        ).id)
+            effects=(self.python_effect, self.online_effect, dogma_effect),
+            default_effect=dogma_effect).id)
         self.fit.modules.high.append(item)
         item.state = State.online
         self.assertAlmostEqual(item.attributes[self.attr1.id], 600)
@@ -131,37 +141,36 @@ class TestModifierPython(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_unsubscription(self):
-        # Make sure that when python modifier unsubscribes
-        # from message type needed by calculator, calculator
-        # still receives that message type
+        # Make sure that when python modifier unsubscribes from message type
+        # needed by calculator, calculator still receives that message type
         dogma_modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr1.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr2.id
-        )
-        dogma_effect1 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[dogma_modifier1])
+            src_attr=self.attr2.id)
+        dogma_effect1 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[dogma_modifier1])
         dogma_modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr3.id
-        )
-        dogma_effect2 = self.ch.effect(category=EffectCategoryId.online, modifiers=[dogma_modifier2])
+            src_attr=self.attr3.id)
+        dogma_effect2 = self.ch.effect(
+            category=EffectCategoryId.online, modifiers=[dogma_modifier2])
         python_item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2}, effects=(self.python_effect, self.online_effect)
-        ).id)
+            attributes={self.attr1.id: 100, self.attr2.id: 2},
+            effects=(self.python_effect, self.online_effect)).id)
         dogma_item = ModuleHigh(self.ch.type(
             attributes={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3},
-            effects=(dogma_effect1, dogma_effect2, self.online_effect)
-        ).id)
+            effects=(dogma_effect1, dogma_effect2, self.online_effect)).id)
         self.fit.modules.high.append(python_item)
         self.assertAlmostEqual(python_item.attributes[self.attr1.id], 100)
         python_item.state = State.online
         self.assertAlmostEqual(python_item.attributes[self.attr1.id], 600)
-        self.fit.modules.high.remove(python_item)  # Here modifier is unsubscribed from attr change events
+        # Here modifier is unsubscribed from attr change events
+        self.fit.modules.high.remove(python_item)
         self.fit.modules.high.append(dogma_item)
         self.assertAlmostEqual(dogma_item.attributes[self.attr1.id], 200)
         # Action

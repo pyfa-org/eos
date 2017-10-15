@@ -26,7 +26,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestCalculationChain(CalculatorTestCase):
-    """Check that calculation process uses modified attributes as data source"""
+    """Check that calculation process uses modified attributes."""
 
     def test_calculation(self):
         attr1 = self.ch.attribute()
@@ -38,38 +38,42 @@ class TestCalculationChain(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=attr1.id
-        )
-        effect1 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier1])
+            src_attr=attr1.id)
+        effect1 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier1])
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr3.id,
             operator=ModifierOperator.post_percent,
-            src_attr=attr2.id
-        )
-        effect2 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier2])
+            src_attr=attr2.id)
+        effect2 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier2])
         modifier3 = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr4.id,
             operator=ModifierOperator.post_percent,
-            src_attr=attr3.id
-        )
-        effect3 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier3])
-        implant_item = Implant(self.ch.type(attributes={attr1.id: 5, attr2.id: 20}, effects=(effect1, effect2)).id)
-        ship_item = Ship(self.ch.type(attributes={attr3.id: 150}, effects=[effect3]).id)
+            src_attr=attr3.id)
+        effect3 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier3])
+        implant_item = Implant(self.ch.type(
+            attributes={attr1.id: 5, attr2.id: 20},
+            effects=(effect1, effect2)).id)
+        ship_item = Ship(self.ch.type(
+            attributes={attr3.id: 150}, effects=[effect3]).id)
         rig_item = Rig(self.ch.type(attributes={attr4.id: 12.5}).id)
         self.fit.implants.add(implant_item)
         self.fit.ship = ship_item
         # Action
         self.fit.rigs.add(rig_item)
         # Verification
-        # If everything is processed properly, item1 will multiply attr2 by attr1
-        # on self, resulting in 20 * 5 = 100, then apply it as percentage modifier
-        # on ship's (item2) attr3, resulting in 150 + 100% = 300, then it is applied
-        # to all entities assigned to ship, including item3, to theirs attr4 as
-        # percentage modifier again - so final result is 12.5 + 300% = 50
+        # If everything is processed properly, item1 will multiply attr2 by
+        # attr1 on self, resulting in 20 * 5 = 100, then apply it as percentage
+        # modifier on ship's (item2) attr3, resulting in 150 + 100% = 300, then
+        # it is applied to all entities assigned to ship, including item3, to
+        # theirs attr4 as percentage modifier again - so final result is 12.5 +
+        # 300% = 50
         self.assertAlmostEqual(rig_item.attributes[attr4.id], 50)
         # Cleanup
         self.assertEqual(len(self.log), 0)

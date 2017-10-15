@@ -26,7 +26,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestCleanupChainAddition(CalculatorTestCase):
-    """Check that added item damages all attributes which are now relying on its attributes"""
+    """Check that added item "damages" all neccessary attribute values."""
 
     def test_attribute(self):
         # Setup
@@ -38,19 +38,21 @@ class TestCleanupChainAddition(CalculatorTestCase):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=attr1.id
-        )
-        effect1 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier1])
+            src_attr=attr1.id)
+        effect1 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier1])
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr3.id,
             operator=ModifierOperator.post_percent,
-            src_attr=attr2.id
-        )
-        effect2 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier2])
-        implant_item = Implant(self.ch.type(attributes={attr1.id: 5}, effects=[effect1]).id)
-        ship_item = Ship(self.ch.type(attributes={attr2.id: 7.5}, effects=[effect2]).id)
+            src_attr=attr2.id)
+        effect2 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier2])
+        implant_item = Implant(self.ch.type(
+            attributes={attr1.id: 5}, effects=[effect1]).id)
+        ship_item = Ship(self.ch.type(
+            attributes={attr2.id: 7.5}, effects=[effect2]).id)
         rig_item = Rig(self.ch.type(attributes={attr3.id: 0.5}).id)
         self.fit.ship = ship_item
         self.fit.rigs.add(rig_item)
@@ -58,8 +60,8 @@ class TestCleanupChainAddition(CalculatorTestCase):
         # Action
         self.fit.implants.add(implant_item)
         # Verification
-        # Added item must clean all already calculated attributes
-        # which are now affected by it, to allow recalculation
+        # Added item must clean all already calculated attributes which are now
+        # affected by it, to allow recalculation
         self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.6875)
         # Cleanup
         self.assertEqual(len(self.log), 0)

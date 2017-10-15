@@ -30,8 +30,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestOperatorUnknown(CalculatorTestCase):
 
     def test_log_other(self):
-        # Check how unknown operator value influences
-        # attribute calculator
+        # Check how unknown operator value influences attribute calculator
         tgt_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
         invalid_modifier = self.mod(
@@ -39,10 +38,11 @@ class TestOperatorUnknown(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=1008,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[invalid_modifier])
-        item_eve_type = self.ch.type(attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[invalid_modifier])
+        item_eve_type = self.ch.type(
+            attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)
@@ -53,15 +53,15 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
-            log_record.msg, 'malformed modifier on eve type {}: unknown operator 1008'.format(item_eve_type.id)
-        )
+            log_record.msg,
+            'malformed modifier on eve type {}: '
+            'unknown operator 1008'.format(item_eve_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 
     def test_log_unorderable_combination(self):
-        # Check how non-orderable operator value influences
-        # attribute calculator. Previously, bug in calculation
-        # method made it to crash
+        # Check how non-orderable operator value influences attribute
+        # calculator. Previously, bug in calculation method made it to crash
         tgt_attr = self.ch.attribute()
         src_attr = self.ch.attribute()
         invalid_modifier = self.mod(
@@ -69,17 +69,18 @@ class TestOperatorUnknown(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=None,
-            src_attr=src_attr.id
-        )
+            src_attr=src_attr.id)
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=(invalid_modifier, valid_modifier))
-        item_eve_type = self.ch.type(attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive,
+            modifiers=(invalid_modifier, valid_modifier))
+        item_eve_type = self.ch.type(
+            attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)
@@ -90,8 +91,9 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
-            log_record.msg, 'malformed modifier on eve type {}: unknown operator None'.format(item_eve_type.id)
-        )
+            log_record.msg,
+            'malformed modifier on eve type {}: '
+            'unknown operator None'.format(item_eve_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 
@@ -103,22 +105,24 @@ class TestOperatorUnknown(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=1008,
-            src_attr=src_attr.id
-        )
+            src_attr=src_attr.id)
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=(invalid_modifier, valid_modifier))
-        item = Rig(self.ch.type(attributes={src_attr.id: 1.5, tgt_attr.id: 100}, effects=[effect]).id)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive,
+            modifiers=(invalid_modifier, valid_modifier))
+        item = Rig(self.ch.type(
+            attributes={src_attr.id: 1.5, tgt_attr.id: 100},
+            effects=[effect]).id)
         # Action
         self.fit.rigs.add(item)
         # Verification
-        # Make sure presence of invalid operator doesn't prevent
-        # from calculating value based on valid modifiers
+        # Make sure presence of invalid operator doesn't prevent from
+        # calculating value based on valid modifiers
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
         # Cleanup
         self.assertEqual(len(self.log), 1)

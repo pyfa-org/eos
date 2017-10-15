@@ -35,17 +35,19 @@ class TestTgtItemDomainUnknown(CalculatorTestCase):
             tgt_domain=1972,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
+            src_attr=src_attr.id)
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=(invalid_modifier, valid_modifier))
-        item = Ship(self.ch.type(attributes={src_attr.id: 20, tgt_attr.id: 100}, effects=[effect]).id)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive,
+            modifiers=(invalid_modifier, valid_modifier))
+        item = Ship(self.ch.type(
+            attributes={src_attr.id: 20, tgt_attr.id: 100},
+            effects=[effect]).id)
         # Action
         self.fit.ship = item
         # Verification

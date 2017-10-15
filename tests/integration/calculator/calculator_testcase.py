@@ -24,10 +24,10 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class CalculatorTestCase(IntegrationTestCase):
-    """
-    Additional functionality provided:
+    """Test case class is used by attribute calculator tests.
 
-    self.fit -- precreated fit
+    Attributes:
+        fit: Precreated fit, as it's used in almost all tests.
     """
 
     def setUp(self):

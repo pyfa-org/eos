@@ -28,14 +28,15 @@ from tests.eos_testcase import EosTestCase
 
 
 class IntegrationTestCase(EosTestCase):
-    """
-    Additional functionality provided:
+    """Test case class is used by integration tests.
 
-    Two sources for fit are set up, src1 (default) and src2
-    self.ch2 -- cache handler for second source
-    self.mod -- instantiate dogma modifier
-    self.assert_fit_buffers_empty -- checks if fit contains anything
-        in object containers which are designed to hold temporary data
+    Supports almost end-to-end testing of Eos, leaving only data handler, cache
+    handler and eve object builder outside of scope.
+
+    Sets up two sources for fit, src1 (default) and src2.
+
+    Attributes:
+        ch2: Cache handler for second source.
     """
 
     def setUp(self):
@@ -62,10 +63,12 @@ class IntegrationTestCase(EosTestCase):
         if make_default is True:
             SourceManager.default = source
         # Instantiate character type, as it's used in every test
-        cache_handler.type(type_id=TypeId.character_static, group=GroupId.character)
+        cache_handler.type(
+            type_id=TypeId.character_static, group=GroupId.character)
         return source
 
     def mod(self, *args, **kwargs):
+        """Shortcut to instantiating dogma modifier."""
         return DogmaModifier(*args, **kwargs)
 
     def allocate_type_id(self, *cache_handlers):
@@ -78,23 +81,33 @@ class IntegrationTestCase(EosTestCase):
         return max(ch.allocate_effect_id() for ch in cache_handlers)
 
     def assert_fit_buffers_empty(self, fit):
+        """Checks if fit contains anything in object containers.
+
+        Only containers which are designed to hold temporary data are checked.
+        """
         self.__clear_fit(fit)
         entry_num = 0
-        # As volatile manager always has one entry added to it
-        # (stats service), make sure it's ignored for assertion purposes
-        fit._volatile_mgr._FitVolatileManager__volatile_objects.remove(fit.stats)
-        entry_num += self._get_object_buffer_entry_amount(fit, ignore_objects=(
+        # As volatile manager always has one entry added to it, stats service,
+        # make sure it's ignored for assertion purposes
+        fit._volatile_mgr._FitVolatileManager__volatile_objects.remove(
+            fit.stats)
+        entry_num += self._get_object_buffer_entry_amount(
             fit,
-        ), ignore_attrs=(
-            ('Fit', '_Fit__source'),
-            ('Fit', '_Fit__default_incoming_damage'),
-            ('Fit', '_FitMessageBroker__subscribers'),
-            ('RestrictionService', '_RestrictionService__restrictions'),
-            ('StatService', '_StatService__volatile_containers')
-        ))
+            ignore_objects=(
+                fit,
+            ),
+            ignore_attrs=(
+                ('Fit', '_Fit__source'),
+                ('Fit', '_Fit__default_incoming_damage'),
+                ('Fit', '_FitMessageBroker__subscribers'),
+                ('RestrictionService', '_RestrictionService__restrictions'),
+                ('StatService', '_StatService__volatile_containers')
+            )
+        )
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'
-            msg = '{} entr{} in buffers: buffers must be empty'.format(entry_num, plu)
+            msg = '{} entr{} in buffers: buffers must be empty'.format(
+                entry_num, plu)
             self.fail(msg=msg)
 
     def __clear_fit(self, fit):

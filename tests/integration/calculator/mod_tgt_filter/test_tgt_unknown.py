@@ -38,12 +38,15 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
+            src_attr=src_attr.id)
 
     def test_log(self):
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=(self.invalid_modifier,))
-        item_eve_type = self.ch.type(attributes={self.src_attr.id: 20, self.tgt_attr: 100}, effects=[effect])
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive,
+            modifiers=(self.invalid_modifier,))
+        item_eve_type = self.ch.type(
+            attributes={self.src_attr.id: 20, self.tgt_attr: 100},
+            effects=[effect])
         item = Rig(item_eve_type.id)
         # Action
         self.fit.rigs.add(item)
@@ -53,9 +56,9 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             self.assertEqual(log_record.name, 'eos.fit.calculator.register')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
-                log_record.msg, 'malformed modifier on eve type {}: '
-                'invalid target filter 26500'.format(item_eve_type.id)
-            )
+                log_record.msg,
+                'malformed modifier on eve type {}: '
+                'invalid target filter 26500'.format(item_eve_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 
@@ -65,14 +68,18 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=self.src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=(self.invalid_modifier, valid_modifier))
-        item = Rig(self.ch.type(attributes={self.src_attr.id: 20, self.tgt_attr.id: 100}, effects=[effect]).id)
+            src_attr=self.src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive,
+            modifiers=(self.invalid_modifier, valid_modifier))
+        item = Rig(self.ch.type(
+            attributes={self.src_attr.id: 20, self.tgt_attr.id: 100},
+            effects=[effect]).id)
         # Action
         self.fit.rigs.add(item)
         # Verification
-        # Invalid filter type in modifier should prevent proper processing of other modifiers
+        # Invalid filter type in modifier should prevent proper processing of
+        # other modifiers
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

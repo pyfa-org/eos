@@ -35,12 +35,13 @@ class TestTgtItemDomainTarget(CalculatorTestCase):
             tgt_domain=ModifierDomain.target,
             tgt_attr=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        influence_source = Ship(self.ch.type(attributes={src_attr.id: 20}, effects=[effect]).id)
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        influence_src = Ship(self.ch.type(
+            attributes={src_attr.id: 20}, effects=[effect]).id)
         # Action
-        self.fit.ship = influence_source
+        self.fit.ship = influence_src
         # No checks - nothing should happen
         # Cleanup
         self.assertEqual(len(self.log), 0)

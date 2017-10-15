@@ -36,12 +36,14 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=self.src_attr.id
-        )
-        self.effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
+            src_attr=self.src_attr.id)
+        self.effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
 
     def test_independent(self):
-        item = Ship(self.ch.type(attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}, effects=[self.effect]).id)
+        item = Ship(self.ch.type(
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20},
+            effects=[self.effect]).id)
         # Action
         self.fit.ship = item
         # Verification
@@ -52,8 +54,8 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
 
     def test_parent_domain_character(self):
         item = Implant(self.ch.type(
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}, effects=[self.effect]
-        ).id)
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20},
+            effects=[self.effect]).id)
         # Action
         self.fit.implants.add(item)
         # Verification
@@ -64,8 +66,8 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
 
     def test_parent_domain_ship(self):
         item = Rig(self.ch.type(
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}, effects=[self.effect]
-        ).id)
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20},
+            effects=[self.effect]).id)
         # Action
         self.fit.rigs.add(item)
         # Verification
@@ -75,17 +77,17 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_other(self):
-        # Here we check that self-reference modifies only carrier of effect,
-        # and nothing else is affected. We position item as character and
-        # check another item which has character modifier domain to ensure
-        # that items 'belonging' to self are not affected too
-        influence_source = Character(self.ch.type(
-            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20}, effects=[self.effect]
-        ).id)
+        # Here we check that self-reference modifies only carrier of effect, and
+        # nothing else is affected. We position item as character and check
+        # another item which has character modifier domain to ensure that items
+        # 'belonging' to self are not affected too
+        influence_src = Character(self.ch.type(
+            attributes={self.tgt_attr.id: 100, self.src_attr.id: 20},
+            effects=[self.effect]).id)
         item = Implant(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(item)
         # Action
-        self.fit.character = influence_source
+        self.fit.character = influence_src
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 100)
         # Cleanup
