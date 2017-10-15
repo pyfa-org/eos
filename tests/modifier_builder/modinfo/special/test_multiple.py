@@ -24,15 +24,17 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoMultiple(ModBuilderTestCase):
-    """Test how modifier builder behaves if there're multiple modifiers in YAML"""
+    """Test how builder behaves if there're multiple modifiers in YAML."""
 
     def test_multiple(self):
         effect_row = {
             'modifierInfo':
-                '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
-                '  operator: 6\n- domain: charID\n  func: ItemModifier\n  modifiedAttributeID: 33\n'
-                '  modifyingAttributeID: 44\n  operator: 7\n'
-        }
+                '- domain: shipID\n  func: ItemModifier\n'
+                '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+                '  operator: 6\n'
+                '- domain: charID\n  func: ItemModifier\n'
+                '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n'
+                '  operator: 7\n'}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 2)

@@ -84,8 +84,7 @@ class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
             arg2=e_tgt_spec['expressionID'])
         e_add_mod_valid = self.ef.make(
             15, operandID=OperandId.add_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID'])
+            arg1=e_optr_tgt['expressionID'], arg2=e_src_attr['expressionID'])
         e_rm_mod_valid = self.ef.make(
             16, operandID=OperandId.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID'])
@@ -129,8 +128,7 @@ class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
             arg2=e_tgt_spec['expressionID'])
         e_add_mod_valid = self.ef.make(
             15, operandID=OperandId.add_itm_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID'])
+            arg1=e_optr_tgt['expressionID'], arg2=e_src_attr['expressionID'])
         e_rm_mod_valid = self.ef.make(
             16, operandID=OperandId.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID'])
@@ -151,8 +149,7 @@ class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
         log_record = self.log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.modifier_builder.builder'
-        )
+            'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(
             log_record.msg, 'effect 1, building 2 modifiers: 1 build errors')

@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -27,9 +28,9 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
 
     def _make_yaml(self, domain):
         yaml = (
-            '- domain: {}\n  func: LocationRequiredSkillModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n  skillTypeID: 55\n'
-        )
+            '- domain: {}\n  func: LocationRequiredSkillModifier\n'
+            '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+            '  operator: 6\n  skillTypeID: 55\n')
         return yaml.format(domain)
 
     def test_domain_none(self):
@@ -38,7 +39,8 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr, 22)
@@ -52,7 +54,8 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr, 22)
@@ -66,7 +69,8 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr, 22)
@@ -80,7 +84,8 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr, 22)
@@ -94,7 +99,8 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.target)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr, 22)

@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -27,9 +28,9 @@ class TestBuilderModinfoTgtDom(ModBuilderTestCase):
 
     def _make_yaml(self, domain):
         yaml = (
-            '- domain: {}\n  func: LocationModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: 6\n'
-        )
+            '- domain: {}\n  func: LocationModifier\n'
+            '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+            '  operator: 6\n')
         return yaml.format(domain)
 
     def test_domain_none(self):

@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
 from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -27,40 +28,34 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 class TestBuilderEtreeTgtDomGrp(ModBuilderTestCase):
 
     def make_etree(self, domain):
-        e_tgt_dom = self.ef.make(1, operandID=OperandId.def_dom, expressionValue=domain)
-        e_tgt_grp = self.ef.make(2, operandID=OperandId.def_grp, expressionGroupID=46)
-        e_tgt_attr = self.ef.make(3, operandID=OperandId.def_attr, expressionAttributeID=6)
-        e_optr = self.ef.make(4, operandID=OperandId.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(5, operandID=OperandId.def_attr, expressionAttributeID=1576)
+        e_tgt_dom = self.ef.make(
+            1, operandID=OperandId.def_dom, expressionValue=domain)
+        e_tgt_grp = self.ef.make(
+            2, operandID=OperandId.def_grp, expressionGroupID=46)
+        e_tgt_attr = self.ef.make(
+            3, operandID=OperandId.def_attr, expressionAttributeID=6)
+        e_optr = self.ef.make(
+            4, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(
+            5, operandID=OperandId.def_attr, expressionAttributeID=1576)
         e_tgt_itms = self.ef.make(
-            6, operandID=OperandId.dom_grp,
-            arg1=e_tgt_dom['expressionID'],
-            arg2=e_tgt_grp['expressionID']
-        )
+            6, operandID=OperandId.dom_grp, arg1=e_tgt_dom['expressionID'],
+            arg2=e_tgt_grp['expressionID'])
         e_tgt_spec = self.ef.make(
-            7, operandID=OperandId.itm_attr,
-            arg1=e_tgt_itms['expressionID'],
-            arg2=e_tgt_attr['expressionID']
-        )
+            7, operandID=OperandId.itm_attr, arg1=e_tgt_itms['expressionID'],
+            arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            8, operandID=OperandId.optr_tgt,
-            arg1=e_optr['expressionID'],
-            arg2=e_tgt_spec['expressionID']
-        )
+            8, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID'])
         e_add_mod = self.ef.make(
             9, operandID=OperandId.add_dom_grp_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            arg1=e_optr_tgt['expressionID'], arg2=e_src_attr['expressionID'])
         e_rm_mod = self.ef.make(
             10, operandID=OperandId.rm_dom_grp_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            arg1=e_optr_tgt['expressionID'], arg2=e_src_attr['expressionID'])
         self.effect_row = {
             'preExpression': e_add_mod['expressionID'],
-            'postExpression': e_rm_mod['expressionID']
-        }
+            'postExpression': e_rm_mod['expressionID']}
 
     def test_domain_self(self):
         self.make_etree('Self')

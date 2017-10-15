@@ -26,10 +26,7 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
-    """
-    Test errors occurring during different stages of dealing with modifier info,
-    in this class they screw conversion process altogether.
-    """
+    """Test errors occurring during different stages of modinfo builder."""
 
     def test_error_yaml(self):
         effect_row = {'effectID': 94, 'modifierInfo': 'yap((EWH\x02'}
@@ -38,7 +35,10 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 0)
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
+        self.assertEqual(
+            log_record.name,
+            'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
-        expected = 'failed to build modifiers for effect 94: failed to parse YAML'
-        self.assertEqual(log_record.msg, expected)
+        self.assertEqual(
+            log_record.msg,
+            'failed to build modifiers for effect 94: failed to parse YAML')

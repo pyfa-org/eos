@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import (
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
 from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
@@ -27,40 +28,34 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
 
     def make_etree(self, domain):
-        e_tgt_dom = self.ef.make(1, operandID=OperandId.def_dom, expressionValue=domain)
-        e_tgt_srq = self.ef.make(2, operandID=OperandId.def_type, expressionTypeID=3307)
-        e_tgt_attr = self.ef.make(3, operandID=OperandId.def_attr, expressionAttributeID=54)
-        e_optr = self.ef.make(4, operandID=OperandId.def_optr, expressionValue='PostPercent')
-        e_src_attr = self.ef.make(5, operandID=OperandId.def_attr, expressionAttributeID=491)
+        e_tgt_dom = self.ef.make(
+            1, operandID=OperandId.def_dom, expressionValue=domain)
+        e_tgt_srq = self.ef.make(
+            2, operandID=OperandId.def_type, expressionTypeID=3307)
+        e_tgt_attr = self.ef.make(
+            3, operandID=OperandId.def_attr, expressionAttributeID=54)
+        e_optr = self.ef.make(
+            4, operandID=OperandId.def_optr, expressionValue='PostPercent')
+        e_src_attr = self.ef.make(
+            5, operandID=OperandId.def_attr, expressionAttributeID=491)
         e_tgt_itms = self.ef.make(
-            6, operandID=OperandId.dom_srq,
-            arg1=e_tgt_dom['expressionID'],
-            arg2=e_tgt_srq['expressionID']
-        )
+            6, operandID=OperandId.dom_srq, arg1=e_tgt_dom['expressionID'],
+            arg2=e_tgt_srq['expressionID'])
         e_tgt_spec = self.ef.make(
-            7, operandID=OperandId.itm_attr,
-            arg1=e_tgt_itms['expressionID'],
-            arg2=e_tgt_attr['expressionID']
-        )
+            7, operandID=OperandId.itm_attr, arg1=e_tgt_itms['expressionID'],
+            arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            8, operandID=OperandId.optr_tgt,
-            arg1=e_optr['expressionID'],
-            arg2=e_tgt_spec['expressionID']
-        )
+            8, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
+            arg2=e_tgt_spec['expressionID'])
         e_add_mod = self.ef.make(
             9, operandID=OperandId.add_dom_srq_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            arg1=e_optr_tgt['expressionID'], arg2=e_src_attr['expressionID'])
         e_rm_mod = self.ef.make(
             10, operandID=OperandId.rm_dom_srq_mod,
-            arg1=e_optr_tgt['expressionID'],
-            arg2=e_src_attr['expressionID']
-        )
+            arg1=e_optr_tgt['expressionID'], arg2=e_src_attr['expressionID'])
         self.effect_row = {
             'preExpression': e_add_mod['expressionID'],
-            'postExpression': e_rm_mod['expressionID']
-        }
+            'postExpression': e_rm_mod['expressionID']}
 
     def test_domain_self(self):
         self.make_etree('Self')
@@ -68,7 +63,8 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.self)
         self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
         self.assertEqual(modifier.tgt_attr, 54)
@@ -82,7 +78,8 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
         self.assertEqual(modifier.tgt_attr, 54)
@@ -96,7 +93,8 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
         self.assertEqual(modifier.tgt_attr, 54)
@@ -110,7 +108,8 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
+        self.assertEqual(
+            modifier.tgt_filter, ModifierTargetFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.target)
         self.assertEqual(modifier.tgt_filter_extra_arg, 3307)
         self.assertEqual(modifier.tgt_attr, 54)

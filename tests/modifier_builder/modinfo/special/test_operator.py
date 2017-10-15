@@ -24,13 +24,13 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoOperator(ModBuilderTestCase):
-    """Test parsing of YAML describing modifiers with different operators"""
+    """Test parsing of YAML describing modifiers with different operators."""
 
     def _make_yaml(self, operator):
         yaml = (
-            '- domain: shipID\n  func: ItemModifier\n  modifiedAttributeID: 22\n'
-            '  modifyingAttributeID: 11\n  operator: {}\n'
-        )
+            '- domain: shipID\n  func: ItemModifier\n'
+            '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
+            '  operator: {}\n')
         return yaml.format(operator)
 
     def test_preassign(self):
