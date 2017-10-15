@@ -21,123 +21,140 @@
 
 from eos import *
 from eos.const.eve import AttributeId
-from tests.integration.restriction.restriction_testcase import RestrictionTestCase
+from tests.integration.restriction.restriction_testcase import (
+    RestrictionTestCase)
 
 
 class TestChargeSize(RestrictionTestCase):
-    """Check functionality of charge size restriction"""
+    """Check functionality of charge size restriction."""
 
     def test_fail_lesser(self):
-        fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={AttributeId.charge_size: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.charge_size: 3}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.charge_size: 2}).id)
+        container_item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.charge_size: 3}).id, state=State.offline)
         container_item.charge = charge_item
-        fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container_item)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_size)
+        restriction_error1 = self.get_restriction_error(
+            container_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_size)
+        restriction_error2 = self.get_restriction_error(
+            charge_item, Restriction.charge_size)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.item_size, 2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_fail_greater(self):
-        fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={AttributeId.charge_size: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.charge_size: 1}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.charge_size: 2}).id)
+        container_item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.charge_size: 1}).id, state=State.offline)
         container_item.charge = charge_item
-        fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container_item)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_size)
+        restriction_error1 = self.get_restriction_error(
+            container_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_size)
+        restriction_error2 = self.get_restriction_error(
+            charge_item, Restriction.charge_size)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.allowed_size, 1)
         self.assertEqual(restriction_error2.item_size, 2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_fail_charge_no_attrib(self):
-        fit = Fit()
         charge_item = Charge(self.ch.type().id)
-        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.charge_size: 3}).id, state=State.offline)
+        container_item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.charge_size: 3}).id, state=State.offline)
         container_item.charge = charge_item
-        fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container_item)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_size)
+        restriction_error1 = self.get_restriction_error(
+            container_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_size)
+        restriction_error2 = self.get_restriction_error(
+            charge_item, Restriction.charge_size)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.item_size, None)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_equal(self):
-        fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={AttributeId.charge_size: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.charge_size: 2}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.charge_size: 2}).id)
+        container_item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.charge_size: 2}).id, state=State.offline)
         container_item.charge = charge_item
-        fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container_item)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_size)
+        restriction_error1 = self.get_restriction_error(
+            container_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_size)
+        restriction_error2 = self.get_restriction_error(
+            charge_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_no_container_attrib(self):
-        fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={AttributeId.charge_size: 2}).id)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.charge_size: 2}).id)
         container_item = ModuleHigh(self.ch.type().id, state=State.offline)
         container_item.charge = charge_item
-        fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container_item)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_size)
+        restriction_error1 = self.get_restriction_error(
+            container_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_size)
+        restriction_error2 = self.get_restriction_error(
+            charge_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_no_source(self):
-        fit = Fit()
-        charge_item = Charge(self.ch.type(attributes={AttributeId.charge_size: 2}).id)
-        container_item = ModuleHigh(self.ch.type(attributes={AttributeId.charge_size: 3}).id, state=State.offline)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.charge_size: 2}).id)
+        container_item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.charge_size: 3}).id, state=State.offline)
         container_item.charge = charge_item
-        fit.modules.high.append(container_item)
-        fit.source = None
+        self.fit.modules.high.append(container_item)
+        self.fit.source = None
         # Action
-        restriction_error1 = self.get_restriction_error(fit, container_item, Restriction.charge_size)
+        restriction_error1 = self.get_restriction_error(
+            container_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, charge_item, Restriction.charge_size)
+        restriction_error2 = self.get_restriction_error(
+            charge_item, Restriction.charge_size)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

@@ -77,7 +77,8 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         influence_src = ModuleHigh(self.ch.type(
             attributes={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
-        influence_tgt = Charge(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Charge(self.ch.type(
+            attributes={self.tgt_attr.id: 100}).id)
         influence_src.charge = influence_tgt
         # Action
         self.fit.modules.high.append(influence_src)

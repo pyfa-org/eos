@@ -20,294 +20,309 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, CategoryId, EffectId, EffectCategoryId, GroupId
-from tests.integration.restriction.restriction_testcase import RestrictionTestCase
+from eos.const.eve import (
+    AttributeId, CategoryId, EffectId, EffectCategoryId, GroupId)
+from tests.integration.restriction.restriction_testcase import (
+    RestrictionTestCase)
 
 
 class TestItemClass(RestrictionTestCase):
-    """Check functionality of item class verification"""
+    """Check functionality of item class verification."""
 
     def test_booster_pass_no_source(self):
-        # Make sure fit without a source doesn't cause
-        # any failures
-        fit = Fit()
-        item = Booster(self.ch.type(category=1008, attributes={AttributeId.boosterness: 3}).id)
-        fit.boosters.add(item)
-        fit.source = None
+        # Make sure fit without a source doesn't cause any failures
+        item = Booster(self.ch.type(
+            category=1008, attributes={AttributeId.boosterness: 3}).id)
+        self.fit.boosters.add(item)
+        self.fit.source = None
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_booster_pass(self):
-        fit = Fit()
-        item = Booster(self.ch.type(category=CategoryId.implant, attributes={AttributeId.boosterness: 3}).id)
-        fit.boosters.add(item)
+        item = Booster(self.ch.type(
+            category=CategoryId.implant,
+            attributes={AttributeId.boosterness: 3}).id)
+        self.fit.boosters.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_booster_fail_category(self):
-        fit = Fit()
-        item = Booster(self.ch.type(category=1008, attributes={AttributeId.boosterness: 3}).id)
-        fit.boosters.add(item)
+        item = Booster(self.ch.type(
+            category=1008, attributes={AttributeId.boosterness: 3}).id)
+        self.fit.boosters.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_booster_fail_attr(self):
-        fit = Fit()
         item = Booster(self.ch.type(category=CategoryId.implant).id)
-        fit.boosters.add(item)
+        self.fit.boosters.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_character_pass(self):
-        fit = Fit()
         item = Character(self.ch.type(group=GroupId.character).id)
-        fit.character = item
+        self.fit.character = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_character_fail_group(self):
-        fit = Fit()
         item = Character(self.ch.type(group=1008).id)
-        fit.character = item
+        self.fit.character = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Character)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_charge_pass(self):
-        fit = Fit()
         item = Charge(self.ch.type(category=CategoryId.charge).id)
         container = ModuleHigh(self.ch.type().id)
         container.charge = item
-        fit.modules.high.append(container)
+        self.fit.modules.high.append(container)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_charge_fail_category(self):
-        fit = Fit()
         item = Charge(self.ch.type(category=1008).id)
         container = ModuleHigh(self.ch.type().id)
         container.charge = item
-        fit.modules.high.append(container)
+        self.fit.modules.high.append(container)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Charge)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_drone_pass(self):
-        fit = Fit()
         item = Drone(self.ch.type(category=CategoryId.drone).id)
-        fit.drones.add(item)
+        self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_drone_fail_category(self):
-        fit = Fit()
         item = Drone(self.ch.type(category=1008).id)
-        fit.drones.add(item)
+        self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Drone)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_effect_beacon_pass(self):
-        fit = Fit()
         item = EffectBeacon(self.ch.type(group=GroupId.effect_beacon).id)
-        fit.effect_beacon = item
+        self.fit.effect_beacon = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_effect_beacon_fail_group(self):
-        fit = Fit()
         item = EffectBeacon(self.ch.type(group=1008).id)
-        fit.effect_beacon = item
+        self.fit.effect_beacon = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, EffectBeacon)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_fighter_squad_pass(self):
-        fit = Fit()
         item = FighterSquad(self.ch.type(
-            category=CategoryId.fighter, attributes={AttributeId.fighter_squadron_is_heavy: 1.0}
-        ).id)
-        fit.fighters.add(item)
+            category=CategoryId.fighter,
+            attributes={AttributeId.fighter_squadron_is_heavy: 1.0}).id)
+        self.fit.fighters.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_fighter_squad_fail_category(self):
-        fit = Fit()
-        item = FighterSquad(self.ch.type(category=1008, attributes={AttributeId.fighter_squadron_is_heavy: 1.0}).id)
-        fit.fighters.add(item)
+        item = FighterSquad(self.ch.type(
+            category=1008,
+            attributes={AttributeId.fighter_squadron_is_heavy: 1.0}).id)
+        self.fit.fighters.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, FighterSquad)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_fighter_squad_fail_attr(self):
-        fit = Fit()
         item = FighterSquad(self.ch.type(category=CategoryId.fighter).id)
-        fit.fighters.add(item)
+        self.fit.fighters.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, FighterSquad)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_implant_pass(self):
-        fit = Fit()
-        item = Implant(self.ch.type(category=CategoryId.implant, attributes={AttributeId.implantness: 3}).id)
-        fit.implants.add(item)
+        item = Implant(self.ch.type(
+            category=CategoryId.implant,
+            attributes={AttributeId.implantness: 3}).id)
+        self.fit.implants.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_implant_fail_category(self):
-        fit = Fit()
-        item = Implant(self.ch.type(category=1008, attributes={AttributeId.implantness: 3}).id)
-        fit.implants.add(item)
+        item = Implant(self.ch.type(
+            category=1008, attributes={AttributeId.implantness: 3}).id)
+        self.fit.implants.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_implant_fail_attr(self):
-        fit = Fit()
         item = Implant(self.ch.type(category=1008).id)
-        fit.implants.add(item)
+        self.fit.implants.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_high_pass(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.hi_power, category=EffectCategoryId.passive)
-        item = ModuleHigh(self.ch.type(category=CategoryId.module, effects=[effect]).id)
-        fit.modules.high.append(item)
+        effect = self.ch.effect(
+            effect_id=EffectId.hi_power, category=EffectCategoryId.passive)
+        item = ModuleHigh(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
+        self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_high_pass_disabled_effect(self):
-        # Make sure disabled high slot effect doesn't prevent
-        # item from passingthecheck
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.hi_power, category=EffectCategoryId.passive)
-        item = ModuleHigh(self.ch.type(category=CategoryId.module, effects=[effect]).id)
+        # Make sure disabled high slot effect doesn't prevent item from passing
+        # the check
+        effect = self.ch.effect(
+            effect_id=EffectId.hi_power, category=EffectCategoryId.passive)
+        item = ModuleHigh(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
         item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
-        fit.modules.high.append(item)
+        self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_high_fail_category(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.hi_power, category=EffectCategoryId.passive)
+        effect = self.ch.effect(
+            effect_id=EffectId.hi_power, category=EffectCategoryId.passive)
         item = ModuleHigh(self.ch.type(category=1008, effects=[effect]).id)
-        fit.modules.high.append(item)
+        self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleHigh)
@@ -316,332 +331,363 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(self.log), 0)
 
     def test_module_high_fail_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=1008, category=EffectCategoryId.passive)
+        effect = self.ch.effect(
+            effect_id=1008, category=EffectCategoryId.passive)
         item = ModuleHigh(self.ch.type(category=1008, effects=[effect]).id)
-        fit.modules.high.append(item)
+        self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_medium_pass(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.med_power, category=EffectCategoryId.passive)
-        item = ModuleMed(self.ch.type(category=CategoryId.module, effects=[effect]).id)
-        fit.modules.med.append(item)
+        effect = self.ch.effect(
+            effect_id=EffectId.med_power, category=EffectCategoryId.passive)
+        item = ModuleMed(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
+        self.fit.modules.med.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_medium_pass_disabled_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.med_power, category=EffectCategoryId.passive)
-        item = ModuleMed(self.ch.type(category=CategoryId.module, effects=[effect]).id)
+        effect = self.ch.effect(
+            effect_id=EffectId.med_power, category=EffectCategoryId.passive)
+        item = ModuleMed(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
         item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
-        fit.modules.med.append(item)
+        self.fit.modules.med.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_medium_fail_category(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.med_power, category=EffectCategoryId.passive)
+        effect = self.ch.effect(
+            effect_id=EffectId.med_power, category=EffectCategoryId.passive)
         item = ModuleMed(self.ch.type(category=1008, effects=[effect]).id)
-        fit.modules.med.append(item)
+        self.fit.modules.med.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_medium_fail_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=1008, category=EffectCategoryId.passive)
-        item = ModuleMed(self.ch.type(category=CategoryId.module, effects=[effect]).id)
-        fit.modules.med.append(item)
+        effect = self.ch.effect(
+            effect_id=1008, category=EffectCategoryId.passive)
+        item = ModuleMed(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
+        self.fit.modules.med.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_low_pass(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
-        item = ModuleLow(self.ch.type(category=CategoryId.module, effects=[effect]).id)
-        fit.modules.low.append(item)
+        effect = self.ch.effect(
+            effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
+        item = ModuleLow(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
+        self.fit.modules.low.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_low_pass_disabled_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
-        item = ModuleLow(self.ch.type(category=CategoryId.module, effects=[effect]).id)
+        effect = self.ch.effect(
+            effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
+        item = ModuleLow(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
         item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
-        fit.modules.low.append(item)
+        self.fit.modules.low.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_low_fail_category(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
+        effect = self.ch.effect(
+            effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
         item = ModuleLow(self.ch.type(category=1008, effects=[effect]).id)
-        fit.modules.low.append(item)
+        self.fit.modules.low.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_module_low_fail_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=1008, category=EffectCategoryId.passive)
-        item = ModuleLow(self.ch.type(category=CategoryId.module, effects=[effect]).id)
-        fit.modules.low.append(item)
+        effect = self.ch.effect(
+            effect_id=1008, category=EffectCategoryId.passive)
+        item = ModuleLow(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
+        self.fit.modules.low.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_rig_pass(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
-        item = Rig(self.ch.type(category=CategoryId.module, effects=[effect]).id)
-        fit.rigs.add(item)
+        effect = self.ch.effect(
+            effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
+        item = Rig(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
+        self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_rig_pass_disabled_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
-        item = Rig(self.ch.type(category=CategoryId.module, effects=[effect]).id)
+        effect = self.ch.effect(
+            effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
+        item = Rig(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
         item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
-        fit.rigs.add(item)
+        self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_rig_fail_category(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
+        effect = self.ch.effect(
+            effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
         item = Rig(self.ch.type(category=1008, effects=[effect]).id)
-        fit.rigs.add(item)
+        self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_rig_fail_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=1008, category=EffectCategoryId.passive)
-        item = Rig(self.ch.type(category=CategoryId.module, effects=[effect]).id)
-        fit.rigs.add(item)
+        effect = self.ch.effect(
+            effect_id=1008, category=EffectCategoryId.passive)
+        item = Rig(self.ch.type(
+            category=CategoryId.module, effects=[effect]).id)
+        self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_ship_pass(self):
-        fit = Fit()
         item = Ship(self.ch.type(category=CategoryId.ship).id)
-        fit.ship = item
+        self.fit.ship = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_ship_fail_category(self):
-        fit = Fit()
         item = Ship(self.ch.type(category=1008).id)
-        fit.ship = item
+        self.fit.ship = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Ship)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_skill_pass(self):
-        fit = Fit()
         item = Skill(self.ch.type(category=CategoryId.skill).id)
-        fit.skills.add(item)
+        self.fit.skills.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_skill_fail_category(self):
-        fit = Fit()
         item = Skill(self.ch.type(category=1008).id)
-        fit.skills.add(item)
+        self.fit.skills.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Skill)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_stance_pass(self):
-        fit = Fit()
         item = Stance(self.ch.type(group=GroupId.ship_modifier).id)
-        fit.stance = item
+        self.fit.stance = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_stance_fail_group(self):
-        fit = Fit()
         item = Stance(self.ch.type(group=1008).id)
-        fit.stance = item
+        self.fit.stance = item
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Stance)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_subsystem_pass(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
-        item = Subsystem(self.ch.type(category=CategoryId.subsystem, effects=[effect]).id)
-        fit.subsystems.add(item)
+        effect = self.ch.effect(
+            effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
+        item = Subsystem(self.ch.type(
+            category=CategoryId.subsystem, effects=[effect]).id)
+        self.fit.subsystems.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_subsystem_pass_disabled_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
-        item = Subsystem(self.ch.type(category=CategoryId.subsystem, effects=[effect]).id)
+        effect = self.ch.effect(
+            effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
+        item = Subsystem(self.ch.type(
+            category=CategoryId.subsystem, effects=[effect]).id)
         item.set_effect_run_mode(effect.id, EffectRunMode.force_stop)
-        fit.subsystems.add(item)
+        self.fit.subsystems.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_subsystem_fail_category(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
+        effect = self.ch.effect(
+            effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
         item = Subsystem(self.ch.type(category=1008, effects=[effect]).id)
-        fit.subsystems.add(item)
+        self.fit.subsystems.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_subsystem_fail_effect(self):
-        fit = Fit()
-        effect = self.ch.effect(effect_id=1008, category=EffectCategoryId.passive)
-        item = Subsystem(self.ch.type(category=CategoryId.subsystem, effects=[effect]).id)
-        fit.subsystems.add(item)
+        effect = self.ch.effect(
+            effect_id=1008, category=EffectCategoryId.passive)
+        item = Subsystem(self.ch.type(
+            category=CategoryId.subsystem, effects=[effect]).id)
+        self.fit.subsystems.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_replacement(self):
-        fit = Fit()
-        item = Implant(self.ch.type(category=CategoryId.implant, attributes={AttributeId.boosterness: 3}).id)
-        fit.implants.add(item)
+        item = Implant(self.ch.type(
+            category=CategoryId.implant,
+            attributes={AttributeId.boosterness: 3}).id)
+        self.fit.implants.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
@@ -649,16 +695,17 @@ class TestItemClass(RestrictionTestCase):
         self.assertIn(Booster, restriction_error.expected_classes)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_multiple_replacements(self):
-        fit = Fit()
         item = Drone(self.ch.type(
-            category=CategoryId.implant, attributes={AttributeId.boosterness: 3, AttributeId.implantness: 1}
-        ).id)
-        fit.drones.add(item)
+            category=CategoryId.implant,
+            attributes={
+                AttributeId.boosterness: 3, AttributeId.implantness: 1}).id)
+        self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.item_class)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Drone)
@@ -667,4 +714,4 @@ class TestItemClass(RestrictionTestCase):
         self.assertIn(Implant, restriction_error.expected_classes)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

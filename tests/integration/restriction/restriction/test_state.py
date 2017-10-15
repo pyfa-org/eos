@@ -21,63 +21,66 @@
 
 from eos import *
 from eos.const.eve import EffectCategoryId
-from tests.integration.restriction.restriction_testcase import RestrictionTestCase
+from tests.integration.restriction.restriction_testcase import (
+    RestrictionTestCase)
 
 
 class TestState(RestrictionTestCase):
-    """Check functionality of item state restriction"""
+    """Check functionality of item state restriction."""
 
     def test_fail_state_higher(self):
-        fit = Fit()
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.overload)
-        fit.modules.high.append(item)
+        item = ModuleHigh(self.ch.type(
+            effects=[effect], default_effect=effect).id, state=State.overload)
+        self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.state)
+        restriction_error = self.get_restriction_error(item, Restriction.state)
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.current_state, State.overload)
-        self.assertCountEqual(restriction_error.allowed_states, (State.offline, State.online, State.active))
+        self.assertCountEqual(
+            restriction_error.allowed_states,
+            (State.offline, State.online, State.active))
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_state_lower(self):
-        fit = Fit()
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.online)
-        fit.modules.high.append(item)
+        item = ModuleHigh(self.ch.type(
+            effects=[effect], default_effect=effect).id, state=State.online)
+        self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.state)
+        restriction_error = self.get_restriction_error(item, Restriction.state)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_state_equal(self):
-        fit = Fit()
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.active)
-        fit.modules.high.append(item)
+        item = ModuleHigh(self.ch.type(
+            effects=[effect], default_effect=effect).id, state=State.active)
+        self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.state)
+        restriction_error = self.get_restriction_error(item, Restriction.state)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_no_source(self):
-        fit = Fit()
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id, state=State.overload)
-        fit.modules.high.append(item)
-        fit.source = None
+        item = ModuleHigh(self.ch.type(
+            effects=[effect], default_effect=effect).id, state=State.overload)
+        self.fit.modules.high.append(item)
+        self.fit.source = None
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.state)
+        restriction_error = self.get_restriction_error(item, Restriction.state)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

@@ -19,24 +19,36 @@
 # ==============================================================================
 
 
-from eos import ValidationError
+from eos import Fit, ValidationError
 from eos.const.eos import Restriction
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class RestrictionTestCase(IntegrationTestCase):
-    """
-    Additional functionality provided:
+    """Class which should be used by restriction service tests.
 
-    self.get_restriction_error -- get restriction error for passed
-        item of passed restriction type. If no error occurred,
-        return None
+    Attributes:
+        fit: Precreated fit, as it's used in almost all tests.
     """
 
-    def get_restriction_error(self, fit, item, restriction):
+    def setUp(self):
+        super().setUp()
+        self.fit = Fit()
+
+    def get_restriction_error(self, item, restriction):
+        """Get restriction error for passed item of passed restriction type.
+
+        Args:
+            item: Item which should be validated.
+            restriction: Restriction type which we're interested in. Errors of
+                any other restriction types will be ignored.
+
+        Returns: If specified error occurred with specified item, returns error
+        data; if it didn't, returns None.
+        """
         skip_checks = set(Restriction).difference([restriction])
         try:
-            fit.validate(skip_checks)
+            self.fit.validate(skip_checks)
         except ValidationError as e:
             error_data = e.args[0]
             if item not in error_data:

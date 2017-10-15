@@ -21,106 +21,111 @@
 
 from eos import *
 from eos.const.eve import AttributeId
-from tests.integration.restriction.restriction_testcase import RestrictionTestCase
+from tests.integration.restriction.restriction_testcase import (
+    RestrictionTestCase)
 
 
 class TestImplantIndex(RestrictionTestCase):
-    """Check functionality of implant slot index restriction"""
+    """Check functionality of implant slot index restriction."""
 
     def setUp(self):
         super().setUp()
-        self.index_attr = self.ch.attribute(attribute_id=AttributeId.implantness)
+        self.index_attr = self.ch.attribute(
+            attribute_id=AttributeId.implantness)
 
     def test_fail(self):
-        # Check that if 2 or more items are put into single slot
-        # index, error is raised
-        fit = Fit()
+        # Check that if 2 or more items are put into single slot index, error is
+        # raised
         item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
         item1 = Implant(item_eve_type.id)
         item2 = Implant(item_eve_type.id)
-        fit.implants.add(item1)
-        fit.implants.add(item2)
+        self.fit.implants.add(item1)
+        self.fit.implants.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.implant_index)
+        restriction_error1 = self.get_restriction_error(
+            item1, Restriction.implant_index)
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.item_slot_index, 120)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.implant_index)
+        restriction_error2 = self.get_restriction_error(
+            item2, Restriction.implant_index)
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.item_slot_index, 120)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_fail_other_item_class(self):
         # Make sure items of all classes are affected
-        fit = Fit()
         item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
         item1 = ModuleHigh(item_eve_type.id)
         item2 = ModuleHigh(item_eve_type.id)
-        fit.modules.high.append(item1)
-        fit.modules.high.append(item2)
+        self.fit.modules.high.append(item1)
+        self.fit.modules.high.append(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.implant_index)
+        restriction_error1 = self.get_restriction_error(
+            item1, Restriction.implant_index)
         # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.item_slot_index, 120)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.implant_index)
+        restriction_error2 = self.get_restriction_error(
+            item2, Restriction.implant_index)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.item_slot_index, 120)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass(self):
-        # Single item which takes some slot shouldn't
-        # trigger any errors
-        fit = Fit()
+        # Single item which takes some slot shouldn't trigger any errors
         item = Implant(self.ch.type(attributes={self.index_attr.id: 120}).id)
-        fit.implants.add(item)
+        self.fit.implants.add(item)
         # Action
-        restriction_error = self.get_restriction_error(fit, item, Restriction.implant_index)
+        restriction_error = self.get_restriction_error(
+            item, Restriction.implant_index)
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_different(self):
         # Items taking different slots shouldn't trigger any errors
-        fit = Fit()
         item1 = Implant(self.ch.type(attributes={self.index_attr.id: 120}).id)
         item2 = Implant(self.ch.type(attributes={self.index_attr.id: 121}).id)
-        fit.implants.add(item1)
-        fit.implants.add(item2)
+        self.fit.implants.add(item1)
+        self.fit.implants.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.implant_index)
+        restriction_error1 = self.get_restriction_error(
+            item1, Restriction.implant_index)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.implant_index)
+        restriction_error2 = self.get_restriction_error(
+            item2, Restriction.implant_index)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_no_source(self):
-        fit = Fit()
         item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
         item1 = Implant(item_eve_type.id)
         item2 = Implant(item_eve_type.id)
-        fit.implants.add(item1)
-        fit.implants.add(item2)
-        fit.source = None
+        self.fit.implants.add(item1)
+        self.fit.implants.add(item2)
+        self.fit.source = None
         # Action
-        restriction_error1 = self.get_restriction_error(fit, item1, Restriction.implant_index)
+        restriction_error1 = self.get_restriction_error(
+            item1, Restriction.implant_index)
         self.assertIsNone(restriction_error1)
         # Action
-        restriction_error2 = self.get_restriction_error(fit, item2, Restriction.implant_index)
+        restriction_error2 = self.get_restriction_error(
+            item2, Restriction.implant_index)
         self.assertIsNone(restriction_error2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
