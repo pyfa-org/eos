@@ -237,8 +237,7 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
-            'cleaned: 100.0% from evegroups, 100.0% from evetypes'
-        )
+            'cleaned: 100.0% from evegroups, 100.0% from evetypes')
         self.assertEqual(len(self.types), 0)
 
     def test_mixed(self):
@@ -259,8 +258,7 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
-            'cleaned: 50.0% from evegroups, 50.0% from evetypes'
-        )
+            'cleaned: 50.0% from evegroups, 50.0% from evetypes')
         self.assertEqual(len(self.types), 2)
         self.assertIn(1, self.types)
         self.assertIn(3, self.types)

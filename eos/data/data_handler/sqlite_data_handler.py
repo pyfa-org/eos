@@ -70,8 +70,7 @@ class SQLiteDataHandler(BaseDataHandler):
     def get_version(self):
         self.cursor.execute(
             'SELECT field_value FROM phbmetadata '
-            'WHERE field_name = "client_build"'
-        )
+            'WHERE field_name = "client_build"')
         for row in self.cursor:
             return row[0]
         else:

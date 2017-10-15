@@ -42,20 +42,17 @@ class TestConversionType(EveObjBuilderTestCase):
         self.dh.data['dgmeffects'].append({
             'effectID': 111, 'effectCategory': 8, 'isOffensive': True,
             'isAssistance': False, 'fittingUsageChanceAttributeID': 96,
-            'preExpression': None, 'postExpression': None
-        })
+            'preExpression': None, 'postExpression': None})
         self.dh.data['dgmeffects'].append({
             'effectID': 1111, 'effectCategory': 85, 'isOffensive': False,
             'isAssistance': True, 'fittingUsageChanceAttributeID': 41,
-            'preExpression': None, 'postExpression': None
-        })
+            'preExpression': None, 'postExpression': None})
         self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 5})
         self.dh.data['typefighterabils'].append(
             {'typeID': 1, 'abilityID': 6, 'cooldownSeconds': 60})
         self.dh.data['typefighterabils'].append({
             'typeID': 1, 'abilityID': 50, 'chargeCount': 3,
-            'rearmTimeSeconds': 20
-        })
+            'rearmTimeSeconds': 20})
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]
@@ -84,20 +81,14 @@ class TestConversionType(EveObjBuilderTestCase):
         self.assertEqual(len(type_fighterabils), 3)
         self.assertCountEqual(type_fighterabils, {5, 6, 50})
         self.assertDictEqual(
-            type_fighterabils[5],
-            {
+            type_fighterabils[5], {
                 'cooldown_time': None, 'charge_amount': None,
-                'charge_rearm_time': None
-            }
-        )
+                'charge_rearm_time': None})
         self.assertDictEqual(
-            type_fighterabils[6],
-            {
+            type_fighterabils[6], {
                 'cooldown_time': 60, 'charge_amount': None,
-                'charge_rearm_time': None
-            }
-        )
+                'charge_rearm_time': None})
         self.assertDictEqual(
-            type_fighterabils[50],
-            {'cooldown_time': None, 'charge_amount': 3, 'charge_rearm_time': 20}
-        )
+            type_fighterabils[50], {
+                'cooldown_time': None, 'charge_amount': 3,
+                'charge_rearm_time': 20})

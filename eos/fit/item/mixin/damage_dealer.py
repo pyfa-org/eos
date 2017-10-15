@@ -69,8 +69,7 @@ CHARGE_MAP = {
 
 
 class DamageDealerMixin(
-    DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolatileMixin
-):
+        DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolatileMixin):
     """Support for entities which are capable of dealing damage."""
 
     @volatile_property
@@ -181,8 +180,7 @@ class DamageDealerMixin(
                     except TypeError:
                         pass
             base_volleys[effect_id] = DamageTypesTotal(
-                em=em, thermal=therm, kinetic=kin, explosive=expl
-            )
+                em=em, thermal=therm, kinetic=kin, explosive=expl)
         return base_volleys
 
     def get_nominal_volley(self, target_resistances=None):
@@ -250,8 +248,7 @@ class DamageDealerMixin(
             except TypeError:
                 expl = None
         return DamageTypesTotal(
-            em=em, thermal=therm, kinetic=kin, explosive=expl
-        )
+            em=em, thermal=therm, kinetic=kin, explosive=expl)
 
     def get_nominal_dps(self, target_resistances=None, reload=False):
         """
@@ -269,8 +266,10 @@ class DamageDealerMixin(
         volley = self.get_nominal_volley(target_resistances=target_resistances)
         # If all attribs of base volley are None, nothing we can do here
         if (
-            volley.total is None and volley.em is None and
-            volley.thermal is None and volley.kinetic is None and
+            volley.total is None and
+            volley.em is None and
+            volley.thermal is None and
+            volley.kinetic is None and
             volley.explosive is None
         ):
             return volley
@@ -294,8 +293,8 @@ class DamageDealerMixin(
                     # which we already take into account, can cover reload time
                     # partially or fully)
                     full_cycle_time += (
-                        max(reload_time - reactivation_time, 0) / charged_cycles
-                    )
+                        max(reload_time - reactivation_time, 0) /
+                        charged_cycles)
         # Guards against None-valued volley components
         try:
             em = volley.em / full_cycle_time
@@ -314,8 +313,7 @@ class DamageDealerMixin(
         except TypeError:
             expl = None
         return DamageTypesTotal(
-            em=em, thermal=therm, kinetic=kin, explosive=expl
-        )
+            em=em, thermal=therm, kinetic=kin, explosive=expl)
 
     def get_volley_vs_target(self, target_data=None, target_resistances=None):
         # TODO
@@ -326,7 +324,6 @@ class DamageDealerMixin(
         return
 
     def get_dps_vs_target(
-        self, target_data=None, target_resistances=None, reload=True
-    ):
+            self, target_data=None, target_resistances=None, reload=True):
         # TODO
         return

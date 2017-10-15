@@ -39,8 +39,12 @@ class Attribute(BaseCachable):
     """
 
     def __init__(
-        self, attribute_id, max_attribute=None, default_value=None,
-        high_is_good=True, stackable=True
+        self,
+        attribute_id,
+        max_attribute=None,
+        default_value=None,
+        high_is_good=True,
+        stackable=True
     ):
         self.id = attribute_id
         self.max_attribute = max_attribute

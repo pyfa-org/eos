@@ -21,8 +21,7 @@
 
 from eos.const.eos import (
     EffectBuildStatus, EosEffectId, ModifierDomain, ModifierOperator,
-    ModifierTargetFilter
-)
+    ModifierTargetFilter)
 from eos.const.eve import AttributeId, EffectCategoryId, TypeId
 from ...effect import Effect
 from ...modifier import DogmaModifier
@@ -39,8 +38,10 @@ def add_character_missile_damage_multiplier(eve_type):
     """
     modifiers = []
     for damage_attr in (
-            AttributeId.em_damage, AttributeId.thermal_damage,
-            AttributeId.kinetic_damage, AttributeId.explosive_damage
+        AttributeId.em_damage,
+        AttributeId.thermal_damage,
+        AttributeId.kinetic_damage,
+        AttributeId.explosive_damage
     ):
         modifiers.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.owner_skillrq,

@@ -33,8 +33,7 @@ class TestConversionAttribute(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': 111, 'value': 8.2})
         self.dh.data['dgmattribs'].append({
             'maxAttributeID': 84, 'randomField': None, 'stackable': True,
-            'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False
-        })
+            'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False})
         self.run_builder()
         self.assertEqual(len(self.log), 2)
         idzing_stats = self.log[0]

@@ -25,15 +25,13 @@ from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import (
-    ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks
-)
+    ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks)
 from .helper import DamageTypes
 from .item import *
 from .pubsub.broker import FitMessageBroker
 from .pubsub.message import (
     InputDefaultIncomingDamageChanged, InputItemAdded, InputItemRemoved,
-    InputSourceChanged
-)
+    InputSourceChanged)
 from .pubsub.subscriber import BaseSubscriber
 from .restriction import RestrictionService
 from .sim import *
@@ -190,6 +188,5 @@ class Fit(FitMessageBroker, BaseSubscriber):
         spec = [
             'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
             'fighters', 'character', 'skills', 'implants', 'boosters',
-            'effect_beacon', 'default_incoming_damage', 'source'
-        ]
+            'effect_beacon', 'default_incoming_damage', 'source']
         return make_repr_str(self, spec)

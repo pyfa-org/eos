@@ -35,8 +35,10 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.ship, tgt_filter_extra_arg=None,
+            self,
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.ship,
+            tgt_filter_extra_arg=None,
             tgt_attr=AttributeId.max_velocity
         )
 
@@ -60,8 +62,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         # Log warning for zero ship mass, as it's abnormal situation
         except ZeroDivisionError as e:
             msg = (
-                'cannot calculate propulsion speed boost due to zero ship mass'
-            )
+                'cannot calculate propulsion speed boost due to zero ship mass')
             logger.warning(msg)
             raise ModificationCalculationError from e
         return ModifierOperator.post_percent, ship_speed_percentage

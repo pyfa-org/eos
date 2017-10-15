@@ -97,8 +97,7 @@ class EosTestCase(TestCase):
         return CacheHandler()
 
     def assert_object_buffers_empty(
-        self, object_, ignore_objects=(), ignore_attrs=()
-    ):
+            self, object_, ignore_objects=(), ignore_attrs=()):
         """Checks if buffers of passed object are clear.
 
         Fails test if there's something remaining in buffers. Useful to detect
@@ -121,8 +120,8 @@ class EosTestCase(TestCase):
             self.fail(msg=msg)
 
     def _get_object_buffer_entry_amount(
-        self, object_, ignore_objects=(), ignore_attrs=(), checked_objects=None
-    ):
+            self, object_, ignore_objects=(), ignore_attrs=(),
+            checked_objects=None):
         entry_amt = 0
         # Initialize variables for initial call
         if checked_objects is None:
@@ -191,8 +190,7 @@ class EosTestCase(TestCase):
             ):
                 entry_amt += self._get_object_buffer_entry_amount(
                     attr_val, ignore_objects=ignore_objects,
-                    ignore_attrs=ignore_attrs, checked_objects=checked_objects
-                )
+                    ignore_attrs=ignore_attrs, checked_objects=checked_objects)
         return entry_amt
 
     def _setup_args_capture(self, mock_obj, arg_list):

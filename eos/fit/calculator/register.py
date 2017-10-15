@@ -214,13 +214,11 @@ class AffectionRegister:
             if group is not None:
                 # Domain and group
                 affectee_maps.append(
-                    ((domain, group), self.__affectee_domain_group)
-                )
+                    ((domain, group), self.__affectee_domain_group))
             for skill in target_item._eve_type.required_skills:
                 # Domain and skill requirement
                 affectee_maps.append(
-                    ((domain, skill), self.__affectee_domain_skillrq)
-                )
+                    ((domain, skill), self.__affectee_domain_skillrq))
         if target_item._owner_modifiable is True:
             for skill in target_item._eve_type.required_skills:
                 # Owner-modifiable and skill requirement
@@ -233,18 +231,15 @@ class AffectionRegister:
         other_item = target_item._other
         if other_item is not None:
             affectors_to_enable = self.__find_affectors_for_tgt_other(
-                chain(*self.__affector_item_awaiting.values()), other_item
-            )
+                chain(*self.__affector_item_awaiting.values()), other_item)
         elif target_item is self.__calc_svc._current_ship:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
                 chain(*self.__affector_item_awaiting.values()),
-                ModifierDomain.ship
-            )
+                ModifierDomain.ship)
         elif target_item is self.__calc_svc._current_char:
             affectors_to_enable = self.__find_affectors_for_tgt_domain(
                 chain(*self.__affector_item_awaiting.values()),
-                ModifierDomain.character
-            )
+                ModifierDomain.character)
         else:
             return
         # Enable them - move from awaiting map to enabled map
@@ -323,13 +318,11 @@ class AffectionRegister:
             affectors.update(self.__affector_domain.get(domain, ()))
             # Domain and group
             affectors.update(self.__affector_domain_group.get(
-                (domain, target_item._eve_type.group), ()
-            ))
+                (domain, target_item._eve_type.group), ()))
             for skill in target_item._eve_type.required_skills:
                 # Domain and skill requirement
                 affectors.update(self.__affector_domain_skillrq.get(
-                    (domain, skill), ()
-                ))
+                    (domain, skill), ()))
         if target_item._owner_modifiable is True:
             for skill in target_item._eve_type.required_skills:
                 # Owner-modifiable and skill requirement

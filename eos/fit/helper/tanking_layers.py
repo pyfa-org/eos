@@ -51,13 +51,17 @@ class TankingLayers:
 
     def __eq__(self, other):
         return all((
-            self.hull == other.hull, self.armor == other.armor,
+            self.hull == other.hull,
+            self.armor == other.armor,
             self.shield == other.shield
         ))
 
     def __hash__(self):
         return hash((
-            self.__class__.__name__, self.hull, self.armor, self.shield
+            self.__class__.__name__,
+            self.hull,
+            self.armor,
+            self.shield
         ))
 
     def __repr__(self):
@@ -72,7 +76,9 @@ class TankingLayersTotal(TankingLayers):
     def total(self):
         total = (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
         if (
-            total == 0 and self.hull is None and self.armor is None and
+            total == 0 and
+            self.hull is None and
+            self.armor is None and
             self.shield is None
         ):
             return None

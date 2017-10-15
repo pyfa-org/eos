@@ -59,13 +59,18 @@ class DamageTypes:
 
     def __eq__(self, other):
         return all((
-            self.em == other.em, self.thermal == other.thermal,
-            self.kinetic == other.kinetic, self.explosive == other.explosive
+            self.em == other.em,
+            self.thermal == other.thermal,
+            self.kinetic == other.kinetic,
+            self.explosive == other.explosive
         ))
 
     def __hash__(self):
         return hash((
-            self.__class__.__name__, self.em, self.thermal, self.kinetic,
+            self.__class__.__name__,
+            self.em,
+            self.thermal,
+            self.kinetic,
             self.explosive
         ))
 
@@ -80,12 +85,16 @@ class DamageTypesTotal(DamageTypes):
     @cached_property
     def total(self):
         total = (
-            (self.em or 0) + (self.thermal or 0) + (self.kinetic or 0) +
+            (self.em or 0) +
+            (self.thermal or 0) +
+            (self.kinetic or 0) +
             (self.explosive or 0)
         )
         if total == 0 and (
-            self.em is None and self.thermal is None and
-            self.kinetic is None and self.explosive is None
+            self.em is None and
+            self.thermal is None and
+            self.kinetic is None and
+            self.explosive is None
         ):
             return None
         return total
@@ -111,18 +120,22 @@ class DamageProfile(DamageTypes):
 
     def __init__(self, em, thermal, kinetic, explosive):
         if not all((
-            isinstance(em, Real), isinstance(thermal, Real),
-            isinstance(kinetic, Real), isinstance(explosive, Real)
+            isinstance(em, Real),
+            isinstance(thermal, Real),
+            isinstance(kinetic, Real),
+            isinstance(explosive, Real)
         )):
             raise TypeError('all damage types must be numbers')
         if not all((
-            em >= 0, thermal >= 0, kinetic >= 0, explosive >= 0,
+            em >= 0,
+            thermal >= 0,
+            kinetic >= 0,
+            explosive >= 0,
             em + thermal + kinetic + explosive > 0
         )):
             msg = (
                 'all damage types must be non-negative numbers '
-                'with positive sum'
-            )
+                'with positive sum')
             raise ValueError(msg)
         DamageTypes.__init__(self, em, thermal, kinetic, explosive)
 
@@ -137,13 +150,17 @@ class ResistanceProfile(DamageTypes):
 
     def __init__(self, em, thermal, kinetic, explosive):
         if not all((
-            isinstance(em, Real), isinstance(thermal, Real),
-            isinstance(kinetic, Real), isinstance(explosive, Real)
+            isinstance(em, Real),
+            isinstance(thermal, Real),
+            isinstance(kinetic, Real),
+            isinstance(explosive, Real)
         )):
             raise TypeError('all resistances must be numbers')
         if not all((
-            0 <= em <= 1, 0 <= thermal <= 1,
-            0 <= kinetic <= 1, 0 <= explosive <= 1
+            0 <= em <= 1,
+            0 <= thermal <= 1,
+            0 <= kinetic <= 1,
+            0 <= explosive <= 1
         )):
             raise ValueError('all resistances must be within range [0, 1]')
         DamageTypes.__init__(self, em, thermal, kinetic, explosive)

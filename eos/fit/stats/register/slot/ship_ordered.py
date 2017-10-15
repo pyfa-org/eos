@@ -28,8 +28,7 @@ from .base import BaseSlotStatRegister
 
 
 class OrderedShipSlotStatRegister(
-    BaseSlotStatRegister, InheritableVolatileMixin
-):
+        BaseSlotStatRegister, InheritableVolatileMixin):
 
     def __init__(self, msg_broker, slot_effect, slot_attr):
         BaseSlotStatRegister.__init__(self)

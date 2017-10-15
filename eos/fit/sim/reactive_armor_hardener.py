@@ -26,8 +26,7 @@ from math import ceil, floor
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrAttrValueChangedMasked,
-    InputDefaultIncomingDamageChanged, InstrEffectsStart, InstrEffectsStop
-)
+    InputDefaultIncomingDamageChanged, InstrEffectsStart, InstrEffectsStop)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
 from eos.util.round import sig_round
@@ -73,15 +72,15 @@ class RahState:
         self.resos = resos
         self._rounded_resos = {
             attr: sig_round(value, SIG_DIGITS)
-            for attr, value in resos.items()
-        }
+            for attr, value in resos.items()}
 
     # Use rounded resonances for more reliable loop detection, as without it
     # accumulated float errors may lead to failed loop detection, in case float
     # values are really close, but still different
     def __hash__(self):
         return hash((
-            id(self.item), self.cycling,
+            id(self.item),
+            self.cycling,
             frozenset(self._rounded_resos.items())
         ))
 
@@ -178,8 +177,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {RAH item: {resonance attribute: damage received}}
         cycle_dmg_data = {
             item: {attr: 0 for attr in res_attrs}
-            for item in self.__data
-        }
+            for item in self.__data}
 
         for tick_data in self.__sim_tick_iter(MAX_SIMULATION_TICKS):
             time_passed, cycled, cycling_data = tick_data
@@ -189,16 +187,14 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 for attr in res_attrs:
                     item_cycle_dmg[attr] += (
                         getattr(incoming_dmg, profile_attrib_map[attr]) *
-                        ship_attrs[attr] * time_passed
-                    )
+                        ship_attrs[attr] * time_passed)
 
             for item in cycled:
                 # If RAH just finished its cycle, make resist switch - get new
                 # resonances
                 new_resos = self.__get_next_resos(
                     self.__data[item], cycle_dmg_data[item],
-                    item.attributes[AttributeId.resistance_shift_amount] / 100
-                )
+                    item.attributes[AttributeId.resistance_shift_amount] / 100)
 
                 # Then write these resonances to dictionary with results and
                 # notify everyone about these changes. This is needed to get
@@ -215,8 +211,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             tick_state = frozenset(
                 # Copy resonances, as we will be modifying them each tick
                 RahState(item, cycling_data[item], copy(resos))
-                for item, resos in self.__data.items()
-            )
+                for item, resos in self.__data.items())
 
             # See if we're in a loop, if we are - calculate average resists
             # across tick states which are within the loop
@@ -287,8 +282,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # Pick time remaining until some RAH finishes its cycle
             time_passed = min(
                 self.__get_rah_duration(item) - cycling
-                for item, cycling in iter_cycle_data.items()
-            )
+                for item, cycling in iter_cycle_data.items())
             # Compose set of RAHs which will finish cycle after passed amount of
             # time
             cycled = set()
@@ -328,8 +322,9 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # We borrow resistances from at least 2 resist types, possibly more if
         # ship didn't take damage of these types
         donors = max(2, len(tuple(
-            item for item in received_dmg if received_dmg[item] == 0
-        )))
+            item
+            for item in received_dmg
+            if received_dmg[item] == 0)))
         recipients = 4 - donors
         # Primary key for sorting is received damage, secondary is default
         # order. Default order "sorting" happens due to default order of
@@ -376,8 +371,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         for item, resos in rahs_resos_used.items():
             avgd_resos[item] = {
                 attr: sum(r[attr] for r in resos) / len(resos)
-                for attr in res_attrs
-            }
+                for attr in res_attrs}
         return avgd_resos
 
     def __estimate_initial_adaptation_ticks(self, tick_states):
@@ -433,8 +427,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         if EffectId.adaptive_armor_hardener in message.effects:
             for attr in res_attrs:
                 message.item.attributes._set_override_callback(
-                    attr, (self.get_reso, (message.item, attr), {})
-                )
+                    attr, (self.get_reso, (message.item, attr), {}))
             self.__data.setdefault(message.item, {})
             self.__clear_results()
 
@@ -449,18 +442,18 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__clear_results()
 
     def _handle_attr_change(self, message):
+        item = message.item
         # Ship resistances
-        if message.item is self.__fit.ship and message.attr in res_attrs:
+        if item is self.__fit.ship and message.attr in res_attrs:
             self.__clear_results()
         # RAH shift amount or cycle time
-        elif message.item in self.__data and (
+        elif item in self.__data and (
             message.attr == AttributeId.resistance_shift_amount or
             # Cycle time change invalidates results only when there're more than
             # 1 RAHs
             (
                 len(self.__data) > 1 and
-                message.attr == self.__get_rah_effect(
-                    message.item).duration_attribute
+                message.attr == self.__get_rah_effect(item).duration_attribute
             )
         ):
             self.__clear_results()

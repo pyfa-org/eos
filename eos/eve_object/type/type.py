@@ -57,8 +57,14 @@ class Type(BaseCachable):
     """
 
     def __init__(
-        self, type_id, group=None, category=None, attributes=DEFAULT,
-        effects=(), default_effect=None, fighter_abilities=DEFAULT,
+        self,
+        type_id,
+        group=None,
+        category=None,
+        attributes=DEFAULT,
+        effects=(),
+        default_effect=None,
+        fighter_abilities=DEFAULT,
         customize=True
     ):
         self.id = type_id
@@ -150,8 +156,7 @@ class Type(BaseCachable):
             attributes={k: v for k, v in compressed[3]},
             effects=tuple(
                 cache_handler.get_effect(eid)
-                for eid in compressed[4]
-            ),
+                for eid in compressed[4]),
             default_effect=default_effect,
             fighter_abilities={k: v for k, v in compressed[6]}
         )

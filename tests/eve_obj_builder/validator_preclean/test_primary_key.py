@@ -53,8 +53,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table evetypes have invalid PKs, removing them'
-        )
+            '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -71,8 +70,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table evetypes have invalid PKs, removing them'
-        )
+            '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -90,8 +88,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table evetypes have invalid PKs, removing them'
-        )
+            '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -114,8 +111,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table evetypes have invalid PKs, removing them'
-        )
+            '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -138,8 +134,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table evetypes have invalid PKs, removing them'
-        )
+            '1 rows in table evetypes have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -179,8 +174,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table dgmtypeattribs have invalid PKs, removing them'
-        )
+            '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -202,8 +196,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table dgmtypeattribs have invalid PKs, removing them'
-        )
+            '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -227,8 +220,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table dgmtypeattribs have invalid PKs, removing them'
-        )
+            '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -255,8 +247,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table dgmtypeattribs have invalid PKs, removing them'
-        )
+            '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -281,8 +272,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table dgmtypeattribs have invalid PKs, removing them'
-        )
+            '1 rows in table dgmtypeattribs have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -309,8 +299,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table evegroups have invalid PKs, removing them'
-        )
+            '1 rows in table evegroups have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -409,13 +398,11 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['dgmexpressions'].append({
             'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
             'expressionValue': None, 'expressionTypeID': 502,
-            'expressionGroupID': 451, 'expressionAttributeID': 90
-        })
+            'expressionGroupID': 451, 'expressionAttributeID': 90})
         self.dh.data['dgmexpressions'].append({
             'expressionID': 83, 'operandID': 80, 'arg1': 1009, 'arg2': 15,
             'expressionValue': None, 'expressionTypeID': 502,
-            'expressionGroupID': 451, 'expressionAttributeID': 90
-        })
+            'expressionGroupID': 451, 'expressionAttributeID': 90})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
         self.assertEqual(len(self.log), 3)
@@ -425,8 +412,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows in table dgmexpressions have invalid PKs, removing them'
-        )
+            '1 rows in table dgmexpressions have invalid PKs, removing them')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
@@ -440,8 +426,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         expected = {
             'expressionID': 83, 'operandID': 75, 'arg1': 1009, 'arg2': 15,
             'expressionValue': None, 'expressionTypeID': 502,
-            'expressionGroupID': 451, 'expressionAttributeID': 90
-        }
+            'expressionGroupID': 451, 'expressionAttributeID': 90}
         # Filter out fields we do not want to check
         fields_to_check = set(expected).intersection(actual)
         actual_clean = {k: actual[k] for k in fields_to_check}

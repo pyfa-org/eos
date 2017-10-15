@@ -22,8 +22,7 @@
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, TypeId
 from eos.fit.pubsub.message import (
-    InstrAttrValueChanged, InstrItemAdd, InstrItemRemove
-)
+    InstrAttrValueChanged, InstrItemAdd, InstrItemRemove)
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
 
@@ -32,9 +31,11 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModifierTargetFilter.item,
+            self,
+            tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_filter_extra_arg=None, tgt_attr=AttributeId.armor_damage_amount
+            tgt_filter_extra_arg=None,
+            tgt_attr=AttributeId.armor_damage_amount
         )
 
     def get_modification(self, carrier_item, _):

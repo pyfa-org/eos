@@ -90,8 +90,7 @@ class BaseModifier(metaclass=ABCMeta):
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target,
-                ModifierDomain.other
-            ),
+                ModifierDomain.other),
             self.tgt_filter_extra_arg is None
         ))
 
@@ -99,8 +98,7 @@ class BaseModifier(metaclass=ABCMeta):
         return all((
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target
-            ),
+                ModifierDomain.ship, ModifierDomain.target),
             self.tgt_filter_extra_arg is None
         ))
 
@@ -108,8 +106,7 @@ class BaseModifier(metaclass=ABCMeta):
         return all((
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target
-            ),
+                ModifierDomain.ship, ModifierDomain.target),
             # References group via ID
             isinstance(self.tgt_filter_extra_arg, Integral)
         ))
@@ -118,8 +115,7 @@ class BaseModifier(metaclass=ABCMeta):
         return all((
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target
-            ),
+                ModifierDomain.ship, ModifierDomain.target),
             # References skill via ID
             isinstance(self.tgt_filter_extra_arg, Integral)
         ))

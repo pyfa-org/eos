@@ -39,12 +39,10 @@ class TestConversionEffect(EveObjBuilderTestCase):
             'durationAttributeID': 781, 'randomField': 666,
             'dischargeAttributeID': 72, 'isAssistance': False,
             'effectCategory': 111, 'trackingSpeedAttributeID': 6,
-            'modifierInfo': None
-        })
+            'modifierInfo': None})
         mod = self.mod(
-            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5,
-            tgt_attr=6, operator=7, src_attr=8
-        )
+            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5, tgt_attr=6,
+            operator=7, src_attr=8)
         mod_builder.return_value.build.return_value = ([mod], 29)
         self.run_builder()
         self.assertEqual(len(self.log), 2)

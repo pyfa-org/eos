@@ -26,8 +26,7 @@ from eos.const.eve import EffectId
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import (
     InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved,
-    InstrRefreshSource
-)
+    InstrRefreshSource)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 

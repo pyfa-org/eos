@@ -27,8 +27,7 @@ from .base import BaseResourceStatRegister
 
 
 class DronebayVolumeStatRegister(
-    BaseResourceStatRegister, InheritableVolatileMixin
-):
+        BaseResourceStatRegister, InheritableVolatileMixin):
 
     def __init__(self, msg_broker):
         BaseResourceStatRegister.__init__(self)
@@ -41,8 +40,7 @@ class DronebayVolumeStatRegister(
     def used(self):
         return sum(
             item.attributes[AttributeId.volume]
-            for item in self.__resource_users
-        )
+            for item in self.__resource_users)
 
     @volatile_property
     def output(self):

@@ -108,8 +108,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         shield_ehp = self.__get_layer_ehp(
             self.hp.shield, self.resistances.shield, damage_profile)
         return TankingLayersTotal(
-            hull=hull_ehp, armor=armor_ehp, shield=shield_ehp
-        )
+            hull=hull_ehp, armor=armor_ehp, shield=shield_ehp)
 
     def __get_layer_ehp(self, layer_hp, layer_resists, damage_profile):
         """Calculate layer EHP according to passed data.
@@ -152,8 +151,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         shield_ehp = self.__get_layer_worst_case_ehp(
             self.hp.shield, self.resistances.shield)
         return TankingLayersTotal(
-            hull=hull_ehp, armor=armor_ehp, shield=shield_ehp
-        )
+            hull=hull_ehp, armor=armor_ehp, shield=shield_ehp)
 
     def __get_layer_worst_case_ehp(self, layer_hp, layer_resists):
         """Calculate layer EHP according to passed data.

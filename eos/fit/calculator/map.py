@@ -28,8 +28,7 @@ from eos.const.eos import ModifierOperator
 from eos.const.eve import AttributeId, CategoryId
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.pubsub.message import (
-    InstrAttrValueChanged, InstrAttrValueChangedMasked
-)
+    InstrAttrValueChanged, InstrAttrValueChangedMasked)
 from eos.util.keyed_set import KeyedSet
 from .exception import AttributeMetaError, BaseValueError
 
@@ -210,8 +209,7 @@ class MutableAttributeMap:
         # Return union of attributes from base, modified and override dictionary
         return set(chain(
             base_attrs, self.__modified_attributes,
-            self.__override_callbacks or {}
-        ))
+            self.__override_callbacks or {}))
 
     def items(self):
         return set((attr_id, self.get(attr_id)) for attr_id in self.keys())

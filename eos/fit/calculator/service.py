@@ -25,8 +25,7 @@ from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.item import Character, Ship
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrEffectsStart, InstrEffectsStop, InstrItemAdd,
-    InstrItemRemove
-)
+    InstrItemRemove)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_set import KeyedSet
 from .affector import Affector
@@ -152,8 +151,7 @@ class CalculationService(BaseSubscriber):
         # if it should
         for affector in self.__subscribed_affectors[msg_type]:
             if not affector.modifier.revise_modification(
-                message, affector.carrier_item, self._current_ship
-            ):
+                    message, affector.carrier_item, self._current_ship):
                 continue
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr]
@@ -175,8 +173,9 @@ class CalculationService(BaseSubscriber):
 
     # Do not process here just target domain
     _supported_domains = set(
-        d for d in ModifierDomain if d != ModifierDomain.target
-    )
+        domain
+        for domain in ModifierDomain
+        if domain != ModifierDomain.target)
 
     # Affector generation and manipulation
     def __generate_affectors(self, item, effect_ids):

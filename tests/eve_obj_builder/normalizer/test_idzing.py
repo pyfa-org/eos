@@ -39,8 +39,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'EnergyWeapon',
             'expressionTypeID': 567, 'expressionGroupID': None,
-            'expressionAttributeID': 102
-        })
+            'expressionAttributeID': 102})
         mod_builder.return_value.build.return_value = ([], 0)
         # Action
         self.run_builder()
@@ -59,8 +58,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': None, 'expressionTypeID': 567,
             'expressionGroupID': 53, 'expressionAttributeID': 102,
-            'table_pos': 0
-        }
+            'table_pos': 0}
         self.assertIn(expected, expressions)
 
     def test_group_ignorelist(self, mod_builder):
@@ -71,8 +69,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['dgmexpressions'].append({
             'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'PowerCore', 'expressionTypeID': 567,
-            'expressionGroupID': None, 'expressionAttributeID': 102
-        })
+            'expressionGroupID': None, 'expressionAttributeID': 102})
         mod_builder.return_value.build.return_value = ([], 0)
         # Action
         self.run_builder()
@@ -91,8 +88,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'PowerCore', 'expressionTypeID': 567,
             'expressionGroupID': None, 'expressionAttributeID': 102,
-            'table_pos': 0
-        }
+            'table_pos': 0}
         self.assertIn(expected, expressions)
 
     def test_warning_unused(self, mod_builder):
@@ -108,8 +104,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.assertEqual(
             idzing_stats.msg,
             '4 replacements for expressionGroupID were not used: '
-            '"EnergyWeapon", "HybridWeapon", "MiningLaser", "ProjectileWeapon"'
-        )
+            '"EnergyWeapon", "HybridWeapon", "MiningLaser", "ProjectileWeapon"')
 
     def test_warning_unknown(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})
@@ -120,8 +115,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'EnergyWeaponry',
             'expressionTypeID': 567, 'expressionGroupID': None,
-            'expressionAttributeID': 102
-        })
+            'expressionAttributeID': 102})
         mod_builder.return_value.build.return_value = ([], 0)
         # Action
         self.run_builder()
@@ -138,8 +132,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.assertEqual(
             idzing_stats_failures.msg,
             'unable to convert 1 literal references '
-            'to expressionGroupID: "EnergyWeaponry"'
-        )
+            'to expressionGroupID: "EnergyWeaponry"')
         clean_stats = self.log[2]
         self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
         self.assertEqual(clean_stats.levelno, logging.INFO)

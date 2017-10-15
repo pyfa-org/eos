@@ -52,7 +52,9 @@ class ModuleItemView:
 
     def __iter__(self):
         for item in chain(
-            self.__racks.high, self.__racks.med, self.__racks.low
+            self.__racks.high,
+            self.__racks.med,
+            self.__racks.low
         ):
             if item is None:
                 continue

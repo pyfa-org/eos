@@ -42,14 +42,12 @@ class RahSimTestCase(IntegrationTestCase):
         self.cycle_attr = self.ch.attribute(high_is_good=False, stackable=True)
         self.heat_attr = self.ch.attribute(high_is_good=False, stackable=True)
         self.shift_attr = self.ch.attribute(
-            attribute_id=AttributeId.resistance_shift_amount, high_is_good=True, stackable=True
-        )
+            attribute_id=AttributeId.resistance_shift_amount, high_is_good=True, stackable=True)
         self.armor_em, self.armor_therm, self.armor_kin, self.armor_exp = (self.ch.attribute(
             attribute_id=attr, max_attribute=self.max_attr.id, high_is_good=False, stackable=False
         ) for attr in (
             AttributeId.armor_em_damage_resonance, AttributeId.armor_thermal_damage_resonance,
-            AttributeId.armor_kinetic_damage_resonance, AttributeId.armor_explosive_damage_resonance
-        ))
+            AttributeId.armor_kinetic_damage_resonance, AttributeId.armor_explosive_damage_resonance))
         # Effect setup
         self.rah_effect = self.ch.effect(
             effect_id=EffectId.adaptive_armor_hardener, category=EffectCategoryId.active,

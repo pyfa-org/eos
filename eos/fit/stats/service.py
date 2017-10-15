@@ -154,8 +154,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         return volley
 
     def get_nominal_dps(
-        self, item_filter=None, target_resistances=None, reload=False
-    ):
+            self, item_filter=None, target_resistances=None, reload=False):
         """
         Get nominal DPS of the fit.
 

@@ -115,8 +115,7 @@ class ValidatorPreConv:
             dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
         rack_effects = (
-            EffectId.hi_power, EffectId.med_power, EffectId.lo_power
-        )
+            EffectId.hi_power, EffectId.med_power, EffectId.lo_power)
         racked_items = set()
         invalid_rows = set()
         for row in sorted(dte_rows, key=lambda r: r['table_pos']):

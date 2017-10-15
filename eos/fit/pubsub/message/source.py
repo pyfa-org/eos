@@ -24,8 +24,7 @@ from eos.util.repr import make_repr_str
 from .base import BaseInputMessage, BaseInstructionMessage
 from .item import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove,
-    InstrStatesActivate, InstrStatesDeactivate
-)
+    InstrStatesActivate, InstrStatesDeactivate)
 
 
 class InputSourceChanged(BaseInputMessage):

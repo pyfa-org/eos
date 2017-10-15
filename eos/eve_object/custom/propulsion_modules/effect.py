@@ -22,8 +22,7 @@
 from logging import getLogger
 
 from eos.const.eos import (
-    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter
-)
+    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
 from eos.const.eve import AttributeId
 from .modifier import PropulsionModuleVelocityBoostModifier
 from ...modifier import DogmaModifier

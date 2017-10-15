@@ -22,12 +22,10 @@
 from .pubsub.message import (
     InputDefaultIncomingDamageChanged, InputEffectsRunModeChanged,
     InputItemAdded, InputItemRemoved, InputSkillLevelChanged,
-    InputSourceChanged, InputStateChanged
-)
+    InputSourceChanged, InputStateChanged)
 from .pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import (
-    CooperativeVolatileMixin, InheritableVolatileMixin
-)
+    CooperativeVolatileMixin, InheritableVolatileMixin)
 
 
 class FitVolatileManager(BaseSubscriber):
@@ -75,8 +73,7 @@ class FitVolatileManager(BaseSubscriber):
     # Private methods for message handlers
     def __add_volatile_object(self, object):
         if isinstance(
-            object, (InheritableVolatileMixin, CooperativeVolatileMixin)
-        ):
+                object, (InheritableVolatileMixin, CooperativeVolatileMixin)):
             self.__volatile_objects.add(object)
 
     def __remove_volatile_object(self, object):

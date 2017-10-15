@@ -20,8 +20,7 @@
 
 
 from eos.const.eos import (
-    EosTypeId, ModifierDomain, ModifierOperator, ModifierTargetFilter
-)
+    EosTypeId, ModifierDomain, ModifierOperator, ModifierTargetFilter)
 from eos.const.eve import OperandId
 from eos.eve_object.modifier import DogmaModifier
 from eos.util.attribute_dict import AttributeDict

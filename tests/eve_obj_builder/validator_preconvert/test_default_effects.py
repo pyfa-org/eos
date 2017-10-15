@@ -76,8 +76,7 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.assertEqual(
             log_record.msg,
             'data contains 1 excessive default effects, '
-            'marking them as non-default'
-        )
+            'marking them as non-default')
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         # Make sure effects are not removed

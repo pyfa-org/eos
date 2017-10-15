@@ -113,7 +113,8 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         damage = charge_attribs.get(AttributeId.crystal_volatility_damage)
         if (
             not damageable or
-            hp is None or chance is None or
+            hp is None or
+            chance is None or
             damage is None or
             self.charge_quantity is None
         ):

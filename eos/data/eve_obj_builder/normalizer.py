@@ -132,11 +132,14 @@ class Normalizer:
         # )
         repl_spec = (
             (
-                OperandId.def_attr, 'expressionAttributeID', {},
+                OperandId.def_attr,
+                'expressionAttributeID',
+                {},
                 ('shieldDamage',)
             ),
             (
-                OperandId.def_grp, 'expressionGroupID',
+                OperandId.def_grp,
+                'expressionGroupID',
                 {
                     'EnergyWeapon': GroupId.energy_weapon,
                     'HybridWeapon': GroupId.hydrid_weapon,
@@ -146,7 +149,9 @@ class Normalizer:
                 ('Structure', 'PowerCore', '    None')
             ),
             (
-                OperandId.def_type, 'expressionTypeID', {},
+                OperandId.def_type,
+                'expressionTypeID',
+                {},
                 ('Acceration Control',)
             )
         )

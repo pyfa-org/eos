@@ -28,8 +28,7 @@ from .base import BaseResourceStatRegister
 
 
 class RoundedResourceStatRegister(
-    BaseResourceStatRegister, InheritableVolatileMixin
-):
+        BaseResourceStatRegister, InheritableVolatileMixin):
 
     def __init__(self, msg_broker, output_attr, use_effect, use_attr):
         BaseResourceStatRegister.__init__(self)
@@ -96,8 +95,7 @@ class CpuStatRegister(RoundedResourceStatRegister):
     def __init__(self, msg_broker):
         RoundedResourceStatRegister.__init__(
             self, msg_broker, AttributeId.cpu_output, EffectId.online,
-            AttributeId.cpu
-        )
+            AttributeId.cpu)
 
 
 class PowergridStatRegister(RoundedResourceStatRegister):
@@ -105,5 +103,4 @@ class PowergridStatRegister(RoundedResourceStatRegister):
     def __init__(self, msg_broker):
         RoundedResourceStatRegister.__init__(
             self, msg_broker, AttributeId.power_output, EffectId.online,
-            AttributeId.power
-        )
+            AttributeId.power)

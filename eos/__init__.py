@@ -48,5 +48,4 @@ from .data.data_handler import JsonDataHandler, SQLiteDataHandler
 from .fit.item import (
     Booster, Character, Charge, Drone, EffectBeacon, FighterSquad,
     Implant, ModuleHigh, ModuleMed, ModuleLow, Rig, Ship, Skill,
-    Stance, Subsystem
-)
+    Stance, Subsystem)

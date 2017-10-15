@@ -29,8 +29,7 @@ from .base import BaseResourceStatRegister
 
 
 class DroneBandwidthStatRegister(
-    BaseResourceStatRegister, InheritableVolatileMixin
-):
+        BaseResourceStatRegister, InheritableVolatileMixin):
 
     def __init__(self, msg_broker):
         BaseResourceStatRegister.__init__(self)
@@ -43,8 +42,7 @@ class DroneBandwidthStatRegister(
     def used(self):
         return sum(
             item.attributes[AttributeId.drone_bandwidth_used]
-            for item in self.__resource_users
-        )
+            for item in self.__resource_users)
 
     @volatile_property
     def output(self):
@@ -75,7 +73,7 @@ class DroneBandwidthStatRegister(
             isinstance(message.item, Drone) and
             State.online in message.states and
             AttributeId.drone_bandwidth_used in
-            message.item._eve_type.attributes
+                message.item._eve_type.attributes
         ):
             self.__resource_users.add(message.item)
 

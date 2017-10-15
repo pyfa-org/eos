@@ -28,9 +28,8 @@ from .mixin.tanking import BufferTankingMixin
 
 
 class Drone(
-    MutableStateMixin, DamageDealerMixin, BufferTankingMixin,
-    DefaultEffectProxyMixin
-):
+        MutableStateMixin, DamageDealerMixin, BufferTankingMixin,
+        DefaultEffectProxyMixin):
     """Represents a single drone.
 
     Eos doesn't unify multiple drones into stacks, it should be done in services

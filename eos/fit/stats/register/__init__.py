@@ -40,10 +40,8 @@ __all__ = [
 from .damage_dealer import DamageDealerRegister
 from .resource import (
     CalibrationStatRegister, CpuStatRegister, DroneBandwidthStatRegister,
-    DronebayVolumeStatRegister, PowergridStatRegister
-)
+    DronebayVolumeStatRegister, PowergridStatRegister)
 from .slot import (
     HighSlotStatRegister, LaunchedDroneStatRegister, LauncherSlotStatRegister,
     LowSlotStatRegister, MediumSlotStatRegister, RigSlotStatRegister,
-    SubsystemSlotStatRegister, TurretSlotStatRegister
-)
+    SubsystemSlotStatRegister, TurretSlotStatRegister)

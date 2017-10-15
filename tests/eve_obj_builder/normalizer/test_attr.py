@@ -100,8 +100,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.assertEqual(
             duplicate_error.msg,
             '1 built-in attributes already have had value '
-            'in dgmtypeattribs and were skipped'
-        )
+            'in dgmtypeattribs and were skipped')
         idzing_stats = self.log[1]
         self.assertEqual(
             idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')

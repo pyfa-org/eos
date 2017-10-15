@@ -61,10 +61,19 @@ class Effect(BaseCachable):
     """
 
     def __init__(
-        self, effect_id, category=None, is_offensive=False, is_assistance=False,
-        duration_attribute=None, discharge_attribute=None, range_attribute=None,
-        falloff_attribute=None, tracking_speed_attribute=None,
-        fitting_usage_chance_attribute=None, build_status=None, modifiers=(),
+        self,
+        effect_id,
+        category=None,
+        is_offensive=False,
+        is_assistance=False,
+        duration_attribute=None,
+        discharge_attribute=None,
+        range_attribute=None,
+        falloff_attribute=None,
+        tracking_speed_attribute=None,
+        fitting_usage_chance_attribute=None,
+        build_status=None,
+        modifiers=(),
         customize=True
     ):
         self.id = effect_id
@@ -150,8 +159,7 @@ class Effect(BaseCachable):
             tuple(
                 m.compress()
                 for m in self.modifiers
-                if isinstance(m, DogmaModifier)
-            )
+                if isinstance(m, DogmaModifier))
         )
 
     @classmethod
@@ -170,8 +178,7 @@ class Effect(BaseCachable):
             build_status=compressed[10],
             modifiers=tuple(
                 DogmaModifier.decompress(cache_handler, cm)
-                for cm in compressed[11]
-            )
+                for cm in compressed[11])
         )
 
     # Auxiliary methods

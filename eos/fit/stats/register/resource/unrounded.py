@@ -28,8 +28,7 @@ from .base import BaseResourceStatRegister
 
 
 class UnroundedResourceStatRegister(
-    BaseResourceStatRegister, InheritableVolatileMixin
-):
+        BaseResourceStatRegister, InheritableVolatileMixin):
 
     def __init__(self, msg_broker, output_attr, use_effect, use_attr):
         BaseResourceStatRegister.__init__(self)
@@ -45,8 +44,7 @@ class UnroundedResourceStatRegister(
     def used(self):
         return sum(
             item.attributes[self.__use_attr]
-            for item in self.__resource_users
-        )
+            for item in self.__resource_users)
 
     @volatile_property
     def output(self):
@@ -96,5 +94,4 @@ class CalibrationStatRegister(UnroundedResourceStatRegister):
     def __init__(self, msg_broker):
         UnroundedResourceStatRegister.__init__(
             self, msg_broker, AttributeId.upgrade_capacity, EffectId.rig_slot,
-            AttributeId.upgrade_cost
-        )
+            AttributeId.upgrade_cost)

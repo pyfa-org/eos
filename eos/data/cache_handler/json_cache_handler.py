@@ -136,16 +136,13 @@ class JsonCacheHandler(BaseCacheHandler):
         cache_data = {
             'types': {
                 type_id: eve_type.compress()
-                for type_id, eve_type in types.items()
-            },
+                for type_id, eve_type in types.items()},
             'attributes': {
                 attr_id: attr.compress()
-                for attr_id, attr in attributes.items()
-            },
+                for attr_id, attr in attributes.items()},
             'effects': {
                 effect_id: effect.compress()
-                for effect_id, effect in effects.items()
-            },
+                for effect_id, effect in effects.items()},
             'fingerprint': fingerprint
         }
         self.__update_persistent_cache(cache_data)
@@ -165,14 +162,14 @@ class JsonCacheHandler(BaseCacheHandler):
         # Convert keys to ints because we accept cache data decoded
         # from JSON, and in JSON map keys are always strings
         self.__type_data_cache = {
-            int(k): v for k, v in cache_data['types'].items()
-        }
+            int(k): v
+            for k, v in cache_data['types'].items()}
         self.__attribute_data_cache = {
-            int(k): v for k, v in cache_data['attributes'].items()
-        }
+            int(k): v
+            for k, v in cache_data['attributes'].items()}
         self.__effect_data_cache = {
-            int(k): v for k, v in cache_data['effects'].items()
-        }
+            int(k): v
+            for k, v in cache_data['effects'].items()}
         self.__fingerprint = cache_data['fingerprint']
         # Also clear object cache to make sure objects composed
         # from old data are gone

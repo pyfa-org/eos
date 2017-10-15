@@ -41,8 +41,7 @@ def main():
     parser.add_argument(
         'suite', nargs='?', type=str,
         help='system path to test suite to run, defaults to all tests',
-        default=script_dir
-    )
+        default=script_dir)
     args = parser.parse_args()
 
     # If we have full path to file, adjust pattern so that we execute tests only

@@ -42,8 +42,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
             'preExpression': 100, 'postExpression': 101,
             'durationAttributeID': 1001, 'dischargeAttributeID': 1002,
             'rangeAttributeID': 1003, 'falloffAttributeID': 1004,
-            'trackingSpeedAttributeID': 1005, 'modifierInfo': None
-        })
+            'trackingSpeedAttributeID': 1005, 'modifierInfo': None})
         self.dh.data['dgmeffects'].append({
             'effectID': 201, 'effectCategory': 33, 'isOffensive': False,
             'isAssistance': False, 'fittingUsageChanceAttributeID': None,
@@ -56,79 +55,62 @@ class TestAssociatedData(EveObjBuilderTestCase):
                 '  operator: 6\n  skillTypeID: 3\n- domain: shipID\n'
                 '  func: LocationGroupModifier\n  groupID: 501\n'
                 '  modifiedAttributeID: 1008\n  modifyingAttributeID: 1009\n'
-                '  operator: 6\n'
-            )
-        })
+                '  operator: 6\n')})
         self.dh.data['dgmattribs'].append({
             'attributeID': 5, 'maxAttributeID': 1006, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': True
-        })
+            'highIsGood': False, 'stackable': True})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1000, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False
-        })
+            'highIsGood': False, 'stackable': False})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1001, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False
-        })
+            'highIsGood': False, 'stackable': False})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1002, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False
-        })
+            'highIsGood': False, 'stackable': False})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1003, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False
-        })
+            'highIsGood': False, 'stackable': False})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1004, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False
-        })
+            'highIsGood': False, 'stackable': False})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1005, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False
-        })
+            'highIsGood': False, 'stackable': False})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1006, 'maxAttributeID': None, 'defaultValue': 0.0,
-            'highIsGood': False, 'stackable': False
-        })
+            'highIsGood': False, 'stackable': False})
         self.dh.data['dgmexpressions'].append({
             'expressionID': 100, 'operandID': 6, 'arg1': 102, 'arg2': 103,
             'expressionValue': None, 'expressionTypeID': 2,
-            'expressionGroupID': 500, 'expressionAttributeID': 1007
-        })
+            'expressionGroupID': 500, 'expressionAttributeID': 1007})
         self.dh.data['dgmexpressions'].append({
             'expressionID': 101, 'operandID': 6, 'arg1': 102, 'arg2': 103,
             'expressionValue': None, 'expressionTypeID': None,
-            'expressionGroupID': None, 'expressionAttributeID': None
-        })
+            'expressionGroupID': None, 'expressionAttributeID': None})
         self.dh.data['dgmexpressions'].append({
             'expressionID': 102, 'operandID': 6, 'arg1': None, 'arg2': None,
             'expressionValue': None, 'expressionTypeID': None,
-            'expressionGroupID': None, 'expressionAttributeID': None
-        })
+            'expressionGroupID': None, 'expressionAttributeID': None})
         self.dh.data['dgmexpressions'].append({
             'expressionID': 103, 'operandID': 6, 'arg1': None, 'arg2': None,
             'expressionValue': None, 'expressionTypeID': None,
-            'expressionGroupID': None, 'expressionAttributeID': None
-        })
+            'expressionGroupID': None, 'expressionAttributeID': None})
         # Weak entities in any case, but linked through expression
         self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6})
         self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1007, 'maxAttributeID': None, 'default_value': 0.0,
-            'high_is_good': False, 'stackable': False
-        })
+            'high_is_good': False, 'stackable': False})
         # Also weak entities, but linked through modifier info
         self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 7})
         self.dh.data['evegroups'].append({'groupID': 7, 'categoryID': 51})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1008, 'maxAttributeID': None, 'default_value': 0.0,
-            'high_is_good': False, 'stackable': False
-        })
+            'high_is_good': False, 'stackable': False})
         self.dh.data['dgmattribs'].append({
             'attributeID': 1009, 'maxAttributeID': None, 'default_value': 0.0,
-            'high_is_good': False, 'stackable': False
-        })
+            'high_is_good': False, 'stackable': False})
 
     def test_strong(self, mod_builder):
         self.__generate_data()
@@ -148,8 +130,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
             clean_stats.msg,
             'cleaned: 0.0% from dgmattribs, 0.0% from dgmeffects, '
             '0.0% from dgmexpressions, 0.0% from dgmtypeattribs, '
-            '0.0% from dgmtypeeffects, 0.0% from evegroups, 0.0% from evetypes'
-        )
+            '0.0% from dgmtypeeffects, 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(self.types), 3)
         self.assertIn(1, self.types)
         self.assertEqual(self.types[1].category, 16)
@@ -196,8 +177,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
             'cleaned: 100.0% from dgmattribs, 100.0% from dgmeffects, '
             '100.0% from dgmexpressions, 100.0% from dgmtypeattribs, '
             '100.0% from dgmtypeeffects, 100.0% from evegroups, '
-            '100.0% from evetypes'
-        )
+            '100.0% from evetypes')
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.attributes), 0)
         self.assertEqual(len(self.effects), 0)
@@ -219,8 +199,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
             'cleaned: 100.0% from dgmattribs, 100.0% from dgmeffects, '
             '100.0% from dgmexpressions, 100.0% from dgmtypeattribs, '
             '100.0% from dgmtypeeffects, 100.0% from evegroups, '
-            '100.0% from evetypes'
-        )
+            '100.0% from evetypes')
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.attributes), 0)
         self.assertEqual(len(self.effects), 0)
@@ -242,13 +221,11 @@ class TestAssociatedData(EveObjBuilderTestCase):
             'trackingSpeedAttributeID': None, 'modifierInfo':
                 '- domain: shipID\n  func: LocationRequiredSkillModifier\n'
                 '  modifiedAttributeID: 1009\n  modifyingAttributeID: 1008\n'
-                '  operator: 6\n  skillTypeID: 3\n'
-        })
+                '  operator: 6\n  skillTypeID: 3\n'})
         self.dh.data['dgmexpressions'].append({
             'expressionID': 101, 'operandID': 6, 'arg1': None, 'arg2': None,
             'expressionValue': None, 'expressionTypeID': 2,
-            'expressionGroupID': None, 'expressionAttributeID': None
-        })
+            'expressionGroupID': None, 'expressionAttributeID': None})
         # 2 weak type, but linked through expression/YAML
         self.dh.data['evetypes'].append({'typeID': 2, 'groupID': 6})
         self.dh.data['evetypes'].append({'typeID': 3, 'groupID': 6})
@@ -267,8 +244,8 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(
             clean_stats.msg,
             'cleaned: 0.0% from dgmeffects, 0.0% from dgmexpressions, '
-            '0.0% from dgmtypeeffects, 0.0% from evegroups, 25.0% from evetypes'
-        )
+            '0.0% from dgmtypeeffects, 0.0% from evegroups, '
+            '25.0% from evetypes')
         self.assertEqual(len(self.types), 3)
         self.assertIn(1, self.types)
         self.assertIn(2, self.types)

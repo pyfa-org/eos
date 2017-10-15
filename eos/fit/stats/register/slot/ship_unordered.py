@@ -28,8 +28,7 @@ from .base import BaseSlotStatRegister
 
 
 class UnorderedShipSlotStatRegister(
-    BaseSlotStatRegister, InheritableVolatileMixin
-):
+        BaseSlotStatRegister, InheritableVolatileMixin):
 
     def __init__(self, msg_broker, slot_effect, slot_attr):
         BaseSlotStatRegister.__init__(self)
@@ -103,8 +102,7 @@ class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
             self, msg_broker, EffectId.turret_fitted,
-            AttributeId.turret_slots_left
-        )
+            AttributeId.turret_slots_left)
 
 
 class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
@@ -112,5 +110,4 @@ class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
             self, msg_broker, EffectId.launcher_fitted,
-            AttributeId.launcher_slots_left
-        )
+            AttributeId.launcher_slots_left)

@@ -68,8 +68,6 @@ class ItemContainerBase:
         if item is None and allow_none is True:
             return
         msg = 'only {} {} accepted, not {}'.format(
-            self.__item_class,
-            'or None are' if allow_none is True else 'is',
-            type(item)
-        )
+            self.__item_class, 'or None are' if allow_none is True else 'is',
+            type(item))
         raise TypeError(msg)

@@ -25,8 +25,7 @@ from eos.const.eos import Restriction
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
-    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove
-)
+    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
