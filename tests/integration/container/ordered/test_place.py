@@ -46,7 +46,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.place, 3, None)
+        with self.assertRaises(TypeError):
+            fit.modules.high.place(3, None)
         # Verification
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)
@@ -78,7 +79,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.modules.high.append(item1)
         fit.modules.high.insert(3, item2)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.place, 1, None)
+        with self.assertRaises(TypeError):
+            fit.modules.high.place(1, None)
         # Verification
         self.assertIs(len(fit.modules.high), 4)
         self.assertIs(fit.modules.high[0], item1)
@@ -94,7 +96,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         item2 = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item1)
         # Action
-        self.assertRaises(SlotTakenError, fit.modules.high.place, 0, item2)
+        with self.assertRaises(SlotTakenError):
+            fit.modules.high.place(0, item2)
         # Verification
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
@@ -106,7 +109,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.place, 0, None)
+        with self.assertRaises(TypeError):
+            fit.modules.high.place(0, None)
         # Verification
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)
@@ -117,7 +121,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit = Fit()
         item = ModuleMed(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.place, 2, item)
+        with self.assertRaises(TypeError):
+            fit.modules.high.place(2, item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         fit.modules.med.place(0, item)
@@ -130,7 +135,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit_other.modules.high.append(item)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.place, 2, item)
+        with self.assertRaises(ValueError):
+            fit.modules.high.place(2, item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         self.assertIs(len(fit_other.modules.high), 1)
@@ -145,7 +151,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         item2 = ModuleMed(self.ch.type().id)
         fit.modules.high.insert(1, item1)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.place, 0, item2)
+        with self.assertRaises(TypeError):
+            fit.modules.high.place(0, item2)
         # Verification
         self.assertIs(len(fit.modules.high), 2)
         self.assertIsNone(fit.modules.high[0])
@@ -162,7 +169,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.modules.high.insert(1, item1)
         fit_other.modules.high.append(item2)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.place, 0, item2)
+        with self.assertRaises(ValueError):
+            fit.modules.high.place(0, item2)
         # Verification
         self.assertIs(len(fit.modules.high), 2)
         self.assertIsNone(fit.modules.high[0])

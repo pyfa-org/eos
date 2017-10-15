@@ -24,9 +24,6 @@ from tests.integration.container.container_testcase import ContainerTestCase
 
 
 class TestModuleCharge(ContainerTestCase):
-    """
-    Everything related to charge switching is tested here.
-    """
 
     def test_detached_module_none_to_none(self):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
@@ -67,7 +64,8 @@ class TestModuleCharge(ContainerTestCase):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
         non_charge = Stance(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
+        with self.assertRaises(TypeError):
+            module.charge = non_charge
         # Verification
         self.assertIsNone(module.charge)
 
@@ -78,7 +76,8 @@ class TestModuleCharge(ContainerTestCase):
         non_charge = Stance(self.ch.type().id)
         module.charge = charge
         # Action
-        self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
+        with self.assertRaises(TypeError):
+            module.charge = non_charge
         # Verification
         self.assertIs(module.charge, charge)
         fit_other.stance = non_charge
@@ -88,11 +87,13 @@ class TestModuleCharge(ContainerTestCase):
     def test_detached_module_none_to_partially_bound_charge(self):
         module_eve_type = self.ch.type()
         module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
-        module_other = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            module_eve_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
@@ -101,12 +102,14 @@ class TestModuleCharge(ContainerTestCase):
         fit_other = Fit()
         module_eve_type = self.ch.type()
         module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
-        module_other = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            module_eve_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         fit_other.modules.high.append(module_other)
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
@@ -116,12 +119,14 @@ class TestModuleCharge(ContainerTestCase):
     def test_detached_module_charge_to_partially_bound_charge(self):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
         charge = Charge(self.ch.type().id)
-        module_other = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            self.ch.type().id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module.charge = charge
         module_other.charge = charge_other
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(module_other.charge, charge_other)
@@ -130,13 +135,15 @@ class TestModuleCharge(ContainerTestCase):
         fit_other = Fit()
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
         charge = Charge(self.ch.type().id)
-        module_other = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            self.ch.type().id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         fit_other.modules.high.append(module_other)
         module.charge = charge
         module_other.charge = charge_other
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(module_other.charge, charge_other)
@@ -198,7 +205,8 @@ class TestModuleCharge(ContainerTestCase):
         non_charge = Stance(self.ch.type().id)
         fit.modules.high.append(module)
         # Action
-        self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
+        with self.assertRaises(TypeError):
+            module.charge = non_charge
         # Verification
         self.assertIsNone(module.charge)
         fit.stance = non_charge
@@ -213,7 +221,8 @@ class TestModuleCharge(ContainerTestCase):
         fit.modules.high.append(module)
         module.charge = charge
         # Action
-        self.assertRaises(TypeError, module.__setattr__, 'charge', non_charge)
+        with self.assertRaises(TypeError):
+            module.charge = non_charge
         # Verification
         self.assertIs(module.charge, charge)
         fit.stance = non_charge
@@ -229,7 +238,8 @@ class TestModuleCharge(ContainerTestCase):
         module_other.charge = charge_other
         fit.modules.high.append(module)
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
@@ -247,7 +257,8 @@ class TestModuleCharge(ContainerTestCase):
         fit.modules.high.append(module)
         fit_other.modules.high.append(module_other)
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
@@ -265,7 +276,8 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         module_other.charge = charge_other
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(module_other.charge, charge_other)
@@ -284,7 +296,8 @@ class TestModuleCharge(ContainerTestCase):
         module.charge = charge
         module_other.charge = charge_other
         # Action
-        self.assertRaises(ValueError, module.__setattr__, 'charge', charge_other)
+        with self.assertRaises(ValueError):
+            module.charge = charge_other
         # Verification
         self.assertIs(module.charge, charge)
         self.assertIs(module_other.charge, charge_other)

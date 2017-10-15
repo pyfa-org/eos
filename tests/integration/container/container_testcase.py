@@ -23,7 +23,5 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class ContainerTestCase(IntegrationTestCase):
-    """
-    No additional functionality provided
-    """
+    """Test case class is used by item container tests."""
     ...

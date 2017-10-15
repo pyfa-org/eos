@@ -35,7 +35,8 @@ class TestNonExistent(CalculatorTestCase):
         item = Implant(item_eve_type.id)
         self.fit.implants.add(item)
         # Action
-        self.assertRaises(KeyError, item.attributes.__getitem__, 105)
+        with self.assertRaises(KeyError):
+            item.attributes[105]
         # Verification
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
@@ -56,7 +57,8 @@ class TestNonExistent(CalculatorTestCase):
         item = Implant(item_eve_type.id)
         self.fit.implants.add(item)
         # Action
-        self.assertRaises(KeyError, item.attributes.__getitem__, attr.id)
+        with self.assertRaises(KeyError):
+            item.attributes[attr.id]
         # Verification
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]

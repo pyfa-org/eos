@@ -75,13 +75,15 @@ class TestContainerOrderedRemove(ContainerTestCase):
         item2 = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item1)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.remove, item2)
+        with self.assertRaises(ValueError):
+            fit.modules.high.remove(item2)
         # Verification
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
         fit.modules.high.remove(item1)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.remove, item1)
+        with self.assertRaises(ValueError):
+            fit.modules.high.remove(item1)
         # checks
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
@@ -109,7 +111,8 @@ class TestContainerOrderedRemove(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.remove, None)
+        with self.assertRaises(ValueError):
+            fit.modules.high.remove(None)
         # Verification
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)
@@ -177,7 +180,8 @@ class TestContainerOrderedRemove(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item)
         # Action
-        self.assertRaises(IndexError, fit.modules.high.remove, 5)
+        with self.assertRaises(IndexError):
+            fit.modules.high.remove(5)
         # Verification
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)

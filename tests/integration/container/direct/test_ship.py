@@ -48,11 +48,12 @@ class TestDirectItemShip(ContainerTestCase):
         fit = Fit()
         item = Stance(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.__setattr__, 'ship', item)
+        with self.assertRaises(TypeError):
+            fit.ship = item
         # Verification
         self.assertIsNone(fit.ship)
-        # Check that item which failed to be added
-        # can be assigned to other field
+        # Check that item which failed to be added can be assigned to other
+        # field
         fit.stance = item
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -63,7 +64,8 @@ class TestDirectItemShip(ContainerTestCase):
         item = Ship(self.ch.type().id)
         fit_other.ship = item
         # Action
-        self.assertRaises(ValueError, fit.__setattr__, 'ship', item)
+        with self.assertRaises(ValueError):
+            fit.ship = item
         # Verification
         self.assertIsNone(fit.ship)
         self.assertIs(fit_other.ship, item)
@@ -90,7 +92,8 @@ class TestDirectItemShip(ContainerTestCase):
         item2 = Stance(self.ch.type().id)
         fit.ship = item1
         # Action
-        self.assertRaises(TypeError, fit.__setattr__, 'ship', item2)
+        with self.assertRaises(TypeError):
+            fit.ship = item2
         # Verification
         self.assertIs(fit.ship, item1)
         fit.stance = item2
@@ -106,7 +109,8 @@ class TestDirectItemShip(ContainerTestCase):
         fit.ship = item1
         fit_other.ship = item2
         # Action
-        self.assertRaises(ValueError, fit.__setattr__, 'ship', item2)
+        with self.assertRaises(ValueError):
+            fit.ship = item2
         # Verification
         self.assertIs(fit.ship, item1)
         self.assertIs(fit_other.ship, item2)

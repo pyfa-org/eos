@@ -28,7 +28,8 @@ class TestContainerOrderedAppend(ContainerTestCase):
     def test_none(self):
         fit = Fit()
         # Action
-        self.assertRaises(TypeError, fit.modules.high.append, None)
+        with self.assertRaises(TypeError):
+            fit.modules.high.append(None)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
@@ -56,7 +57,8 @@ class TestContainerOrderedAppend(ContainerTestCase):
         fit = Fit()
         item = ModuleMed(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.append, item)
+        with self.assertRaises(TypeError):
+            fit.modules.high.append(item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         fit.modules.med.append(item)
@@ -69,7 +71,8 @@ class TestContainerOrderedAppend(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit_other.modules.high.append(item)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.append, item)
+        with self.assertRaises(ValueError):
+            fit.modules.high.append(item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         self.assertIs(len(fit_other.modules.high), 1)

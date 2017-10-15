@@ -32,7 +32,8 @@ class TestContainerOrderedFree(ContainerTestCase):
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.free, None)
+        with self.assertRaises(ValueError):
+            fit.modules.high.free(None)
         # Verification
         self.assertIs(len(fit.modules.high), 2)
         self.assertIs(fit.modules.high[0], item1)
@@ -73,14 +74,16 @@ class TestContainerOrderedFree(ContainerTestCase):
         item2 = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item1)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.free, item2)
+        with self.assertRaises(ValueError):
+            fit.modules.high.free(item2)
         # Verification
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
         # Cleanup
         fit.modules.high.free(item1)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.free, item1)
+        with self.assertRaises(ValueError):
+            fit.modules.high.free(item1)
         # Verification
         self.assertEqual(len(fit.modules.high), 0)
         # Cleanup
@@ -177,7 +180,8 @@ class TestContainerOrderedFree(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit.modules.high.append(item)
         # Action
-        self.assertRaises(IndexError, fit.modules.high.free, 5)
+        with self.assertRaises(IndexError):
+            fit.modules.high.free(5)
         # Verification
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)

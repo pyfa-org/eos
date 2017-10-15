@@ -83,7 +83,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.insert, 1, item3)
+        with self.assertRaises(TypeError):
+            fit.modules.high.insert(1, item3)
         # Verification
         self.assertIs(len(fit.modules.high), 2)
         self.assertIs(fit.modules.high[0], item1)
@@ -102,7 +103,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.append(item2)
         fit_other.modules.high.append(item3)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.insert, 1, item3)
+        with self.assertRaises(ValueError):
+            fit.modules.high.insert(1, item3)
         # Verification
         self.assertIs(len(fit.modules.high), 2)
         self.assertIs(fit.modules.high[0], item1)
@@ -117,7 +119,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit = Fit()
         item = ModuleMed(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.insert, 4, item)
+        with self.assertRaises(TypeError):
+            fit.modules.high.insert(4, item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         fit.modules.med.insert(0, item)
@@ -130,7 +133,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit_other.modules.high.append(item)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.insert, 4, item)
+        with self.assertRaises(ValueError):
+            fit.modules.high.insert(4, item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         self.assertIs(len(fit_other.modules.high), 1)

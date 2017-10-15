@@ -28,7 +28,8 @@ class TestContainerOrderedEquip(ContainerTestCase):
     def test_none_to_empty(self):
         fit = Fit()
         # Action
-        self.assertRaises(TypeError, fit.modules.high.equip, None)
+        with self.assertRaises(TypeError):
+            fit.modules.high.equip(None)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
@@ -49,7 +50,8 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit = Fit()
         item = ModuleMed(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.modules.high.equip, item)
+        with self.assertRaises(TypeError):
+            fit.modules.high.equip(item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         fit.modules.med.equip(item)
@@ -62,7 +64,8 @@ class TestContainerOrderedEquip(ContainerTestCase):
         item = ModuleHigh(self.ch.type().id)
         fit_other.modules.high.equip(item)
         # Action
-        self.assertRaises(ValueError, fit.modules.high.equip, item)
+        with self.assertRaises(ValueError):
+            fit.modules.high.equip(item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         self.assertIs(len(fit_other.modules.high), 1)

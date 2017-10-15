@@ -28,7 +28,8 @@ class TestContainerSet(ContainerTestCase):
     def test_add_none(self):
         fit = Fit()
         # Action
-        self.assertRaises(TypeError, fit.implants.add, None)
+        with self.assertRaises(TypeError):
+            fit.implants.add(None)
         # Verification
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
@@ -49,7 +50,8 @@ class TestContainerSet(ContainerTestCase):
         fit = Fit()
         item = Booster(self.ch.type().id)
         # Action
-        self.assertRaises(TypeError, fit.implants.add, item)
+        with self.assertRaises(TypeError):
+            fit.implants.add(item)
         # Verification
         self.assertEqual(len(fit.implants), 0)
         fit.boosters.add(item)
@@ -62,7 +64,8 @@ class TestContainerSet(ContainerTestCase):
         item = Implant(self.ch.type().id)
         fit_other.implants.add(item)
         # Action
-        self.assertRaises(ValueError, fit.implants.add, item)
+        with self.assertRaises(ValueError):
+            fit.implants.add(item)
         # Verification
         self.assertEqual(len(fit.implants), 0)
         self.assertEqual(len(fit_other.implants), 1)
@@ -86,7 +89,8 @@ class TestContainerSet(ContainerTestCase):
         fit = Fit()
         item = Implant(self.ch.type().id)
         # Action
-        self.assertRaises(KeyError, fit.implants.remove, item)
+        with self.assertRaises(KeyError):
+            fit.implants.remove(item)
         # Verification
         self.assertEqual(len(fit.implants), 0)
         # Cleanup

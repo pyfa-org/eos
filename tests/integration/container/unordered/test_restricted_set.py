@@ -28,7 +28,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
     def test_add_none(self):
         fit = Fit()
         # Action
-        self.assertRaises(TypeError, fit.skills.add, None)
+        with self.assertRaises(TypeError):
+            fit.skills.add(None)
         # Verification
         self.assertEqual(len(fit.skills), 0)
         # Cleanup
@@ -53,7 +54,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
         item_eve_type = self.ch.type()
         item = Implant(item_eve_type.id)
         # Action
-        self.assertRaises(TypeError, fit.skills.add, item)
+        with self.assertRaises(TypeError):
+            fit.skills.add(item)
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertNotIn(item, fit.skills)
@@ -69,7 +71,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
         item = Skill(item_eve_type.id)
         fit_other.skills.add(item)
         # Action
-        self.assertRaises(ValueError, fit.skills.add, item)
+        with self.assertRaises(ValueError):
+            fit.skills.add(item)
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertEqual(len(fit_other.skills), 1)
@@ -86,7 +89,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
         item2 = Skill(item_eve_type.id)
         fit.skills.add(item1)
         # Action
-        self.assertRaises(ValueError, fit.skills.add, item2)
+        with self.assertRaises(ValueError):
+            fit.skills.add(item2)
         # Verification
         self.assertEqual(len(fit.skills), 1)
         self.assertIs(fit.skills[item_eve_type.id], item1)
@@ -116,7 +120,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
         item_eve_type = self.ch.type()
         item = Skill(item_eve_type.id)
         # Action
-        self.assertRaises(KeyError, fit.skills.remove, item)
+        with self.assertRaises(KeyError):
+            fit.skills.remove(item)
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertNotIn(item, fit.skills)
@@ -145,7 +150,8 @@ class TestContainerRestrictedSet(ContainerTestCase):
         item = Skill(item_eve_type.id)
         fit.skills.add(item)
         # Action
-        self.assertRaises(KeyError, fit.skills.__delitem__, item_eve_type.id + 1)
+        with self.assertRaises(KeyError):
+            del fit.skills[item_eve_type.id + 1]
         # Verification
         self.assertEqual(len(fit.skills), 1)
         self.assertIn(item, fit.skills)
