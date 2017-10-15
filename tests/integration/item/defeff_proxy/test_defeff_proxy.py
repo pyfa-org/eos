@@ -35,15 +35,17 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id
-        )
-        mod_effect1 = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        mod_effect2 = self.ch.effect(category=EffectCategoryId.online, modifiers=[modifier])
-        def_effect = self.ch.effect(category=EffectCategoryId.active, **{defeff_attrib_name: attr.id})
+            src_attr=src_attr.id)
+        mod_effect1 = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        mod_effect2 = self.ch.effect(
+            category=EffectCategoryId.online, modifiers=[modifier])
+        def_effect = self.ch.effect(
+            category=EffectCategoryId.active, **{defeff_attrib_name: attr.id})
         item = ModuleHigh(self.ch.type(
-            attributes={attr.id: 50, src_attr.id: 2}, effects=(mod_effect1, mod_effect2, def_effect),
-            default_effect=def_effect
-        ).id)
+            attributes={attr.id: 50, src_attr.id: 2},
+            effects=(mod_effect1, mod_effect2, def_effect),
+            default_effect=def_effect).id)
         return item
 
     def test_cycle(self):
@@ -100,9 +102,11 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def test_optimal_no_defeff(self):
         attr = self.ch.attribute()
-        effect = self.ch.effect(category=EffectCategoryId.active, range_attribute=attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.active, range_attribute=attr.id)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={attr.id: 50}, effects=[effect]).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={attr.id: 50}, effects=[effect]).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.optimal_range)
@@ -114,7 +118,9 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         attr = self.ch.attribute()
         effect = self.ch.effect(category=EffectCategoryId.active)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={attr.id: 50}, effects=[effect], default_effect=effect).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={attr.id: 50}, effects=[effect],
+            default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.optimal_range)
@@ -124,9 +130,11 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def test_optimal_no_attr(self):
         attr = self.ch.attribute()
-        effect = self.ch.effect(category=EffectCategoryId.active, range_attribute=attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.active, range_attribute=attr.id)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(effects=[effect], default_effect=effect).id)
+        item = ModuleHigh(self.ch.type(
+            effects=[effect], default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.optimal_range)

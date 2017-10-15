@@ -38,8 +38,11 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_ammo_generic(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 100.0, AttributeId.charge_rate: 2.0}).id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 2.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={
+                AttributeId.capacity: 100.0, AttributeId.charge_rate: 2.0}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.charged_cycles, 25)
@@ -49,8 +52,11 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_ammo_round_down(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 22.0, AttributeId.charge_rate: 4.0}).id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 2.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={
+                AttributeId.capacity: 22.0, AttributeId.charge_rate: 4.0}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.charged_cycles, 2)
@@ -60,7 +66,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_ammo_no_quantity(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.charge_rate: 4.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.charge_rate: 4.0}).id)
         item.charge = Charge(self.ch.type().id)
         fit.modules.high.append(item)
         # Verification
@@ -72,14 +79,16 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_laser_combat(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.target_attack, category=EffectCategoryId.active)
+        effect = self.ch.effect(
+            effect_id=EffectId.target_attack, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.capacity: 4.0}, effects=[effect], default_effect=effect
-        ).id)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0, AttributeId.hp: 2.2,
-            AttributeId.crystal_volatility_chance: 0.1, AttributeId.crystal_volatility_damage: 0.01
-        }).id)
+            attributes={AttributeId.capacity: 4.0}, effects=[effect],
+            default_effect=effect).id)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0,
+                AttributeId.hp: 2.2, AttributeId.crystal_volatility_chance: 0.1,
+                AttributeId.crystal_volatility_damage: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.charged_cycles, 4400)
@@ -89,14 +98,16 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_laser_mining(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.mining_laser, category=EffectCategoryId.active)
+        effect = self.ch.effect(
+            effect_id=EffectId.mining_laser, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.capacity: 4.0}, effects=[effect], default_effect=effect
-        ).id)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0, AttributeId.hp: 2.2,
-            AttributeId.crystal_volatility_chance: 0.1, AttributeId.crystal_volatility_damage: 0.01
-        }).id)
+            attributes={AttributeId.capacity: 4.0}, effects=[effect],
+            default_effect=effect).id)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0,
+                AttributeId.hp: 2.2, AttributeId.crystal_volatility_chance: 0.1,
+                AttributeId.crystal_volatility_damage: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.charged_cycles, 4400)
@@ -106,14 +117,16 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_laser_not_damageable(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.target_attack, category=EffectCategoryId.active)
+        effect = self.ch.effect(
+            effect_id=EffectId.target_attack, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.capacity: 4.0}, effects=[effect], default_effect=effect
-        ).id)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.0, AttributeId.hp: 2.2, AttributeId.crystal_volatility_chance: 0.1,
-            AttributeId.crystal_volatility_damage: 0.01
-        }).id)
+            attributes={AttributeId.capacity: 4.0}, effects=[effect],
+            default_effect=effect).id)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.volume: 2.0, AttributeId.hp: 2.2,
+                AttributeId.crystal_volatility_chance: 0.1,
+                AttributeId.crystal_volatility_damage: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charged_cycles)
@@ -124,14 +137,16 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_laser_no_hp(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.target_attack, category=EffectCategoryId.active)
+        effect = self.ch.effect(
+            effect_id=EffectId.target_attack, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.capacity: 4.0}, effects=[effect], default_effect=effect
-        ).id)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0,
-            AttributeId.crystal_volatility_chance: 0.1, AttributeId.crystal_volatility_damage: 0.01
-        }).id)
+            attributes={AttributeId.capacity: 4.0}, effects=[effect],
+            default_effect=effect).id)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0,
+                AttributeId.crystal_volatility_chance: 0.1,
+                AttributeId.crystal_volatility_damage: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charged_cycles)
@@ -142,14 +157,16 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_laser_no_chance(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.target_attack, category=EffectCategoryId.active)
+        effect = self.ch.effect(
+            effect_id=EffectId.target_attack, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.capacity: 4.0}, effects=[effect], default_effect=effect
-        ).id)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0, AttributeId.hp: 2.2,
-            AttributeId.crystal_volatility_damage: 0.01
-        }).id)
+            attributes={AttributeId.capacity: 4.0}, effects=[effect],
+            default_effect=effect).id)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0,
+                AttributeId.hp: 2.2,
+                AttributeId.crystal_volatility_damage: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charged_cycles)
@@ -160,14 +177,16 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_laser_no_damage(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.target_attack, category=EffectCategoryId.active)
+        effect = self.ch.effect(
+            effect_id=EffectId.target_attack, category=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.capacity: 4.0}, effects=[effect], default_effect=effect
-        ).id)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0, AttributeId.hp: 2.2,
-            AttributeId.crystal_volatility_chance: 0.1
-        }).id)
+            attributes={AttributeId.capacity: 4.0}, effects=[effect],
+            default_effect=effect).id)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0,
+                AttributeId.hp: 2.2,
+                AttributeId.crystal_volatility_chance: 0.1}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charged_cycles)
@@ -178,12 +197,15 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_no_default_effect(self):
         fit = Fit()
-        effect = self.ch.effect(effect_id=EffectId.target_attack, category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 4.0}, effects=[effect]).id)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0, AttributeId.hp: 2.2,
-            AttributeId.crystal_volatility_chance: 0.1, AttributeId.crystal_volatility_damage: 0.01
-        }).id)
+        effect = self.ch.effect(
+            effect_id=EffectId.target_attack, category=EffectCategoryId.active)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.capacity: 4.0}, effects=[effect]).id)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.volume: 2.0, AttributeId.crystals_get_damaged: 1.0,
+                AttributeId.hp: 2.2, AttributeId.crystal_volatility_chance: 0.1,
+                AttributeId.crystal_volatility_damage: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charged_cycles)
@@ -193,8 +215,11 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 100.0, AttributeId.charge_rate: 2.0}).id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 2.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={
+                AttributeId.capacity: 100.0, AttributeId.charge_rate: 2.0}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2.0}).id)
         fit.modules.high.append(item)
         fit.source = None
         # Verification

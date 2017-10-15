@@ -33,8 +33,10 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def test_generic(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 20.0}).id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 2.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.capacity: 20.0}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.charge_quantity, 10)
@@ -44,8 +46,10 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def test_float_error(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 2.3}).id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 0.1}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.capacity: 2.3}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 0.1}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.charge_quantity, 23)
@@ -55,8 +59,10 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def test_round_down(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 19.7}).id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 2.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.capacity: 19.7}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.charge_quantity, 9)
@@ -66,7 +72,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def test_no_volume(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 20.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.capacity: 20.0}).id)
         item.charge = Charge(self.ch.type().id)
         fit.modules.high.append(item)
         # Verification
@@ -78,7 +85,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
     def test_no_capacity(self):
         fit = Fit()
         item = ModuleHigh(self.ch.type().id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 2.0}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charge_quantity)
@@ -88,7 +96,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def test_no_charge(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 20.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.capacity: 20.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charge_quantity)
@@ -98,8 +107,10 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(attributes={AttributeId.capacity: 20.0}).id)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.volume: 2.0}).id)
+        item = ModuleHigh(self.ch.type(
+            attributes={AttributeId.capacity: 20.0}).id)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2.0}).id)
         fit.modules.high.append(item)
         fit.source = None
         # Verification

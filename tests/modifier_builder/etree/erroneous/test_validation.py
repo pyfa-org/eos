@@ -207,7 +207,8 @@ class TestBuilderEtreeErrorsValidation(ModBuilderTestCase):
         self.assertEqual(len(self.log), 1)
         log_record = self.log[0]
         self.assertEqual(
-            log_record.name, 'eos.data.eve_obj_builder.modifier_builder.builder')
+            log_record.name,
+            'eos.data.eve_obj_builder.modifier_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(
             log_record.msg,

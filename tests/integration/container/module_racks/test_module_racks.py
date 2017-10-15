@@ -55,27 +55,21 @@ class TestContainerModuleRacks(ContainerTestCase):
     def test_items_iter(self):
         module_items = self.fit.modules.items()
         expected = [
-            self.mod_high1, self.mod_high2, self.mod_med1,
-            self.mod_med2, self.mod_low1, self.mod_low2
-        ]
+            self.mod_high1, self.mod_high2, self.mod_med1, self.mod_med2,
+            self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.high.remove(self.mod_high1)
         expected = [
-            self.mod_high2, self.mod_med1, self.mod_med2,
-            self.mod_low1, self.mod_low2
-        ]
+            self.mod_high2, self.mod_med1, self.mod_med2, self.mod_low1,
+            self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.med.remove(self.mod_med1)
-        expected = [
-            self.mod_high2, self.mod_med2, self.mod_low1,
-            self.mod_low2
-        ]
+        expected = [self.mod_high2, self.mod_med2, self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.low.append(self.mod_low3)
         expected = [
-            self.mod_high2, self.mod_med2, self.mod_low1,
-            self.mod_low2, self.mod_low3
-        ]
+            self.mod_high2, self.mod_med2, self.mod_low1, self.mod_low2,
+            self.mod_low3]
         self.assertEqual(list(module_items), expected)
 
     def test_item_contains(self):

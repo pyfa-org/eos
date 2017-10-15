@@ -23,7 +23,5 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class ItemMixinTestCase(IntegrationTestCase):
-    """
-    No additional functionality provided:
-    """
+    """Test case class is used by item tests."""
     ...

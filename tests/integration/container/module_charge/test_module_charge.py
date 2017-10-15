@@ -233,7 +233,8 @@ class TestModuleCharge(ContainerTestCase):
         fit = Fit()
         module_eve_type = self.ch.type()
         module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
-        module_other = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            module_eve_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         fit.modules.high.append(module)
@@ -250,8 +251,10 @@ class TestModuleCharge(ContainerTestCase):
         fit = Fit()
         fit_other = Fit()
         module_eve_type = self.ch.type()
-        module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
-        module_other = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module = ModuleHigh(
+            module_eve_type.id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            module_eve_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         fit.modules.high.append(module)
@@ -270,7 +273,8 @@ class TestModuleCharge(ContainerTestCase):
         fit = Fit()
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
         charge = Charge(self.ch.type().id)
-        module_other = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            self.ch.type().id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         fit.modules.high.append(module)
         module.charge = charge
@@ -289,7 +293,8 @@ class TestModuleCharge(ContainerTestCase):
         fit_other = Fit()
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
         charge = Charge(self.ch.type().id)
-        module_other = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
+        module_other = ModuleHigh(
+            self.ch.type().id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         fit.modules.high.append(module)
         fit_other.modules.high.append(module_other)

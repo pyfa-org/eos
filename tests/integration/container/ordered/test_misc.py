@@ -73,9 +73,11 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.modules.high.append(item1)
         self.assertEqual(list(item for item in fit.modules.high), [item1])
         fit.modules.high.place(3, item2)
-        self.assertEqual(list(item for item in fit.modules.high), [item1, None, None, item2])
+        self.assertEqual(
+            list(item for item in fit.modules.high), [item1, None, None, item2])
         fit.modules.high.remove(item1)
-        self.assertEqual(list(item for item in fit.modules.high), [None, None, item2])
+        self.assertEqual(
+            list(item for item in fit.modules.high), [None, None, item2])
         fit.modules.high.remove(item2)
         self.assertEqual(list(item for item in fit.modules.high), [])
         self.assert_fit_buffers_empty(fit)

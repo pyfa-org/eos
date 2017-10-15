@@ -35,8 +35,9 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
     def test_generic(self):
         fit = Fit()
         item = Ship(self.ch.type(
-            attributes={AttributeId.hp: 8, AttributeId.armor_hp: 10, AttributeId.shield_capacity: 12}
-        ).id)
+            attributes={
+                AttributeId.hp: 8, AttributeId.armor_hp: 10,
+                AttributeId.shield_capacity: 12}).id)
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.hp.hull, 8)
@@ -63,8 +64,9 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
     def test_no_source(self):
         fit = Fit(source=None)
         item = Ship(self.ch.type(
-            attributes={AttributeId.hp: 8, AttributeId.armor_hp: 10, AttributeId.shield_capacity: 12}
-        ).id)
+            attributes={
+                AttributeId.hp: 8, AttributeId.armor_hp: 10,
+                AttributeId.shield_capacity: 12}).id)
         fit.ship = item
         # Verification
         self.assertIsNone(item.hp.hull)

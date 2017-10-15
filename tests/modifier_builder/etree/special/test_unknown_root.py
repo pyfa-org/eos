@@ -33,7 +33,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
             1, operandID=OperandId.def_int, expressionValue='0')
         effect_row = {
             'preExpression': e_stub['expressionID'],
-            'postExpression': e_stub['expressionID'] }
+            'postExpression': e_stub['expressionID']}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.skipped)
         self.assertEqual(len(modifiers), 0)
