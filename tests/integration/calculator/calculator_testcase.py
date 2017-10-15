@@ -24,7 +24,7 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class CalculatorTestCase(IntegrationTestCase):
-    """Test case class is used by attribute calculator tests.
+    """Class which should be used by attribute calculator tests.
 
     Attributes:
         fit: Precreated fit, as it's used in almost all tests.

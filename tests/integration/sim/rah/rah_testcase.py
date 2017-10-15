@@ -26,54 +26,77 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class RahSimTestCase(IntegrationTestCase):
-    """
-    Additional functionality provided:
+    """Class which should be used by RAH simulator tests.
 
-    self.make_ship_eve_type -- create ship eve type with specified resonances
-    self.make_rah_eve_type -- create RAH eve type with specified resonances,
-        resonance shift amount and cycle time
-    self.*_attr -- assortment of RAH-related attributes
+    Attributes:
+        fit: Precreated fit, as it's used in almost all tests.
+        rah_effect: RAH main effect.
+        heat_effect: RAH heat effect.
+        max_attr: Attribute which is intended to cap ship resistances.
+        cycle_attr: RAH cycle time attribute.
+        heat_attr: RAH heat modifier attribute.
+        shift_attr: RAH resistance shift amount attribute.
+        armor_em: Armor EM resonance attribute.
+        armor_therm: Armor thermal resonance attribute.
+        armor_kin: Armor kinetic resonance attribute.
+        armor_exp: Armor explosive resonance attribute.
     """
 
     def setUp(self):
         super().setUp()
         # Attribute setup
-        self.max_attr = self.ch.attribute(default_value=1.0, high_is_good=False, stackable=False)
+        self.max_attr = self.ch.attribute(
+            default_value=1.0, high_is_good=False, stackable=False)
         self.cycle_attr = self.ch.attribute(high_is_good=False, stackable=True)
         self.heat_attr = self.ch.attribute(high_is_good=False, stackable=True)
         self.shift_attr = self.ch.attribute(
-            attribute_id=AttributeId.resistance_shift_amount, high_is_good=True, stackable=True)
-        self.armor_em, self.armor_therm, self.armor_kin, self.armor_exp = (self.ch.attribute(
-            attribute_id=attr, max_attribute=self.max_attr.id, high_is_good=False, stackable=False
-        ) for attr in (
-            AttributeId.armor_em_damage_resonance, AttributeId.armor_thermal_damage_resonance,
-            AttributeId.armor_kinetic_damage_resonance, AttributeId.armor_explosive_damage_resonance))
+            attribute_id=AttributeId.resistance_shift_amount, high_is_good=True,
+            stackable=True)
+        self.armor_em = self.ch.attribute(
+            attribute_id=AttributeId.armor_em_damage_resonance,
+            max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
+        self.armor_therm = self.ch.attribute(
+            attribute_id=AttributeId.armor_thermal_damage_resonance,
+            max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
+        self.armor_kin = self.ch.attribute(
+            attribute_id=AttributeId.armor_kinetic_damage_resonance,
+            max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
+        self.armor_exp = self.ch.attribute(
+            attribute_id=AttributeId.armor_explosive_damage_resonance,
+            max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
         # Effect setup
         self.rah_effect = self.ch.effect(
-            effect_id=EffectId.adaptive_armor_hardener, category=EffectCategoryId.active,
-            duration_attribute=self.cycle_attr.id, customize=True
-        )
+            effect_id=EffectId.adaptive_armor_hardener,
+            category=EffectCategoryId.active,
+            duration_attribute=self.cycle_attr.id, customize=True)
         heat_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
             tgt_attr=self.cycle_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=self.heat_attr.id
-        )
-        self.heat_effect = self.ch.effect(category=EffectCategoryId.overload, modifiers=[heat_modifier])
-        # Cleanup
+            src_attr=self.heat_attr.id)
+        self.heat_effect = self.ch.effect(
+            category=EffectCategoryId.overload, modifiers=[heat_modifier])
+        # Miscellateous setup
         self.fit = Fit()
 
     def make_ship_eve_type(self, resonances):
-        attr_order = (self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id)
+        """Create ship eve type with specified resonances."""
+        attr_order = (
+            self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
+            self.armor_exp.id)
         return self.ch.type(attributes=dict(zip(attr_order, resonances)))
 
-    def make_rah_eve_type(self, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
+    def make_rah_eve_type(
+            self, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
+        """Create RAH eve type with specified attributes."""
         attr_order = (
-            self.armor_em.id, self.armor_therm.id, self.armor_kin.id, self.armor_exp.id,
-            self.shift_attr.id, self.cycle_attr.id, self.heat_attr.id
-        )
+            self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
+            self.armor_exp.id, self.shift_attr.id, self.cycle_attr.id,
+            self.heat_attr.id)
         return self.ch.type(
-            attributes=dict(zip(attr_order, (*resonances, shift_amount, cycle_time, heat_cycle_mod))),
-            effects=(self.rah_effect, self.heat_effect), default_effect=self.rah_effect
-        )
+            attributes=dict(zip(
+                attr_order,
+                (*resonances, shift_amount, cycle_time, heat_cycle_mod))),
+            effects=(self.rah_effect, self.heat_effect),
+            default_effect=self.rah_effect)

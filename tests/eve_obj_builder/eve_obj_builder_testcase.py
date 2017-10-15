@@ -26,7 +26,7 @@ from .environment import DataHandler
 
 
 class EveObjBuilderTestCase(EosTestCase):
-    """Test case class is used by eve object builder tests.
+    """Class which should be used by eve object builder tests.
 
     Attributes:
         dh: Default data handler.

@@ -23,5 +23,5 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class ContainerTestCase(IntegrationTestCase):
-    """Test case class is used by item container tests."""
+    """Class which should be used by item container tests."""
     ...

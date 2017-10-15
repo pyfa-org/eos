@@ -25,7 +25,7 @@ from .environment import ExpressionFactory
 
 
 class ModBuilderTestCase(EosTestCase):
-    """Test case class is used by modifier builder tests.
+    """Class which should be used by modifier builder tests.
 
     Attributes:
         ef: Expression factory instance.
