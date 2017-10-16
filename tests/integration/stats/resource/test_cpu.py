@@ -32,8 +32,7 @@ class TestCpu(StatTestCase):
         self.ch.attr(attribute_id=AttributeId.cpu_output)
         self.ch.attr(attribute_id=AttributeId.cpu)
         self.effect = self.ch.effect(
-            effect_id=EffectId.online, category=EffectCategoryId.active,
-            customize=True)
+            effect_id=EffectId.online, category=EffectCategoryId.online)
 
     def test_output(self):
         # Check that modified attribute of ship is used

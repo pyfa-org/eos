@@ -34,8 +34,7 @@ class TestPowerGrid(RestrictionTestCase):
         self.ch.attr(attribute_id=AttributeId.power)
         self.ch.attr(attribute_id=AttributeId.power_output)
         self.effect = self.ch.effect(
-            effect_id=EffectId.online, category=EffectCategoryId.active,
-            customize=True)
+            effect_id=EffectId.online, category=EffectCategoryId.online)
 
     def test_fail_excess_single(self):
         # When ship provides powergrid output, but single consumer demands for

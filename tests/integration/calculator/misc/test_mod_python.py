@@ -79,8 +79,7 @@ class TestModifierPython(CalculatorTestCase):
         self.python_effect = self.ch.effect(
             category=EffectCategoryId.online, modifiers=(TestPythonModifier(),))
         self.online_effect = self.ch.effect(
-            effect_id=EffectId.online, category=EffectCategoryId.active,
-            customize=True)
+            effect_id=EffectId.online, category=EffectCategoryId.online)
         self.fit.ship = Ship(self.ch.type(attributes={attr3.id: 3}).id)
 
     def test_enabling(self):

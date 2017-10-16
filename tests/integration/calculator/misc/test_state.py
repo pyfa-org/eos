@@ -74,8 +74,7 @@ class TestStateSwitching(CalculatorTestCase):
         effect_cat_overload = self.ch.effect(
             category=EffectCategoryId.overload, modifiers=[modifier_over])
         online_effect = self.ch.effect(
-            effect_id=EffectId.online, category=EffectCategoryId.active,
-            customize=True)
+            effect_id=EffectId.online, category=EffectCategoryId.online)
         effect_disabled = self.ch.effect(
             category=EffectCategoryId.online, modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.ch.type(
