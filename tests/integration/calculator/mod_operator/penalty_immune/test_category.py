@@ -30,8 +30,8 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute(stackable=0)
-        self.src_attr = self.ch.attribute()
+        self.tgt_attr = self.ch.attr(stackable=0)
+        self.src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,

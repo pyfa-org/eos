@@ -31,8 +31,8 @@ class TestCalibration(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.upgrade_cost)
-        self.ch.attribute(attribute_id=AttributeId.upgrade_capacity)
+        self.ch.attr(attribute_id=AttributeId.upgrade_cost)
+        self.ch.attr(attribute_id=AttributeId.upgrade_capacity)
         self.effect = self.ch.effect(
             effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
 
@@ -113,7 +113,7 @@ class TestCalibration(RestrictionTestCase):
         # Make sure modified calibration values are taken
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.upgrade_capacity: 50}).id)
-        src_attr = self.ch.attribute()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

@@ -67,10 +67,9 @@ class TestDroneGroup(RestrictionTestCase):
     def test_fail_mismatch_combined(self):
         # Check that error is returned on attempt to add drone from group
         # mismatching to both restriction attributes
-        self.fit.ship = Ship(self.ch.type(
-            attributes={
-                AttributeId.allowed_drone_group_1: 48,
-                AttributeId.allowed_drone_group_2: 106}).id)
+        self.fit.ship = Ship(self.ch.type(attributes={
+            AttributeId.allowed_drone_group_1: 48,
+            AttributeId.allowed_drone_group_2: 106}).id)
         item = Drone(self.ch.type(group=803).id)
         self.fit.drones.add(item)
         # Action
@@ -179,10 +178,9 @@ class TestDroneGroup(RestrictionTestCase):
     def test_pass_match_combination(self):
         # Check that no error raised when drone of group matching to any of two
         # restriction attributes is added
-        self.fit.ship = Ship(self.ch.type(
-            attributes={
-                AttributeId.allowed_drone_group_1: 907,
-                AttributeId.allowed_drone_group_2: 53}).id)
+        self.fit.ship = Ship(self.ch.type(attributes={
+            AttributeId.allowed_drone_group_1: 907,
+            AttributeId.allowed_drone_group_2: 53}).id)
         item = Drone(self.ch.type(group=53).id)
         self.fit.drones.add(item)
         # Action

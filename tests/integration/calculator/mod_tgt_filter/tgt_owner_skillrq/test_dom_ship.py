@@ -29,8 +29,8 @@ class TestTgtOwnerSkillrqDomainShip(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        self.tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=ModifierDomain.ship,
@@ -44,10 +44,9 @@ class TestTgtOwnerSkillrqDomainShip(CalculatorTestCase):
             attributes={src_attr.id: 20}, effects=[effect]).id)
 
     def test_owner_modifiable(self):
-        influence_tgt = Drone(self.ch.type(
-            attributes={
-                self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Drone(self.ch.type(attributes={
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.drones.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)
@@ -62,10 +61,9 @@ class TestTgtOwnerSkillrqDomainShip(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_not_owner_modifiable(self):
-        influence_tgt = Rig(self.ch.type(
-            attributes={
-                self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Rig(self.ch.type(attributes={
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)
@@ -76,10 +74,9 @@ class TestTgtOwnerSkillrqDomainShip(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_skill_other(self):
-        influence_tgt = Drone(self.ch.type(
-            attributes={
-                self.tgt_attr.id: 100, AttributeId.required_skill_1: 87,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Drone(self.ch.type(attributes={
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 87,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.drones.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)

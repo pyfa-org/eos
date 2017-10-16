@@ -28,15 +28,15 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.capacity)
-        self.ch.attribute(attribute_id=AttributeId.volume)
-        self.ch.attribute(attribute_id=AttributeId.charge_rate)
-        self.ch.attribute(attribute_id=AttributeId.reload_time)
-        self.ch.attribute(attribute_id=AttributeId.em_damage)
-        self.ch.attribute(attribute_id=AttributeId.thermal_damage)
-        self.ch.attribute(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attribute(attribute_id=AttributeId.explosive_damage)
-        self.cycle_attr = self.ch.attribute()
+        self.ch.attr(attribute_id=AttributeId.capacity)
+        self.ch.attr(attribute_id=AttributeId.volume)
+        self.ch.attr(attribute_id=AttributeId.charge_rate)
+        self.ch.attr(attribute_id=AttributeId.reload_time)
+        self.ch.attr(attribute_id=AttributeId.em_damage)
+        self.ch.attr(attribute_id=AttributeId.thermal_damage)
+        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
+        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.cycle_attr = self.ch.attr()
         self.effect_item = self.ch.effect(
             effect_id=EffectId.use_missiles, category=EffectCategoryId.active,
             duration_attribute=self.cycle_attr.id)
@@ -46,12 +46,14 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def test_nominal_volley_generic(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
                 AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
@@ -73,15 +75,17 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_nominal_volley_multiplier(self):
-        self.ch.attribute(attribute_id=AttributeId.damage_multiplier)
+        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000,
-                AttributeId.damage_multiplier: 5.5},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000,
+                    AttributeId.damage_multiplier: 5.5},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
                 AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
@@ -104,12 +108,14 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.online)
         item.charge = Charge(self.ch.type(
             attributes={
                 AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
@@ -132,12 +138,14 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def test_nominal_volley_disabled_item_effect(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.active)
         item.set_effect_run_mode(self.effect_item.id, EffectRunMode.force_stop)
         item.charge = Charge(self.ch.type(
             attributes={
@@ -161,12 +169,14 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def test_nominal_volley_disabled_charge_effect(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
                 AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
@@ -191,12 +201,14 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def test_nominal_volley_no_charge(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.active)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -211,12 +223,14 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def test_nominal_dps_no_reload(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
                 AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
@@ -239,12 +253,14 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def test_nominal_dps_reload(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                AttributeId.charge_rate: 1.0, AttributeId.reload_time: 10000},
-            effects=[self.effect_item],
-            default_effect=self.effect_item).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
+                    AttributeId.charge_rate: 1.0,
+                    AttributeId.reload_time: 10000},
+                effects=[self.effect_item], default_effect=self.effect_item).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
                 AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,

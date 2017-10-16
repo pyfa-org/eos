@@ -28,25 +28,25 @@ class TestItemDamageSmartbomb(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.em_damage)
-        self.ch.attribute(attribute_id=AttributeId.thermal_damage)
-        self.ch.attribute(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attribute(attribute_id=AttributeId.explosive_damage)
-        self.cycle_attr = self.ch.attribute()
+        self.ch.attr(attribute_id=AttributeId.em_damage)
+        self.ch.attr(attribute_id=AttributeId.thermal_damage)
+        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
+        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.cycle_attr = self.ch.attr()
         self.effect = self.ch.effect(
             effect_id=EffectId.emp_wave, category=EffectCategoryId.active,
             duration_attribute=self.cycle_attr.id)
 
     def test_nominal_volley_generic(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
-                AttributeId.kinetic_damage: 74,
-                AttributeId.explosive_damage: 85,
-                self.cycle_attr.id: 5000},
-            effects=[self.effect],
-            default_effect=self.effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+                    AttributeId.kinetic_damage: 74,
+                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
+                effects=[self.effect], default_effect=self.effect).id,
+            state=State.active)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -60,16 +60,18 @@ class TestItemDamageSmartbomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_nominal_volley_multiplier(self):
-        self.ch.attribute(attribute_id=AttributeId.damage_multiplier)
+        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
-                AttributeId.kinetic_damage: 74,
-                AttributeId.explosive_damage: 85,
-                self.cycle_attr.id: 5000, AttributeId.damage_multiplier: 5.5},
-            effects=[self.effect],
-            default_effect=self.effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+                    AttributeId.kinetic_damage: 74,
+                    AttributeId.explosive_damage: 85,
+                    self.cycle_attr.id: 5000,
+                    AttributeId.damage_multiplier: 5.5},
+                effects=[self.effect], default_effect=self.effect).id,
+            state=State.active)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -84,13 +86,14 @@ class TestItemDamageSmartbomb(ItemMixinTestCase):
 
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
-                AttributeId.kinetic_damage: 74,
-                AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
-            effects=[self.effect],
-            default_effect=self.effect).id, state=State.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+                    AttributeId.kinetic_damage: 74,
+                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
+                effects=[self.effect], default_effect=self.effect).id,
+            state=State.online)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -105,13 +108,14 @@ class TestItemDamageSmartbomb(ItemMixinTestCase):
 
     def test_nominal_volley_disabled_effect(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
-                AttributeId.kinetic_damage: 74,
-                AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
-            effects=[self.effect],
-            default_effect=self.effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+                    AttributeId.kinetic_damage: 74,
+                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
+                effects=[self.effect], default_effect=self.effect).id,
+            state=State.active)
         item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         fit.modules.high.append(item)
         # Verification
@@ -127,13 +131,14 @@ class TestItemDamageSmartbomb(ItemMixinTestCase):
 
     def test_nominal_dps_no_reload(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
-                AttributeId.kinetic_damage: 74,
-                AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
-            effects=[self.effect],
-            default_effect=self.effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+                    AttributeId.kinetic_damage: 74,
+                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
+                effects=[self.effect], default_effect=self.effect).id,
+            state=State.active)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_nominal_dps(reload=False)
@@ -148,13 +153,14 @@ class TestItemDamageSmartbomb(ItemMixinTestCase):
 
     def test_nominal_dps_reload(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
-                AttributeId.kinetic_damage: 74,
-                AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
-            effects=[self.effect],
-            default_effect=self.effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
+                    AttributeId.kinetic_damage: 74,
+                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 5000},
+                effects=[self.effect], default_effect=self.effect).id,
+            state=State.active)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_nominal_dps(reload=True)

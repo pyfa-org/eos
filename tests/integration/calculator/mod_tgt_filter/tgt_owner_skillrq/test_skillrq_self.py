@@ -30,8 +30,8 @@ class TestTgtOwnerSkillrqSkillrqSelf(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        self.tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=ModifierDomain.character,
@@ -46,11 +46,10 @@ class TestTgtOwnerSkillrqSkillrqSelf(CalculatorTestCase):
         self.influence_src = Implant(self.src_eve_type.id)
 
     def test_match(self):
-        influence_tgt = Drone(self.ch.type(
-            attributes={
-                self.tgt_attr.id: 100,
-                AttributeId.required_skill_1: self.src_eve_type.id,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Drone(self.ch.type(attributes={
+            self.tgt_attr.id: 100,
+            AttributeId.required_skill_1: self.src_eve_type.id,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.drones.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)
@@ -65,11 +64,9 @@ class TestTgtOwnerSkillrqSkillrqSelf(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_skill_other(self):
-        influence_tgt = Drone(self.ch.type(
-            attributes={
-                self.tgt_attr.id: 100,
-                AttributeId.required_skill_1: 87,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Drone(self.ch.type(attributes={
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 87,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.drones.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)

@@ -30,9 +30,9 @@ class TestCap(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.capping_attr = self.ch.attribute(default_value=5)
-        self.capped_attr = self.ch.attribute(max_attribute=self.capping_attr.id)
-        self.src_attr = self.ch.attribute()
+        self.capping_attr = self.ch.attr(default_value=5)
+        self.capped_attr = self.ch.attr(max_attribute=self.capping_attr.id)
+        self.src_attr = self.ch.attr()
         # Just to make sure cap is applied to final value, not base, make some
         # basic modification modifier
         modifier = self.mod(

@@ -28,27 +28,21 @@ class TestEhp(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.hp)
-        self.ch.attribute(attribute_id=AttributeId.em_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.thermal_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.explosive_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_hp)
-        self.ch.attribute(attribute_id=AttributeId.armor_em_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.armor_thermal_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.armor_kinetic_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.armor_explosive_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_capacity)
-        self.ch.attribute(attribute_id=AttributeId.shield_em_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.shield_thermal_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.shield_kinetic_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.shield_explosive_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.hp)
+        self.ch.attr(attribute_id=AttributeId.em_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.thermal_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.kinetic_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.explosive_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_hp)
+        self.ch.attr(attribute_id=AttributeId.armor_em_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_thermal_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_kinetic_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_explosive_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_capacity)
+        self.ch.attr(attribute_id=AttributeId.shield_em_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_thermal_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_kinetic_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_explosive_damage_resonance)
 
     def test_relay(self):
         # Check that stats service relays ehp stats properly

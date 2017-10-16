@@ -31,8 +31,9 @@ class TestRahSimCleanup(RahSimTestCase):
         # Setup
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         # Force resonance calculation
         self.assertAlmostEqual(ship_item.attributes[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship_item.attributes[self.armor_therm.id], 0.65)
@@ -58,8 +59,9 @@ class TestRahSimCleanup(RahSimTestCase):
         # Setup
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         self.fit.modules.low.equip(rah_item)
         # Force resonance calculation
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
@@ -86,8 +88,9 @@ class TestRahSimCleanup(RahSimTestCase):
         # Setup
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.online)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.online)
         self.fit.modules.low.equip(rah_item)
         # Force resonance calculation
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 0.85)
@@ -118,8 +121,9 @@ class TestRahSimCleanup(RahSimTestCase):
         # Setup
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         self.fit.modules.low.equip(rah_item)
         # Force resonance calculation
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)
@@ -148,7 +152,7 @@ class TestRahSimCleanup(RahSimTestCase):
 
     def test_ship_resonance(self):
         # Setup
-        skill_attr = self.ch.attribute(high_is_good=False, stackable=False)
+        skill_attr = self.ch.attr(high_is_good=False, stackable=False)
         skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
@@ -161,8 +165,9 @@ class TestRahSimCleanup(RahSimTestCase):
             attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         self.fit.modules.low.equip(rah_item)
         skill_item = Skill(skill_eve_type.id)
         # Force resonance calculation
@@ -192,7 +197,7 @@ class TestRahSimCleanup(RahSimTestCase):
 
     def test_rah_resonance(self):
         # Setup
-        skill_attr = self.ch.attribute(high_is_good=False, stackable=False)
+        skill_attr = self.ch.attr(high_is_good=False, stackable=False)
         skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
@@ -205,8 +210,9 @@ class TestRahSimCleanup(RahSimTestCase):
             attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         self.fit.modules.low.equip(rah_item)
         skill_item = Skill(skill_eve_type.id)
         # Force resonance calculation
@@ -237,7 +243,7 @@ class TestRahSimCleanup(RahSimTestCase):
 
     def test_rah_shift(self):
         # Setup
-        skill_attr = self.ch.attribute(high_is_good=False, stackable=False)
+        skill_attr = self.ch.attr(high_is_good=False, stackable=False)
         skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
@@ -250,8 +256,9 @@ class TestRahSimCleanup(RahSimTestCase):
             attributes={skill_attr.id: 0.1}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         self.fit.modules.low.equip(rah_item)
         skill_item = Skill(skill_eve_type.id)
         # Force resonance calculation
@@ -341,8 +348,9 @@ class TestRahSimCleanup(RahSimTestCase):
         # Setup
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         self.fit.modules.low.equip(rah_item)
         # Force resonance calculation
         self.assertAlmostEqual(rah_item.attributes[self.armor_em.id], 1)

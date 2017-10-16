@@ -29,8 +29,8 @@ class TestTgtItemDomainOther(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute()
-        self.src_attr = self.ch.attribute()
+        self.tgt_attr = self.ch.attr()
+        self.src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.other,

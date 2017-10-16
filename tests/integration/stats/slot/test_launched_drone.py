@@ -29,10 +29,10 @@ class TestLaunchedDrone(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.max_active_drones)
+        self.ch.attr(attribute_id=AttributeId.max_active_drones)
 
     def test_output(self):
-        src_attr = self.ch.attribute()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

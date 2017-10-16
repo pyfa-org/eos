@@ -30,8 +30,8 @@ class TestDroneBayVolume(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.volume)
-        self.ch.attribute(attribute_id=AttributeId.drone_capacity)
+        self.ch.attr(attribute_id=AttributeId.volume)
+        self.ch.attr(attribute_id=AttributeId.drone_capacity)
 
     def test_fail_excess_single(self):
         # When ship provides dronebay volume output, but single consumer demands

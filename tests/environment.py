@@ -50,10 +50,10 @@ class CacheHandler:
         self.__type_data[eve_type.id] = eve_type
         return eve_type
 
-    def attribute(self, attribute_id=None, **kwargs):
+    def attr(self, attribute_id=None, **kwargs):
         # Allocate & verify ID
         if attribute_id is None:
-            attribute_id = self.allocate_attribute_id()
+            attribute_id = self.allocate_attr_id()
         if attribute_id in self.__attribute_data:
             raise KeyError(attribute_id)
         # Create, store and return attribute
@@ -98,7 +98,7 @@ class CacheHandler:
         self.__allocated_type = allocated
         return allocated
 
-    def allocate_attribute_id(self):
+    def allocate_attr_id(self):
         allocated = max((
             TEST_ID_START - 1, self.__allocated_attribute,
             *self.__attribute_data.keys()

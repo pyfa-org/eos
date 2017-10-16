@@ -32,9 +32,9 @@ class TestModifierPython(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.attr1 = attr1 = self.ch.attribute()
-        self.attr2 = attr2 = self.ch.attribute()
-        self.attr3 = attr3 = self.ch.attribute()
+        self.attr1 = attr1 = self.ch.attr()
+        self.attr2 = attr2 = self.ch.attr()
+        self.attr3 = attr3 = self.ch.attr()
 
         class TestPythonModifier(BasePythonModifier):
 
@@ -116,7 +116,7 @@ class TestModifierPython(CalculatorTestCase):
         # Here dogma modifier changes value of one of attributes which are used
         # as source by python modifier, and sees if python modifier target value
         # is updated
-        attr4 = self.ch.attribute()
+        attr4 = self.ch.attr()
         dogma_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

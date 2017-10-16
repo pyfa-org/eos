@@ -30,8 +30,7 @@ class TestSubsystemIndex(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.index_attr = self.ch.attribute(
-            attribute_id=AttributeId.subsystem_slot)
+        self.index_attr = self.ch.attr(attribute_id=AttributeId.subsystem_slot)
 
     def test_fail(self):
         # Check that if 2 or more items are put into single slot index, error is

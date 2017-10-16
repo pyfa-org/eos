@@ -30,8 +30,9 @@ class TestState(RestrictionTestCase):
 
     def test_fail_state_higher(self):
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            effects=[effect], default_effect=effect).id, state=State.overload)
+        item = ModuleHigh(
+            self.ch.type(effects=[effect], default_effect=effect).id,
+            state=State.overload)
         self.fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(item, Restriction.state)
@@ -47,8 +48,9 @@ class TestState(RestrictionTestCase):
 
     def test_pass_state_lower(self):
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            effects=[effect], default_effect=effect).id, state=State.online)
+        item = ModuleHigh(
+            self.ch.type(effects=[effect], default_effect=effect).id,
+            state=State.online)
         self.fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(item, Restriction.state)
@@ -60,8 +62,9 @@ class TestState(RestrictionTestCase):
 
     def test_pass_state_equal(self):
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            effects=[effect], default_effect=effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(effects=[effect], default_effect=effect).id,
+            state=State.active)
         self.fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(item, Restriction.state)
@@ -73,8 +76,9 @@ class TestState(RestrictionTestCase):
 
     def test_pass_no_source(self):
         effect = self.ch.effect(category=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            effects=[effect], default_effect=effect).id, state=State.overload)
+        item = ModuleHigh(
+            self.ch.type(effects=[effect], default_effect=effect).id,
+            state=State.overload)
         self.fit.modules.high.append(item)
         self.fit.source = None
         # Action

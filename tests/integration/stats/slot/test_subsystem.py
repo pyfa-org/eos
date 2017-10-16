@@ -28,7 +28,7 @@ class TestSubsystem(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.max_subsystems)
+        self.ch.attr(attribute_id=AttributeId.max_subsystems)
         self.effect = self.ch.effect(
             effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
 

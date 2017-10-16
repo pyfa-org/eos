@@ -28,41 +28,34 @@ class TestItemMixinTankingResistances(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.em_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.thermal_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.explosive_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_em_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.armor_thermal_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.armor_kinetic_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.armor_explosive_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_em_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.shield_thermal_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.shield_kinetic_damage_resonance)
-        self.ch.attribute(
-            attribute_id=AttributeId.shield_explosive_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.em_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.thermal_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.kinetic_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.explosive_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_em_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_thermal_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_kinetic_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.armor_explosive_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_em_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_thermal_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_kinetic_damage_resonance)
+        self.ch.attr(attribute_id=AttributeId.shield_explosive_damage_resonance)
 
     def test_generic(self):
         fit = Fit()
-        item = Ship(self.ch.type(
-            attributes={
-                AttributeId.em_damage_resonance: 0.01,
-                AttributeId.thermal_damage_resonance: 0.02,
-                AttributeId.kinetic_damage_resonance: 0.03,
-                AttributeId.explosive_damage_resonance: 0.04,
-                AttributeId.armor_em_damage_resonance: 0.05,
-                AttributeId.armor_thermal_damage_resonance: 0.06,
-                AttributeId.armor_kinetic_damage_resonance: 0.07,
-                AttributeId.armor_explosive_damage_resonance: 0.08,
-                AttributeId.shield_em_damage_resonance: 0.09,
-                AttributeId.shield_thermal_damage_resonance: 0.1,
-                AttributeId.shield_kinetic_damage_resonance: 0.11,
-                AttributeId.shield_explosive_damage_resonance: 0.12}).id)
+        item = Ship(self.ch.type(attributes={
+            AttributeId.em_damage_resonance: 0.01,
+            AttributeId.thermal_damage_resonance: 0.02,
+            AttributeId.kinetic_damage_resonance: 0.03,
+            AttributeId.explosive_damage_resonance: 0.04,
+            AttributeId.armor_em_damage_resonance: 0.05,
+            AttributeId.armor_thermal_damage_resonance: 0.06,
+            AttributeId.armor_kinetic_damage_resonance: 0.07,
+            AttributeId.armor_explosive_damage_resonance: 0.08,
+            AttributeId.shield_em_damage_resonance: 0.09,
+            AttributeId.shield_thermal_damage_resonance: 0.1,
+            AttributeId.shield_kinetic_damage_resonance: 0.11,
+            AttributeId.shield_explosive_damage_resonance: 0.12}).id)
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.resistances.hull.em, 0.99)
@@ -104,20 +97,19 @@ class TestItemMixinTankingResistances(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit(source=None)
-        item = Ship(self.ch.type(
-            attributes={
-                AttributeId.em_damage_resonance: 0.01,
-                AttributeId.thermal_damage_resonance: 0.02,
-                AttributeId.kinetic_damage_resonance: 0.03,
-                AttributeId.explosive_damage_resonance: 0.04,
-                AttributeId.armor_em_damage_resonance: 0.05,
-                AttributeId.armor_thermal_damage_resonance: 0.06,
-                AttributeId.armor_kinetic_damage_resonance: 0.07,
-                AttributeId.armor_explosive_damage_resonance: 0.08,
-                AttributeId.shield_em_damage_resonance: 0.09,
-                AttributeId.shield_thermal_damage_resonance: 0.1,
-                AttributeId.shield_kinetic_damage_resonance: 0.11,
-                AttributeId.shield_explosive_damage_resonance: 0.12}).id)
+        item = Ship(self.ch.type(attributes={
+            AttributeId.em_damage_resonance: 0.01,
+            AttributeId.thermal_damage_resonance: 0.02,
+            AttributeId.kinetic_damage_resonance: 0.03,
+            AttributeId.explosive_damage_resonance: 0.04,
+            AttributeId.armor_em_damage_resonance: 0.05,
+            AttributeId.armor_thermal_damage_resonance: 0.06,
+            AttributeId.armor_kinetic_damage_resonance: 0.07,
+            AttributeId.armor_explosive_damage_resonance: 0.08,
+            AttributeId.shield_em_damage_resonance: 0.09,
+            AttributeId.shield_thermal_damage_resonance: 0.1,
+            AttributeId.shield_kinetic_damage_resonance: 0.11,
+            AttributeId.shield_explosive_damage_resonance: 0.12}).id)
         fit.ship = item
         # Verification
         self.assertIsNone(item.resistances.hull.em)

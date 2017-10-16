@@ -30,10 +30,10 @@ class TestEffectToggling(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute(stackable=1)
-        src_attr1 = self.ch.attribute()
-        src_attr2 = self.ch.attribute()
-        src_attr3 = self.ch.attribute()
+        self.tgt_attr = self.ch.attr(stackable=1)
+        src_attr1 = self.ch.attr()
+        src_attr2 = self.ch.attr()
+        src_attr3 = self.ch.attr()
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

@@ -28,8 +28,8 @@ class TestCalibration(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.upgrade_capacity)
-        self.ch.attribute(attribute_id=AttributeId.upgrade_cost)
+        self.ch.attr(attribute_id=AttributeId.upgrade_capacity)
+        self.ch.attr(attribute_id=AttributeId.upgrade_cost)
         self.effect = self.ch.effect(
             effect_id=EffectId.rig_slot, category=EffectCategoryId.passive)
 

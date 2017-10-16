@@ -29,8 +29,9 @@ class TestRahSimSource(RahSimTestCase):
         # Setup
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
-        rah_item = ModuleLow(self.make_rah_eve_type(
-            (0.85, 0.85, 0.85, 0.85), 6, 1000).id, state=State.active)
+        rah_item = ModuleLow(
+            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
         self.fit.modules.low.equip(rah_item)
         self.fit.source = None
         # Verification

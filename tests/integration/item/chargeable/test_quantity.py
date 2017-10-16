@@ -28,8 +28,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.capacity)
-        self.ch.attribute(attribute_id=AttributeId.volume)
+        self.ch.attr(attribute_id=AttributeId.capacity)
+        self.ch.attr(attribute_id=AttributeId.volume)
 
     def test_generic(self):
         fit = Fit()

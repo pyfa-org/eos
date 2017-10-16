@@ -30,7 +30,7 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.max_active_drones)
+        self.ch.attr(attribute_id=AttributeId.max_active_drones)
 
     def test_fail_excess_single(self):
         # Check that error is raised when number of used slots exceeds slot

@@ -29,15 +29,15 @@ class TestPowergrid(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.power_output)
-        self.ch.attribute(attribute_id=AttributeId.power)
+        self.ch.attr(attribute_id=AttributeId.power_output)
+        self.ch.attr(attribute_id=AttributeId.power)
         self.effect = self.ch.effect(
             effect_id=EffectId.online, category=EffectCategoryId.active,
             customize=True)
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        src_attr = self.ch.attribute()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -75,7 +75,7 @@ class TestPowergrid(StatTestCase):
 
     def test_use_single(self):
         # Check that modified consumption attribute is used
-        src_attr = self.ch.attribute()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

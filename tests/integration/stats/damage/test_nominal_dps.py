@@ -29,18 +29,18 @@ class TestStatsDamageDps(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.em_damage)
-        self.ch.attribute(attribute_id=AttributeId.thermal_damage)
-        self.ch.attribute(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attribute(attribute_id=AttributeId.explosive_damage)
-        self.ch.attribute(attribute_id=AttributeId.damage_multiplier)
-        self.ch.attribute(
+        self.ch.attr(attribute_id=AttributeId.em_damage)
+        self.ch.attr(attribute_id=AttributeId.thermal_damage)
+        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
+        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
+        self.ch.attr(
             attribute_id=AttributeId.module_reactivation_delay, default_value=0)
-        self.ch.attribute(attribute_id=AttributeId.volume)
-        self.ch.attribute(attribute_id=AttributeId.capacity)
-        self.ch.attribute(attribute_id=AttributeId.reload_time)
-        self.ch.attribute(attribute_id=AttributeId.charge_rate)
-        self.cycle_attr = self.ch.attribute()
+        self.ch.attr(attribute_id=AttributeId.volume)
+        self.ch.attr(attribute_id=AttributeId.capacity)
+        self.ch.attr(attribute_id=AttributeId.reload_time)
+        self.ch.attr(attribute_id=AttributeId.charge_rate)
+        self.cycle_attr = self.ch.attr()
         self.dd_effect = self.ch.effect(
             effect_id=EffectId.projectile_fired,
             category=EffectCategoryId.active,
@@ -60,7 +60,7 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single(self):
-        src_attr = self.ch.attribute()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -69,19 +69,19 @@ class TestStatsDamageDps(StatTestCase):
             src_attr=src_attr.id)
         effect = self.ch.effect(
             category=EffectCategoryId.passive, modifiers=[modifier])
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000, src_attr.id: 1.5},
-            effects=(self.dd_effect, effect),
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6,
-                AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000, src_attr.id: 1.5},
+                effects=(self.dd_effect, effect),
+                default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -96,33 +96,31 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_multiple(self):
-        item1 = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item1.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6,
-                AttributeId.volume: 1}).id)
+        item1 = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item1.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2000,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item2.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
-                AttributeId.kinetic_damage: 48,
-                AttributeId.explosive_damage: 96,
-                AttributeId.volume: 1}).id)
+        item2 = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2000,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item2.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
+            AttributeId.kinetic_damage: 48, AttributeId.explosive_damage: 96,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item2)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -137,19 +135,18 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_arguments_custom_profile(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6,
-                AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps(
@@ -165,19 +162,18 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_arguments_custom_reload(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 3000,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6,
-                AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 3000,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps(reload=True)
@@ -192,33 +188,32 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_arguments_custom_filter(self):
-        item1 = ModuleHigh(self.ch.type(
-            group=55, attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item1.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6,
-                AttributeId.volume: 1}).id)
+        item1 = ModuleHigh(
+            self.ch.type(
+                group=55, attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect],
+                default_effect=self.dd_effect).id,
+            state=State.active)
+        item1.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(
-            group=54, attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2000,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item2.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
-                AttributeId.kinetic_damage: 48,
-                AttributeId.explosive_damage: 96,
-                AttributeId.volume: 1}).id)
+        item2 = ModuleHigh(
+            self.ch.type(
+                group=54, attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2000,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item2.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
+            AttributeId.kinetic_damage: 48, AttributeId.explosive_damage: 96,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item2)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps(
@@ -234,18 +229,17 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_em(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6, AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.thermal_damage: 2.4, AttributeId.kinetic_damage: 4.8,
+            AttributeId.explosive_damage: 9.6, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -261,17 +255,17 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_therm(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6, AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.kinetic_damage: 4.8,
+            AttributeId.explosive_damage: 9.6, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -287,17 +281,17 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_kin(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.explosive_damage: 9.6, AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.explosive_damage: 9.6, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -313,17 +307,17 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_expl(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8, AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -339,13 +333,14 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_all(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
@@ -363,16 +358,16 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_em(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 0, AttributeId.volume: 1
-        }).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.em_damage: 0, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -388,16 +383,16 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_therm(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            AttributeId.thermal_damage: 0, AttributeId.volume: 1
-        }).id)
+            AttributeId.thermal_damage: 0, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -413,16 +408,16 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_kin(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            AttributeId.kinetic_damage: 0, AttributeId.volume: 1
-        }).id)
+            AttributeId.kinetic_damage: 0, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -438,16 +433,16 @@ class TestStatsDamageDps(StatTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_expl(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.explosive_damage: 0, AttributeId.volume: 1}).id)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.ch.type(attributes={
+            AttributeId.explosive_damage: 0, AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps()
@@ -465,27 +460,27 @@ class TestStatsDamageDps(StatTestCase):
     def test_none_and_data(self):
         # As container for damage dealers is not ordered, this test may be
         # unreliable (even if there's issue, it won't fail each run)
-        item1 = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
-        item1.charge = Charge(self.ch.type(
-            attributes={
-                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-                AttributeId.kinetic_damage: 4.8,
-                AttributeId.explosive_damage: 9.6,
-                AttributeId.volume: 1}).id)
+        item1 = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2500,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
+        item1.charge = Charge(self.ch.type(attributes={
+            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6,
+            AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
-                AttributeId.charge_rate: 1, self.cycle_attr.id: 2000,
-                AttributeId.reload_time: 2000},
-            effects=[self.dd_effect],
-            default_effect=self.dd_effect).id, state=State.active)
+        item2 = ModuleHigh(
+            self.ch.type(
+                attributes={
+                    AttributeId.damage_multiplier: 2, AttributeId.capacity: 1,
+                    AttributeId.charge_rate: 1, self.cycle_attr.id: 2000,
+                    AttributeId.reload_time: 2000},
+                effects=[self.dd_effect], default_effect=self.dd_effect).id,
+            state=State.active)
         item2.charge = Charge(self.ch.type(
             attributes={AttributeId.volume: 1}).id)
         self.fit.modules.high.append(item2)

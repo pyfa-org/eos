@@ -30,10 +30,9 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_fail_single(self):
         # Check that error is raised when skill requirement is not met
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.required_skill_1: 50,
-                AttributeId.required_skill_1_level: 3}).id)
+        item = ModuleHigh(self.ch.type(attributes={
+            AttributeId.required_skill_1: 50,
+            AttributeId.required_skill_1_level: 3}).id)
         self.fit.modules.high.append(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -47,12 +46,11 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_fail_multiple(self):
         # Check that multiple errors are shown as iterable
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.required_skill_1: 48,
-                AttributeId.required_skill_1_level: 1,
-                AttributeId.required_skill_2: 50,
-                AttributeId.required_skill_2_level: 5}).id)
+        item = ModuleHigh(self.ch.type(attributes={
+            AttributeId.required_skill_1: 48,
+            AttributeId.required_skill_1_level: 1,
+            AttributeId.required_skill_2: 50,
+            AttributeId.required_skill_2_level: 5}).id)
         self.fit.modules.high.append(item)
         self.fit.skills.add(Skill(self.ch.type(type_id=50).id, level=2))
         # Action
@@ -67,12 +65,11 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_fail_partial(self):
         # Make sure satisfied skill requirements are not shown up in error
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.required_skill_1: 48,
-                AttributeId.required_skill_1_level: 1,
-                AttributeId.required_skill_2: 50,
-                AttributeId.required_skill_2_level: 5}).id)
+        item = ModuleHigh(self.ch.type(attributes={
+            AttributeId.required_skill_1: 48,
+            AttributeId.required_skill_1_level: 1,
+            AttributeId.required_skill_2: 50,
+            AttributeId.required_skill_2_level: 5}).id)
         self.fit.modules.high.append(item)
         self.fit.skills.add(Skill(self.ch.type(type_id=48).id, level=5))
         # Action
@@ -87,10 +84,9 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_fail_replacement(self):
         # Check that failed attempt to replace skill doesn't affect restriction
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.required_skill_1: 50,
-                AttributeId.required_skill_1_level: 3}).id)
+        item = ModuleHigh(self.ch.type(attributes={
+            AttributeId.required_skill_1: 50,
+            AttributeId.required_skill_1_level: 3}).id)
         self.fit.modules.high.append(item)
         skill_eve_type = self.ch.type(type_id=50)
         self.fit.skills.add(Skill(skill_eve_type.id, level=1))
@@ -108,10 +104,9 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_pass_satisfied(self):
         # Check that error isn't raised when all skill requirements are met
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.required_skill_2: 50,
-                AttributeId.required_skill_2_level: 3}).id)
+        item = ModuleHigh(self.ch.type(attributes={
+            AttributeId.required_skill_2: 50,
+            AttributeId.required_skill_2_level: 3}).id)
         self.fit.modules.high.append(item)
         self.fit.skills.add(Skill(self.ch.type(type_id=50).id, level=3))
         # Action
@@ -125,10 +120,9 @@ class TestSkillRequirement(RestrictionTestCase):
 
     def test_pass_exception_rig(self):
         # Check that skillreqs on rigs are not checked
-        item = Rig(self.ch.type(
-            attributes={
-                AttributeId.required_skill_2: 50,
-                AttributeId.required_skill_2_level: 3}).id)
+        item = Rig(self.ch.type(attributes={
+            AttributeId.required_skill_2: 50,
+            AttributeId.required_skill_2_level: 3}).id)
         self.fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -140,10 +134,9 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_pass_no_source(self):
-        item = ModuleHigh(self.ch.type(
-            attributes={
-                AttributeId.required_skill_1: 50,
-                AttributeId.required_skill_1_level: 3}).id)
+        item = ModuleHigh(self.ch.type(attributes={
+            AttributeId.required_skill_1: 50,
+            AttributeId.required_skill_1_level: 3}).id)
         self.fit.modules.high.append(item)
         self.fit.source = None
         # Action

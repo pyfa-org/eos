@@ -35,11 +35,11 @@ class TestSourceSwitch(CalculatorTestCase):
         # attribute
         # Setup
         src_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attribute(attribute_id=src_attr_id)
-        self.ch2.attribute(attribute_id=src_attr_id)
+        self.ch.attr(attribute_id=src_attr_id)
+        self.ch2.attr(attribute_id=src_attr_id)
         tgt_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attribute(attribute_id=tgt_attr_id)
-        self.ch2.attribute(attribute_id=tgt_attr_id)
+        self.ch.attr(attribute_id=tgt_attr_id)
+        self.ch2.attr(attribute_id=tgt_attr_id)
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
@@ -84,14 +84,14 @@ class TestSourceSwitch(CalculatorTestCase):
         # instance
         # Setup
         src_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attribute(attribute_id=src_attr_id)
-        self.ch2.attribute(attribute_id=src_attr_id)
+        self.ch.attr(attribute_id=src_attr_id)
+        self.ch2.attr(attribute_id=src_attr_id)
         tgt_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
         max_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attribute(attribute_id=tgt_attr_id, max_attribute=max_attr_id)
-        self.ch2.attribute(attribute_id=tgt_attr_id, max_attribute=max_attr_id)
-        self.ch.attribute(attribute_id=max_attr_id, default_value=54.5)
-        self.ch2.attribute(attribute_id=max_attr_id, default_value=88)
+        self.ch.attr(attribute_id=tgt_attr_id, max_attribute=max_attr_id)
+        self.ch2.attr(attribute_id=tgt_attr_id, max_attribute=max_attr_id)
+        self.ch.attr(attribute_id=max_attr_id, default_value=54.5)
+        self.ch2.attr(attribute_id=max_attr_id, default_value=88)
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,

@@ -31,8 +31,8 @@ class TestTgtFilterUnknown(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = tgt_attr = self.ch.attribute()
-        self.src_attr = src_attr = self.ch.attribute()
+        self.tgt_attr = tgt_attr = self.ch.attr()
+        self.src_attr = src_attr = self.ch.attr()
         self.invalid_modifier = self.mod(
             tgt_filter=26500,
             tgt_domain=ModifierDomain.self,

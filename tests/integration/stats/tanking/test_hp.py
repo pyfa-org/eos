@@ -28,9 +28,9 @@ class TestHp(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.hp)
-        self.ch.attribute(attribute_id=AttributeId.armor_hp)
-        self.ch.attribute(attribute_id=AttributeId.shield_capacity)
+        self.ch.attr(attribute_id=AttributeId.hp)
+        self.ch.attr(attribute_id=AttributeId.armor_hp)
+        self.ch.attr(attribute_id=AttributeId.shield_capacity)
 
     def test_relay(self):
         # Check that stats service relays hp stats properly

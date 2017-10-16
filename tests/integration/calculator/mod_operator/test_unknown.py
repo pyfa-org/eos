@@ -31,8 +31,8 @@ class TestOperatorUnknown(CalculatorTestCase):
 
     def test_log_other(self):
         # Check how unknown operator value influences attribute calculator
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -62,8 +62,8 @@ class TestOperatorUnknown(CalculatorTestCase):
     def test_log_unorderable_combination(self):
         # Check how non-orderable operator value influences attribute
         # calculator. Previously, bug in calculation method made it to crash
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -98,8 +98,8 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_combination(self):
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

@@ -30,7 +30,7 @@ class TestTurretSlot(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.turret_slots_left)
+        self.ch.attr(attribute_id=AttributeId.turret_slots_left)
         self.effect = self.ch.effect(
             effect_id=EffectId.turret_fitted, category=EffectCategoryId.passive)
 

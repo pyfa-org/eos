@@ -28,7 +28,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestRounding(CalculatorTestCase):
 
     def test_cpu_down(self):
-        attr = self.ch.attribute(attribute_id=AttributeId.cpu)
+        attr = self.ch.attr(attribute_id=AttributeId.cpu)
         item = Implant(self.ch.type(attributes={attr.id: 2.3333}).id)
         self.fit.implants.add(item)
         # Verification
@@ -38,7 +38,7 @@ class TestRounding(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_cpu_up(self):
-        attr = self.ch.attribute(attribute_id=AttributeId.cpu)
+        attr = self.ch.attr(attribute_id=AttributeId.cpu)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
@@ -48,8 +48,8 @@ class TestRounding(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_cpu_modified(self):
-        src_attr = self.ch.attribute()
-        tgt_attr = self.ch.attribute(attribute_id=AttributeId.cpu)
+        src_attr = self.ch.attr()
+        tgt_attr = self.ch.attr(attribute_id=AttributeId.cpu)
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -69,7 +69,7 @@ class TestRounding(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_cpu_output(self):
-        attr = self.ch.attribute(attribute_id=AttributeId.cpu_output)
+        attr = self.ch.attr(attribute_id=AttributeId.cpu_output)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
@@ -79,7 +79,7 @@ class TestRounding(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_power(self):
-        attr = self.ch.attribute(attribute_id=AttributeId.power)
+        attr = self.ch.attr(attribute_id=AttributeId.power)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
@@ -89,7 +89,7 @@ class TestRounding(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_power_output(self):
-        attr = self.ch.attribute(attribute_id=AttributeId.power_output)
+        attr = self.ch.attr(attribute_id=AttributeId.power_output)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
@@ -99,7 +99,7 @@ class TestRounding(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_other(self):
-        attr = self.ch.attribute()
+        attr = self.ch.attr()
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification

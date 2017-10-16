@@ -28,8 +28,8 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtOwnerSkillrqDomainTarget(CalculatorTestCase):
 
     def test_no_effect(self):
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=1972,
@@ -41,10 +41,9 @@ class TestTgtOwnerSkillrqDomainTarget(CalculatorTestCase):
             category=EffectCategoryId.passive, modifiers=[modifier])
         influence_src = Implant(self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect]).id)
-        influence_tgt = Rig(self.ch.type(
-            attributes={
-                tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Rig(self.ch.type(attributes={
+            tgt_attr.id: 100, AttributeId.required_skill_1: 56,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.implants.add(influence_src)

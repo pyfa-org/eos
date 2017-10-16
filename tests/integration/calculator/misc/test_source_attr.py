@@ -31,9 +31,9 @@ class TestSourceAttribute(CalculatorTestCase):
 
     def test_absent_attr_combination(self):
         # Check how calculator reacts to source attribute which is absent
-        tgt_attr = self.ch.attribute()
-        abs_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        abs_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

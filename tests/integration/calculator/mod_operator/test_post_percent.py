@@ -29,8 +29,8 @@ class TestOperatorPostPercent(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        self.tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,

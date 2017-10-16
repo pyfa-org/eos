@@ -30,7 +30,7 @@ class TestLauncherSlot(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.launcher_slots_left)
+        self.ch.attr(attribute_id=AttributeId.launcher_slots_left)
         self.effect = self.ch.effect(
             effect_id=EffectId.launcher_fitted,
             category=EffectCategoryId.passive)

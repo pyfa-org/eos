@@ -28,8 +28,8 @@ from tests.integration.item.item_testcase import ItemMixinTestCase
 class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def make_item_with_defeff_attrib(self, defeff_attrib_name):
-        attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -101,7 +101,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_optimal_no_defeff(self):
-        attr = self.ch.attribute()
+        attr = self.ch.attr()
         effect = self.ch.effect(
             category=EffectCategoryId.active, range_attribute=attr.id)
         fit = Fit()
@@ -115,7 +115,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_optimal_no_description(self):
-        attr = self.ch.attribute()
+        attr = self.ch.attr()
         effect = self.ch.effect(category=EffectCategoryId.active)
         fit = Fit()
         item = ModuleHigh(self.ch.type(
@@ -129,7 +129,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
 
     def test_optimal_no_attr(self):
-        attr = self.ch.attribute()
+        attr = self.ch.attr()
         effect = self.ch.effect(
             category=EffectCategoryId.active, range_attribute=attr.id)
         fit = Fit()

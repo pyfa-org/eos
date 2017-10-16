@@ -75,7 +75,7 @@ class IntegrationTestCase(EosTestCase):
         return max(ch.allocate_type_id() for ch in cache_handlers)
 
     def allocate_attribute_id(self, *cache_handlers):
-        return max(ch.allocate_attribute_id() for ch in cache_handlers)
+        return max(ch.allocate_attr_id() for ch in cache_handlers)
 
     def allocate_effect_id(self, *cache_handlers):
         return max(ch.allocate_effect_id() for ch in cache_handlers)

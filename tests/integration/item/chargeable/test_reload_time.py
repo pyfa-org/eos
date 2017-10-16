@@ -28,7 +28,7 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.reload_time)
+        self.ch.attr(attribute_id=AttributeId.reload_time)
 
     def test_generic(self):
         fit = Fit()

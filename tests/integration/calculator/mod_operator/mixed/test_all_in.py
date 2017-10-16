@@ -29,8 +29,8 @@ class TestOperatorAllIn(CalculatorTestCase):
     """Test interaction of all operators, besides post-assignment."""
 
     def test_all_in(self):
-        tgt_attr = self.ch.attribute(stackable=0)
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr(stackable=0)
+        src_attr = self.ch.attr()
         modifier_pre_ass = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,

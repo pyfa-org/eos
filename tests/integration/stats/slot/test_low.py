@@ -29,13 +29,13 @@ class TestLowSlot(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.low_slots)
+        self.ch.attr(attribute_id=AttributeId.low_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        src_attr = self.ch.attribute()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

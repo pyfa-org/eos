@@ -30,7 +30,7 @@ class TestLowSlot(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attribute(attribute_id=AttributeId.low_slots)
+        self.ch.attr(attribute_id=AttributeId.low_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.lo_power, category=EffectCategoryId.passive)
 

@@ -28,8 +28,8 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtItemAwaitingDomainChar(CalculatorTestCase):
 
     def test_character(self):
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.character,

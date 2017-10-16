@@ -30,8 +30,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_fail_group1(self):
         charge_item = Charge(self.ch.type(group=1008).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_1: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         # Action
@@ -53,8 +54,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_fail_group2(self):
         charge_item = Charge(self.ch.type(group=1008).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_2: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_2: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         # Action
@@ -76,8 +78,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_fail_group3(self):
         charge_item = Charge(self.ch.type(group=1008).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_3: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_3: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         # Action
@@ -99,8 +102,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_fail_group4(self):
         charge_item = Charge(self.ch.type(group=1008).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_4: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_4: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         # Action
@@ -122,8 +126,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_fail_group5(self):
         charge_item = Charge(self.ch.type(group=1008).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_5: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_5: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         # Action
@@ -145,8 +150,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_fail_charge_none(self):
         charge_item = Charge(self.ch.type(group=None).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_1: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         # Action
@@ -169,10 +175,9 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_multiple_same(self):
         charge_item = Charge(self.ch.type(group=1008).id)
         container_item = ModuleHigh(
-            self.ch.type(
-                attributes={
-                    AttributeId.charge_group_3: 3,
-                    AttributeId.charge_group_5: 3}).id,
+            self.ch.type(attributes={
+                AttributeId.charge_group_3: 3,
+                AttributeId.charge_group_5: 3}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -196,10 +201,9 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_multiple_different(self):
         charge_item = Charge(self.ch.type(group=1008).id)
         container_item = ModuleHigh(
-            self.ch.type(
-                attributes={
-                    AttributeId.charge_group_3: 5,
-                    AttributeId.charge_group_5: 3}).id,
+            self.ch.type(attributes={
+                AttributeId.charge_group_3: 5,
+                AttributeId.charge_group_5: 3}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -223,8 +227,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_pass_match(self):
         charge_item = Charge(self.ch.type(group=3).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_1: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         # Action
@@ -244,10 +249,9 @@ class TestChargeGroup(RestrictionTestCase):
     def test_pass_multiple(self):
         charge_item = Charge(self.ch.type(group=1008).id)
         container_item = ModuleHigh(
-            self.ch.type(
-                attributes={
-                    AttributeId.charge_group_3: 56,
-                    AttributeId.charge_group_5: 1008}).id,
+            self.ch.type(attributes={
+                AttributeId.charge_group_3: 56,
+                AttributeId.charge_group_5: 1008}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -286,8 +290,9 @@ class TestChargeGroup(RestrictionTestCase):
 
     def test_pass_no_source(self):
         charge_item = Charge(self.ch.type(group=1008).id)
-        container_item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.charge_group_1: 3}).id, state=State.offline)
+        container_item = ModuleHigh(
+            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
         self.fit.source = None

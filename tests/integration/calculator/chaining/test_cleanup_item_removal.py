@@ -30,9 +30,9 @@ class TestCleanupChainRemoval(CalculatorTestCase):
 
     def test_attribute(self):
         # Setup
-        attr1 = self.ch.attribute()
-        attr2 = self.ch.attribute()
-        attr3 = self.ch.attribute()
+        attr1 = self.ch.attr()
+        attr2 = self.ch.attr()
+        attr3 = self.ch.attr()
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
@@ -49,10 +49,10 @@ class TestCleanupChainRemoval(CalculatorTestCase):
             src_attr=attr2.id)
         effect2 = self.ch.effect(
             category=EffectCategoryId.passive, modifiers=[modifier2])
-        implant_item = Implant(
-            self.ch.type(attributes={attr1.id: 5}, effects=[effect1]).id)
-        ship_item = Ship(
-            self.ch.type(attributes={attr2.id: 7.5}, effects=[effect2]).id)
+        implant_item = Implant(self.ch.type(
+            attributes={attr1.id: 5}, effects=[effect1]).id)
+        ship_item = Ship(self.ch.type(
+            attributes={attr2.id: 7.5}, effects=[effect2]).id)
         rig_item = Rig(self.ch.type(attributes={attr3.id: 0.5}).id)
         self.fit.implants.add(implant_item)
         self.fit.ship = ship_item

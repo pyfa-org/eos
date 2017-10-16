@@ -60,13 +60,15 @@ class TestMaxGroupActive(RestrictionTestCase):
     def test_mix_excess_one(self):
         # Make sure error is raised for just items which excess restriction,
         # even if both are from the same group
-        item1 = ModuleHigh(self.ch.type(
-            group=92, attributes={
-                AttributeId.max_group_active: 1}).id, state=State.active)
+        item1 = ModuleHigh(
+            self.ch.type(
+                group=92, attributes={AttributeId.max_group_active: 1}).id,
+            state=State.active)
         self.fit.modules.high.append(item1)
-        item2 = ModuleHigh(self.ch.type(
-            group=92, attributes={
-                AttributeId.max_group_active: 2}).id, state=State.active)
+        item2 = ModuleHigh(
+            self.ch.type(
+                group=92, attributes={AttributeId.max_group_active: 2}).id,
+            state=State.active)
         self.fit.modules.high.append(item2)
         # Action
         restriction_error1 = self.get_restriction_error(

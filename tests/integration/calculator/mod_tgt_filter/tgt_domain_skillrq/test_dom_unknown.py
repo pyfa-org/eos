@@ -28,8 +28,8 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtDomainSkillrqDomainUnknown(CalculatorTestCase):
 
     def test_combination(self):
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=1972,
@@ -49,10 +49,9 @@ class TestTgtDomainSkillrqDomainUnknown(CalculatorTestCase):
             modifiers=(invalid_modifier, valid_modifier))
         influence_src = Implant(self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect]).id)
-        influence_tgt = Rig(self.ch.type(
-            group=33, attributes={
-                tgt_attr.id: 100, AttributeId.required_skill_1: 33,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Rig(self.ch.type(group=33, attributes={
+            tgt_attr.id: 100, AttributeId.required_skill_1: 33,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.implants.add(influence_src)

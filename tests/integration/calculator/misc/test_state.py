@@ -29,12 +29,12 @@ class TestStateSwitching(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute(stackable=1)
-        src_attr1 = self.ch.attribute()
-        src_attr2 = self.ch.attribute()
-        src_attr3 = self.ch.attribute()
-        src_attr4 = self.ch.attribute()
-        src_attr5 = self.ch.attribute()
+        self.tgt_attr = self.ch.attr(stackable=1)
+        src_attr1 = self.ch.attr()
+        src_attr2 = self.ch.attr()
+        src_attr3 = self.ch.attr()
+        src_attr4 = self.ch.attr()
+        src_attr5 = self.ch.attr()
         modifier_off = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

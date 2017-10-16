@@ -31,8 +31,8 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        self.tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=ModifierDomain.self,
@@ -47,10 +47,9 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
 
     def test_ship(self):
         influence_src = Ship(self.src_eve_type.id)
-        influence_tgt = Rig(self.ch.type(
-            attributes={
-                self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Rig(self.ch.type(attributes={
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.ship = influence_src
@@ -66,10 +65,9 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
 
     def test_character(self):
         influence_src = Character(self.src_eve_type.id)
-        influence_tgt = Implant(self.ch.type(
-            attributes={
-                self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-                AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Implant(self.ch.type(attributes={
+            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
+            AttributeId.required_skill_1_level: 1}).id)
         self.fit.implants.add(influence_tgt)
         # Action
         self.fit.character = influence_src

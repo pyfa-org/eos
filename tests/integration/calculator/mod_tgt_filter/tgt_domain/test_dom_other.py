@@ -30,8 +30,8 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtDomainDomainOther(CalculatorTestCase):
 
     def test_error(self):
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.other,

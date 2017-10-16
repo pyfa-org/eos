@@ -30,11 +30,11 @@ class TestMapMethods(CalculatorTestCase):
 
     def setUp(self):
         super().setUp()
-        self.attr1 = self.ch.attribute()
-        self.attr2 = self.ch.attribute()
-        self.attr3 = self.ch.attribute(default_value=11)
-        self.attr4 = self.ch.attribute()
-        self.attr5 = self.ch.attribute()
+        self.attr1 = self.ch.attr()
+        self.attr2 = self.ch.attr()
+        self.attr3 = self.ch.attr(default_value=11)
+        self.attr4 = self.ch.attr()
+        self.attr5 = self.ch.attr()
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

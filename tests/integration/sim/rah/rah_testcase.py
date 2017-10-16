@@ -45,23 +45,23 @@ class RahSimTestCase(IntegrationTestCase):
     def setUp(self):
         super().setUp()
         # Attribute setup
-        self.max_attr = self.ch.attribute(
+        self.max_attr = self.ch.attr(
             default_value=1.0, high_is_good=False, stackable=False)
-        self.cycle_attr = self.ch.attribute(high_is_good=False, stackable=True)
-        self.heat_attr = self.ch.attribute(high_is_good=False, stackable=True)
-        self.shift_attr = self.ch.attribute(
+        self.cycle_attr = self.ch.attr(high_is_good=False, stackable=True)
+        self.heat_attr = self.ch.attr(high_is_good=False, stackable=True)
+        self.shift_attr = self.ch.attr(
             attribute_id=AttributeId.resistance_shift_amount, high_is_good=True,
             stackable=True)
-        self.armor_em = self.ch.attribute(
+        self.armor_em = self.ch.attr(
             attribute_id=AttributeId.armor_em_damage_resonance,
             max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
-        self.armor_therm = self.ch.attribute(
+        self.armor_therm = self.ch.attr(
             attribute_id=AttributeId.armor_thermal_damage_resonance,
             max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
-        self.armor_kin = self.ch.attribute(
+        self.armor_kin = self.ch.attr(
             attribute_id=AttributeId.armor_kinetic_damage_resonance,
             max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
-        self.armor_exp = self.ch.attribute(
+        self.armor_exp = self.ch.attr(
             attribute_id=AttributeId.armor_explosive_damage_resonance,
             max_attribute=self.max_attr.id, high_is_good=False, stackable=False)
         # Effect setup

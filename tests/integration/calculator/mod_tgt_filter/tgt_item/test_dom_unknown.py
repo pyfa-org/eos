@@ -28,8 +28,8 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtItemDomainUnknown(CalculatorTestCase):
 
     def test_combination(self):
-        tgt_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        tgt_attr = self.ch.attr()
+        src_attr = self.ch.attr()
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=1972,

@@ -29,9 +29,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
 
     def test_data(self):
         # Setup
-        chance_attr1 = self.ch.attribute()
-        chance_attr2 = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        chance_attr1 = self.ch.attr()
+        chance_attr2 = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -72,9 +72,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
 
     def test_data_no_source(self):
         # Setup
-        chance_attr1 = self.ch.attribute()
-        chance_attr2 = self.ch.attribute()
-        src_attr = self.ch.attribute()
+        chance_attr1 = self.ch.attr()
+        chance_attr2 = self.ch.attr()
+        src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -111,10 +111,10 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # appears again - it's disabled
         # Setup
         chance_attr1_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attribute(attribute_id=chance_attr1_id)
-        self.ch2.attribute(attribute_id=chance_attr1_id)
-        chance_attr2 = self.ch.attribute()
-        chance_attr3 = self.ch.attribute()
+        self.ch.attr(attribute_id=chance_attr1_id)
+        self.ch2.attr(attribute_id=chance_attr1_id)
+        chance_attr2 = self.ch.attr()
+        chance_attr3 = self.ch.attr()
         # 1st effect exists as side-effect in both sources
         effect1_id = self.allocate_effect_id(self.ch, self.ch2)
         effect1_src1 = self.ch.effect(
@@ -188,9 +188,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
 
     def test_enabling_attached(self):
         # Setup
-        chance_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
-        tgt_attr = self.ch.attribute()
+        chance_attr = self.ch.attr()
+        src_attr = self.ch.attr()
+        tgt_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -218,9 +218,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
 
     def test_enabling_detached(self):
         # Setup
-        chance_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
-        tgt_attr = self.ch.attribute()
+        chance_attr = self.ch.attr()
+        src_attr = self.ch.attr()
+        tgt_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -247,9 +247,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
 
     def test_disabling_attached(self):
         # Setup
-        chance_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
-        tgt_attr = self.ch.attribute()
+        chance_attr = self.ch.attr()
+        src_attr = self.ch.attr()
+        tgt_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -278,9 +278,9 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
 
     def test_disabling_detached(self):
         # Setup
-        chance_attr = self.ch.attribute()
-        src_attr = self.ch.attribute()
-        tgt_attr = self.ch.attribute()
+        chance_attr = self.ch.attr()
+        src_attr = self.ch.attr()
+        tgt_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,

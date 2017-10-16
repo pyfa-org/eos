@@ -52,7 +52,7 @@ class TestNonExistent(CalculatorTestCase):
     def test_absent_base_value_error(self):
         # Check case when default value of attribute cannot be determined. and
         # eve type doesn't define any value either
-        attr = self.ch.attribute()
+        attr = self.ch.attr()
         item_eve_type = self.ch.type()
         item = Implant(item_eve_type.id)
         self.fit.implants.add(item)
@@ -74,7 +74,7 @@ class TestNonExistent(CalculatorTestCase):
     def test_absent_default_value(self):
         # Default value should be used if attribute value is not available on
         # eve type
-        attr = self.ch.attribute(default_value=5.6)
+        attr = self.ch.attr(default_value=5.6)
         item = Implant(self.ch.type().id)
         # Action
         self.fit.implants.add(item)

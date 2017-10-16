@@ -30,9 +30,9 @@ class TestCleanupChainAddition(CalculatorTestCase):
 
     def test_attribute(self):
         # Setup
-        attr1 = self.ch.attribute()
-        attr2 = self.ch.attribute()
-        attr3 = self.ch.attribute()
+        attr1 = self.ch.attr()
+        attr2 = self.ch.attr()
+        attr3 = self.ch.attr()
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
