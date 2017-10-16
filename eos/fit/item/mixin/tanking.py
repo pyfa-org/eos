@@ -54,8 +54,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
             kinetic=self.__get_resistance_by_attr(
                 AttributeId.kinetic_damage_resonance),
             explosive=self.__get_resistance_by_attr(
-                AttributeId.explosive_damage_resonance)
-        )
+                AttributeId.explosive_damage_resonance))
         armor = DamageTypes(
             em=self.__get_resistance_by_attr(
                 AttributeId.armor_em_damage_resonance),
@@ -64,8 +63,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
             kinetic=self.__get_resistance_by_attr(
                 AttributeId.armor_kinetic_damage_resonance),
             explosive=self.__get_resistance_by_attr(
-                AttributeId.armor_explosive_damage_resonance)
-        )
+                AttributeId.armor_explosive_damage_resonance))
         shield = DamageTypes(
             em=self.__get_resistance_by_attr(
                 AttributeId.shield_em_damage_resonance),
@@ -74,8 +72,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
             kinetic=self.__get_resistance_by_attr(
                 AttributeId.shield_kinetic_damage_resonance),
             explosive=self.__get_resistance_by_attr(
-                AttributeId.shield_explosive_damage_resonance)
-        )
+                AttributeId.shield_explosive_damage_resonance))
         return TankingLayers(hull=hull, armor=armor, shield=shield)
 
     def __get_resistance_by_attr(self, attr):
@@ -130,8 +127,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
             dmg.em * (res.em or 0) +
             dmg.thermal * (res.thermal or 0) +
             dmg.kinetic * (res.kinetic or 0) +
-            dmg.explosive * (res.explosive or 0)
-        )
+            dmg.explosive * (res.explosive or 0))
         received = dealt - absorbed
         return dealt / received
 
@@ -164,6 +160,5 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
             layer_resists.em or 0,
             layer_resists.thermal or 0,
             layer_resists.kinetic or 0,
-            layer_resists.explosive or 0
-        )
+            layer_resists.explosive or 0)
         return layer_hp / (1 - resistance)

@@ -67,8 +67,7 @@ class RestrictionService:
             StateRestrictionRegister(msg_broker),
             SubsystemIndexRestrictionRegister(msg_broker),
             SubsystemSlotRestriction(stats),
-            TurretSlotRestriction(stats)
-        }
+            TurretSlotRestriction(stats)}
 
     def validate(self, skip_checks=()):
         """Validate fit.

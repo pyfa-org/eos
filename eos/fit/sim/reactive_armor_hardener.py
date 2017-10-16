@@ -44,15 +44,13 @@ res_attrs = (
     AttributeId.armor_em_damage_resonance,
     AttributeId.armor_explosive_damage_resonance,
     AttributeId.armor_kinetic_damage_resonance,
-    AttributeId.armor_thermal_damage_resonance
-)
+    AttributeId.armor_thermal_damage_resonance)
 # Format: {resonance attribute: damage profile field}
 profile_attrib_map = {
     AttributeId.armor_em_damage_resonance: 'em',
     AttributeId.armor_thermal_damage_resonance: 'thermal',
     AttributeId.armor_kinetic_damage_resonance: 'kinetic',
-    AttributeId.armor_explosive_damage_resonance: 'explosive'
-}
+    AttributeId.armor_explosive_damage_resonance: 'explosive'}
 
 
 class RahState:
@@ -81,15 +79,13 @@ class RahState:
         return hash((
             id(self.item),
             self.cycling,
-            frozenset(self._rounded_resos.items())
-        ))
+            frozenset(self._rounded_resos.items())))
 
     def __eq__(self, other):
         return all((
             self.item is other.item,
             self.cycling == other.cycling,
-            self._rounded_resos == other._rounded_resos
-        ))
+            self._rounded_resos == other._rounded_resos))
 
     def __repr__(self):
         spec = ['item', 'cycling', 'resos']
@@ -233,8 +229,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             ticks_to_ignore = min(
                 self.__estimate_initial_adaptation_ticks(tick_history),
                 # Never ignore more than half of the history
-                floor(len(tick_history) / 2)
-            )
+                floor(len(tick_history) / 2))
 
             avg_resos = self.__get_avg_resos(tick_history[ticks_to_ignore:])
             for item, resos in avg_resos.items():
@@ -395,8 +390,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # highest resistance when it's used strictly as donor
         slowest_item = max(
             self.__data,
-            key=lambda i: exhaustion_cycles[i] * self.__get_rah_duration(i)
-        )
+            key=lambda i: exhaustion_cycles[i] * self.__get_rah_duration(i))
         # Multiply amount of resistance exhaustion cycles by 1.5, to give RAH
         # more time for 'finer' adjustments
         slowest_cycles = ceil(exhaustion_cycles[slowest_item] * 1.5)
@@ -474,8 +468,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         InstrEffectsStop: _handle_effects_deactivation,
         InstrAttrValueChanged: _handle_attr_change,
         InstrAttrValueChangedMasked: _handle_attr_change_masked,
-        InputDefaultIncomingDamageChanged: _handle_changed_damage_profile
-    }
+        InputDefaultIncomingDamageChanged: _handle_changed_damage_profile}
 
     def _notify(self, message):
         # Do not react to messages while sim is running

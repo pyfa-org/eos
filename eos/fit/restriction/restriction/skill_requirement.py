@@ -29,9 +29,7 @@ from ..exception import RestrictionValidationError
 
 
 SkillRequirementErrorData = namedtuple(
-    'SkillRequirementErrorData',
-    ('skill', 'level', 'required_level')
-)
+    'SkillRequirementErrorData', ('skill', 'level', 'required_level'))
 
 EXCEPTIONS = (Rig,)
 
@@ -76,8 +74,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     def validate(self):
         tainted_items = {}
@@ -101,8 +98,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
                     skill_requirement_error = SkillRequirementErrorData(
                         skill=required_skill_id,
                         level=skill_level,
-                        required_level=required_skill_level
-                    )
+                        required_level=required_skill_level)
                     skill_requirement_errors.append(skill_requirement_error)
             if skill_requirement_errors:
                 tainted_items[item] = tuple(skill_requirement_errors)

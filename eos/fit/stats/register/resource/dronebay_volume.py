@@ -75,5 +75,4 @@ class DronebayVolumeStatRegister(
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}

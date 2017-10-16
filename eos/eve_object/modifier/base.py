@@ -66,8 +66,7 @@ class BaseModifier(metaclass=ABCMeta):
             ModifierTargetFilter.domain_skillrq:
                 self.__validate_tgt_filter_domain_skillrq,
             ModifierTargetFilter.owner_skillrq:
-                self.__validate_tgt_filter_owner_skillrq
-        }
+                self.__validate_tgt_filter_owner_skillrq}
         try:
             tgt_validator = tgt_validators[self.tgt_filter]
         except KeyError:
@@ -75,15 +74,13 @@ class BaseModifier(metaclass=ABCMeta):
         else:
             return all((
                 self.__validate_tgt_common(),
-                tgt_validator()
-            ))
+                tgt_validator()))
 
     def __validate_tgt_common(self):
         return all((
             self.tgt_filter in ModifierTargetFilter.__members__.values(),
             self.tgt_domain in ModifierDomain.__members__.values(),
-            isinstance(self.tgt_attr, Integral)
-        ))
+            isinstance(self.tgt_attr, Integral)))
 
     def __validate_tgt_filter_item(self):
         return all((
@@ -91,16 +88,14 @@ class BaseModifier(metaclass=ABCMeta):
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target,
                 ModifierDomain.other),
-            self.tgt_filter_extra_arg is None
-        ))
+            self.tgt_filter_extra_arg is None))
 
     def __validate_tgt_filter_domain(self):
         return all((
             self.tgt_domain in (
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target),
-            self.tgt_filter_extra_arg is None
-        ))
+            self.tgt_filter_extra_arg is None))
 
     def __validate_tgt_filter_domain_group(self):
         return all((
@@ -108,8 +103,7 @@ class BaseModifier(metaclass=ABCMeta):
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target),
             # References group via ID
-            isinstance(self.tgt_filter_extra_arg, Integral)
-        ))
+            isinstance(self.tgt_filter_extra_arg, Integral)))
 
     def __validate_tgt_filter_domain_skillrq(self):
         return all((
@@ -117,12 +111,10 @@ class BaseModifier(metaclass=ABCMeta):
                 ModifierDomain.self, ModifierDomain.character,
                 ModifierDomain.ship, ModifierDomain.target),
             # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, Integral)
-        ))
+            isinstance(self.tgt_filter_extra_arg, Integral)))
 
     def __validate_tgt_filter_owner_skillrq(self):
         return all((
             self.tgt_domain == ModifierDomain.character,
             # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, Integral)
-        ))
+            isinstance(self.tgt_filter_extra_arg, Integral)))

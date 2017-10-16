@@ -85,8 +85,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
         self.modules = ModuleRacks(
             high=ItemList(self, ModuleHigh),
             med=ItemList(self, ModuleMed),
-            low=ItemList(self, ModuleLow)
-        )
+            low=ItemList(self, ModuleLow))
         self.rigs = ItemSet(self, Rig)
         self.drones = ItemSet(self, Drone)
         self.fighters = ItemSet(self, FighterSquad)
@@ -180,8 +179,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
 
     _handler_map = {
         InputItemAdded: _handle_item_addition,
-        InputItemRemoved: _handle_item_removal
-    }
+        InputItemRemoved: _handle_item_removal}
 
     # Auxiliary methods
     def __repr__(self):

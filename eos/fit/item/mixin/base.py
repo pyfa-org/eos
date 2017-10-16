@@ -280,8 +280,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         self._refresh_source()
 
     _handler_map = {
-        InstrRefreshSource: _handle_refresh_source
-    }
+        InstrRefreshSource: _handle_refresh_source}
 
     # Private methods for message handlers
     def _refresh_source(self):

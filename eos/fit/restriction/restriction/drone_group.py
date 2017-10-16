@@ -31,14 +31,11 @@ from ..exception import RestrictionValidationError
 
 RESTRICTION_ATTRS = (
     AttributeId.allowed_drone_group_1,
-    AttributeId.allowed_drone_group_2
-)
+    AttributeId.allowed_drone_group_2)
 
 
 DroneGroupErrorData = namedtuple(
-    'DroneGroupErrorData',
-    ('drone_group', 'allowed_groups')
-)
+    'DroneGroupErrorData', ('drone_group', 'allowed_groups'))
 
 
 class DroneGroupRestrictionRegister(BaseRestrictionRegister):
@@ -69,8 +66,7 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     def validate(self):
         # No ship - no restriction
@@ -100,8 +96,7 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
             if drone_group not in allowed_groups:
                 tainted_items[drone] = DroneGroupErrorData(
                     drone_group=drone_group,
-                    allowed_groups=allowed_groups
-                )
+                    allowed_groups=allowed_groups)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

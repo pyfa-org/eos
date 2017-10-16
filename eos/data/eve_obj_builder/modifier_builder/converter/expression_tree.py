@@ -71,8 +71,7 @@ class ExpressionTreeConverter:
             OperandId.add_dom_mod: self._handle_domain_modifier,
             OperandId.add_dom_grp_mod: self._handle_domain_group_modifier,
             OperandId.add_dom_srq_mod: self._handle_domain_skillrq_modifer,
-            OperandId.add_own_srq_mod: self._handle_owner_skillrq_modifer
-        }
+            OperandId.add_own_srq_mod: self._handle_owner_skillrq_modifer}
         try:
             handler = handler_map[operand_id]
         except KeyError as e:
@@ -105,8 +104,7 @@ class ExpressionTreeConverter:
             tgt_domain=self._get_domain(exp_row.arg1.arg2.arg1),
             tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)
-        ))
+            src_attr=self._get_attribute(exp_row.arg2)))
 
     def _handle_domain_modifier(self, exp_row):
         self._mods.append(DogmaModifier(
@@ -114,8 +112,7 @@ class ExpressionTreeConverter:
             tgt_domain=self._get_domain(exp_row.arg1.arg2.arg1),
             tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)
-        ))
+            src_attr=self._get_attribute(exp_row.arg2)))
 
     def _handle_domain_group_modifier(self, exp_row):
         self._mods.append(DogmaModifier(
@@ -124,8 +121,7 @@ class ExpressionTreeConverter:
             tgt_filter_extra_arg=self._get_group(exp_row.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)
-        ))
+            src_attr=self._get_attribute(exp_row.arg2)))
 
     def _handle_domain_skillrq_modifer(self, exp_row):
         self._mods.append(DogmaModifier(
@@ -134,8 +130,7 @@ class ExpressionTreeConverter:
             tgt_filter_extra_arg=self._get_type(exp_row.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)
-        ))
+            src_attr=self._get_attribute(exp_row.arg2)))
 
     def _handle_owner_skillrq_modifer(self, exp_row):
         self._mods.append(DogmaModifier(
@@ -144,8 +139,7 @@ class ExpressionTreeConverter:
             tgt_filter_extra_arg=self._get_type(exp_row.arg1.arg2.arg1.arg2),
             tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)
-        ))
+            src_attr=self._get_attribute(exp_row.arg2)))
 
     @staticmethod
     def _get_domain(exp_row):
@@ -156,8 +150,7 @@ class ExpressionTreeConverter:
             'Char': ModifierDomain.character,
             'Ship': ModifierDomain.ship,
             'Target': ModifierDomain.target,
-            'Other': ModifierDomain.other
-        }
+            'Other': ModifierDomain.other}
         return conversion_map[exp_row['expressionValue']]
 
     @staticmethod
@@ -173,8 +166,7 @@ class ExpressionTreeConverter:
             'PostMul': ModifierOperator.post_mul,
             'PostDiv': ModifierOperator.post_div,
             'PostPercent': ModifierOperator.post_percent,
-            'PostAssignment': ModifierOperator.post_assign
-        }
+            'PostAssignment': ModifierOperator.post_assign}
         return conversion_map[exp_row['expressionValue']]
 
     @staticmethod
@@ -192,8 +184,7 @@ class ExpressionTreeConverter:
         # should be taken when needed
         elif operand_id == OperandId.get_type:
             conversion_map = {
-                ModifierDomain.self: EosTypeId.current_self
-            }
+                ModifierDomain.self: EosTypeId.current_self}
             domain = ExpressionTreeConverter._get_domain(exp_row.arg1)
             return conversion_map[domain]
         else:

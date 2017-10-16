@@ -35,9 +35,7 @@ TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 
 
 CapitalItemErrorData = namedtuple(
-    'CapitalItemErrorData',
-    ('item_volume', 'max_subcap_volume')
-)
+    'CapitalItemErrorData', ('item_volume', 'max_subcap_volume'))
 
 
 class CapitalItemRestrictionRegister(BaseRestrictionRegister):
@@ -76,8 +74,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     def validate(self):
         # Skip validation only if ship has special special attribute set value
@@ -97,8 +94,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
                 eve_type_volume = item._eve_type.attributes[AttributeId.volume]
                 tainted_items[item] = CapitalItemErrorData(
                     item_volume=eve_type_volume,
-                    max_subcap_volume=MAX_SUBCAP_VOLUME
-                )
+                    max_subcap_volume=MAX_SUBCAP_VOLUME)
             raise RestrictionValidationError(tainted_items)
 
     @property

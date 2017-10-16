@@ -35,8 +35,7 @@ mode_conv = {
     EffectRunMode.full_compliance: False,
     EffectRunMode.state_compliance: True,
     EffectRunMode.force_run: True,
-    EffectRunMode.force_stop: False
-}
+    EffectRunMode.force_stop: False}
 
 
 class SideEffectMixin(BaseItemMixin):

@@ -49,14 +49,12 @@ def add_character_missile_damage_multiplier(eve_type):
             tgt_filter_extra_arg=TypeId.missile_launcher_operation,
             tgt_attr=damage_attr,
             operator=ModifierOperator.pre_mul,
-            src_attr=AttributeId.missile_damage_multiplier
-        ))
+            src_attr=AttributeId.missile_damage_multiplier))
     effect = Effect(
         effect_id=EosEffectId.char_missile_dmg,
         category=EffectCategoryId.passive,
         is_offensive=False,
         is_assistance=False,
         build_status=EffectBuildStatus.custom,
-        modifiers=tuple(modifiers)
-    )
+        modifiers=tuple(modifiers))
     eve_type.effects[effect.id] = effect

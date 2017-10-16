@@ -39,13 +39,8 @@ class Attribute(BaseCachable):
     """
 
     def __init__(
-        self,
-        attribute_id,
-        max_attribute=None,
-        default_value=None,
-        high_is_good=True,
-        stackable=True
-    ):
+            self, attribute_id, max_attribute=None, default_value=None,
+            high_is_good=True, stackable=True):
         self.id = attribute_id
         self.max_attribute = max_attribute
         self.default_value = default_value
@@ -59,8 +54,7 @@ class Attribute(BaseCachable):
             self.max_attribute,
             self.default_value,
             self.high_is_good,
-            self.stackable
-        )
+            self.stackable)
 
     @classmethod
     def decompress(cls, cache_handler, compressed):
@@ -69,8 +63,7 @@ class Attribute(BaseCachable):
             max_attribute=compressed[1],
             default_value=compressed[2],
             high_is_good=compressed[3],
-            stackable=compressed[4]
-        )
+            stackable=compressed[4])
 
     # Auxiliary methods
     def __repr__(self):

@@ -35,9 +35,7 @@ TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 
 
 MaxGroupErrorData = namedtuple(
-    'MaxGroupErrorData',
-    ('item_group', 'max_group', 'group_items')
-)
+    'MaxGroupErrorData', ('item_group', 'max_group', 'group_items'))
 
 
 class MaxGroupRestrictionRegister(BaseRestrictionRegister):
@@ -93,8 +91,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
                 tainted_items[item] = MaxGroupErrorData(
                     item_group=group,
                     max_group=max_group_restriction,
-                    group_items=group_items
-                )
+                    group_items=group_items)
         # Raise error if we detected any tainted items
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
@@ -120,8 +117,7 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     @property
     def type(self):
@@ -150,8 +146,7 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
 
     _handler_map = {
         InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation
-    }
+        InstrStatesDeactivate: _handle_item_states_deactivation}
 
     @property
     def type(self):
@@ -180,8 +175,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
 
     _handler_map = {
         InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation
-    }
+        InstrStatesDeactivate: _handle_item_states_deactivation}
 
     @property
     def type(self):

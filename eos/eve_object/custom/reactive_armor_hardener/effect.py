@@ -40,12 +40,10 @@ def add_rah_modifiers(effect):
             tgt_domain=ModifierDomain.ship,
             tgt_attr=attr,
             operator=ModifierOperator.pre_mul,
-            src_attr=attr
-        ) for attr in (
+            src_attr=attr)
+        for attr in (
             AttributeId.armor_em_damage_resonance,
             AttributeId.armor_thermal_damage_resonance,
             AttributeId.armor_kinetic_damage_resonance,
-            AttributeId.armor_explosive_damage_resonance
-        )
-    )
+            AttributeId.armor_explosive_damage_resonance))
     effect.build_status = EffectBuildStatus.custom

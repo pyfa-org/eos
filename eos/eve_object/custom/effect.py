@@ -33,8 +33,7 @@ _effect_id_map = {
     EffectId.module_bonus_afterburner: add_ab_modifiers,
     EffectId.module_bonus_ancillary_remote_armor_repairer: add_aar_modifier,
     EffectId.module_bonus_microwarpdrive: add_mwd_modifiers,
-    EffectId.online: fix_online_category
-}
+    EffectId.online: fix_online_category}
 
 
 def customize_effect(effect):

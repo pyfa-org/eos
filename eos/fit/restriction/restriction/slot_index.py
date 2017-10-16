@@ -63,8 +63,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     def validate(self):
         tainted_items = {}

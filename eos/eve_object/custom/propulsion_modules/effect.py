@@ -40,8 +40,7 @@ def add_ab_modifiers(effect):
         tgt_domain=ModifierDomain.ship,
         tgt_attr=AttributeId.mass,
         operator=ModifierOperator.mod_add,
-        src_attr=AttributeId.mass_addition
-    )
+        src_attr=AttributeId.mass_addition)
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, velocity_modifier)
     effect.build_status = EffectBuildStatus.custom
@@ -56,15 +55,13 @@ def add_mwd_modifiers(effect):
         tgt_domain=ModifierDomain.ship,
         tgt_attr=AttributeId.mass,
         operator=ModifierOperator.mod_add,
-        src_attr=AttributeId.mass_addition
-    )
+        src_attr=AttributeId.mass_addition)
     signature_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
         tgt_attr=AttributeId.signature_radius,
         operator=ModifierOperator.post_percent,
-        src_attr=AttributeId.signature_radius_bonus
-    )
+        src_attr=AttributeId.signature_radius_bonus)
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, signature_modifier, velocity_modifier)
     effect.build_status = EffectBuildStatus.custom

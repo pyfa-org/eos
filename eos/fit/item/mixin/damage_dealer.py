@@ -55,17 +55,14 @@ BASIC_MAP = {
     EffectId.super_weapon_amarr: WeaponType.direct,
     EffectId.super_weapon_caldari: WeaponType.direct,
     EffectId.super_weapon_gallente: WeaponType.direct,
-    EffectId.super_weapon_minmatar: WeaponType.direct
-}
+    EffectId.super_weapon_minmatar: WeaponType.direct}
 
 # Format: {module effect ID: {charge effect ID: weapon type}}
 CHARGE_MAP = {
     EffectId.use_missiles: {
         EffectId.missile_launching: WeaponType.guided_missile,
         EffectId.fof_missile_launching: WeaponType.guided_missile,
-        EffectId.bomb_launching: WeaponType.bomb
-    }
-}
+        EffectId.bomb_launching: WeaponType.bomb}}
 
 
 class DamageDealerMixin(
@@ -142,8 +139,7 @@ class DamageDealerMixin(
         WeaponType.instant_missile: (__get_volley_self, True),
         WeaponType.bomb: (__get_volley_charge, False),
         WeaponType.direct: (__get_volley_self, False),
-        WeaponType.untargeted_aoe: (__get_volley_self, False)
-    }
+        WeaponType.untargeted_aoe: (__get_volley_self, False)}
 
     @volatile_property
     def _pereff_volleys(self):

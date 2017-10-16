@@ -27,9 +27,7 @@ from ..exception import RestrictionValidationError
 
 
 SlotAmountErrorData = namedtuple(
-    'SlotAmountErrorData',
-    ('slots_used', 'slots_max_allowed')
-)
+    'SlotAmountErrorData', ('slots_used', 'slots_max_allowed'))
 
 
 class OrderedSlotAmountRestriction(BaseRestriction):
@@ -55,8 +53,7 @@ class OrderedSlotAmountRestriction(BaseRestriction):
                 if position is not None and position + 1 > slots_max:
                     tainted_items[item] = SlotAmountErrorData(
                         slots_used=slots_used,
-                        slots_max_allowed=slots_max
-                    )
+                        slots_max_allowed=slots_max)
             raise RestrictionValidationError(tainted_items)
 
 
@@ -78,8 +75,7 @@ class UnorderedSlotAmountRestriction(BaseRestriction):
             for item in stats._users:
                 tainted_items[item] = SlotAmountErrorData(
                     slots_used=slots_used,
-                    slots_max_allowed=slots_max
-                )
+                    slots_max_allowed=slots_max)
             raise RestrictionValidationError(tainted_items)
 
 

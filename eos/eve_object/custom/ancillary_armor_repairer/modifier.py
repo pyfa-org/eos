@@ -31,12 +31,9 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self,
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
-            tgt_filter_extra_arg=None,
-            tgt_attr=AttributeId.armor_damage_amount
-        )
+            self, tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self, tgt_filter_extra_arg=None,
+            tgt_attr=AttributeId.armor_damage_amount)
 
     def get_modification(self, carrier_item, _):
         # If carrier item has charge and it's paste, use on-carrier rep amount
@@ -82,8 +79,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
     __revision_map = {
         InstrItemAdd: __revise_on_item_add_remove,
         InstrItemRemove: __revise_on_item_add_remove,
-        InstrAttrValueChanged: __revise_on_attr_change
-    }
+        InstrAttrValueChanged: __revise_on_attr_change}
 
     @property
     def revise_message_types(self):

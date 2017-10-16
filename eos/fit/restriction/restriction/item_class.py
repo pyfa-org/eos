@@ -30,16 +30,13 @@ from ..exception import RestrictionValidationError
 
 
 ItemClassErrorData = namedtuple(
-    'ItemClassErrorData',
-    ('item_class', 'expected_classes')
-)
+    'ItemClassErrorData', ('item_class', 'expected_classes'))
 
 
 CLASS_VALIDATORS = {
     Booster: lambda eve_type: (
         eve_type.category == CategoryId.implant and
-        AttributeId.boosterness in eve_type.attributes
-    ),
+        AttributeId.boosterness in eve_type.attributes),
     Character: lambda eve_type: eve_type.group == GroupId.character,
     Charge: lambda eve_type: eve_type.category == CategoryId.charge,
     Drone: lambda eve_type: eve_type.category == CategoryId.drone,
@@ -48,37 +45,28 @@ CLASS_VALIDATORS = {
         eve_type.category == CategoryId.fighter and (
             AttributeId.fighter_squadron_is_heavy in eve_type.attributes or
             AttributeId.fighter_squadron_is_light in eve_type.attributes or
-            AttributeId.fighter_squadron_is_support in eve_type.attributes
-        )
-    ),
+            AttributeId.fighter_squadron_is_support in eve_type.attributes)),
     Implant: lambda eve_type: (
         eve_type.category == CategoryId.implant and
-        AttributeId.implantness in eve_type.attributes
-    ),
+        AttributeId.implantness in eve_type.attributes),
     ModuleHigh: lambda eve_type: (
         eve_type.category == CategoryId.module and
-        EffectId.hi_power in eve_type.effects
-    ),
+        EffectId.hi_power in eve_type.effects),
     ModuleMed: lambda eve_type: (
         eve_type.category == CategoryId.module and
-        EffectId.med_power in eve_type.effects
-    ),
+        EffectId.med_power in eve_type.effects),
     ModuleLow: lambda eve_type: (
         eve_type.category == CategoryId.module and
-        EffectId.lo_power in eve_type.effects
-    ),
+        EffectId.lo_power in eve_type.effects),
     Rig: lambda eve_type: (
         eve_type.category == CategoryId.module and
-        EffectId.rig_slot in eve_type.effects
-    ),
+        EffectId.rig_slot in eve_type.effects),
     Ship: lambda eve_type: eve_type.category == CategoryId.ship,
     Skill: lambda eve_type: eve_type.category == CategoryId.skill,
     Stance: lambda eve_type: eve_type.group == GroupId.ship_modifier,
     Subsystem: lambda eve_type: (
         eve_type.category == CategoryId.subsystem and
-        EffectId.subsystem in eve_type.effects
-    )
-}
+        EffectId.subsystem in eve_type.effects)}
 
 
 class ItemClassRestrictionRegister(BaseRestrictionRegister):
@@ -105,8 +93,7 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     def validate(self):
         tainted_items = {}
@@ -132,8 +119,7 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
                 expected_classes.append(item_class)
         error_data = ItemClassErrorData(
             item_class=type(item),
-            expected_classes=set(expected_classes)
-        )
+            expected_classes=set(expected_classes))
         return error_data
 
     @property

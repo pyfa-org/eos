@@ -58,8 +58,7 @@ class DamageDealerRegister(BaseStatRegister):
 
     _handler_map = {
         InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation
-    }
+        InstrEffectsStop: _handle_item_effects_deactivation}
 
     def _collect_damage_stats(self, item_filter, method_name, *args, **kwargs):
         """Fetch stats from all registered items.

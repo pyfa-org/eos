@@ -67,8 +67,7 @@ class FitVolatileManager(BaseSubscriber):
         InputEffectsRunModeChanged: _handle_other_changes,
         InputSkillLevelChanged: _handle_other_changes,
         InputSourceChanged: _handle_other_changes,
-        InputDefaultIncomingDamageChanged: _handle_other_changes
-    }
+        InputDefaultIncomingDamageChanged: _handle_other_changes}
 
     # Private methods for message handlers
     def __add_volatile_object(self, object):

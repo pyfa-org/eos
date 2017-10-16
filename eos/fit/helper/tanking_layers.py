@@ -53,16 +53,14 @@ class TankingLayers:
         return all((
             self.hull == other.hull,
             self.armor == other.armor,
-            self.shield == other.shield
-        ))
+            self.shield == other.shield))
 
     def __hash__(self):
         return hash((
             self.__class__.__name__,
             self.hull,
             self.armor,
-            self.shield
-        ))
+            self.shield))
 
     def __repr__(self):
         spec = ['hull', 'armor', 'shield']

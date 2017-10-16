@@ -93,17 +93,13 @@ class IntegrationTestCase(EosTestCase):
             fit.stats)
         entry_num += self._get_object_buffer_entry_amount(
             fit,
-            ignore_objects=(
-                fit,
-            ),
+            ignore_objects=(fit,),
             ignore_attrs=(
                 ('Fit', '_Fit__source'),
                 ('Fit', '_Fit__default_incoming_damage'),
                 ('Fit', '_FitMessageBroker__subscribers'),
                 ('RestrictionService', '_RestrictionService__restrictions'),
-                ('StatService', '_StatService__volatile_containers')
-            )
-        )
+                ('StatService', '_StatService__volatile_containers')))
         if entry_num > 0:
             plu = 'y' if entry_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(

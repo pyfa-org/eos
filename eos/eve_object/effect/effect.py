@@ -61,21 +61,12 @@ class Effect(BaseCachable):
     """
 
     def __init__(
-        self,
-        effect_id,
-        category=None,
-        is_offensive=False,
-        is_assistance=False,
-        duration_attribute=None,
-        discharge_attribute=None,
-        range_attribute=None,
-        falloff_attribute=None,
-        tracking_speed_attribute=None,
-        fitting_usage_chance_attribute=None,
-        build_status=None,
-        modifiers=(),
-        customize=True
-    ):
+            self, effect_id, category=None, is_offensive=False,
+            is_assistance=False, duration_attribute=None,
+            discharge_attribute=None, range_attribute=None,
+            falloff_attribute=None, tracking_speed_attribute=None,
+            fitting_usage_chance_attribute=None, build_status=None,
+            modifiers=(), customize=True):
         self.id = effect_id
         self.category = category
         self.is_offensive = bool(is_offensive)
@@ -98,8 +89,7 @@ class Effect(BaseCachable):
         EffectCategoryId.target: State.active,
         EffectCategoryId.online: State.online,
         EffectCategoryId.overload: State.overload,
-        EffectCategoryId.system: State.offline
-    }
+        EffectCategoryId.system: State.offline}
 
     @cached_property
     def _state(self):
@@ -159,8 +149,7 @@ class Effect(BaseCachable):
             tuple(
                 m.compress()
                 for m in self.modifiers
-                if isinstance(m, DogmaModifier))
-        )
+                if isinstance(m, DogmaModifier)))
 
     @classmethod
     def decompress(cls, cache_handler, compressed):
@@ -178,8 +167,7 @@ class Effect(BaseCachable):
             build_status=compressed[10],
             modifiers=tuple(
                 DogmaModifier.decompress(cache_handler, cm)
-                for cm in compressed[11])
-        )
+                for cm in compressed[11]))
 
     # Auxiliary methods
     def __repr__(self):

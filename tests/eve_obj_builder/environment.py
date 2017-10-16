@@ -30,8 +30,7 @@ class DataHandler:
             'dgmeffects': [],
             'dgmtypeeffects': [],
             'dgmexpressions': [],
-            'typefighterabils': []
-        }
+            'typefighterabils': []}
 
     def get_evetypes(self):
         return self.data['evetypes']

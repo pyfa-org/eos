@@ -94,8 +94,7 @@ class ItemRestrictedSet(ItemSet):
         """Check if eve type ID or item are present in set."""
         return (
             self.__eve_type_id_map.__contains__(value) or
-            ItemSet.__contains__(self, value)
-        )
+            ItemSet.__contains__(self, value))
 
     def __repr__(self):
         return repr(self.__eve_type_id_map)

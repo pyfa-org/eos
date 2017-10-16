@@ -35,12 +35,9 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self,
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.ship,
-            tgt_filter_extra_arg=None,
-            tgt_attr=AttributeId.max_velocity
-        )
+            self, tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.ship, tgt_filter_extra_arg=None,
+            tgt_attr=AttributeId.max_velocity)
 
     def get_modification(self, carrier_item, ship):
         # If attributes of any necessary items are not available, do not
@@ -86,8 +83,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         return False
 
     __revision_map = {
-        InstrAttrValueChanged: __revise_on_attr_change
-    }
+        InstrAttrValueChanged: __revise_on_attr_change}
 
     @property
     def revise_message_types(self):

@@ -85,8 +85,7 @@ class UnroundedResourceStatRegister(
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
         InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation
-    }
+        InstrEffectsStop: _handle_item_effects_deactivation}
 
 
 class CalibrationStatRegister(UnroundedResourceStatRegister):

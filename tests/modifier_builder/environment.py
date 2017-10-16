@@ -25,16 +25,9 @@ class ExpressionFactory:
         self._expressions = []
 
     def make(
-        self,
-        expressionID,
-        operandID=None,
-        arg1=None,
-        arg2=None,
-        expressionValue=None,
-        expressionTypeID=None,
-        expressionGroupID=None,
-        expressionAttributeID=None
-    ):
+            self, expressionID, operandID=None, arg1=None, arg2=None,
+            expressionValue=None, expressionTypeID=None, expressionGroupID=None,
+            expressionAttributeID=None):
         exp_row = {
             'expressionID': expressionID,
             'operandID': operandID,
@@ -43,8 +36,7 @@ class ExpressionFactory:
             'expressionValue': expressionValue,
             'expressionTypeID': expressionTypeID,
             'expressionGroupID': expressionGroupID,
-            'expressionAttributeID': expressionAttributeID
-        }
+            'expressionAttributeID': expressionAttributeID}
         self._expressions.append(exp_row)
         return exp_row
 

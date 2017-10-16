@@ -28,9 +28,7 @@ from ..exception import RestrictionValidationError
 
 
 ResourceErrorData = namedtuple(
-    'ResourceErrorData',
-    ('total_use', 'output', 'item_use')
-)
+    'ResourceErrorData', ('total_use', 'output', 'item_use'))
 
 
 class ResourceRestriction(BaseRestriction):
@@ -64,8 +62,7 @@ class ResourceRestriction(BaseRestriction):
             tainted_items[item] = ResourceErrorData(
                 total_use=total_use,
                 output=output,
-                item_use=resource_use
-            )
+                item_use=resource_use)
         raise RestrictionValidationError(tainted_items)
 
 

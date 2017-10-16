@@ -28,9 +28,7 @@ from ..exception import RestrictionValidationError
 
 
 StateErrorData = namedtuple(
-    'StateErrorData',
-    ('current_state', 'allowed_states')
-)
+    'StateErrorData', ('current_state', 'allowed_states'))
 
 
 class StateRestrictionRegister(BaseRestrictionRegister):
@@ -53,8 +51,7 @@ class StateRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation
-    }
+        InstrStatesDeactivate: _handle_item_states_deactivation}
 
     def validate(self):
         tainted_items = {}
@@ -64,8 +61,7 @@ class StateRestrictionRegister(BaseRestrictionRegister):
                     s for s in State if s <= item._eve_type.max_state)
                 tainted_items[item] = StateErrorData(
                     current_state=item.state,
-                    allowed_states=allowed_states
-                )
+                    allowed_states=allowed_states)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

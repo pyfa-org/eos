@@ -31,9 +31,7 @@ from ..custom.type import customize_type
 
 
 FighterAbility = namedtuple(
-    'FighterAbility',
-    ('cooldown_time', 'charge_quantity', 'rearm_time')
-)
+    'FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))
 
 
 class Type(BaseCachable):
@@ -57,16 +55,9 @@ class Type(BaseCachable):
     """
 
     def __init__(
-        self,
-        type_id,
-        group=None,
-        category=None,
-        attributes=DEFAULT,
-        effects=(),
-        default_effect=None,
-        fighter_abilities=DEFAULT,
-        customize=True
-    ):
+            self, type_id, group=None, category=None, attributes=DEFAULT,
+            effects=(), default_effect=None, fighter_abilities=DEFAULT,
+            customize=True):
         self.id = type_id
         self.group = group
         self.category = category
@@ -91,8 +82,7 @@ class Type(BaseCachable):
         AttributeId.required_skill_3: AttributeId.required_skill_3_level,
         AttributeId.required_skill_4: AttributeId.required_skill_4_level,
         AttributeId.required_skill_5: AttributeId.required_skill_5_level,
-        AttributeId.required_skill_6: AttributeId.required_skill_6_level
-    }
+        AttributeId.required_skill_6: AttributeId.required_skill_6_level}
 
     @cached_property
     def required_skills(self):
@@ -139,8 +129,7 @@ class Type(BaseCachable):
             tuple(self.attributes.items()),
             tuple(self.effects.keys()),
             None if self.default_effect is None else self.default_effect.id,
-            tuple(self.fighter_abilities.items())
-        )
+            tuple(self.fighter_abilities.items()))
 
     @classmethod
     def decompress(cls, cache_handler, compressed):
@@ -158,8 +147,7 @@ class Type(BaseCachable):
                 cache_handler.get_effect(eid)
                 for eid in compressed[4]),
             default_effect=default_effect,
-            fighter_abilities={k: v for k, v in compressed[6]}
-        )
+            fighter_abilities={k: v for k, v in compressed[6]})
 
     # Auxiliary methods
     def __repr__(self):

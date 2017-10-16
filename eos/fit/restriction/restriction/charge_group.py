@@ -33,14 +33,11 @@ RESTRICTION_ATTRS = (
     AttributeId.charge_group_2,
     AttributeId.charge_group_3,
     AttributeId.charge_group_4,
-    AttributeId.charge_group_5
-)
+    AttributeId.charge_group_5)
 
 
 ChargeGroupErrorData = namedtuple(
-    'ChargeGroupErrorData',
-    ('charge_group', 'allowed_groups')
-)
+    'ChargeGroupErrorData', ('charge_group', 'allowed_groups'))
 
 
 class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
@@ -84,8 +81,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     def validate(self):
         tainted_items = {}
@@ -98,8 +94,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             if charge._eve_type.group not in allowed_groups:
                 tainted_items[charge] = ChargeGroupErrorData(
                     charge_group=charge._eve_type.group,
-                    allowed_groups=allowed_groups
-                )
+                    allowed_groups=allowed_groups)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

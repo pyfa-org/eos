@@ -68,8 +68,7 @@ class ModifierInfoConverter:
                 'LocationRequiredSkillModifier':
                     cls._handle_domain_skillrq_modifer,
                 'OwnerRequiredSkillModifier':
-                    cls._handle_owner_skillrq_modifer
-            }
+                    cls._handle_owner_skillrq_modifer}
             # Compose and verify modifier, record if we failed to do so
             try:
                 handler = handler_map[mod_func]
@@ -93,8 +92,7 @@ class ModifierInfoConverter:
             tgt_domain=cls._get_domain(mod_info),
             tgt_attr=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID'])
-        )
+            src_attr=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_modifier(cls, mod_info):
@@ -103,8 +101,7 @@ class ModifierInfoConverter:
             tgt_domain=cls._get_domain(mod_info),
             tgt_attr=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID'])
-        )
+            src_attr=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_group_modifier(cls, mod_info):
@@ -114,8 +111,7 @@ class ModifierInfoConverter:
             tgt_filter_extra_arg=int(mod_info['groupID']),
             tgt_attr=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID'])
-        )
+            src_attr=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_skillrq_modifer(cls, mod_info):
@@ -125,8 +121,7 @@ class ModifierInfoConverter:
             tgt_filter_extra_arg=int(mod_info['skillTypeID']),
             tgt_attr=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID'])
-        )
+            src_attr=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_owner_skillrq_modifer(cls, mod_info):
@@ -136,8 +131,7 @@ class ModifierInfoConverter:
             tgt_filter_extra_arg=int(mod_info['skillTypeID']),
             tgt_attr=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID'])
-        )
+            src_attr=int(mod_info['modifyingAttributeID']))
 
     @staticmethod
     def _get_domain(mod_info):
@@ -147,8 +141,7 @@ class ModifierInfoConverter:
             'charID': ModifierDomain.character,
             'shipID': ModifierDomain.ship,
             'targetID': ModifierDomain.target,
-            'otherID': ModifierDomain.other
-        }
+            'otherID': ModifierDomain.other}
         return conversion_map[mod_info['domain']]
 
     @staticmethod
@@ -163,6 +156,5 @@ class ModifierInfoConverter:
             4: ModifierOperator.post_mul,
             5: ModifierOperator.post_div,
             6: ModifierOperator.post_percent,
-            7: ModifierOperator.post_assign,
-        }
+            7: ModifierOperator.post_assign}
         return conversion_map[mod_info['operator']]

@@ -49,8 +49,7 @@ PENALTY_IMMUNE_CATS = (
     CategoryId.charge,
     CategoryId.skill,
     CategoryId.implant,
-    CategoryId.subsystem
-)
+    CategoryId.subsystem)
 
 # Tuple with penalizable operators
 PENALIZABLE_OPERATORS = (
@@ -58,8 +57,7 @@ PENALIZABLE_OPERATORS = (
     ModifierOperator.post_mul,
     ModifierOperator.post_percent,
     ModifierOperator.pre_div,
-    ModifierOperator.post_div
-)
+    ModifierOperator.post_div)
 
 # Map which helps to normalize modifications
 NORMALIZATION_MAP = {
@@ -72,26 +70,22 @@ NORMALIZATION_MAP = {
     ModifierOperator.post_mul_immune: lambda val: val,
     ModifierOperator.post_div: lambda val: 1 / val,
     ModifierOperator.post_percent: lambda val: val / 100 + 1,
-    ModifierOperator.post_assign: lambda val: val
-}
+    ModifierOperator.post_assign: lambda val: val}
 
 # List operator types, according to their already normalized values
 ASSIGNMENTS = (
     ModifierOperator.pre_assign,
-    ModifierOperator.post_assign
-)
+    ModifierOperator.post_assign)
 ADDITIONS = (
     ModifierOperator.mod_add,
-    ModifierOperator.mod_sub
-)
+    ModifierOperator.mod_sub)
 MULTIPLICATIONS = (
     ModifierOperator.pre_mul,
     ModifierOperator.pre_div,
     ModifierOperator.post_mul,
     ModifierOperator.post_mul_immune,
     ModifierOperator.post_div,
-    ModifierOperator.post_percent
-)
+    ModifierOperator.post_percent)
 
 # Following attributes have limited precision - only to second number after
 # decimal separator
@@ -99,8 +93,7 @@ LIMITED_PRECISION = (
     AttributeId.cpu,
     AttributeId.power,
     AttributeId.cpu_output,
-    AttributeId.power_output
-)
+    AttributeId.power_output)
 
 # List of exceptions calculate method may throw
 CALCULATE_RAISABLE_EXCEPTIONS = (AttributeMetaError, BaseValueError)
@@ -279,8 +272,7 @@ class MutableAttributeMap:
             penalize = (
                 not attr_meta.stackable and
                 carrier_item._eve_type.category not in PENALTY_IMMUNE_CATS and
-                operator in PENALIZABLE_OPERATORS
-            )
+                operator in PENALIZABLE_OPERATORS)
             # Normalize operations to just three types: assignments, additions,
             # multiplications
             try:

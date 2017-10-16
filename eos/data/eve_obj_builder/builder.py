@@ -59,8 +59,7 @@ class EveObjBuilder:
             'dgmeffects': data_handler.get_dgmeffects,
             'dgmtypeeffects': data_handler.get_dgmtypeeffects,
             'dgmexpressions': data_handler.get_dgmexpressions,
-            'typefighterabils': data_handler.get_typefighterabils
-        }
+            'typefighterabils': data_handler.get_typefighterabils}
 
         for tablename, method in tables.items():
             table_pos = 0

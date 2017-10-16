@@ -31,9 +31,7 @@ from ..exception import RestrictionValidationError
 
 
 RigSizeErrorData = namedtuple(
-    'RigSizeErrorData',
-    ('item_size', 'allowed_size')
-)
+    'RigSizeErrorData', ('item_size', 'allowed_size'))
 
 
 class RigSizeRestrictionRegister(BaseRestrictionRegister):
@@ -72,8 +70,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
         InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation
-    }
+        InstrEffectsStop: _handle_item_effects_deactivation}
 
     def validate(self):
         # Do not apply restriction when fit doesn't have ship
@@ -94,8 +91,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
             if item_rig_size != allowed_rig_size:
                 tainted_items[item] = RigSizeErrorData(
                     item_size=item_rig_size,
-                    allowed_size=allowed_rig_size
-                )
+                    allowed_size=allowed_rig_size)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

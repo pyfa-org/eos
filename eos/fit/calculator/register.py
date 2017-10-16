@@ -118,8 +118,7 @@ class AffectionRegister:
         ModifierDomain.self: __affectee_getter_item_self,
         ModifierDomain.character: __affectee_getter_item_character,
         ModifierDomain.ship: __affectee_getter_item_ship,
-        ModifierDomain.other: __affectee_getter_item_other
-    }
+        ModifierDomain.other: __affectee_getter_item_other}
 
     def __affectee_getter_item(self, affector):
         try:
@@ -156,8 +155,7 @@ class AffectionRegister:
         ModifierTargetFilter.domain: __affectee_getter_domain,
         ModifierTargetFilter.domain_group: __affectee_getter_domain_group,
         ModifierTargetFilter.domain_skillrq: __affectee_getter_domain_skillrq,
-        ModifierTargetFilter.owner_skillrq: __affectee_getter_owner_skillrq
-    }
+        ModifierTargetFilter.owner_skillrq: __affectee_getter_owner_skillrq}
 
     # Affectee processing
     def get_affectees(self, affector):
@@ -381,8 +379,7 @@ class AffectionRegister:
         ModifierDomain.self: __affector_map_getter_item_self,
         ModifierDomain.character: __affector_map_getter_item_character,
         ModifierDomain.ship: __affector_map_getter_item_ship,
-        ModifierDomain.other: __affector_map_getter_item_other
-    }
+        ModifierDomain.other: __affector_map_getter_item_other}
 
     def __affector_map_getter_item(self, affector):
         tgt_domain = affector.modifier.tgt_domain
@@ -425,8 +422,7 @@ class AffectionRegister:
         ModifierTargetFilter.domain_skillrq:
             __affector_map_getter_domain_skillrq,
         ModifierTargetFilter.owner_skillrq:
-            __affector_map_getter_owner_skillrq
-    }
+            __affector_map_getter_owner_skillrq}
 
     def __get_affector_map(self, affector):
         """Get place where passed affector should be stored.

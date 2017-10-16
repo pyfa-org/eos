@@ -162,8 +162,7 @@ class CalculationService(BaseSubscriber):
         InstrItemRemove: _handle_item_removal,
         InstrEffectsStart: _handle_item_effects_activation,
         InstrEffectsStop: _handle_item_effects_deactivation,
-        InstrAttrValueChanged: _revise_regular_attrib_dependents
-    }
+        InstrAttrValueChanged: _revise_regular_attrib_dependents}
 
     def _notify(self, message):
         BaseSubscriber._notify(self, message)

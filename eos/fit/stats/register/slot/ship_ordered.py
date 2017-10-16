@@ -44,8 +44,7 @@ class OrderedShipSlotStatRegister(
         return max((
             i._container_position + 1
             for i in self.__slot_users
-            if i._container_position is not None
-        ), default=0)
+            if i._container_position is not None), default=0)
 
     @volatile_property
     def total(self):
@@ -83,8 +82,7 @@ class OrderedShipSlotStatRegister(
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
         InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation
-    }
+        InstrEffectsStop: _handle_item_effects_deactivation}
 
 
 class HighSlotStatRegister(OrderedShipSlotStatRegister):

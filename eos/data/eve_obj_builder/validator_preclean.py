@@ -48,8 +48,7 @@ class ValidatorPreClean:
             'dgmtypeeffects': ('typeID', 'effectID'),
             'evegroups': ('groupID',),
             'evetypes': ('typeID',),
-            'typefighterabils': ('typeID', 'abilityID')
-        }
+            'typefighterabils': ('typeID', 'abilityID')}
         for table_name, pks in pk_spec.items():
             ValidatorPreClean._table_pk(pks, data[table_name], table_name)
 

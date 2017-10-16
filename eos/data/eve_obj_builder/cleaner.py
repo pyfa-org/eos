@@ -67,8 +67,7 @@ class Cleaner:
             CategoryId.module,
             CategoryId.ship,
             CategoryId.skill,
-            CategoryId.subsystem
-        )
+            CategoryId.subsystem)
         # Set with group IDs of eve types we want to keep
         # It is set because we will need to modify it
         strong_groups = {GroupId.character, GroupId.effect_beacon}
@@ -161,8 +160,7 @@ class Cleaner:
         # Format: {source table: {source column: (target table, target column)}}
         foreign_keys = {
             'dgmattribs': {
-                'maxAttributeID': ('dgmattribs', 'attributeID')
-            },
+                'maxAttributeID': ('dgmattribs', 'attributeID')},
             'dgmeffects': {
                 'preExpression': ('dgmexpressions', 'expressionID'),
                 'postExpression': ('dgmexpressions', 'expressionID'),
@@ -171,30 +169,23 @@ class Cleaner:
                 'dischargeAttributeID': ('dgmattribs', 'attributeID'),
                 'rangeAttributeID': ('dgmattribs', 'attributeID'),
                 'falloffAttributeID': ('dgmattribs', 'attributeID'),
-                'fittingUsageChanceAttributeID': ('dgmattribs', 'attributeID')
-            },
+                'fittingUsageChanceAttributeID': ('dgmattribs', 'attributeID')},
             'dgmexpressions': {
                 'arg1': ('dgmexpressions', 'expressionID'),
                 'arg2': ('dgmexpressions', 'expressionID'),
                 'expressionTypeID': ('evetypes', 'typeID'),
                 'expressionGroupID': ('evegroups', 'groupID'),
-                'expressionAttributeID': ('dgmattribs', 'attributeID')
-            },
+                'expressionAttributeID': ('dgmattribs', 'attributeID')},
             'dgmtypeattribs': {
                 'typeID': ('evetypes', 'typeID'),
-                'attributeID': ('dgmattribs', 'attributeID')
-            },
+                'attributeID': ('dgmattribs', 'attributeID')},
             'dgmtypeeffects': {
                 'typeID': ('evetypes', 'typeID'),
-                'effectID': ('dgmeffects', 'effectID')
-            },
+                'effectID': ('dgmeffects', 'effectID')},
             'evetypes': {
-                'groupID': ('evegroups', 'groupID')
-            },
+                'groupID': ('evegroups', 'groupID')},
             'typefighterabils': {
-                'typeID': ('evetypes', 'typeID')
-            }
-        }
+                'typeID': ('evetypes', 'typeID')}}
         for src_table_name, table_fks in foreign_keys.items():
             for src_column_name, fk_target in table_fks.items():
                 tgt_table_name, tgt_column_name = fk_target

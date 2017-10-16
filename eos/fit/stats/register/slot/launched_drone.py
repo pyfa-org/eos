@@ -77,5 +77,4 @@ class LaunchedDroneStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
         InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation
-    }
+        InstrStatesDeactivate: _handle_item_states_deactivation}

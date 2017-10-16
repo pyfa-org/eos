@@ -70,8 +70,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             self.subsystem_slots,
             self.turret_slots,
             self.launcher_slots,
-            self.launched_drones
-        )
+            self.launched_drones)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     @volatile_property
@@ -146,12 +145,9 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
         Returns: DamageTypesTotal helper container instance.
         """
-        volley = self.__dd_reg._collect_damage_stats(
-            item_filter,
-            'get_nominal_volley',
-            target_resistances=target_resistances
-        )
-        return volley
+        return self.__dd_reg._collect_damage_stats(
+            item_filter, 'get_nominal_volley',
+            target_resistances=target_resistances)
 
     def get_nominal_dps(
             self, item_filter=None, target_resistances=None, reload=False):
@@ -171,13 +167,9 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
         Returns: DamageTypesTotal helper container instance.
         """
-        dps = self.__dd_reg._collect_damage_stats(
-            item_filter,
-            'get_nominal_dps',
-            target_resistances=target_resistances,
-            reload=reload
-        )
-        return dps
+        return self.__dd_reg._collect_damage_stats(
+            item_filter, 'get_nominal_dps',
+            target_resistances=target_resistances, reload=reload)
 
     @volatile_property
     def agility_factor(self):
@@ -216,5 +208,4 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}

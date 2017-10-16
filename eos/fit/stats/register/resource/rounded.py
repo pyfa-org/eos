@@ -44,8 +44,7 @@ class RoundedResourceStatRegister(
     def used(self):
         return round(sum(
             item.attributes[self.__use_attr]
-            for item in self.__resource_users
-        ), 2)
+            for item in self.__resource_users), 2)
 
     @volatile_property
     def output(self):
@@ -86,8 +85,7 @@ class RoundedResourceStatRegister(
         InstrItemAdd: _handle_item_addition,
         InstrItemRemove: _handle_item_removal,
         InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation
-    }
+        InstrEffectsStop: _handle_item_effects_deactivation}
 
 
 class CpuStatRegister(RoundedResourceStatRegister):

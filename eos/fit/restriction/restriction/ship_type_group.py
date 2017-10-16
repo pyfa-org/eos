@@ -42,8 +42,7 @@ TYPE_RESTRICTION_ATTRS = (
     AttributeId.can_fit_ship_type_8,
     AttributeId.can_fit_ship_type_9,
     AttributeId.can_fit_ship_type_10,
-    AttributeId.fits_to_shiptype
-)
+    AttributeId.fits_to_shiptype)
 GROUP_RESTRICTION_ATTRS = (
     AttributeId.can_fit_ship_group_1,
     AttributeId.can_fit_ship_group_2,
@@ -64,14 +63,12 @@ GROUP_RESTRICTION_ATTRS = (
     AttributeId.can_fit_ship_group_17,
     AttributeId.can_fit_ship_group_18,
     AttributeId.can_fit_ship_group_19,
-    AttributeId.can_fit_ship_group_20
-)
+    AttributeId.can_fit_ship_group_20)
 
 
 ShipTypeGroupErrorData = namedtuple(
     'ShipTypeGroupErrorData',
-    ('ship_type', 'ship_group', 'allowed_types', 'allowed_groups')
-)
+    ('ship_type', 'ship_group', 'allowed_types', 'allowed_groups'))
 
 
 # Helper class-container for metadata regarding allowed types and groups
@@ -129,8 +126,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # Finally, register items which made it into here
         self.__restricted_items[message.item] = AllowedData(
             types=tuple(allowed_types),
-            groups=tuple(allowed_groups)
-        )
+            groups=tuple(allowed_groups))
 
     def _handle_item_removal(self, message):
         if message.item is self.__current_ship:
@@ -140,8 +136,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal
-    }
+        InstrItemRemove: _handle_item_removal}
 
     def validate(self):
         # Get type ID and group ID of ship, if no ship available, assume they're
@@ -168,8 +163,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
                     ship_type=ship_type_id,
                     ship_group=ship_group,
                     allowed_types=allowed_data.types,
-                    allowed_groups=allowed_data.groups
-                )
+                    allowed_groups=allowed_data.groups)
         # Raise error if there're any tainted items
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

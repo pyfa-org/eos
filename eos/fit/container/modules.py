@@ -67,8 +67,7 @@ class ModuleItemView:
         return (
             racks.high.__contains__(value) or
             racks.med.__contains__(value) or
-            racks.low.__contains__(value)
-        )
+            racks.low.__contains__(value))
 
     def __len__(self):
         racks_chain = chain(

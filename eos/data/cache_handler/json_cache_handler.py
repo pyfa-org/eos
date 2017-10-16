@@ -143,8 +143,7 @@ class JsonCacheHandler(BaseCacheHandler):
             'effects': {
                 effect_id: effect.compress()
                 for effect_id, effect in effects.items()},
-            'fingerprint': fingerprint
-        }
+            'fingerprint': fingerprint}
         self.__update_persistent_cache(cache_data)
         self.__update_memory_cache(cache_data)
 

@@ -62,8 +62,7 @@ class DamageTypes:
             self.em == other.em,
             self.thermal == other.thermal,
             self.kinetic == other.kinetic,
-            self.explosive == other.explosive
-        ))
+            self.explosive == other.explosive))
 
     def __hash__(self):
         return hash((
@@ -71,8 +70,7 @@ class DamageTypes:
             self.em,
             self.thermal,
             self.kinetic,
-            self.explosive
-        ))
+            self.explosive))
 
     def __repr__(self):
         spec = ['em', 'thermal', 'kinetic', 'explosive']
@@ -88,8 +86,7 @@ class DamageTypesTotal(DamageTypes):
             (self.em or 0) +
             (self.thermal or 0) +
             (self.kinetic or 0) +
-            (self.explosive or 0)
-        )
+            (self.explosive or 0))
         if total == 0 and (
             self.em is None and
             self.thermal is None and

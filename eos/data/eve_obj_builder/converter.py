@@ -70,8 +70,7 @@ class Converter:
             type_abils[row['abilityID']] = {
                 'cooldown_time': row.get('cooldownSeconds'),
                 'charge_amount': row.get('chargeCount'),
-                'charge_rearm_time': row.get('rearmTimeSeconds')
-            }
+                'charge_rearm_time': row.get('rearmTimeSeconds')}
 
         # Convert attributes
         attributes = {}
@@ -81,8 +80,7 @@ class Converter:
                 max_attribute=row.get('maxAttributeID'),
                 default_value=row.get('defaultValue'),
                 high_is_good=row.get('highIsGood'),
-                stackable=row.get('stackable')
-            )
+                stackable=row.get('stackable'))
             attributes[attribute.id] = attribute
 
         # Convert effects
@@ -104,8 +102,7 @@ class Converter:
                     'fittingUsageChanceAttributeID'),
                 build_status=build_status,
                 modifiers=tuple(mods),
-                customize=False
-            )
+                customize=False)
             effects[effect.id] = effect
 
         # Convert types
@@ -123,8 +120,7 @@ class Converter:
                 effects=tuple(effects[eid] for eid in type_effect_ids),
                 default_effect=effects.get(types_defeff_map.get(type_id)),
                 fighter_abilities=typeabils_reformat.get(type_id, {}),
-                customize=False
-            )
+                customize=False)
             types[eve_type.id] = eve_type
 
         return types, attributes, effects

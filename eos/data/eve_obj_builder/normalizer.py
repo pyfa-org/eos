@@ -59,8 +59,7 @@ class Normalizer:
             'radius': AttributeId.radius,
             'mass': AttributeId.mass,
             'volume': AttributeId.volume,
-            'capacity': AttributeId.capacity
-        }
+            'capacity': AttributeId.capacity}
         attr_ids = tuple(atrrib_map.values())
         # Here we will store pairs (typeID, attrID) already defined in
         # dgmtypeattribs
@@ -92,8 +91,7 @@ class Normalizer:
                     dgmtypeattribs.add(FrozenDict({
                         'typeID': type_id,
                         'attributeID': attr_id,
-                        'value': value
-                    }))
+                        'value': value}))
                 else:
                     new_row[field] = value
             new_evetypes.add(FrozenDict(new_row))
@@ -102,8 +100,8 @@ class Normalizer:
         data['evetypes'].update(new_evetypes)
         if attrs_skipped > 0:
             msg = (
-                '{} built-in attributes already have had value in '
-                'dgmtypeattribs and were skipped'
+                '{} built-in attributes already have had value '
+                'in dgmtypeattribs and were skipped'
             ).format(attrs_skipped)
             logger.warning(msg)
 
@@ -135,8 +133,7 @@ class Normalizer:
                 OperandId.def_attr,
                 'expressionAttributeID',
                 {},
-                ('shieldDamage',)
-            ),
+                ('shieldDamage',)),
             (
                 OperandId.def_grp,
                 'expressionGroupID',
@@ -144,17 +141,13 @@ class Normalizer:
                     'EnergyWeapon': GroupId.energy_weapon,
                     'HybridWeapon': GroupId.hydrid_weapon,
                     'MiningLaser': GroupId.mining_laser,
-                    'ProjectileWeapon': GroupId.projectile_weapon
-                },
-                ('Structure', 'PowerCore', '    None')
-            ),
+                    'ProjectileWeapon': GroupId.projectile_weapon},
+                ('Structure', 'PowerCore', '    None')),
             (
                 OperandId.def_type,
                 'expressionTypeID',
                 {},
-                ('Acceration Control',)
-            )
-        )
+                ('Acceration Control',)))
         for operand, id_col_name, repls, ignored_names in repl_spec:
             used_repls = set()
             unknown_names = set()

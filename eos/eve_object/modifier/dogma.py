@@ -38,21 +38,11 @@ class DogmaModifier(BaseModifier, BaseCachable):
     """
 
     def __init__(
-        self,
-        tgt_filter=None,
-        tgt_domain=None,
-        tgt_filter_extra_arg=None,
-        tgt_attr=None,
-        operator=None,
-        src_attr=None
-    ):
+            self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
+            tgt_attr=None, operator=None, src_attr=None):
         BaseModifier.__init__(
-            self,
-            tgt_filter=tgt_filter,
-            tgt_domain=tgt_domain,
-            tgt_filter_extra_arg=tgt_filter_extra_arg,
-            tgt_attr=tgt_attr
-        )
+            self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
+            tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr=tgt_attr)
         # Dogma modifier-specific attributes
         self.operator = operator
         self.src_attr = src_attr
@@ -73,8 +63,7 @@ class DogmaModifier(BaseModifier, BaseCachable):
         return all((
             self._validate_base(),
             self.operator in ModifierOperator.__members__.values(),
-            isinstance(self.src_attr, Integral)
-        ))
+            isinstance(self.src_attr, Integral)))
 
     # Cache-related methods
     def compress(self):
@@ -84,8 +73,7 @@ class DogmaModifier(BaseModifier, BaseCachable):
             self.tgt_filter_extra_arg,
             self.tgt_attr,
             self.operator,
-            self.src_attr
-        )
+            self.src_attr)
 
     @classmethod
     def decompress(cls, cache_handler, compressed):
@@ -95,8 +83,7 @@ class DogmaModifier(BaseModifier, BaseCachable):
             tgt_filter_extra_arg=compressed[2],
             tgt_attr=compressed[3],
             operator=compressed[4],
-            src_attr=compressed[5]
-        )
+            src_attr=compressed[5])
 
     # Auxiliary methods
     def __repr__(self):
