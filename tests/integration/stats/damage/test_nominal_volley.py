@@ -35,13 +35,12 @@ class TestStatsDamageVolley(StatTestCase):
         self.ch.attribute(attribute_id=AttributeId.explosive_damage)
         self.ch.attribute(attribute_id=AttributeId.damage_multiplier)
         self.dd_effect = self.ch.effect(
-            effect_id=EffectId.projectile_fired, category=EffectCategoryId.active
-        )
+            effect_id=EffectId.projectile_fired,
+            category=EffectCategoryId.active)
 
     def test_empty(self):
-        fit = Fit()
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -50,7 +49,7 @@ class TestStatsDamageVolley(StatTestCase):
         self.assertIsNone(stats_volley.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single(self):
         src_attr = self.ch.attribute()
@@ -59,21 +58,21 @@ class TestStatsDamageVolley(StatTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=AttributeId.damage_multiplier,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id
-        )
-        effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        fit = Fit()
+            src_attr=src_attr.id)
+        effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
         item = ModuleHigh(self.ch.type(
             attributes={AttributeId.damage_multiplier: 2, src_attr.id: 1.5},
-            effects=(self.dd_effect, effect), default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item)
+            effects=(self.dd_effect, effect),
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+                AttributeId.kinetic_damage: 4.8,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 3.6)
         self.assertAlmostEqual(stats_volley.thermal, 7.2)
@@ -82,28 +81,31 @@ class TestStatsDamageVolley(StatTestCase):
         self.assertAlmostEqual(stats_volley.total, 54)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_multiple(self):
-        fit = Fit()
         item1 = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item1.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item1)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item1.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+                AttributeId.kinetic_damage: 4.8,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item2.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
-            AttributeId.kinetic_damage: 48, AttributeId.explosive_damage: 96
-        }).id)
-        fit.modules.high.append(item2)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item2.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
+                AttributeId.kinetic_damage: 48,
+                AttributeId.explosive_damage: 96}).id)
+        self.fit.modules.high.append(item2)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 26.4)
         self.assertAlmostEqual(stats_volley.thermal, 52.8)
@@ -112,20 +114,22 @@ class TestStatsDamageVolley(StatTestCase):
         self.assertAlmostEqual(stats_volley.total, 396)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_arguments_custom_profile(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+                AttributeId.kinetic_damage: 4.8,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley(target_resistances=ResistanceProfile(0, 1, 1, 1))
+        stats_volley = self.fit.stats.get_nominal_volley(
+            target_resistances=ResistanceProfile(0, 1, 1, 1))
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 0)
@@ -134,30 +138,32 @@ class TestStatsDamageVolley(StatTestCase):
         self.assertAlmostEqual(stats_volley.total, 2.4)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_arguments_custom_filter(self):
-        fit = Fit()
         item1 = ModuleHigh(self.ch.type(
             group=55, attributes={AttributeId.damage_multiplier: 2},
-            effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item1.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item1)
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item1.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+                AttributeId.kinetic_damage: 4.8,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
             group=54, attributes={AttributeId.damage_multiplier: 2},
-            effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item2.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
-            AttributeId.kinetic_damage: 48, AttributeId.explosive_damage: 96
-        }).id)
-        fit.modules.high.append(item2)
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item2.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 12, AttributeId.thermal_damage: 24,
+                AttributeId.kinetic_damage: 48,
+                AttributeId.explosive_damage: 96}).id)
+        self.fit.modules.high.append(item2)
         # Action
-        stats_volley = fit.stats.get_nominal_volley(item_filter=lambda i: i._eve_type.group == 55)
+        stats_volley = self.fit.stats.get_nominal_volley(
+            item_filter=lambda i: i._eve_type.group == 55)
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -166,20 +172,21 @@ class TestStatsDamageVolley(StatTestCase):
         self.assertAlmostEqual(stats_volley.total, 36)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_em(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.thermal_damage: 2.4, AttributeId.kinetic_damage: 4.8,
-            AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.thermal_damage: 2.4,
+                AttributeId.kinetic_damage: 4.8,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -189,20 +196,20 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage value is not issue for this test
         self.assertEqual(len(self.log), 1)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_therm(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.kinetic_damage: 4.8,
-            AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.kinetic_damage: 4.8,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertIsNone(stats_volley.thermal)
@@ -212,20 +219,20 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage value is not issue for this test
         self.assertEqual(len(self.log), 1)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_kin(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-            AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -235,20 +242,20 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage value is not issue for this test
         self.assertEqual(len(self.log), 1)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_expl(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-            AttributeId.kinetic_damage: 4.8
-        }).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+                AttributeId.kinetic_damage: 4.8}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -258,17 +265,17 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage value is not issue for this test
         self.assertEqual(len(self.log), 1)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_none_all(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
         item.charge = Charge(self.ch.type().id)
-        fit.modules.high.append(item)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -278,17 +285,18 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage values is not issue for this test
         self.assertEqual(len(self.log), 4)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_em(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.em_damage: 0}).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.em_damage: 0}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 0)
         self.assertIsNone(stats_volley.thermal)
@@ -298,17 +306,18 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage values is not issue for this test
         self.assertEqual(len(self.log), 3)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_therm(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.thermal_damage: 0}).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.thermal_damage: 0}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertAlmostEqual(stats_volley.thermal, 0)
@@ -318,17 +327,18 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage values is not issue for this test
         self.assertEqual(len(self.log), 3)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_kin(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.kinetic_damage: 0}).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.kinetic_damage: 0}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -338,17 +348,18 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage values is not issue for this test
         self.assertEqual(len(self.log), 3)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_single_zero_expl(self):
-        fit = Fit()
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item.charge = Charge(self.ch.type(attributes={AttributeId.explosive_damage: 0}).id)
-        fit.modules.high.append(item)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item.charge = Charge(self.ch.type(
+            attributes={AttributeId.explosive_damage: 0}).id)
+        self.fit.modules.high.append(item)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -358,28 +369,29 @@ class TestStatsDamageVolley(StatTestCase):
         # Cleanup
         # Failure to fetch damage values is not issue for this test
         self.assertEqual(len(self.log), 3)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_none_and_data(self):
-        # As container for damage dealers is not ordered,
-        # this test may be unreliable (even if there's issue,
-        # it won't fail each run)
-        fit = Fit()
+        # As container for damage dealers is not ordered, this test may be
+        # unreliable (even if there's issue, it won't fail each run)
         item1 = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
-        item1.charge = Charge(self.ch.type(attributes={
-            AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
-            AttributeId.kinetic_damage: 4.8, AttributeId.explosive_damage: 9.6
-        }).id)
-        fit.modules.high.append(item1)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
+        item1.charge = Charge(self.ch.type(
+            attributes={
+                AttributeId.em_damage: 1.2, AttributeId.thermal_damage: 2.4,
+                AttributeId.kinetic_damage: 4.8,
+                AttributeId.explosive_damage: 9.6}).id)
+        self.fit.modules.high.append(item1)
         item2 = ModuleHigh(self.ch.type(
-            attributes={AttributeId.damage_multiplier: 2}, effects=[self.dd_effect], default_effect=self.dd_effect
-        ).id, state=State.active)
+            attributes={AttributeId.damage_multiplier: 2},
+            effects=[self.dd_effect],
+            default_effect=self.dd_effect).id, state=State.active)
         item2.charge = Charge(self.ch.type().id)
-        fit.modules.high.append(item2)
+        self.fit.modules.high.append(item2)
         # Action
-        stats_volley = fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_nominal_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -388,4 +400,4 @@ class TestStatsDamageVolley(StatTestCase):
         self.assertAlmostEqual(stats_volley.total, 36)
         # Cleanup
         self.assertEqual(len(self.log), 4)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

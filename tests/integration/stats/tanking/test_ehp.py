@@ -35,31 +35,42 @@ class TestEhp(StatTestCase):
         self.ch.attribute(attribute_id=AttributeId.explosive_damage_resonance)
         self.ch.attribute(attribute_id=AttributeId.armor_hp)
         self.ch.attribute(attribute_id=AttributeId.armor_em_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_thermal_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_explosive_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.armor_thermal_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.armor_kinetic_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.armor_explosive_damage_resonance)
         self.ch.attribute(attribute_id=AttributeId.shield_capacity)
         self.ch.attribute(attribute_id=AttributeId.shield_em_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_thermal_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_explosive_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.shield_thermal_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.shield_kinetic_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.shield_explosive_damage_resonance)
 
     def test_relay(self):
         # Check that stats service relays ehp stats properly
-        fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={
+        self.fit.ship = Ship(self.ch.type(attributes={
             AttributeId.hp: 10,
-            AttributeId.em_damage_resonance: 0.5, AttributeId.thermal_damage_resonance: 0.5,
-            AttributeId.kinetic_damage_resonance: 0.5, AttributeId.explosive_damage_resonance: 0.5,
+            AttributeId.em_damage_resonance: 0.5,
+            AttributeId.thermal_damage_resonance: 0.5,
+            AttributeId.kinetic_damage_resonance: 0.5,
+            AttributeId.explosive_damage_resonance: 0.5,
             AttributeId.armor_hp: 15,
-            AttributeId.armor_em_damage_resonance: 0.5, AttributeId.armor_thermal_damage_resonance: 0.5,
-            AttributeId.armor_kinetic_damage_resonance: 0.5, AttributeId.armor_explosive_damage_resonance: 0.5,
+            AttributeId.armor_em_damage_resonance: 0.5,
+            AttributeId.armor_thermal_damage_resonance: 0.5,
+            AttributeId.armor_kinetic_damage_resonance: 0.5,
+            AttributeId.armor_explosive_damage_resonance: 0.5,
             AttributeId.shield_capacity: 20,
-            AttributeId.shield_em_damage_resonance: 0.5, AttributeId.shield_thermal_damage_resonance: 0.5,
-            AttributeId.shield_kinetic_damage_resonance: 0.5, AttributeId.shield_explosive_damage_resonance: 0.5
-        }).id)
+            AttributeId.shield_em_damage_resonance: 0.5,
+            AttributeId.shield_thermal_damage_resonance: 0.5,
+            AttributeId.shield_kinetic_damage_resonance: 0.5,
+            AttributeId.shield_explosive_damage_resonance: 0.5}).id)
         # Action
-        ehp_stats = fit.stats.get_ehp(DamageProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        ehp_stats = self.fit.stats.get_ehp(
+            DamageProfile(em=1, thermal=1, kinetic=1, explosive=1))
         # Verification
         self.assertAlmostEqual(ehp_stats.hull, 20)
         self.assertAlmostEqual(ehp_stats.armor, 30)
@@ -67,13 +78,13 @@ class TestEhp(StatTestCase):
         self.assertAlmostEqual(ehp_stats.total, 90)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
-        fit = Fit()
         # Action
-        ehp_stats = fit.stats.get_ehp(DamageProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        ehp_stats = self.fit.stats.get_ehp(
+            DamageProfile(em=1, thermal=1, kinetic=1, explosive=1))
         # Verification
         self.assertIsNone(ehp_stats.hull)
         self.assertIsNone(ehp_stats.armor)
@@ -81,24 +92,29 @@ class TestEhp(StatTestCase):
         self.assertIsNone(ehp_stats.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_no_source(self):
-        fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={
+        self.fit.ship = Ship(self.ch.type(attributes={
             AttributeId.hp: 10,
-            AttributeId.em_damage_resonance: 0.5, AttributeId.thermal_damage_resonance: 0.5,
-            AttributeId.kinetic_damage_resonance: 0.5, AttributeId.explosive_damage_resonance: 0.5,
+            AttributeId.em_damage_resonance: 0.5,
+            AttributeId.thermal_damage_resonance: 0.5,
+            AttributeId.kinetic_damage_resonance: 0.5,
+            AttributeId.explosive_damage_resonance: 0.5,
             AttributeId.armor_hp: 15,
-            AttributeId.armor_em_damage_resonance: 0.5, AttributeId.armor_thermal_damage_resonance: 0.5,
-            AttributeId.armor_kinetic_damage_resonance: 0.5, AttributeId.armor_explosive_damage_resonance: 0.5,
+            AttributeId.armor_em_damage_resonance: 0.5,
+            AttributeId.armor_thermal_damage_resonance: 0.5,
+            AttributeId.armor_kinetic_damage_resonance: 0.5,
+            AttributeId.armor_explosive_damage_resonance: 0.5,
             AttributeId.shield_capacity: 20,
-            AttributeId.shield_em_damage_resonance: 0.5, AttributeId.shield_thermal_damage_resonance: 0.5,
-            AttributeId.shield_kinetic_damage_resonance: 0.5, AttributeId.shield_explosive_damage_resonance: 0.5
-        }).id)
-        fit.source = None
+            AttributeId.shield_em_damage_resonance: 0.5,
+            AttributeId.shield_thermal_damage_resonance: 0.5,
+            AttributeId.shield_kinetic_damage_resonance: 0.5,
+            AttributeId.shield_explosive_damage_resonance: 0.5}).id)
+        self.fit.source = None
         # Action
-        ehp_stats = fit.stats.get_ehp(DamageProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        ehp_stats = self.fit.stats.get_ehp(
+            DamageProfile(em=1, thermal=1, kinetic=1, explosive=1))
         # Verification
         self.assertIsNone(ehp_stats.hull)
         self.assertIsNone(ehp_stats.armor)
@@ -106,4 +122,4 @@ class TestEhp(StatTestCase):
         self.assertIsNone(ehp_stats.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

@@ -38,85 +38,79 @@ class TestLaunchedDrone(StatTestCase):
             tgt_domain=ModifierDomain.self,
             tgt_attr=AttributeId.max_active_drones,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id
-        )
-        mod_effect = self.ch.effect(category=EffectCategoryId.passive, modifiers=[modifier])
-        fit = Fit()
-        fit.character = Character(self.ch.type(
-            attributes={AttributeId.max_active_drones: 3, src_attr.id: 2}, effects=[mod_effect]
-        ).id)
+            src_attr=src_attr.id)
+        mod_effect = self.ch.effect(
+            category=EffectCategoryId.passive, modifiers=[modifier])
+        self.fit.character = Character(self.ch.type(
+            attributes={AttributeId.max_active_drones: 3, src_attr.id: 2},
+            effects=[mod_effect]).id)
         # Verification
-        self.assertEqual(fit.stats.launched_drones.total, 6)
+        self.assertEqual(self.fit.stats.launched_drones.total, 6)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_output_no_char(self):
         # None for slot amount when no ship
-        fit = Fit()
-        fit.character = None
+        self.fit.character = None
         # Verification
-        self.assertIsNone(fit.stats.launched_drones.total)
+        self.assertIsNone(self.fit.stats.launched_drones.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_output_no_attr(self):
         # None for slot amount when no attribute on ship
-        fit = Fit()
-        fit.character = Character(self.ch.type().id)
+        self.fit.character = Character(self.ch.type().id)
         # Verification
-        self.assertIsNone(fit.stats.launched_drones.total)
+        self.assertIsNone(self.fit.stats.launched_drones.total)
         # Cleanup
         # Log entry is due to inability to calculate requested attribute
         self.assertEqual(len(self.log), 1)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_use_empty(self):
-        fit = Fit()
         # Verification
-        self.assertEqual(fit.stats.launched_drones.used, 0)
+        self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_use_multiple(self):
-        fit = Fit()
-        fit.drones.add(Drone(self.ch.type().id, state=State.online))
-        fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
         # Verification
-        self.assertEqual(fit.stats.launched_drones.used, 2)
+        self.assertEqual(self.fit.stats.launched_drones.used, 2)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_use_state(self):
-        fit = Fit()
-        fit.subsystems.add(Subsystem(self.ch.type().id))
+        self.fit.subsystems.add(Subsystem(self.ch.type().id))
         # Verification
-        self.assertEqual(fit.stats.launched_drones.used, 0)
+        self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_use_other_item_class(self):
-        fit = Fit()
-        fit.modules.med.append(ModuleMed(self.ch.type().id, state=State.online))
+        self.fit.modules.med.append(
+            ModuleMed(self.ch.type().id, state=State.online))
         # Verification
-        self.assertEqual(fit.stats.launched_drones.used, 0)
+        self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_no_source(self):
-        fit = Fit()
-        fit.character = Character(self.ch.type(attributes={AttributeId.max_active_drones: 3}).id)
-        fit.drones.add(Drone(self.ch.type().id, state=State.online))
-        fit.drones.add(Drone(self.ch.type().id, state=State.online))
-        fit.source = None
+        self.fit.character = Character(self.ch.type(
+            attributes={AttributeId.max_active_drones: 3}).id)
+        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        self.fit.source = None
         # Verification
-        self.assertEqual(fit.stats.launched_drones.used, 0)
-        self.assertIsNone(fit.stats.launched_drones.total)
+        self.assertEqual(self.fit.stats.launched_drones.used, 0)
+        self.assertIsNone(self.fit.stats.launched_drones.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

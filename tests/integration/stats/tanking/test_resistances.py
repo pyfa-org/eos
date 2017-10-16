@@ -33,27 +33,37 @@ class TestResistances(StatTestCase):
         self.ch.attribute(attribute_id=AttributeId.kinetic_damage_resonance)
         self.ch.attribute(attribute_id=AttributeId.explosive_damage_resonance)
         self.ch.attribute(attribute_id=AttributeId.armor_em_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_thermal_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.armor_explosive_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.armor_thermal_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.armor_kinetic_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.armor_explosive_damage_resonance)
         self.ch.attribute(attribute_id=AttributeId.shield_em_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_thermal_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_kinetic_damage_resonance)
-        self.ch.attribute(attribute_id=AttributeId.shield_explosive_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.shield_thermal_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.shield_kinetic_damage_resonance)
+        self.ch.attribute(
+            attribute_id=AttributeId.shield_explosive_damage_resonance)
 
     def test_relay(self):
         # Check that stats service relays resistance stats properly
-        fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.em_damage_resonance: 0.05, AttributeId.thermal_damage_resonance: 0.06,
-            AttributeId.kinetic_damage_resonance: 0.07, AttributeId.explosive_damage_resonance: 0.08,
-            AttributeId.armor_em_damage_resonance: 0.09, AttributeId.armor_thermal_damage_resonance: 0.1,
-            AttributeId.armor_kinetic_damage_resonance: 0.11, AttributeId.armor_explosive_damage_resonance: 0.12,
-            AttributeId.shield_em_damage_resonance: 0.13, AttributeId.shield_thermal_damage_resonance: 0.14,
-            AttributeId.shield_kinetic_damage_resonance: 0.15, AttributeId.shield_explosive_damage_resonance: 0.16
-        }).id)
+        self.fit.ship = Ship(self.ch.type(attributes={
+            AttributeId.em_damage_resonance: 0.05,
+            AttributeId.thermal_damage_resonance: 0.06,
+            AttributeId.kinetic_damage_resonance: 0.07,
+            AttributeId.explosive_damage_resonance: 0.08,
+            AttributeId.armor_em_damage_resonance: 0.09,
+            AttributeId.armor_thermal_damage_resonance: 0.1,
+            AttributeId.armor_kinetic_damage_resonance: 0.11,
+            AttributeId.armor_explosive_damage_resonance: 0.12,
+            AttributeId.shield_em_damage_resonance: 0.13,
+            AttributeId.shield_thermal_damage_resonance: 0.14,
+            AttributeId.shield_kinetic_damage_resonance: 0.15,
+            AttributeId.shield_explosive_damage_resonance: 0.16}).id)
         # Action
-        res_stats = fit.stats.resistances
+        res_stats = self.fit.stats.resistances
         # Verification
         self.assertAlmostEqual(res_stats.hull.em, 0.95)
         self.assertAlmostEqual(res_stats.hull.thermal, 0.94)
@@ -69,13 +79,12 @@ class TestResistances(StatTestCase):
         self.assertAlmostEqual(res_stats.shield.explosive, 0.84)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
-        fit = Fit()
         # Action
-        res_stats = fit.stats.resistances
+        res_stats = self.fit.stats.resistances
         # Verification
         self.assertIsNone(res_stats.hull.em)
         self.assertIsNone(res_stats.hull.thermal)
@@ -91,21 +100,25 @@ class TestResistances(StatTestCase):
         self.assertIsNone(res_stats.shield.explosive)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_no_source(self):
-        fit = Fit()
-        fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.em_damage_resonance: 0.05, AttributeId.thermal_damage_resonance: 0.06,
-            AttributeId.kinetic_damage_resonance: 0.07, AttributeId.explosive_damage_resonance: 0.08,
-            AttributeId.armor_em_damage_resonance: 0.09, AttributeId.armor_thermal_damage_resonance: 0.1,
-            AttributeId.armor_kinetic_damage_resonance: 0.11, AttributeId.armor_explosive_damage_resonance: 0.12,
-            AttributeId.shield_em_damage_resonance: 0.13, AttributeId.shield_thermal_damage_resonance: 0.14,
-            AttributeId.shield_kinetic_damage_resonance: 0.15, AttributeId.shield_explosive_damage_resonance: 0.16
-        }).id)
-        fit.source = None
+        self.fit.ship = Ship(self.ch.type(attributes={
+            AttributeId.em_damage_resonance: 0.05,
+            AttributeId.thermal_damage_resonance: 0.06,
+            AttributeId.kinetic_damage_resonance: 0.07,
+            AttributeId.explosive_damage_resonance: 0.08,
+            AttributeId.armor_em_damage_resonance: 0.09,
+            AttributeId.armor_thermal_damage_resonance: 0.1,
+            AttributeId.armor_kinetic_damage_resonance: 0.11,
+            AttributeId.armor_explosive_damage_resonance: 0.12,
+            AttributeId.shield_em_damage_resonance: 0.13,
+            AttributeId.shield_thermal_damage_resonance: 0.14,
+            AttributeId.shield_kinetic_damage_resonance: 0.15,
+            AttributeId.shield_explosive_damage_resonance: 0.16}).id)
+        self.fit.source = None
         # Action
-        res_stats = fit.stats.resistances
+        res_stats = self.fit.stats.resistances
         # Verification
         self.assertIsNone(res_stats.hull.em)
         self.assertIsNone(res_stats.hull.thermal)
@@ -121,4 +134,4 @@ class TestResistances(StatTestCase):
         self.assertIsNone(res_stats.shield.explosive)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

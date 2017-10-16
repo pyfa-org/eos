@@ -34,12 +34,11 @@ class TestHp(StatTestCase):
 
     def test_relay(self):
         # Check that stats service relays hp stats properly
-        fit = Fit()
-        fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hp: 10, AttributeId.armor_hp: 15, AttributeId.shield_capacity: 20}
-        ).id)
+        self.fit.ship = Ship(self.ch.type(attributes={
+            AttributeId.hp: 10, AttributeId.armor_hp: 15,
+            AttributeId.shield_capacity: 20}).id)
         # Action
-        hp_stats = fit.stats.hp
+        hp_stats = self.fit.stats.hp
         # Verification
         self.assertAlmostEqual(hp_stats.hull, 10)
         self.assertAlmostEqual(hp_stats.armor, 15)
@@ -47,13 +46,12 @@ class TestHp(StatTestCase):
         self.assertAlmostEqual(hp_stats.total, 45)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
-        fit = Fit()
         # Action
-        hp_stats = fit.stats.hp
+        hp_stats = self.fit.stats.hp
         # Verification
         self.assertIsNone(hp_stats.hull)
         self.assertIsNone(hp_stats.armor)
@@ -61,17 +59,16 @@ class TestHp(StatTestCase):
         self.assertIsNone(hp_stats.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)
 
     def test_no_source(self):
         # Check that stats service relays hp stats properly
-        fit = Fit()
-        fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hp: 10, AttributeId.armor_hp: 15, AttributeId.shield_capacity: 20}
-        ).id)
-        fit.source = None
+        self.fit.ship = Ship(self.ch.type(attributes={
+            AttributeId.hp: 10, AttributeId.armor_hp: 15,
+            AttributeId.shield_capacity: 20}).id)
+        self.fit.source = None
         # Action
-        hp_stats = fit.stats.hp
+        hp_stats = self.fit.stats.hp
         # Verification
         self.assertIsNone(hp_stats.hull)
         self.assertIsNone(hp_stats.armor)
@@ -79,4 +76,4 @@ class TestHp(StatTestCase):
         self.assertIsNone(hp_stats.total)
         # Cleanup
         self.assertEqual(len(self.log), 0)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_fit_buffers_empty(self.fit)

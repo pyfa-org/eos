@@ -19,11 +19,17 @@
 # ==============================================================================
 
 
+from eos import Fit
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
 class StatTestCase(IntegrationTestCase):
+    """Class which should be used by restriction service tests.
+
+    Attributes:
+        fit: Precreated fit, as it's used in almost all tests.
     """
-    No additional functionality provided:
-    """
-    ...
+
+    def setUp(self):
+        super().setUp()
+        self.fit = Fit()
