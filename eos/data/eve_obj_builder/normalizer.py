@@ -98,7 +98,7 @@ class Normalizer:
         # Update evetypes with rows which do not contain attributes
         data['evetypes'].clear()
         data['evetypes'].update(new_evetypes)
-        if attrs_skipped > 0:
+        if attrs_skipped:
             msg = (
                 '{} built-in attributes already have had value '
                 'in dgmtypeattribs and were skipped'

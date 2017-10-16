@@ -113,7 +113,7 @@ class EosTestCase(TestCase):
         entry_num = self._get_object_buffer_entry_amount(
             object_, ignore_objects, ignore_attrs)
         # Raise error if we found any data in any attached storage
-        if entry_num > 0:
+        if entry_num:
             plu = 'y' if entry_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(
                 entry_num, plu)

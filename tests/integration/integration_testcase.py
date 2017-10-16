@@ -100,7 +100,7 @@ class IntegrationTestCase(EosTestCase):
                 ('Fit', '_FitMessageBroker__subscribers'),
                 ('RestrictionService', '_RestrictionService__restrictions'),
                 ('StatService', '_StatService__volatile_containers')))
-        if entry_num > 0:
+        if entry_num:
             plu = 'y' if entry_num == 1 else 'ies'
             msg = '{} entr{} in buffers: buffers must be empty'.format(
                 entry_num, plu)

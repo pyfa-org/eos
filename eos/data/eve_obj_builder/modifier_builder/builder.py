@@ -84,15 +84,15 @@ class ModifierBuilder:
         # Validate all the modifiers after building
         valid_mods, valid_fails = self.__get_valid_modifiers(mods)
         # Logging and reporting
-        if fails == 0 and valid_fails == 0:
+        if not fails and not valid_fails:
             return valid_mods, EffectBuildStatus.success
         else:
             effect_id = effect_row['effectID']
             total_mods = fails + valid_fails + len(valid_mods)
             msg_parts = []
-            if fails > 0:
+            if fails:
                 msg_parts.append('{} build errors'.format(fails))
-            if valid_fails > 0:
+            if valid_fails:
                 msg_parts.append('{} validation failures'.format(valid_fails))
             msg = 'effect {}, building {} modifiers: {}'.format(
                 effect_id, total_mods, ', '.join(msg_parts))
