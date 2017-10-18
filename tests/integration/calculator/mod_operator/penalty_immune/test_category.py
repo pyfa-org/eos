@@ -56,8 +56,8 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_charge(self):
         influence_src1 = Implant(self.ch.type(
@@ -74,8 +74,8 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_skill(self):
         influence_src1 = Implant(self.ch.type(
@@ -92,8 +92,8 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_implant(self):
         influence_src1 = Implant(self.ch.type(
@@ -110,8 +110,8 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem(self):
         influence_src1 = Implant(self.ch.type(
@@ -128,8 +128,8 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_mixed(self):
         influence_src1 = Implant(self.ch.type(
@@ -146,8 +146,8 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_with_not_immune(self):
         influence_src1 = Implant(self.ch.type(
@@ -164,5 +164,5 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -51,8 +51,8 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_other_domain_charge(self):
         influence_src = Charge(self.ch.type(
@@ -69,8 +69,8 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_self(self):
         # Check that source item isn't modified
@@ -85,8 +85,8 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_src.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_other_item(self):
         # Here we check some "random" item, w/o linking items
@@ -100,5 +100,5 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -54,8 +54,8 @@ class TestTgtDomainDomainShip(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_parent_domain_other(self):
         influence_tgt = Booster(self.ch.type(
@@ -66,5 +66,5 @@ class TestTgtDomainDomainShip(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

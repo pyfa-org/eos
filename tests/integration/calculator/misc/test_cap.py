@@ -54,8 +54,8 @@ class TestCap(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 5)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_cap_attr_eve_type(self):
         # Make sure that item's own specified attribute value is taken as cap
@@ -68,8 +68,8 @@ class TestCap(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_cap_attr_modified(self):
         # Make sure that item's own specified attribute value is taken as cap,
@@ -92,8 +92,8 @@ class TestCap(CalculatorTestCase):
         # Attr value is 3 * 6 = 18, but cap value is 0.1 * 6 = 0.6
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 0.6)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_cap_update(self):
         # If cap updates, capped attributes should be updated too
@@ -121,5 +121,5 @@ class TestCap(CalculatorTestCase):
         # As capping attribute is updated, capped attribute must be updated too
         self.assertAlmostEqual(item.attributes[self.capped_attr.id], 7)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

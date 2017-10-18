@@ -137,5 +137,5 @@ class TestOperatorForcedValue(CalculatorTestCase):
         # Post-assignment value must override all other modifications
         self.assertAlmostEqual(influence_tgt.attributes[tgt_attr.id], 68)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

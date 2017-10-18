@@ -34,8 +34,8 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.33)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_up(self):
         attr = self.ch.attr(attribute_id=AttributeId.cpu)
@@ -44,8 +44,8 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_modified(self):
         src_attr = self.ch.attr()
@@ -65,8 +65,8 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 2.33)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_output(self):
         attr = self.ch.attr(attribute_id=AttributeId.cpu_output)
@@ -75,8 +75,8 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_power(self):
         attr = self.ch.attr(attribute_id=AttributeId.power)
@@ -85,8 +85,8 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_power_output(self):
         attr = self.ch.attr(attribute_id=AttributeId.power_output)
@@ -95,8 +95,8 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.67)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_other(self):
         attr = self.ch.attr()
@@ -105,5 +105,5 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 2.6666)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

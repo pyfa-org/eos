@@ -58,8 +58,8 @@ class TestOperatorSub(CalculatorTestCase):
         self.assertAlmostEqual(
             self.influence_tgt.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_penalized(self):
         self.tgt_attr.stackable = False
@@ -67,5 +67,5 @@ class TestOperatorSub(CalculatorTestCase):
         self.assertAlmostEqual(
             self.influence_tgt.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

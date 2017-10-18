@@ -56,9 +56,9 @@ class TestTgtDomainSkillrqDomainUnknown(CalculatorTestCase):
         # Action
         self.fit.implants.add(influence_src)
         # Verification
-        # Invalid domain in modifier should prevent proper processing of other
-        # modifiers
+        # Invalid domain in modifier should not prevent proper processing of
+        # other modifiers
         self.assertAlmostEqual(influence_tgt.attributes[tgt_attr.id], 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -76,5 +76,5 @@ class TestCalculationChain(CalculatorTestCase):
         # 300% = 50
         self.assertAlmostEqual(rig_item.attributes[attr4.id], 50)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

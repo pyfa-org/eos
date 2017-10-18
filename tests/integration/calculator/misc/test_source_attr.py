@@ -57,8 +57,9 @@ class TestSourceAttribute(CalculatorTestCase):
         # Verification
         # Invalid source value shouldn't screw whole calculation process
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.INFO)
         self.assertEqual(

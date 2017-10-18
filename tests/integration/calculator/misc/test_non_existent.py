@@ -38,8 +38,9 @@ class TestNonExistent(CalculatorTestCase):
         with self.assertRaises(KeyError):
             item.attributes[105]
         # Verification
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
@@ -60,8 +61,9 @@ class TestNonExistent(CalculatorTestCase):
         with self.assertRaises(KeyError):
             item.attributes[attr.id]
         # Verification
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(log_record.name, 'eos.fit.calculator.map')
         self.assertEqual(log_record.levelno, logging.INFO)
         self.assertEqual(
@@ -81,5 +83,5 @@ class TestNonExistent(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[attr.id], 5.6)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

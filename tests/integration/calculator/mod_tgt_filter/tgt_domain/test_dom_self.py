@@ -57,8 +57,8 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_character(self):
         influence_src = Character(self.src_eve_type.id)
@@ -74,8 +74,8 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_unpositioned_error(self):
         influence_src = Implant(self.src_eve_type.id)
@@ -85,8 +85,9 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
         # corresponding error
         self.fit.implants.add(influence_src)
         # Verification
-        self.assertEqual(len(self.log), 2)
-        for log_record in self.log:
+        log = self.get_log()
+        self.assertEqual(len(log), 2)
+        for log_record in log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(

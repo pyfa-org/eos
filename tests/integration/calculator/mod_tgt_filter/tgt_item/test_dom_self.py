@@ -49,8 +49,8 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_parent_domain_character(self):
         item = Implant(self.ch.type(
@@ -61,8 +61,8 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_parent_domain_ship(self):
         item = Rig(self.ch.type(
@@ -73,8 +73,8 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_other(self):
         # Here we check that self-reference modifies only carrier of effect, and
@@ -91,5 +91,5 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

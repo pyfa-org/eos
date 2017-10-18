@@ -44,5 +44,5 @@ class TestTgtItemDomainTarget(CalculatorTestCase):
         self.fit.ship = influence_src
         # No checks - nothing should happen
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

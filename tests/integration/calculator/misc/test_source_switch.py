@@ -78,6 +78,7 @@ class TestSourceSwitch(CalculatorTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit1)
         self.assert_fit_buffers_empty(fit2)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_switch_fit(self):
         # Here we check if attributes are updated if fit gets new source
@@ -129,3 +130,4 @@ class TestSourceSwitch(CalculatorTestCase):
         self.assertAlmostEqual(item.attributes.get(tgt_attr_id), 88)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

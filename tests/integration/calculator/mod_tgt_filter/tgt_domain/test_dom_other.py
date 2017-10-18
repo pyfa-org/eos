@@ -48,8 +48,9 @@ class TestTgtDomainDomainOther(CalculatorTestCase):
         # thus such modification type is unsupported
         self.fit.rigs.add(influence_src)
         # Verification
-        self.assertEqual(len(self.log), 2)
-        for log_record in self.log:
+        log = self.get_log()
+        self.assertEqual(len(log), 2)
+        for log_record in log:
             self.assertEqual(log_record.name, 'eos.fit.calculator.register')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(

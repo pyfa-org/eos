@@ -57,8 +57,8 @@ class TestTgtOwnerSkillrqDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_not_owner_modifiable(self):
         influence_tgt = Rig(self.ch.type(attributes={
@@ -70,8 +70,8 @@ class TestTgtOwnerSkillrqDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_other_skill(self):
         influence_tgt = Drone(self.ch.type(attributes={
@@ -83,5 +83,5 @@ class TestTgtOwnerSkillrqDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

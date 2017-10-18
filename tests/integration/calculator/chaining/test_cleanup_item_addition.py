@@ -64,5 +64,5 @@ class TestCleanupChainAddition(CalculatorTestCase):
         # affected by it, to allow recalculation
         self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.6875)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

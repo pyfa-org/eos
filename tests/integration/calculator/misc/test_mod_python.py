@@ -95,6 +95,7 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_disabling(self):
         item = ModuleHigh(self.ch.type(
@@ -110,6 +111,7 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_target_recalc_attr_change(self):
         # Here dogma modifier changes value of one of attributes which are used
@@ -138,6 +140,7 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_unsubscription(self):
         # Make sure that when python modifier unsubscribes from message type
@@ -181,3 +184,4 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

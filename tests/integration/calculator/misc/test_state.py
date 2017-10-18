@@ -96,8 +96,8 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_online(self):
         # Setup
@@ -107,8 +107,8 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_active(self):
         # Setup
@@ -118,8 +118,8 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_overloaded(self):
         # Setup
@@ -129,8 +129,8 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_switch_up_single(self):
         # Setup
@@ -141,8 +141,8 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_switch_up_multiple(self):
         # Setup
@@ -153,8 +153,8 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_switch_down_single(self):
         # Setup
@@ -165,8 +165,8 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_switch_down_multiple(self):
         # Setup
@@ -177,5 +177,5 @@ class TestStateSwitching(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

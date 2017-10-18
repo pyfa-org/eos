@@ -74,8 +74,8 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_disabling_multiple(self):
         # Setup
@@ -89,8 +89,8 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_enabling(self):
         # Setup
@@ -103,8 +103,8 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_enabling_multiple(self):
         # Setup
@@ -122,5 +122,5 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
