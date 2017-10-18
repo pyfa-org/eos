@@ -316,10 +316,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         """
         # We borrow resistances from at least 2 resist types, possibly more if
         # ship didn't take damage of these types
-        donors = max(2, len(tuple(
+        donors = max(2, len([
             item
             for item in received_dmg
-            if received_dmg[item] == 0)))
+            if received_dmg[item] == 0]))
         recipients = 4 - donors
         # Primary key for sorting is received damage, secondary is default
         # order. Default order "sorting" happens due to default order of

@@ -30,7 +30,7 @@ class TestRahSimAttributeOverride(RahSimTestCase):
     def test_rah_modified_resonance_update(self):
         # Setup
         skill_attr = self.ch.attr(high_is_good=False, stackable=False)
-        skill_modifiers = (tuple(
+        skill_modifiers = tuple(
             self.mod(
                 tgt_filter=ModifierTargetFilter.domain,
                 tgt_domain=ModifierDomain.ship,
@@ -39,7 +39,7 @@ class TestRahSimAttributeOverride(RahSimTestCase):
                 src_attr=skill_attr.id)
             for attr in (
                 self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
-                self.armor_exp.id)))
+                self.armor_exp.id))
         skill_effect = self.ch.effect(
             category=EffectCategoryId.passive, modifiers=skill_modifiers)
         skill_eve_type = self.ch.type(
