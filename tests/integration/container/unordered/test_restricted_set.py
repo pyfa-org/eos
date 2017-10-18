@@ -165,6 +165,20 @@ class TestContainerRestrictedSet(ContainerTestCase):
         fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
 
+    def test_key_integrity(self):
+        fit = Fit()
+        item_eve_type = self.ch.type()
+        item1 = Skill(item_eve_type.id)
+        item2 = Skill(item_eve_type.id)
+        fit.skills.add(item1)
+        with self.assertRaises(KeyError):
+            fit.skills.remove(item2)
+        # Verification
+        self.assertIs(fit.skills[item_eve_type.id], item1)
+        # Cleanup
+        fit.skills.remove(item1)
+        self.assert_fit_buffers_empty(fit)
+
     def test_clear(self):
         fit = Fit()
         item1_eve_type = self.ch.type()
