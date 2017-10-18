@@ -46,7 +46,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_item(self):
         effect_row = {'modifierInfo': self._make_yaml('itemID')}
@@ -61,7 +61,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_char(self):
         effect_row = {'modifierInfo': self._make_yaml('charID')}
@@ -76,7 +76,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_ship(self):
         effect_row = {'modifierInfo': self._make_yaml('shipID')}
@@ -91,7 +91,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_target(self):
         effect_row = {'modifierInfo': self._make_yaml('targetID')}
@@ -106,11 +106,11 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_other(self):
         effect_row = {'modifierInfo': self._make_yaml('otherID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.get_log()), 1)

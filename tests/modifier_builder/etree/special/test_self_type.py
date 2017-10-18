@@ -65,7 +65,7 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.tgt_filter_extra_arg, EosTypeId.current_self)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_mod_owner_skillrq(self):
         self.make_etree(OperandId.add_own_srq_mod, OperandId.rm_own_srq_mod)
@@ -74,4 +74,4 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.tgt_filter_extra_arg, EosTypeId.current_self)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)

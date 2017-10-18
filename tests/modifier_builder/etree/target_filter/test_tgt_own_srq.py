@@ -62,7 +62,7 @@ class TestBuilderEtreeTgtOwnSrq(ModBuilderTestCase):
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.get_log()), 1)
 
     def test_domain_char(self):
         self.make_etree('Char')
@@ -77,25 +77,25 @@ class TestBuilderEtreeTgtOwnSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 1372)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 1156)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_ship(self):
         self.make_etree('Ship')
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.get_log()), 1)
 
     def test_domain_target(self):
         self.make_etree('Target')
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.get_log()), 1)
 
     def test_domain_other(self):
         self.make_etree('Other')
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.get_log()), 1)

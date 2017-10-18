@@ -64,7 +64,7 @@ class TestBuilderEtreeTgtItm(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 9)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 327)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_char(self):
         self.make_etree('Char')
@@ -78,7 +78,7 @@ class TestBuilderEtreeTgtItm(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 9)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 327)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_ship(self):
         self.make_etree('Ship')
@@ -92,7 +92,7 @@ class TestBuilderEtreeTgtItm(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 9)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 327)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_target(self):
         self.make_etree('Target')
@@ -106,7 +106,7 @@ class TestBuilderEtreeTgtItm(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 9)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 327)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_other(self):
         self.make_etree('Other')
@@ -120,4 +120,4 @@ class TestBuilderEtreeTgtItm(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 9)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 327)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)

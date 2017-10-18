@@ -19,8 +19,6 @@
 # ==============================================================================
 
 
-import logging
-
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 

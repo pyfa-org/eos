@@ -40,7 +40,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.pre_assign)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_premul(self):
         effect_row = {'modifierInfo': self._make_yaml(0)}
@@ -49,7 +49,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.pre_mul)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_prediv(self):
         effect_row = {'modifierInfo': self._make_yaml(1)}
@@ -58,7 +58,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.pre_div)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_modadd(self):
         effect_row = {'modifierInfo': self._make_yaml(2)}
@@ -67,7 +67,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.mod_add)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_modsub(self):
         effect_row = {'modifierInfo': self._make_yaml(3)}
@@ -76,7 +76,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.mod_sub)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_postmul(self):
         effect_row = {'modifierInfo': self._make_yaml(4)}
@@ -85,7 +85,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.post_mul)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_postdiv(self):
         effect_row = {'modifierInfo': self._make_yaml(5)}
@@ -94,7 +94,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.post_div)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_postperc(self):
         effect_row = {'modifierInfo': self._make_yaml(6)}
@@ -103,7 +103,7 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_postassign(self):
         effect_row = {'modifierInfo': self._make_yaml(7)}
@@ -112,4 +112,4 @@ class TestBuilderModinfoOperator(ModBuilderTestCase):
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
         self.assertEqual(modifier.operator, ModifierOperator.post_assign)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)

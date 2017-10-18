@@ -19,8 +19,6 @@
 # ==============================================================================
 
 
-import logging
-
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
@@ -77,11 +75,11 @@ class TestConversionType(EveObjBuilderTestCase):
         self.assertEqual(len(type_fighterabils), 3)
         self.assertCountEqual(type_fighterabils, {5, 6, 50})
         self.assertDictEqual(type_fighterabils[5], {
-                'cooldown_time': None, 'charge_amount': None,
-                'charge_rearm_time': None})
+            'cooldown_time': None, 'charge_amount': None,
+            'charge_rearm_time': None})
         self.assertDictEqual(type_fighterabils[6], {
-                'cooldown_time': 60, 'charge_amount': None,
-                'charge_rearm_time': None})
+            'cooldown_time': 60, 'charge_amount': None,
+            'charge_rearm_time': None})
         self.assertDictEqual(type_fighterabils[50], {
-                'cooldown_time': None, 'charge_amount': 3,
-                'charge_rearm_time': 20})
+            'cooldown_time': None, 'charge_amount': 3,
+            'charge_rearm_time': 20})

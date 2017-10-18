@@ -19,7 +19,6 @@
 # ==============================================================================
 
 
-import logging
 from unittest.mock import patch
 
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase

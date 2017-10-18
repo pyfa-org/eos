@@ -43,3 +43,6 @@ class ModBuilderTestCase(EosTestCase):
         effect_row.setdefault('modifierInfo', None)
         builder = ModifierBuilder(self.ef.data)
         return builder.build(effect_row)
+
+    def get_log(self, name='eos.data.eve_obj_builder.modifier_builder*'):
+        return super().get_log(name=name)

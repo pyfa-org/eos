@@ -70,7 +70,7 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 491)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_char(self):
         self.make_etree('Char')
@@ -85,7 +85,7 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 491)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_ship(self):
         self.make_etree('Ship')
@@ -100,7 +100,7 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 491)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_target(self):
         self.make_etree('Target')
@@ -115,11 +115,11 @@ class TestBuilderEtreeModTgtSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 54)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 491)
-        self.assertEqual(len(self.log), 0)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_other(self):
         self.make_etree('Other')
         modifiers, status = self.run_builder(self.effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.log), 1)
+        self.assertEqual(len(self.get_log()), 1)

@@ -39,8 +39,9 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(
             log_record.name,
             'eos.data.eve_obj_builder.modifier_builder.builder')
@@ -54,14 +55,16 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
             'modifierInfo':
                 '- domain: shipID\n  func: ItemModifier\n'
                 '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
-                '  operator: 6\n- domain: charID\n  func: GangItemModifiero\n'
+                '  operator: 6\n'
+                '- domain: charID\n  func: GangItemModifiero\n'
                 '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n'
                 '  operator: 7\n'}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(
             log_record.name,
             'eos.data.eve_obj_builder.modifier_builder.builder')
@@ -75,14 +78,16 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
             'modifierInfo':
                 '- domain: shipID\n  func: ItemModifier\n'
                 '  modifiedAttributeID: 22\n  modifyingAttributeID: 11\n'
-                '  operator: 6\n- domain: charID\n  func: ItemModifier\n'
+                '  operator: 6\n'
+                '- domain: charID\n  func: ItemModifier\n'
                 '  modifiedAttributeID: 33\n  modifyingAttributeID: 44\n'
                 '  operator: ORE\n'}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(
             log_record.name,
             'eos.data.eve_obj_builder.modifier_builder.builder')
@@ -103,8 +108,9 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(
             log_record.name,
             'eos.data.eve_obj_builder.modifier_builder.builder')
@@ -129,8 +135,9 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(
             log_record.name,
             'eos.data.eve_obj_builder.modifier_builder.builder')
@@ -160,7 +167,8 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 33)
         self.assertEqual(modifier.operator, ModifierOperator.post_assign)
         self.assertEqual(modifier.src_attr, 44)
-        self.assertEqual(len(self.log), 1)
+        # Unknown function error, tested separately
+        self.assertEqual(len(self.get_log()), 1)
 
     def test_error_after(self):
         effect_row = {
@@ -182,4 +190,5 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
         self.assertEqual(modifier.src_attr, 11)
-        self.assertEqual(len(self.log), 1)
+        # Unknown function error, tested separately
+        self.assertEqual(len(self.get_log()), 1)

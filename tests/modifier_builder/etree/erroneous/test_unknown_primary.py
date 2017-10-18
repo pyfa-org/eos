@@ -91,8 +91,9 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(
             log_record.name,
             'eos.data.eve_obj_builder.modifier_builder.builder')
@@ -134,8 +135,9 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(
             log_record.name,
             'eos.data.eve_obj_builder.modifier_builder.builder')
