@@ -46,8 +46,6 @@ class TestConversionExpression(EveObjBuilderTestCase):
             'expressionAttributeID': 102, 'expressionValue': 'Kurr'})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         # As expressions are absent in final container, check those which were
         # passed to modifier builder
         expressions = tuple(mod_builder.mock_calls[0][1][0])
@@ -66,3 +64,4 @@ class TestConversionExpression(EveObjBuilderTestCase):
             'expressionGroupID': 567, 'expressionAttributeID': 102,
             'table_pos': 1, 'randoom': True}
         self.assertIn(expected, expressions)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

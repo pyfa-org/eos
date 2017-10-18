@@ -46,10 +46,6 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
@@ -58,6 +54,10 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionGroupID': 53, 'expressionAttributeID': 102,
             'table_pos': 0}
         self.assertIn(expected, expressions)
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_group_ignorelist(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})
@@ -72,10 +72,6 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
@@ -84,6 +80,10 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionGroupID': None, 'expressionAttributeID': 102,
             'table_pos': 0}
         self.assertIn(expected, expressions)
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
+        self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_warning_unused(self, mod_builder):
         mod_builder.return_value.build.return_value = ([], 0)

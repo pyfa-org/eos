@@ -35,26 +35,27 @@ class TestAttrValue(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': 8})
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].attributes[5], 8)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
 
     def test_float(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': 8.5})
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].attributes[5], 8.5)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
 
     def test_other(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': None})
         self.run_builder()
+        self.assertEqual(len(self.types), 1)
+        self.assertIn(1, self.types)
+        self.assertEqual(len(self.types[1].attributes), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -62,9 +63,6 @@ class TestAttrValue(EveObjBuilderTestCase):
         self.assertEqual(
             log_record.msg,
             '1 attribute rows have non-numeric value, removing them')
-        self.assertEqual(len(self.types), 1)
-        self.assertIn(1, self.types)
-        self.assertEqual(len(self.types[1].attributes), 0)
 
     def test_cleanup(self):
         # Make sure cleanup runs before check being tested
@@ -72,6 +70,5 @@ class TestAttrValue(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': None})
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 0)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

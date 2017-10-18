@@ -42,6 +42,12 @@ class TestRackCollision(EveObjBuilderTestCase):
 
     def test_collision(self):
         self.run_builder()
+        self.assertEqual(len(self.types), 1)
+        self.assertIn(1, self.types)
+        type_effects = self.types[1].effects
+        self.assertEqual(len(type_effects), 1)
+        self.assertIn(13, type_effects)
+        self.assertEqual(len(self.effects), 3)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -49,17 +55,10 @@ class TestRackCollision(EveObjBuilderTestCase):
         self.assertEqual(
             log_record.msg,
             '2 rows contain colliding module racks, removing them')
-        self.assertEqual(len(self.types), 1)
-        self.assertIn(1, self.types)
-        type_effects = self.types[1].effects
-        self.assertEqual(len(type_effects), 1)
-        self.assertIn(13, type_effects)
-        self.assertEqual(len(self.effects), 3)
 
     def test_cleaned(self):
         del self.eve_type['groupID']
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

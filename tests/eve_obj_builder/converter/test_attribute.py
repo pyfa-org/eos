@@ -35,8 +35,6 @@ class TestConversionAttribute(EveObjBuilderTestCase):
             'maxAttributeID': 84, 'randomField': None, 'stackable': True,
             'defaultValue': 0.0, 'attributeID': 111, 'highIsGood': False})
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.attributes), 1)
         self.assertIn(111, self.attributes)
         attribute = self.attributes[111]
@@ -45,3 +43,4 @@ class TestConversionAttribute(EveObjBuilderTestCase):
         self.assertEqual(attribute.default_value, 0.0)
         self.assertIs(attribute.high_is_good, False)
         self.assertIs(attribute.stackable, True)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

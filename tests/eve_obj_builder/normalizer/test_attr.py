@@ -34,41 +34,41 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'radius': 50.0})
         self.run_builder()
+        self.assertEqual(self.types[1].attributes[AttributeId.radius], 50.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        self.assertEqual(self.types[1].attributes[AttributeId.radius], 50.0)
 
     def test_basic_attr_mass(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'mass': 5.0})
         self.run_builder()
+        self.assertEqual(self.types[1].attributes[AttributeId.mass], 5.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        self.assertEqual(self.types[1].attributes[AttributeId.mass], 5.0)
 
     def test_basic_attr_volume(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'volume': 500.0})
         self.run_builder()
+        self.assertEqual(self.types[1].attributes[AttributeId.volume], 500.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        self.assertEqual(self.types[1].attributes[AttributeId.volume], 500.0)
 
     def test_basic_attr_capacity(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'capacity': 0.5})
         self.run_builder()
+        self.assertEqual(self.types[1].attributes[AttributeId.capacity], 0.5)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        self.assertEqual(self.types[1].attributes[AttributeId.capacity], 0.5)
 
     def test_duplicate_definition(self):
         # Check what happens if attribute is defined in both dgmtypeattribs and
@@ -78,6 +78,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': AttributeId.mass, 'value': 6.0})
         self.run_builder()
+        self.assertEqual(self.types[1].attributes[AttributeId.mass], 6.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 2)
         duplicate_error = log[0]
@@ -88,4 +89,3 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'in dgmtypeattribs and were skipped')
         idzing_stats = log[1]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        self.assertEqual(self.types[1].attributes[AttributeId.mass], 6.0)

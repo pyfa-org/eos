@@ -54,8 +54,6 @@ class TestConversionType(EveObjBuilderTestCase):
             'typeID': 1, 'abilityID': 50, 'chargeCount': 3,
             'rearmTimeSeconds': 20})
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         evetype = self.types[1]
@@ -83,3 +81,4 @@ class TestConversionType(EveObjBuilderTestCase):
         self.assertDictEqual(type_fighterabils[50], {
             'cooldown_time': None, 'charge_amount': 3,
             'charge_rearm_time': 20})
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

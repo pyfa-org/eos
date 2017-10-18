@@ -120,15 +120,6 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        clean_stats = log[0]
-        self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(
-            clean_stats.msg,
-            'cleaned: 0.0% from dgmattribs, 0.0% from dgmeffects, '
-            '0.0% from dgmexpressions, 0.0% from dgmtypeattribs, '
-            '0.0% from dgmtypeeffects, 0.0% from evegroups, 0.0% from evetypes')
         self.assertEqual(len(self.types), 3)
         self.assertIn(1, self.types)
         self.assertEqual(self.types[1].category, 16)
@@ -155,6 +146,15 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(len(expressions), 4)
         expression_ids = set(row['expressionID'] for row in expressions)
         self.assertEqual(expression_ids, {100, 101, 102, 103})
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
+        self.assertEqual(clean_stats.levelno, logging.INFO)
+        self.assertEqual(
+            clean_stats.msg,
+            'cleaned: 0.0% from dgmattribs, 0.0% from dgmeffects, '
+            '0.0% from dgmexpressions, 0.0% from dgmtypeattribs, '
+            '0.0% from dgmtypeeffects, 0.0% from evegroups, 0.0% from evetypes')
 
     def test_weak(self, mod_builder):
         self.__generate_data()
@@ -162,6 +162,10 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 101})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
+        self.assertEqual(len(self.types), 0)
+        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.effects), 0)
+        self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         clean_stats = log[0]
@@ -172,14 +176,14 @@ class TestAssociatedData(EveObjBuilderTestCase):
             '100.0% from dgmexpressions, 100.0% from dgmtypeattribs, '
             '100.0% from dgmtypeeffects, 100.0% from evegroups, '
             '100.0% from evetypes')
-        self.assertEqual(len(self.types), 0)
-        self.assertEqual(len(self.attributes), 0)
-        self.assertEqual(len(self.effects), 0)
-        self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
 
     def test_unlinked(self, mod_builder):
         self.__generate_data()
         self.run_builder()
+        self.assertEqual(len(self.types), 0)
+        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.effects), 0)
+        self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         clean_stats = log[0]
@@ -190,10 +194,6 @@ class TestAssociatedData(EveObjBuilderTestCase):
             '100.0% from dgmexpressions, 100.0% from dgmtypeattribs, '
             '100.0% from dgmtypeeffects, 100.0% from evegroups, '
             '100.0% from evetypes')
-        self.assertEqual(len(self.types), 0)
-        self.assertEqual(len(self.attributes), 0)
-        self.assertEqual(len(self.effects), 0)
-        self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
 
     def test_reverse_types(self, mod_builder):
         # Check that single type included into table does not pull other types
@@ -223,15 +223,6 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        clean_stats = log[0]
-        self.assertEqual(clean_stats.levelno, logging.INFO)
-        self.assertEqual(
-            clean_stats.msg,
-            'cleaned: 0.0% from dgmeffects, 0.0% from dgmexpressions, '
-            '0.0% from dgmtypeeffects, 0.0% from evegroups, '
-            '25.0% from evetypes')
         self.assertEqual(len(self.types), 3)
         self.assertIn(1, self.types)
         self.assertIn(2, self.types)
@@ -243,3 +234,12 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(len(expressions), 1)
         expression_ids = set(row['expressionID'] for row in expressions)
         self.assertEqual(expression_ids, {101})
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
+        self.assertEqual(clean_stats.levelno, logging.INFO)
+        self.assertEqual(
+            clean_stats.msg,
+            'cleaned: 0.0% from dgmeffects, 0.0% from dgmexpressions, '
+            '0.0% from dgmtypeeffects, 0.0% from evegroups, '
+            '25.0% from evetypes')

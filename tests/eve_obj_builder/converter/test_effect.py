@@ -46,8 +46,6 @@ class TestConversionEffect(EveObjBuilderTestCase):
             operator=7, src_attr=8)
         mod_builder.return_value.build.return_value = ([mod], 29)
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.effects), 1)
         self.assertIn(112, self.effects)
         effect = self.effects[112]
@@ -63,3 +61,4 @@ class TestConversionEffect(EveObjBuilderTestCase):
         self.assertEqual(effect.fitting_usage_chance_attribute, 96)
         self.assertEqual(effect.build_status, 29)
         self.assertIn(mod, effect.modifiers)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

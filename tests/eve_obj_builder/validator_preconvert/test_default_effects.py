@@ -46,17 +46,23 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.eff_link1['isDefault'] = False
         self.eff_link2['isDefault'] = True
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertIn(1, self.types)
         self.assertEqual(len(self.effects), 2)
         self.assertIn(2, self.effects)
         self.assertEqual(self.effects[2].falloff_attribute, 20)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
 
     def test_duplicate(self):
         self.eff_link1['isDefault'] = True
         self.eff_link2['isDefault'] = True
         self.run_builder()
+        self.assertEqual(len(self.types), 1)
+        self.assertIn(1, self.types)
+        # Make sure effects are not removed
+        self.assertEqual(len(self.effects), 2)
+        self.assertIn(1, self.effects)
+        self.assertIn(2, self.effects)
+        self.assertEqual(self.effects[1].falloff_attribute, 10)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -65,20 +71,12 @@ class TestDefaultEffects(EveObjBuilderTestCase):
             log_record.msg,
             'data contains 1 excessive default effects, '
             'marking them as non-default')
-        self.assertEqual(len(self.types), 1)
-        self.assertIn(1, self.types)
-        # Make sure effects are not removed
-        self.assertEqual(len(self.effects), 2)
-        self.assertIn(1, self.effects)
-        self.assertIn(2, self.effects)
-        self.assertEqual(self.effects[1].falloff_attribute, 10)
 
     def test_cleanup(self):
         del self.eve_type['groupID']
         self.eff_link1['isDefault'] = True
         self.eff_link2['isDefault'] = True
         self.run_builder()
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)
+        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
