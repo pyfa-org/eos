@@ -44,6 +44,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 1)
         self.assertIn(item, fit.implants)
         # Cleanup
+        fit.implants.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_add_item_type_failure(self):
@@ -56,6 +57,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 0)
         fit.boosters.add(item)
         # Cleanup
+        fit.boosters.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_add_item_value_failure(self):
@@ -71,6 +73,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit_other.implants), 1)
         self.assertIn(item, fit_other.implants)
         # Cleanup
+        fit_other.implants.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 

@@ -40,6 +40,9 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(fit.modules.high[1], item1)
         self.assertIs(fit.modules.high[2], item2)
         # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
+        fit.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
 
     def test_item_to_end(self):
@@ -57,6 +60,9 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(fit.modules.high[1], item2)
         self.assertIs(fit.modules.high[2], item3)
         # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
+        fit.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
 
     def test_item_outside(self):
@@ -73,6 +79,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIsNone(fit.modules.high[2])
         self.assertIs(fit.modules.high[3], item2)
         # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
 
     def test_item_inside_type_failure(self):
@@ -91,6 +99,9 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(fit.modules.high[1], item2)
         fit.modules.med.insert(0, item3)
         # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
+        fit.modules.med.remove(item3)
         self.assert_fit_buffers_empty(fit)
 
     def test_item_inside_value_failure(self):
@@ -112,6 +123,9 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(len(fit_other.modules.high), 1)
         self.assertIs(fit_other.modules.high[0], item3)
         # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
+        fit_other.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
@@ -125,6 +139,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         fit.modules.med.insert(0, item)
         # Cleanup
+        fit.modules.med.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_item_outside_value_failure(self):
@@ -140,6 +155,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(len(fit_other.modules.high), 1)
         self.assertIs(fit_other.modules.high[0], item)
         # Cleanup
+        fit_other.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
@@ -157,6 +173,8 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIsNone(fit.modules.high[1])
         self.assertIs(fit.modules.high[2], item2)
         # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
 
     def test_none_outside(self):
@@ -172,4 +190,6 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(fit.modules.high[0], item1)
         self.assertIs(fit.modules.high[1], item2)
         # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)

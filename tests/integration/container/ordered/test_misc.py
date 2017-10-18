@@ -38,6 +38,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 3)
         fit.modules.high.remove(item2)
         self.assertEqual(len(fit.modules.high), 0)
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
 
     def test_contains(self):
@@ -63,6 +64,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(item1 in fit.modules.high)
         self.assertFalse(None in fit.modules.high)
         self.assertFalse(item2 in fit.modules.high)
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
 
     def test_iter(self):
@@ -80,6 +82,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
             list(item for item in fit.modules.high), [None, None, item2])
         fit.modules.high.remove(item2)
         self.assertEqual(list(item for item in fit.modules.high), [])
+        # Cleanup
         self.assert_fit_buffers_empty(fit)
 
     def test_clear(self):
@@ -119,6 +122,9 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertEqual(len(slice_step), 2)
         self.assertIs(slice_step[0], item1)
         self.assertIsNone(slice_step[1])
+        # Cleanup
+        fit.modules.high.remove(item1)
+        fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
 
     def test_item_view(self):
@@ -155,4 +161,5 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(item1 in view)
         self.assertFalse(item2 in view)
         self.assertFalse(None in view)
+        # Cleanup
         self.assert_fit_buffers_empty(fit)

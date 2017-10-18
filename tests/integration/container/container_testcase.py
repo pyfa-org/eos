@@ -24,4 +24,6 @@ from tests.integration.integration_testcase import IntegrationTestCase
 
 class ContainerTestCase(IntegrationTestCase):
     """Class which should be used by item container tests."""
-    ...
+
+    def assert_fit_buffers_empty(self, fit, clear_all=False):
+        super().assert_fit_buffers_empty(fit, clear_all=clear_all)

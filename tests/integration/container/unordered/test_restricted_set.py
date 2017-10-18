@@ -47,6 +47,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         self.assertIn(item, fit.skills)
         self.assertIn(item_eve_type.id, fit.skills)
         # Cleanup
+        fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_add_item_type_failure(self):
@@ -62,6 +63,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         self.assertNotIn(item_eve_type.id, fit.skills)
         fit.implants.add(item)
         # Cleanup
+        fit.implants.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_add_item_value_failure_has_fit(self):
@@ -79,6 +81,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         self.assertIs(fit_other.skills[item_eve_type.id], item)
         self.assertIn(item, fit_other.skills)
         # Cleanup
+        fit_other.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
@@ -99,6 +102,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         fit.skills.remove(item1)
         fit.skills.add(item2)
         # Cleanup
+        fit.skills.remove(item2)
         self.assert_fit_buffers_empty(fit)
 
     def test_remove_item(self):
@@ -128,6 +132,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         self.assertNotIn(item_eve_type.id, fit.skills)
         fit.skills.add(item)
         # Cleanup
+        fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_delitem_item(self):
@@ -157,6 +162,7 @@ class TestContainerRestrictedSet(ContainerTestCase):
         self.assertIn(item, fit.skills)
         self.assertIn(item_eve_type.id, fit.skills)
         # Cleanup
+        fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_clear(self):

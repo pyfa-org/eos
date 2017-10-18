@@ -80,12 +80,18 @@ class IntegrationTestCase(EosTestCase):
     def allocate_effect_id(self, *cache_handlers):
         return max(ch.allocate_effect_id() for ch in cache_handlers)
 
-    def assert_fit_buffers_empty(self, fit):
+    def assert_fit_buffers_empty(self, fit, clear_all=True):
         """Checks if fit contains anything in object containers.
+
+        Args:
+            fit: Fit to verify.
+            clear_all (optional): Before checking, by default fit has all its
+                items removed. If necessary, they can be kept. Please note, that
+                character item is always removed anyway.
 
         Only containers which are designed to hold temporary data are checked.
         """
-        self.__clear_fit(fit)
+        self.__clear_fit(fit, clear_all)
         entry_num = 0
         # As volatile manager always has one entry added to it, stats service,
         # make sure it's ignored for assertion purposes
@@ -93,7 +99,7 @@ class IntegrationTestCase(EosTestCase):
             fit.stats)
         entry_num += self._get_object_buffer_entry_amount(
             fit,
-            ignore_objects=(fit,),
+            ignore_objects=[fit],
             ignore_attrs=(
                 ('Fit', '_Fit__source'),
                 ('Fit', '_Fit__default_incoming_damage'),
@@ -106,19 +112,20 @@ class IntegrationTestCase(EosTestCase):
                 entry_num, plu)
             self.fail(msg=msg)
 
-    def __clear_fit(self, fit):
-        fit.ship = None
-        fit.stance = None
+    def __clear_fit(self, fit, clear_all):
         fit.character = None
-        fit.effect_beacon = None
-        fit.subsystems.clear()
-        fit.modules.high.clear()
-        fit.modules.med.clear()
-        fit.modules.low.clear()
-        fit.rigs.clear()
-        fit.drones.clear()
-        fit.fighters.clear()
-        fit.skills.clear()
-        fit.implants.clear()
-        fit.boosters.clear()
+        if clear_all:
+            fit.ship = None
+            fit.stance = None
+            fit.effect_beacon = None
+            fit.subsystems.clear(),
+            fit.modules.high.clear(),
+            fit.modules.med.clear(),
+            fit.modules.low.clear(),
+            fit.rigs.clear(),
+            fit.drones.clear(),
+            fit.fighters.clear(),
+            fit.skills.clear(),
+            fit.implants.clear(),
+            fit.boosters.clear()
         fit._volatile_mgr._FitVolatileManager__clear_volatile_attrs()

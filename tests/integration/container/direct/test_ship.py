@@ -42,6 +42,7 @@ class TestDirectItemShip(ContainerTestCase):
         # Verification
         self.assertIs(fit.ship, item)
         # Cleanup
+        fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_item_type_failure(self):
@@ -56,6 +57,7 @@ class TestDirectItemShip(ContainerTestCase):
         # field
         fit.stance = item
         # Cleanup
+        fit.stance = None
         self.assert_fit_buffers_empty(fit)
 
     def test_none_to_item_value_failure(self):
@@ -70,6 +72,7 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIsNone(fit.ship)
         self.assertIs(fit_other.ship, item)
         # Cleanup
+        fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 
@@ -84,6 +87,7 @@ class TestDirectItemShip(ContainerTestCase):
         # Verification
         self.assertIs(fit.ship, item2)
         # Cleanup
+        fit.ship = None
         self.assert_fit_buffers_empty(fit)
 
     def test_item_to_item_type_failure(self):
@@ -98,6 +102,8 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIs(fit.ship, item1)
         fit.stance = item2
         # Cleanup
+        fit.ship = None
+        fit.stance = None
         self.assert_fit_buffers_empty(fit)
 
     def test_item_to_item_value_failure(self):
@@ -115,6 +121,8 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIs(fit.ship, item1)
         self.assertIs(fit_other.ship, item2)
         # Cleanup
+        fit.ship = None
+        fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
 

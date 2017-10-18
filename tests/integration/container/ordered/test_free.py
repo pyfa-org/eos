@@ -47,6 +47,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(fit.modules.high[0])
         self.assertIs(fit.modules.high[1], item2)
         # Cleanup
+        fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
 
     def test_item(self):
@@ -114,6 +115,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
         # Cleanup
+        fit.modules.high.remove(item1)
         self.assert_fit_buffers_empty(fit)
 
     def test_index_item(self):
@@ -146,6 +148,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(fit.modules.high[0])
         self.assertIs(fit.modules.high[1], item)
         # Cleanup
+        fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
 
     def test_index_after_nones(self):
@@ -173,6 +176,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
         # Cleanup
+        fit.modules.high.remove(item1)
         self.assert_fit_buffers_empty(fit)
 
     def test_index_outside(self):
@@ -186,4 +190,5 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)
         # Cleanup
+        fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)

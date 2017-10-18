@@ -23,7 +23,11 @@ from eos import *
 from tests.integration.container.container_testcase import ContainerTestCase
 
 
-class TestModuleCharge(ContainerTestCase):
+class TestCharge(ContainerTestCase):
+
+    def assert_fit_buffers_empty(self, fit, clear_all=True):
+        # Here we're not testing on-fit containers thus can safely clear them
+        super().assert_fit_buffers_empty(fit, clear_all=clear_all)
 
     def test_detached_module_none_to_none(self):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
