@@ -39,9 +39,16 @@ class EveObjBuilderTestCase(EosTestCase):
     def run_builder(self):
         """Shortcut to running eve object builder.
 
-        Builder uses data provided by default data handler,
+        Default data handler is passed to builder as data source, and results
+        are and stored on test instance as following attributes:
+            types: Map in {eve type ID: eve type} format.
+            attributes: Map in {attribute ID: attribute} format.
+            effects: Map in {effect ID: effect} format.
         """
-        self.types, self.attributes, self.effects = EveObjBuilder.run(self.dh)
+        types, attributes, effects = EveObjBuilder.run(self.dh)
+        self.types = {t.id: t for t in types}
+        self.attributes = {a.id: a for a in attributes}
+        self.effects = {e.id: e for e in effects}
 
     def mod(self, *args, **kwargs):
         """Shortcut to instantiating dogma modifier."""
