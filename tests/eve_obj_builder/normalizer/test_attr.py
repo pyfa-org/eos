@@ -28,60 +28,46 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 class TestNormalizationIdzing(EveObjBuilderTestCase):
     """Check that symbolic references are converted into IDs."""
 
+    logger_name = 'eos.data.eve_obj_builder.normalizer'
+
     def test_basic_attr_radius(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'radius': 50.0})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(self.types[1].attributes[AttributeId.radius], 50.0)
 
     def test_basic_attr_mass(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'mass': 5.0})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(self.types[1].attributes[AttributeId.mass], 5.0)
 
     def test_basic_attr_volume(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'volume': 500.0})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(self.types[1].attributes[AttributeId.volume], 500.0)
 
     def test_basic_attr_capacity(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'capacity': 0.5})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(self.types[1].attributes[AttributeId.capacity], 0.5)
 
     def test_duplicate_definition(self):
@@ -92,20 +78,14 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': AttributeId.mass, 'value': 6.0})
         self.run_builder()
-        self.assertEqual(len(self.log), 3)
-        duplicate_error = self.log[0]
-        self.assertEqual(
-            duplicate_error.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 2)
+        duplicate_error = log[0]
         self.assertEqual(duplicate_error.levelno, logging.WARNING)
         self.assertEqual(
             duplicate_error.msg,
             '1 built-in attributes already have had value '
             'in dgmtypeattribs and were skipped')
-        idzing_stats = self.log[1]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        idzing_stats = log[1]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(self.types[1].attributes[AttributeId.mass], 6.0)

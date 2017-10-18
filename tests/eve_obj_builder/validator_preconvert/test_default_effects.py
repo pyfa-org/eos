@@ -27,6 +27,8 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 class TestDefaultEffects(EveObjBuilderTestCase):
     """Check that each item can have has max 1 default effect."""
 
+    logger_name = 'eos.data.eve_obj_builder.validator_preconv'
+
     def setUp(self):
         super().setUp()
         self.eve_type = {'typeID': 1, 'groupID': 1}
@@ -44,14 +46,8 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.eff_link1['isDefault'] = False
         self.eff_link2['isDefault'] = True
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 0)
         self.assertIn(1, self.types)
         self.assertEqual(len(self.effects), 2)
         self.assertIn(2, self.effects)
@@ -61,17 +57,9 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.eff_link1['isDefault'] = True
         self.eff_link2['isDefault'] = True
         self.run_builder()
-        self.assertEqual(len(self.log), 3)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
-        log_record = self.log[2]
-        self.assertEqual(
-            log_record.name, 'eos.data.eve_obj_builder.validator_preconv')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -90,13 +78,7 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.eff_link1['isDefault'] = True
         self.eff_link2['isDefault'] = True
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)

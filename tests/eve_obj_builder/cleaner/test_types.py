@@ -27,16 +27,14 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 class TestCleanupTypes(EveObjBuilderTestCase):
     """Check which entries should stay in the data."""
 
+    logger_name = 'eos.data.eve_obj_builder.cleaner'
+
     def test_group_character(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evetypes')
         self.assertEqual(len(self.types), 1)
@@ -45,13 +43,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
     def test_group_effect_beacon(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evetypes')
         self.assertEqual(len(self.types), 1)
@@ -60,13 +54,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
     def test_group_other(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 100.0% from evetypes')
         self.assertEqual(len(self.types), 0)
@@ -75,13 +65,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'published': False})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(clean_stats.msg, 'cleaned: 0.0% from evetypes')
         self.assertEqual(len(self.types), 1)
@@ -91,13 +77,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 6})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -108,13 +90,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 7})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -125,13 +103,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 8})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -142,13 +116,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 16})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -159,13 +129,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 18})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -176,13 +142,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 20})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -193,13 +155,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 32})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -210,13 +168,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 87})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg, 'cleaned: 0.0% from evegroups, 0.0% from evetypes')
@@ -227,13 +181,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 50})
         self.dh.data['evegroups'].append({'groupID': 50, 'categoryID': 51})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
@@ -248,13 +198,9 @@ class TestCleanupTypes(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 4, 'groupID': 80})
         self.dh.data['evegroups'].append({'groupID': 80, 'categoryID': 700})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,

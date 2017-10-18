@@ -30,6 +30,8 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 class TestNormalizationIdzing(EveObjBuilderTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
+    logger_name = 'eos.data.eve_obj_builder.normalizer'
+
     def test_group_idzing(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 556, 'effectID': 111})
@@ -44,14 +46,10 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
@@ -74,14 +72,10 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
@@ -96,10 +90,9 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        self.assertEqual(len(self.log), 1)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        idzing_stats = log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats.msg,
@@ -120,19 +113,13 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        self.assertEqual(len(self.log), 3)
-        idzing_stats_unused = self.log[0]
-        self.assertEqual(
-            idzing_stats_unused.name, 'eos.data.eve_obj_builder.normalizer')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 2)
+        idzing_stats_unused = log[0]
         self.assertEqual(idzing_stats_unused.levelno, logging.WARNING)
-        idzing_stats_failures = self.log[1]
-        self.assertEqual(
-            idzing_stats_failures.name, 'eos.data.eve_obj_builder.normalizer')
+        idzing_stats_failures = log[1]
         self.assertEqual(idzing_stats_failures.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats_failures.msg,
             'unable to convert 1 literal references '
             'to expressionGroupID: "EnergyWeaponry"')
-        clean_stats = self.log[2]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)

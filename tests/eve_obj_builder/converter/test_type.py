@@ -27,6 +27,8 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 class TestConversionType(EveObjBuilderTestCase):
     """Data should be saved into appropriate fields of an eve type."""
 
+    logger_name = 'eos.data.eve_obj_builder.converter'
+
     def test_fields(self):
         self.dh.data['evetypes'].append(
             {'randomField': 66, 'typeID': 1, 'groupID': 6})
@@ -54,14 +56,8 @@ class TestConversionType(EveObjBuilderTestCase):
             'typeID': 1, 'abilityID': 50, 'chargeCount': 3,
             'rearmTimeSeconds': 20})
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 0)
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         evetype = self.types[1]
@@ -80,15 +76,12 @@ class TestConversionType(EveObjBuilderTestCase):
         type_fighterabils = evetype.fighter_abilities
         self.assertEqual(len(type_fighterabils), 3)
         self.assertCountEqual(type_fighterabils, {5, 6, 50})
-        self.assertDictEqual(
-            type_fighterabils[5], {
+        self.assertDictEqual(type_fighterabils[5], {
                 'cooldown_time': None, 'charge_amount': None,
                 'charge_rearm_time': None})
-        self.assertDictEqual(
-            type_fighterabils[6], {
+        self.assertDictEqual(type_fighterabils[6], {
                 'cooldown_time': 60, 'charge_amount': None,
                 'charge_rearm_time': None})
-        self.assertDictEqual(
-            type_fighterabils[50], {
+        self.assertDictEqual(type_fighterabils[50], {
                 'cooldown_time': None, 'charge_amount': 3,
                 'charge_rearm_time': 20})

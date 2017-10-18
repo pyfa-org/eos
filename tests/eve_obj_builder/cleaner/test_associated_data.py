@@ -29,6 +29,8 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 class TestAssociatedData(EveObjBuilderTestCase):
     """Check that types, which passed filter, pull in all related data."""
 
+    logger_name = 'eos.data.eve_obj_builder.cleaner'
+
     def __generate_data(self):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': 10.0})
@@ -118,13 +120,9 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 16})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
@@ -164,13 +162,9 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['evegroups'].append({'groupID': 5, 'categoryID': 101})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
@@ -186,13 +180,9 @@ class TestAssociatedData(EveObjBuilderTestCase):
     def test_unlinked(self, mod_builder):
         self.__generate_data()
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
@@ -233,13 +223,9 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['evegroups'].append({'groupID': 6, 'categoryID': 50})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        clean_stats = log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,

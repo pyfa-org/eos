@@ -28,6 +28,8 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 class TestConversionExpression(EveObjBuilderTestCase):
     """Check form of expression rows passed to modifier builder."""
 
+    logger_name = 'eos.data.eve_obj_builder.converter'
+
     @patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
     def test_fields(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
@@ -45,14 +47,8 @@ class TestConversionExpression(EveObjBuilderTestCase):
             'expressionAttributeID': 102, 'expressionValue': 'Kurr'})
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
-        self.assertEqual(len(self.log), 2)
-        idzing_stats = self.log[0]
-        self.assertEqual(
-            idzing_stats.name, 'eos.data.eve_obj_builder.normalizer')
-        self.assertEqual(idzing_stats.levelno, logging.WARNING)
-        clean_stats = self.log[1]
-        self.assertEqual(clean_stats.name, 'eos.data.eve_obj_builder.cleaner')
-        self.assertEqual(clean_stats.levelno, logging.INFO)
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 0)
         # As expressions are absent in final container, check those which were
         # passed to modifier builder
         expressions = tuple(mod_builder.mock_calls[0][1][0])
