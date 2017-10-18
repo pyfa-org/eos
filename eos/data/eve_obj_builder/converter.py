@@ -40,8 +40,7 @@ class Converter:
             data: Dictionary in {table name: {table, rows}} format.
 
         Returns:
-            Tuple with 3 dictionaries, which contain types, attributes and
-            effects, keyed against their representative IDs.
+            Tuple with 3 iterables, which contain types, attributes and effects.
         """
         # Before actually instantiating anything, we need to collect some data
         # in convenient form
@@ -73,22 +72,21 @@ class Converter:
                 'charge_rearm_time': row.get('rearmTimeSeconds')}
 
         # Convert attributes
-        attributes = {}
+        attributes = []
         for row in data['dgmattribs']:
-            attribute = Attribute(
+            attributes.append(Attribute(
                 attribute_id=row['attributeID'],
                 max_attribute=row.get('maxAttributeID'),
                 default_value=row.get('defaultValue'),
                 high_is_good=row.get('highIsGood'),
-                stackable=row.get('stackable'))
-            attributes[attribute.id] = attribute
+                stackable=row.get('stackable')))
 
         # Convert effects
-        effects = {}
+        effects = []
         mod_builder = ModifierBuilder(data['dgmexpressions'])
         for row in data['dgmeffects']:
             mods, build_status = mod_builder.build(row)
-            effect = Effect(
+            effects.append(Effect(
                 effect_id=row['effectID'],
                 category=row.get('effectCategory'),
                 is_offensive=row.get('isOffensive'),
@@ -102,25 +100,24 @@ class Converter:
                     'fittingUsageChanceAttributeID'),
                 build_status=build_status,
                 modifiers=tuple(mods),
-                customize=False)
-            effects[effect.id] = effect
+                customize=False))
 
         # Convert types
-        types = {}
+        types = []
+        effect_map = {e.id: e for e in effects}
         for row in data['evetypes']:
             type_id = row['typeID']
             type_group = row.get('groupID')
             type_effect_ids = types_effects.get(type_id, set())
-            type_effect_ids.intersection_update(effects)
-            eve_type = Type(
+            type_effect_ids.intersection_update(effect_map)
+            types.append(Type(
                 type_id=type_id,
                 group=type_group,
                 category=evegroups_keyed.get(type_group, {}).get('categoryID'),
                 attributes=types_attribs.get(type_id, {}),
-                effects=tuple(effects[eid] for eid in type_effect_ids),
-                default_effect=effects.get(types_defeff_map.get(type_id)),
+                effects=tuple(effect_map[eid] for eid in type_effect_ids),
+                default_effect=effect_map.get(types_defeff_map.get(type_id)),
                 fighter_abilities=typeabils_reformat.get(type_id, {}),
-                customize=False)
-            types[eve_type.id] = eve_type
+                customize=False))
 
         return types, attributes, effects

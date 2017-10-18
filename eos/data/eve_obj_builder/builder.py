@@ -42,8 +42,7 @@ class EveObjBuilder:
                 raw eve data.
 
         Returns:
-            Tuple with 3 dictionaries, which contain types, attributes and
-            effects, keyed against their respective IDs.
+            Tuple with 3 iterables, which contain types, attributes and effects.
         """
         # Put all the data we need into single dictionary Format, as usual,
         # {table name: table}, where table is set of rows, which are
@@ -88,8 +87,7 @@ class EveObjBuilder:
         # Verify that our data is ready for conversion
         ValidatorPreConv.run(data)
 
-        # Convert data into Eos-specific objects, stored in several
-        # dictionaries, with object IDs being dictionary keys
+        # Convert data into Eos-specific objects
         types, attributes, effects = Converter.run(data)
 
         return types, attributes, effects
