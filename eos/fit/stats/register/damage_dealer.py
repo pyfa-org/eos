@@ -23,7 +23,7 @@ from eos.fit.item.mixin.damage_dealer import (
     DamageDealerMixin, BASIC_MAP, CHARGE_MAP)
 from eos.fit.helper import DamageTypesTotal
 from eos.fit.pubsub.message import InstrEffectsStart, InstrEffectsStop
-from eos.util.keyed_set import KeyedSet
+from eos.util.keyed_storage import KeyedStorage
 from .base import BaseStatRegister
 
 
@@ -39,7 +39,7 @@ class DamageDealerRegister(BaseStatRegister):
 
     def __init__(self, msg_broker):
         # Format: {item: {damage dealing effect IDs}}
-        self.__dealers = KeyedSet()
+        self.__dealers = KeyedStorage()
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_effects_activation(self, message):

@@ -26,7 +26,7 @@ from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
 from eos.fit.pubsub.message import (
     InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate)
-from eos.util.keyed_set import KeyedSet
+from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -46,7 +46,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         self.__max_group_attr = max_group_attr
         # Container for all tracked items, keyed by their group ID
         # Format: {group ID: {items}}
-        self.__group_all = KeyedSet()
+        self.__group_all = KeyedStorage()
         # Container for items, which have max group restriction to become
         # operational
         # Format: {items}
@@ -61,7 +61,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             return
         # Having group ID is sufficient condition to enter container of all
         # fitted items
-        self.__group_all.add_data(group, item)
+        self.__group_all.add_data_entry(group, item)
         # To enter restriction container, eve type must have restriction
         # attribute
         if self.__max_group_attr not in item._eve_type.attributes:
@@ -71,7 +71,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     def _unregister_item(self, item):
         # Just clear data containers
         group = item._eve_type.group
-        self.__group_all.rm_data(group, item)
+        self.__group_all.rm_data_entry(group, item)
         self.__group_restricted.discard(item)
 
     def validate(self):

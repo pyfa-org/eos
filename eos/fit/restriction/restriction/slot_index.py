@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
-from eos.util.keyed_set import KeyedSet
+from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -43,7 +43,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         self.__slot_index_attr = slot_index_attr
         # All items which possess index of slot are stored in this container
         # Format: {slot index: {items}}
-        self.__slotted_items = KeyedSet()
+        self.__slotted_items = KeyedStorage()
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
@@ -52,14 +52,14 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
             self.__slot_index_attr)
         if slot_index is None:
             return
-        self.__slotted_items.add_data(slot_index, message.item)
+        self.__slotted_items.add_data_entry(slot_index, message.item)
 
     def _handle_item_removal(self, message):
         slot_index = message.item._eve_type.attributes.get(
             self.__slot_index_attr)
         if slot_index is None:
             return
-        self.__slotted_items.rm_data(slot_index, message.item)
+        self.__slotted_items.rm_data_entry(slot_index, message.item)
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,

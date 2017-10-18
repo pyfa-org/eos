@@ -29,7 +29,7 @@ from eos.const.eve import AttributeId, CategoryId
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrAttrValueChangedMasked)
-from eos.util.keyed_set import KeyedSet
+from eos.util.keyed_storage import KeyedStorage
 from .exception import AttributeMetaError, BaseValueError
 
 
@@ -427,11 +427,11 @@ class MutableAttributeMap:
 
     def _cap_set(self, capping_attr, capped_attr):
         if self.__cap_map is None:
-            self.__cap_map = KeyedSet()
-        self.__cap_map.add_data(capping_attr, capped_attr)
+            self.__cap_map = KeyedStorage()
+        self.__cap_map.add_data_entry(capping_attr, capped_attr)
 
     def _cap_del(self, capping_attr, capped_attr):
-        self.__cap_map.rm_data(capping_attr, capped_attr)
+        self.__cap_map.rm_data_entry(capping_attr, capped_attr)
         if not self.__cap_map:
             self.__cap_map = None
 

@@ -23,7 +23,7 @@ from eos import *
 from tests.integration.container.container_testcase import ContainerTestCase
 
 
-class TestContainerRestrictedSet(ContainerTestCase):
+class TestContainerKeyedSet(ContainerTestCase):
 
     def test_add_none(self):
         fit = Fit()

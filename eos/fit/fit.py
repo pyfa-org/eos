@@ -25,7 +25,7 @@ from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import (
-    ItemDescriptorOnFit, ItemList, ItemRestrictedSet, ItemSet, ModuleRacks)
+    ItemDescriptorOnFit, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
 from .helper import DamageTypes
 from .item import *
 from .pubsub.broker import FitMessageBroker
@@ -60,7 +60,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
         drones: Set for drones.
         fighters: Set for fighter squads.
         character: Access point for character.
-        skills: Restricted set for skills.
+        skills: Keyed set for skills.
         implants: Set for implants.
         boosters: Set for boosters.
         effect_beacon: Access point for effect beacons (e.g. wormhole effects).
@@ -77,7 +77,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
         self.__items = set()
         self._subscribe(self, self._handler_map.keys())
         # Character-related item containers
-        self.skills = ItemRestrictedSet(self, Skill)
+        self.skills = ItemKeyedSet(self, Skill)
         self.implants = ItemSet(self, Implant)
         self.boosters = ItemSet(self, Booster)
         # Ship-related containers

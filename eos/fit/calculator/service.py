@@ -27,7 +27,7 @@ from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrEffectsStart, InstrEffectsStop, InstrItemAdd,
     InstrItemRemove)
 from eos.fit.pubsub.subscriber import BaseSubscriber
-from eos.util.keyed_set import KeyedSet
+from eos.util.keyed_storage import KeyedStorage
 from .affector import Affector
 from .register import AffectionRegister
 
@@ -46,7 +46,7 @@ class CalculationService(BaseSubscriber):
         self.__affections = AffectionRegister(self)
         # Container with affectors which will receive messages
         # Format: {message type: set(affectors)}
-        self.__subscribed_affectors = KeyedSet()
+        self.__subscribed_affectors = KeyedStorage()
         self.__msg_broker = msg_broker
         msg_broker._subscribe(self, self._handler_map.keys())
 
@@ -215,7 +215,7 @@ class CalculationService(BaseSubscriber):
             ):
                 to_subscribe.add(msg_type)
             # Add affector to subscriber map to let it receive messages
-            self.__subscribed_affectors.add_data(msg_type, affector)
+            self.__subscribed_affectors.add_data_entry(msg_type, affector)
         self.__msg_broker._subscribe(self, to_subscribe)
 
     def __unsubscribe_affector(self, affector):
@@ -225,7 +225,7 @@ class CalculationService(BaseSubscriber):
         to_ubsubscribe = set()
         for msg_type in affector.modifier.revise_message_types:
             # Make sure affector will not receive messages anymore
-            self.__subscribed_affectors.rm_data(msg_type, affector)
+            self.__subscribed_affectors.rm_data_entry(msg_type, affector)
             # Unsubscribe service from message type if there're no recipients
             # anymore
             if (

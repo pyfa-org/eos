@@ -22,11 +22,11 @@
 from .set import ItemSet
 
 
-class ItemRestrictedSet(ItemSet):
+class ItemKeyedSet(ItemSet):
     """Unordered container for items with few dict-like modifications.
 
-    This container can't hold two items with the same type ID, and provides
-    access to items via their type IDs.
+    This container can't hold two items with the same eve type ID, and provides
+    access to items via their eve type IDs.
 
     Args:
         fit: Fit, to which container is attached.

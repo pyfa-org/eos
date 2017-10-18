@@ -23,7 +23,7 @@ from itertools import chain
 from logging import getLogger
 
 from eos.const.eos import EosTypeId, ModifierDomain, ModifierTargetFilter
-from eos.util.keyed_set import KeyedSet
+from eos.util.keyed_storage import KeyedStorage
 from .exception import UnexpectedDomainError, UnknownTargetFilterError
 
 
@@ -47,46 +47,46 @@ class AffectionRegister:
 
         # Items belonging to certain domain
         # Format: {domain: set(target items)}
-        self.__affectee_domain = KeyedSet()
+        self.__affectee_domain = KeyedStorage()
 
         # Items belonging to certain domain and group
         # Format: {(domain, group): set(target items)}
-        self.__affectee_domain_group = KeyedSet()
+        self.__affectee_domain_group = KeyedStorage()
 
         # Items belonging to certain domain and having certain skill requirement
         # Format: {(domain, skill): set(target items)}
-        self.__affectee_domain_skillrq = KeyedSet()
+        self.__affectee_domain_skillrq = KeyedStorage()
 
         # Owner-modifiable items which have certain skill requirement
         # Format: {skill: set(target items)}
-        self.__affectee_owner_skillrq = KeyedSet()
+        self.__affectee_owner_skillrq = KeyedStorage()
 
         # Affectors influencing items directly
         # Format: {target item: set(affectors)}
-        self.__affector_item_active = KeyedSet()
+        self.__affector_item_active = KeyedStorage()
 
         # Affectors which influence something directly, but their target is not
         # available
         # Format: {carrier item: set(affectors)}
-        self.__affector_item_awaiting = KeyedSet()
+        self.__affector_item_awaiting = KeyedStorage()
 
         # Affectors influencing all items belonging to certain domain
         # Format: {domain: set(affectors)}
-        self.__affector_domain = KeyedSet()
+        self.__affector_domain = KeyedStorage()
 
         # Affectors influencing items belonging to certain domain and group
         # Format: {(domain, group): set(affectors)}
-        self.__affector_domain_group = KeyedSet()
+        self.__affector_domain_group = KeyedStorage()
 
         # Affectors influencing items belonging to certain domain and having
         # certain skill requirement
         # Format: {(domain, skill): set(affectors)}
-        self.__affector_domain_skillrq = KeyedSet()
+        self.__affector_domain_skillrq = KeyedStorage()
 
         # Affectors influencing owner-modifiable items which have certain skill
         # requirement
         # Format: {skill: set(affectors)}
-        self.__affector_owner_skillrq = KeyedSet()
+        self.__affector_owner_skillrq = KeyedStorage()
 
     # Helpers for affectee getter - they find map and get data from it according
     # to passed affector
@@ -180,7 +180,7 @@ class AffectionRegister:
         """
         self.__affectee.add(target_item)
         for key, affectee_map in self.__get_affectee_maps(target_item):
-            affectee_map.add_data(key, target_item)
+            affectee_map.add_data_entry(key, target_item)
         # Special handling for awaitable direct item affectors. Affector is
         # awaitable only when it directly affects single target item, and only
         # when this target item is not affector's carrier item. All affectors
@@ -192,7 +192,7 @@ class AffectionRegister:
         """Remove passed target item from register's affectee containers."""
         self.__affectee.discard(target_item)
         for key, affectee_map in self.__get_affectee_maps(target_item):
-            affectee_map.rm_data(key, target_item)
+            affectee_map.rm_data_entry(key, target_item)
         # Special handling for awaitable direct item affectors
         self.__disable_awaitable_affectors(target_item)
 
@@ -244,7 +244,7 @@ class AffectionRegister:
         self.__affector_item_active.add_data_set(
             target_item, affectors_to_enable)
         for affector in affectors_to_enable:
-            self.__affector_item_awaiting.rm_data(
+            self.__affector_item_awaiting.rm_data_entry(
                 affector.carrier_item, affector)
 
     def __disable_awaitable_affectors(self, target_item):
@@ -260,7 +260,7 @@ class AffectionRegister:
         self.__affector_item_active.rm_data_set(
             target_item, affectors_to_disable)
         for affector in affectors_to_disable:
-            self.__affector_item_awaiting.add_data(
+            self.__affector_item_awaiting.add_data_entry(
                 affector.carrier_item, affector)
 
     def __find_affectors_for_tgt_domain(self, affectors, tgt_domain):
@@ -334,7 +334,7 @@ class AffectionRegister:
         """
         try:
             key, affector_map = self.__get_affector_map(affector)
-            affector_map.add_data(key, affector)
+            affector_map.add_data_entry(key, affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
 
@@ -345,7 +345,7 @@ class AffectionRegister:
         """
         try:
             key, affector_map = self.__get_affector_map(affector)
-            affector_map.rm_data(key, affector)
+            affector_map.rm_data_entry(key, affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
 

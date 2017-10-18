@@ -19,8 +19,8 @@
 # ==============================================================================
 
 
-class KeyedSet(dict):
-    """Container for sets with keyed access.
+class KeyedStorage(dict):
+    """Container for data sets with keyed access.
 
     Access to sets in container is provided only via keys. In other words,
     regular dictionary with values being sets.
@@ -60,7 +60,7 @@ class KeyedSet(dict):
             if not value:
                 del self[key]
 
-    def add_data(self, key, data):
+    def add_data_entry(self, key, data):
         """Add data entry.
 
         If set accessed by passed key doesn't exist, create it.
@@ -74,7 +74,7 @@ class KeyedSet(dict):
         except KeyError:
             self[key] = {data}
 
-    def rm_data(self, key, data):
+    def rm_data_entry(self, key, data):
         """Remove data entry.
 
         If requested data doesn't exit in target set, silently ignore it, remove
@@ -94,7 +94,7 @@ class KeyedSet(dict):
             if not value:
                 del self[key]
 
-    def get_data(self, key):
+    def get_data_set(self, key):
         """Get data set.
 
         Args:
