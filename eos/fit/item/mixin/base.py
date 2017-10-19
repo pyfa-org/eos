@@ -65,6 +65,14 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         super().__init__(**kwargs)
 
     @property
+    def _original_attributes(self):
+        """Returns original attributes of eve type."""
+        try:
+            return self._eve_type.attributes
+        except AttributeError:
+            return {}
+
+    @property
     def _container(self):
         """Refers container this item is placed to.
 

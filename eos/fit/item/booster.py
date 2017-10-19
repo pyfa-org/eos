@@ -40,7 +40,7 @@ class Booster(ImmutableStateMixin, SideEffectMixin):
     @property
     def slot(self):
         """Return slot this booster takes."""
-        return self.attributes.get(AttributeId.boosterness)
+        return self._original_attributes.get(AttributeId.boosterness)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character
