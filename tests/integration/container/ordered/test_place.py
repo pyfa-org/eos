@@ -42,6 +42,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_outside(self):
         fit = Fit()
@@ -56,6 +57,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_onto_none(self):
         fit = Fit()
@@ -77,6 +79,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.modules.high.remove(item2)
         fit.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_onto_none(self):
         fit = Fit()
@@ -97,6 +100,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_onto_item(self):
         fit = Fit()
@@ -112,6 +116,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_onto_item(self):
         fit = Fit()
@@ -126,6 +131,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_outside_type_failure(self):
         fit = Fit()
@@ -139,6 +145,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         # Cleanup
         fit.modules.med.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_outside_value_failure(self):
         fit = Fit()
@@ -156,6 +163,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit_other.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_onto_none_type_failure(self):
         fit = Fit()
@@ -174,6 +182,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.med.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_onto_none_value_failure(self):
         fit = Fit()
@@ -196,3 +205,4 @@ class TestContainerOrderedPlace(ContainerTestCase):
         fit_other.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)

@@ -40,6 +40,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_contains(self):
         fit = Fit()
@@ -66,6 +67,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(item2 in fit.modules.high)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_iter(self):
         fit = Fit()
@@ -84,6 +86,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertEqual(list(item for item in fit.modules.high), [])
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_clear(self):
         fit = Fit()
@@ -97,6 +100,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_slice(self):
         fit = Fit()
@@ -126,6 +130,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_view(self):
         fit = Fit()
@@ -163,3 +168,4 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(None in view)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

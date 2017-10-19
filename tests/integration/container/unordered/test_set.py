@@ -34,6 +34,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_add_item(self):
         fit = Fit()
@@ -46,6 +47,7 @@ class TestContainerSet(ContainerTestCase):
         # Cleanup
         fit.implants.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_add_item_type_failure(self):
         fit = Fit()
@@ -59,6 +61,7 @@ class TestContainerSet(ContainerTestCase):
         # Cleanup
         fit.boosters.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_add_item_value_failure(self):
         fit = Fit()
@@ -76,6 +79,7 @@ class TestContainerSet(ContainerTestCase):
         fit_other.implants.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_remove_item(self):
         fit = Fit()
@@ -87,6 +91,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_remove_item_failure(self):
         fit = Fit()
@@ -98,6 +103,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_clear(self):
         fit = Fit()
@@ -111,3 +117,4 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

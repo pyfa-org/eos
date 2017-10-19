@@ -27,3 +27,6 @@ class ContainerTestCase(IntegrationTestCase):
 
     def assert_fit_buffers_empty(self, fit, clear_all=False):
         super().assert_fit_buffers_empty(fit, clear_all=clear_all)
+
+    def get_log(self, name='eos.fit.container*'):
+        return super().get_log(name=name)

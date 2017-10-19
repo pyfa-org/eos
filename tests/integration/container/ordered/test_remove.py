@@ -42,6 +42,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_after_nones(self):
         fit = Fit()
@@ -69,6 +70,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_failure(self):
         fit = Fit()
@@ -89,6 +91,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none(self):
         fit = Fit()
@@ -108,6 +111,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_failure(self):
         fit = Fit()
@@ -122,6 +126,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_index_item(self):
         fit = Fit()
@@ -140,6 +145,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_index_none(self):
         fit = Fit()
@@ -153,6 +159,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_index_after_nones(self):
         fit = Fit()
@@ -180,6 +187,7 @@ class TestContainerOrderedRemove(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_index_outside(self):
         fit = Fit()
@@ -194,3 +202,4 @@ class TestContainerOrderedRemove(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

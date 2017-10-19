@@ -34,6 +34,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_empty(self):
         fit = Fit()
@@ -46,6 +47,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_type_failure(self):
         fit = Fit()
@@ -59,6 +61,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Cleanup
         fit.modules.med.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_value_failure(self):
         fit = Fit()
@@ -76,6 +79,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit_other.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_solid(self):
         fit = Fit()
@@ -95,6 +99,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.modules.high.remove(item2)
         fit.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_first_hole(self):
         fit = Fit()
@@ -117,3 +122,4 @@ class TestContainerOrderedEquip(ContainerTestCase):
         fit.modules.high.remove(item3)
         fit.modules.high.remove(item4)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

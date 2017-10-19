@@ -33,6 +33,7 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIsNone(fit.ship)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_to_item(self):
         fit = Fit()
@@ -44,6 +45,7 @@ class TestDirectItemShip(ContainerTestCase):
         # Cleanup
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_to_item_type_failure(self):
         fit = Fit()
@@ -59,6 +61,7 @@ class TestDirectItemShip(ContainerTestCase):
         # Cleanup
         fit.stance = None
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_to_item_value_failure(self):
         fit = Fit()
@@ -75,6 +78,7 @@ class TestDirectItemShip(ContainerTestCase):
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_item(self):
         fit = Fit()
@@ -89,6 +93,7 @@ class TestDirectItemShip(ContainerTestCase):
         # Cleanup
         fit.ship = None
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_item_type_failure(self):
         fit = Fit()
@@ -105,6 +110,7 @@ class TestDirectItemShip(ContainerTestCase):
         fit.ship = None
         fit.stance = None
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_item_value_failure(self):
         fit = Fit()
@@ -125,6 +131,7 @@ class TestDirectItemShip(ContainerTestCase):
         fit_other.ship = None
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_none(self):
         fit = Fit()
@@ -136,3 +143,4 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIsNone(fit.ship)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

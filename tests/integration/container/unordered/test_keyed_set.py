@@ -34,6 +34,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         self.assertEqual(len(fit.skills), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_add_item(self):
         fit = Fit()
@@ -49,6 +50,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Cleanup
         fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_add_item_type_failure(self):
         fit = Fit()
@@ -65,6 +67,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Cleanup
         fit.implants.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_add_item_value_failure_has_fit(self):
         fit = Fit()
@@ -84,6 +87,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         fit_other.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_add_item_value_failure_existing_type_id(self):
         fit = Fit()
@@ -104,6 +108,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Cleanup
         fit.skills.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_remove_item(self):
         fit = Fit()
@@ -118,6 +123,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         self.assertNotIn(item_eve_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_remove_item_failure(self):
         fit = Fit()
@@ -134,6 +140,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Cleanup
         fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_delitem_item(self):
         fit = Fit()
@@ -148,6 +155,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         self.assertNotIn(item_eve_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_delitem_item_failure(self):
         fit = Fit()
@@ -164,6 +172,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Cleanup
         fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_key_integrity(self):
         fit = Fit()
@@ -178,6 +187,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Cleanup
         fit.skills.remove(item1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_clear(self):
         fit = Fit()
@@ -197,3 +207,4 @@ class TestContainerKeyedSet(ContainerTestCase):
         self.assertNotIn(item2_eve_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

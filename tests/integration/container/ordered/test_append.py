@@ -34,6 +34,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item(self):
         fit = Fit()
@@ -54,6 +55,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_type_failure(self):
         fit = Fit()
@@ -67,6 +69,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         # Cleanup
         fit.modules.med.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_value_failure(self):
         fit = Fit()
@@ -84,3 +87,4 @@ class TestContainerOrderedAppend(ContainerTestCase):
         fit_other.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)

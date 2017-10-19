@@ -44,6 +44,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.remove(item2)
         fit.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_end(self):
         fit = Fit()
@@ -64,6 +65,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.remove(item2)
         fit.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_outside(self):
         fit = Fit()
@@ -82,6 +84,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_inside_type_failure(self):
         fit = Fit()
@@ -103,6 +106,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.remove(item2)
         fit.modules.med.remove(item3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_inside_value_failure(self):
         fit = Fit()
@@ -128,6 +132,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit_other.modules.high.remove(item3)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_outside_type_failure(self):
         fit = Fit()
@@ -141,6 +146,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         # Cleanup
         fit.modules.med.remove(item)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_item_outside_value_failure(self):
         fit = Fit()
@@ -158,6 +164,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit_other.modules.high.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assert_fit_buffers_empty(fit_other)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_inside(self):
         fit = Fit()
@@ -176,6 +183,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_outside(self):
         fit = Fit()
@@ -193,3 +201,4 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
