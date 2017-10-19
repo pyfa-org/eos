@@ -52,5 +52,5 @@ class TestRahSimSource(RahSimTestCase):
         with self.assertRaises(KeyError):
             rah_item.attributes[self.armor_exp.id]
         # Cleanup
-        self.assertEqual(len(self.log), 8)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

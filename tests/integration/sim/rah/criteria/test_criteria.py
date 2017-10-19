@@ -46,8 +46,8 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_active_switched(self):
         # Setup
@@ -70,8 +70,8 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_inactive_added(self):
         # Setup
@@ -92,8 +92,8 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_inactive_switched(self):
         # Setup
@@ -115,8 +115,8 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_not_rah(self):
         # Setup
@@ -141,5 +141,5 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.9)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

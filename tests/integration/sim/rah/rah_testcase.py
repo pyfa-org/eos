@@ -100,3 +100,6 @@ class RahSimTestCase(IntegrationTestCase):
                 (*resonances, shift_amount, cycle_time, heat_cycle_mod))),
             effects=(self.rah_effect, self.heat_effect),
             default_effect=self.rah_effect)
+
+    def get_log(self, name='eos.fit.sim.reactive_armor_hardener*'):
+        return super().get_log(name=name)

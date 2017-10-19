@@ -50,8 +50,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.5895)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
     def test_double_run(self):
@@ -81,8 +81,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.522, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=82)
     def test_double_run_unsynced(self):
@@ -120,8 +120,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.509, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=75)
     def test_no_loop_ignore_initial_adaptation(self):
@@ -165,8 +165,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.508, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=5)
     def test_no_loop_half_history(self):
@@ -206,8 +206,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.52, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=3)
     def test_order_multi(self):
@@ -237,8 +237,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.594, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_therm_kin_exp(self):
@@ -273,8 +273,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.543, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_kin_exp(self):
@@ -309,8 +309,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.523, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_exp(self):
@@ -345,8 +345,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.523, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_kin(self):
@@ -381,8 +381,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(
             ship_item.attributes[self.armor_exp.id], 0.675, places=3)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_ship(self):
         # Setup
@@ -396,8 +396,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah_item.attributes[self.armor_kin.id], 0.85)
         self.assertAlmostEqual(rah_item.attributes[self.armor_exp.id], 0.85)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_unexpected_exception(self):
         # Setup
@@ -418,15 +418,15 @@ class TestRahSimResult(RahSimTestCase):
             ship_item.attributes[self.armor_therm.id], 0.5525)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.6375)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.765)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(log_record.name, 'eos.fit.sim.reactive_armor_hardener')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
             'unexpected exception, setting unsimulated resonances')
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
 
     def test_unexpected_exception_with_modification(self):
@@ -461,13 +461,13 @@ class TestRahSimResult(RahSimTestCase):
             ship_item.attributes[self.armor_therm.id], 0.5525)
         self.assertAlmostEqual(ship_item.attributes[self.armor_kin.id], 0.6375)
         self.assertAlmostEqual(ship_item.attributes[self.armor_exp.id], 0.765)
-        self.assertEqual(len(self.log), 1)
-        log_record = self.log[0]
+        log = self.get_log()
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
         self.assertEqual(log_record.name, 'eos.fit.sim.reactive_armor_hardener')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
             'unexpected exception, setting unsimulated resonances')
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
