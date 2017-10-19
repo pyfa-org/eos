@@ -60,7 +60,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # Ignore items with no volume attribute and items with volume which
         # satisfies us regardless of ship type
         try:
-            item_volume = message.item._eve_type.attributes[AttributeId.volume]
+            item_volume = message.item._original_attributes[AttributeId.volume]
         except KeyError:
             return
         if item_volume <= MAX_SUBCAP_VOLUME:
@@ -91,7 +91,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         if self.__capital_items:
             tainted_items = {}
             for item in self.__capital_items:
-                eve_type_volume = item._eve_type.attributes[AttributeId.volume]
+                eve_type_volume = item._original_attributes[AttributeId.volume]
                 tainted_items[item] = CapitalItemErrorData(
                     item_volume=eve_type_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME)

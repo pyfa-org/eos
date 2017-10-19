@@ -56,17 +56,16 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
-        # We're going to track containers, not charges;
-        # ignore all items which can't fit a charge
+        # We're going to track containers, not charges; ignore all items which
+        # can't fit a charge
         if not hasattr(message.item, 'charge'):
             return
-        # Compose set of charge groups this container
-        # is able to fit
+        # Compose set of charge groups this container is able to fit
         allowed_groups = set()
-        item_attrs = message.item._eve_type.attributes
         for restriction_attr in RESTRICTION_ATTRS:
             try:
-                restriction_value = item_attrs[restriction_attr]
+                restriction_value = (
+                    message.item._original_attributes[restriction_attr])
             except KeyError:
                 continue
             else:

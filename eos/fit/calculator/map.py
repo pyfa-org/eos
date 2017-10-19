@@ -195,13 +195,9 @@ class MutableAttributeMap:
         return val
 
     def keys(self):
-        try:
-            base_attrs = self.__item._eve_type.attributes
-        except AttributeError:
-            base_attrs = {}
         # Return union of attributes from base, modified and override dictionary
         return set(chain(
-            base_attrs, self.__modified_attributes,
+            self.__item._original_attributes, self.__modified_attributes,
             self.__override_callbacks or {}))
 
     def items(self):
@@ -229,10 +225,6 @@ class MutableAttributeMap:
                 be found.
         """
         item = self.__item
-        try:
-            base_attr_map = item._eve_type.attributes
-        except AttributeError:
-            base_attr_map = {}
         # Attribute object for attribute being calculated
         try:
             attr_meta = item._fit.source.cache_handler.get_attribute(attr_id)
@@ -246,7 +238,7 @@ class MutableAttributeMap:
             raise AttributeMetaError(attr_id) from e
         # Base attribute value which we'll use for modification
         try:
-            result = base_attr_map[attr_id]
+            result = item._original_attributes[attr_id]
         # If attribute isn't available on eve type, base off its default value
         except KeyError:
             result = attr_meta.default_value

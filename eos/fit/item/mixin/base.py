@@ -66,7 +66,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     @property
     def _original_attributes(self):
-        """Returns original attributes of eve type."""
+        """Returns original attributes of the eve type."""
         try:
             return self._eve_type.attributes
         except AttributeError:

@@ -58,7 +58,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
     def _handle_item_effects_activation(self, message):
         if (
             EffectId.rig_slot in message.effects and
-            AttributeId.rig_size in message.item._eve_type.attributes
+            AttributeId.rig_size in message.item._original_attributes
         ):
             self.__restricted_items.add(message.item)
 
@@ -85,7 +85,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
             return
         tainted_items = {}
         for item in self.__restricted_items:
-            item_rig_size = item._eve_type.attributes[AttributeId.rig_size]
+            item_rig_size = item._original_attributes[AttributeId.rig_size]
             # If rig size specification on item and ship differs, then item is
             # tainted
             if item_rig_size != allowed_rig_size:

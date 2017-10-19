@@ -61,7 +61,7 @@ class DronebayVolumeStatRegister(
     def _handle_item_addition(self, message):
         if (
             isinstance(message.item, Drone) and
-            AttributeId.volume in message.item._eve_type.attributes
+            AttributeId.volume in message.item._original_attributes
         ):
             self.__resource_users.add(message.item)
         elif isinstance(message.item, Ship):

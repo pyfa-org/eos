@@ -64,7 +64,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         self.__group_all.add_data_entry(group, item)
         # To enter restriction container, eve type must have restriction
         # attribute
-        if self.__max_group_attr not in item._eve_type.attributes:
+        if self.__max_group_attr not in item._original_attributes:
             return
         self.__group_restricted.add(item)
 
@@ -84,7 +84,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             group = item._eve_type.group
             group_items = len(self.__group_all.get(group, ()))
             max_group_restriction = (
-                item._eve_type.attributes[self.__max_group_attr])
+                item._original_attributes[self.__max_group_attr])
             # If number of registered items from this group is bigger, then
             # current item is tainted
             if group_items > max_group_restriction:

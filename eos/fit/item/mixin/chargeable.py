@@ -83,11 +83,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         # presence of charge_rate attribute in eve type (modified attribute
         # value is always possible to fetch, as it has base value, so it's not
         # reliable way to detect it)
-        try:
-            eve_type_attribs = self._eve_type.attributes
-        except AttributeError:
-            return None
-        if AttributeId.charge_rate in eve_type_attribs:
+        if AttributeId.charge_rate in self._original_attributes:
             return self.__get_ammo_cycles()
         # Detect crystal-based eve types using effects
         try:

@@ -48,14 +48,14 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
 
     def _handle_item_addition(self, message):
         # Skip items which don't have index specified
-        slot_index = message.item._eve_type.attributes.get(
+        slot_index = message.item._original_attributes.get(
             self.__slot_index_attr)
         if slot_index is None:
             return
         self.__slotted_items.add_data_entry(slot_index, message.item)
 
     def _handle_item_removal(self, message):
-        slot_index = message.item._eve_type.attributes.get(
+        slot_index = message.item._original_attributes.get(
             self.__slot_index_attr)
         if slot_index is None:
             return
