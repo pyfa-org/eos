@@ -70,8 +70,8 @@ class TestWorstCaseEhp(StatTestCase):
         self.assertAlmostEqual(worst_ehp_stats.shield, 25)
         self.assertAlmostEqual(worst_ehp_stats.total, 56.25)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
@@ -83,8 +83,8 @@ class TestWorstCaseEhp(StatTestCase):
         self.assertIsNone(worst_ehp_stats.shield)
         self.assertIsNone(worst_ehp_stats.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         # Check that stats service relays wcehp stats properly
@@ -113,5 +113,5 @@ class TestWorstCaseEhp(StatTestCase):
         self.assertIsNone(worst_ehp_stats.shield)
         self.assertIsNone(worst_ehp_stats.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

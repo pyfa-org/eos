@@ -54,8 +54,8 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.assertEqual(restriction_error2.item_group, 6)
         self.assertEqual(restriction_error2.group_items, 2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_mix_excess_one(self):
         # Make sure error is raised for just items which excess restriction,
@@ -80,8 +80,8 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
         # Make sure no errors are raised when number of added items doesn't
@@ -103,8 +103,8 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_none_group(self):
         # Check that items with None group are not affected
@@ -125,8 +125,8 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_other_class(self):
         eve_type = self.ch.type(
@@ -146,8 +146,8 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         # Make sure error is raised for all items exceeding their group
@@ -170,5 +170,5 @@ class TestMaxGroupFitted(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -72,8 +72,8 @@ class TestResistances(StatTestCase):
         self.assertAlmostEqual(res_stats.shield.kinetic, 0.85)
         self.assertAlmostEqual(res_stats.shield.explosive, 0.84)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
@@ -93,8 +93,8 @@ class TestResistances(StatTestCase):
         self.assertIsNone(res_stats.shield.kinetic)
         self.assertIsNone(res_stats.shield.explosive)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(attributes={
@@ -127,5 +127,5 @@ class TestResistances(StatTestCase):
         self.assertIsNone(res_stats.shield.kinetic)
         self.assertIsNone(res_stats.shield.explosive)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

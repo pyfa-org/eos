@@ -43,8 +43,8 @@ class TestState(RestrictionTestCase):
             restriction_error.allowed_states,
             (State.offline, State.online, State.active))
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_state_lower(self):
         effect = self.ch.effect(category=EffectCategoryId.active)
@@ -57,8 +57,8 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_state_equal(self):
         effect = self.ch.effect(category=EffectCategoryId.active)
@@ -71,8 +71,8 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         effect = self.ch.effect(category=EffectCategoryId.active)
@@ -86,5 +86,5 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

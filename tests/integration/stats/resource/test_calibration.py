@@ -40,16 +40,16 @@ class TestCalibration(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.output, 350)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_ship(self):
         # None for output when no ship
         # Verification
         self.assertIsNone(self.fit.stats.calibration.output)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
@@ -57,9 +57,8 @@ class TestCalibration(StatTestCase):
         # Verification
         self.assertIsNone(self.fit.stats.calibration.output)
         # Cleanup
-        # Log entry is due to inability to calculate requested attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_single_no_rounding(self):
         self.fit.rigs.add(Rig(self.ch.type(
@@ -68,8 +67,8 @@ class TestCalibration(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 55.5555555555)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
         self.fit.rigs.add(Rig(self.ch.type(
@@ -81,8 +80,8 @@ class TestCalibration(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 80)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_disabled_effect(self):
         item1 = Rig(self.ch.type(
@@ -97,14 +96,15 @@ class TestCalibration(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 50)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_none(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 0)
-        self.assertEqual(len(self.log), 0)
+        # Cleanup
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -120,5 +120,5 @@ class TestCalibration(StatTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.used, 0)
         self.assertIsNone(self.fit.stats.calibration.output)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

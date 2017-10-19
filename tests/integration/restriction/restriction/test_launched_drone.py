@@ -47,8 +47,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_single_no_char(self):
         # When stats module does not specify total slot amount, make sure it's
@@ -64,8 +64,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
@@ -91,8 +91,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
         self.fit.character = Character(self.ch.type(
@@ -113,8 +113,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
         self.fit.character = Character(self.ch.type(
@@ -135,8 +135,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_state(self):
         self.fit.character = Character(self.ch.type(
@@ -149,8 +149,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_other_item_class(self):
         # Check that error is raised when number of used slots exceeds slot
@@ -165,8 +165,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         self.fit.character = Character(self.ch.type(
@@ -180,5 +180,5 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

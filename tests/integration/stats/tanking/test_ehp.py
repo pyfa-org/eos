@@ -71,8 +71,8 @@ class TestEhp(StatTestCase):
         self.assertAlmostEqual(ehp_stats.shield, 40)
         self.assertAlmostEqual(ehp_stats.total, 90)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
@@ -85,8 +85,8 @@ class TestEhp(StatTestCase):
         self.assertIsNone(ehp_stats.shield)
         self.assertIsNone(ehp_stats.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(attributes={
@@ -115,5 +115,5 @@ class TestEhp(StatTestCase):
         self.assertIsNone(ehp_stats.shield)
         self.assertIsNone(ehp_stats.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

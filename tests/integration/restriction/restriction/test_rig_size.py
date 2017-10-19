@@ -48,8 +48,8 @@ class TestRigSize(RestrictionTestCase):
         self.assertEqual(restriction_error.allowed_size, 6)
         self.assertEqual(restriction_error.item_size, 10)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_ship(self):
         # When no ship is assigned, no restriction should be applied to ships
@@ -62,8 +62,8 @@ class TestRigSize(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_ship_no_attr(self):
         # If ship doesn't have rig size attribute, no restriction is applied
@@ -78,8 +78,8 @@ class TestRigSize(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
@@ -94,8 +94,8 @@ class TestRigSize(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -110,5 +110,5 @@ class TestRigSize(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -51,8 +51,8 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.item_slot_index, 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_other_item_class(self):
         # Make sure items of all classes are affected
@@ -74,8 +74,8 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.item_slot_index, 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
         # Single item which takes some slot shouldn't trigger any errors
@@ -87,8 +87,8 @@ class TestSubsystemIndex(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_different(self):
         # Items taking different slots shouldn't trigger any errors
@@ -107,8 +107,8 @@ class TestSubsystemIndex(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
@@ -126,5 +126,5 @@ class TestSubsystemIndex(RestrictionTestCase):
             item2, Restriction.subsystem_index)
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

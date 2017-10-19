@@ -52,8 +52,8 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_single_undefined_output(self):
         # When stats module does not specify output, make sure it's assumed to
@@ -71,8 +71,8 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restriction_error.total_use, 5)
         self.assertEqual(restriction_error.item_use, 5)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_multiple(self):
         # When multiple consumers require less than drone bandwidth output
@@ -105,8 +105,8 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restriction_error2.total_use, 45)
         self.assertEqual(restriction_error2.item_use, 20)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_modified(self):
         # Make sure modified drone bandwidth values are taken
@@ -137,8 +137,8 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(restriction_error.total_use, 100)
         self.assertEqual(restriction_error.item_use, 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_mix_usage_zero(self):
         # If some item has zero usage and drone bandwidth error is still raised,
@@ -167,8 +167,8 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
         # When total consumption is less than output, no errors should be raised
@@ -193,8 +193,8 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_state(self):
         # When item isn't online, it shouldn't consume anything
@@ -210,8 +210,8 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -227,5 +227,5 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

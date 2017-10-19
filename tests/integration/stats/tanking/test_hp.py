@@ -45,8 +45,8 @@ class TestHp(StatTestCase):
         self.assertAlmostEqual(hp_stats.shield, 20)
         self.assertAlmostEqual(hp_stats.total, 45)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
@@ -58,8 +58,8 @@ class TestHp(StatTestCase):
         self.assertIsNone(hp_stats.shield)
         self.assertIsNone(hp_stats.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         # Check that stats service relays hp stats properly
@@ -75,5 +75,5 @@ class TestHp(StatTestCase):
         self.assertIsNone(hp_stats.shield)
         self.assertIsNone(hp_stats.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

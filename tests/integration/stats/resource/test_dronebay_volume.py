@@ -49,16 +49,16 @@ class TestDroneBayVolume(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.output, 400)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_ship(self):
         # None for output when no ship
         # Verification
         self.assertIsNone(self.fit.stats.dronebay.output)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
@@ -66,9 +66,8 @@ class TestDroneBayVolume(StatTestCase):
         # Verification
         self.assertIsNone(self.fit.stats.dronebay.output)
         # Cleanup
-        # Log entry is due to inability to calculate requested attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_single_no_rounding(self):
         self.fit.drones.add(Drone(self.ch.type(
@@ -76,8 +75,8 @@ class TestDroneBayVolume(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 55.5555555555)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
         self.fit.drones.add(Drone(self.ch.type(
@@ -87,15 +86,15 @@ class TestDroneBayVolume(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 80)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_none(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -109,5 +108,5 @@ class TestDroneBayVolume(StatTestCase):
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 0)
         self.assertIsNone(self.fit.stats.dronebay.output)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

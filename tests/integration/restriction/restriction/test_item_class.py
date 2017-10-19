@@ -41,8 +41,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_booster_pass(self):
         item = Booster(self.ch.type(
@@ -55,8 +55,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_booster_fail_category(self):
         item = Booster(self.ch.type(
@@ -70,8 +70,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_booster_fail_attr(self):
         item = Booster(self.ch.type(category=CategoryId.implant).id)
@@ -84,8 +84,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Booster)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_character_pass(self):
         item = Character(self.ch.type(group=GroupId.character).id)
@@ -96,8 +96,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_character_fail_group(self):
         item = Character(self.ch.type(group=1008).id)
@@ -110,8 +110,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Character)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_pass(self):
         item = Charge(self.ch.type(category=CategoryId.charge).id)
@@ -124,8 +124,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_fail_category(self):
         item = Charge(self.ch.type(category=1008).id)
@@ -140,8 +140,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Charge)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_drone_pass(self):
         item = Drone(self.ch.type(category=CategoryId.drone).id)
@@ -152,8 +152,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_drone_fail_category(self):
         item = Drone(self.ch.type(category=1008).id)
@@ -166,8 +166,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Drone)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_beacon_pass(self):
         item = EffectBeacon(self.ch.type(group=GroupId.effect_beacon).id)
@@ -178,8 +178,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_beacon_fail_group(self):
         item = EffectBeacon(self.ch.type(group=1008).id)
@@ -192,8 +192,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, EffectBeacon)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fighter_squad_pass(self):
         item = FighterSquad(self.ch.type(
@@ -206,8 +206,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fighter_squad_fail_category(self):
         item = FighterSquad(self.ch.type(
@@ -222,8 +222,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, FighterSquad)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fighter_squad_fail_attr(self):
         item = FighterSquad(self.ch.type(category=CategoryId.fighter).id)
@@ -236,8 +236,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, FighterSquad)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_implant_pass(self):
         item = Implant(self.ch.type(
@@ -250,8 +250,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_implant_fail_category(self):
         item = Implant(self.ch.type(
@@ -265,8 +265,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_implant_fail_attr(self):
         item = Implant(self.ch.type(category=1008).id)
@@ -279,8 +279,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Implant)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high_pass(self):
         effect = self.ch.effect(
@@ -294,8 +294,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high_pass_disabled_effect(self):
         # Make sure disabled high slot effect doesn't prevent item from passing
@@ -312,8 +312,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high_fail_category(self):
         effect = self.ch.effect(
@@ -328,7 +328,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high_fail_effect(self):
         effect = self.ch.effect(
@@ -343,8 +344,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, ModuleHigh)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_medium_pass(self):
         effect = self.ch.effect(
@@ -358,8 +359,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_medium_pass_disabled_effect(self):
         effect = self.ch.effect(
@@ -374,8 +375,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_medium_fail_category(self):
         effect = self.ch.effect(
@@ -390,8 +391,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_medium_fail_effect(self):
         effect = self.ch.effect(
@@ -407,8 +408,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, ModuleMed)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low_pass(self):
         effect = self.ch.effect(
@@ -422,8 +423,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low_pass_disabled_effect(self):
         effect = self.ch.effect(
@@ -438,8 +439,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low_fail_category(self):
         effect = self.ch.effect(
@@ -454,8 +455,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low_fail_effect(self):
         effect = self.ch.effect(
@@ -471,8 +472,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, ModuleLow)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_rig_pass(self):
         effect = self.ch.effect(
@@ -486,8 +487,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_rig_pass_disabled_effect(self):
         effect = self.ch.effect(
@@ -502,8 +503,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_rig_fail_category(self):
         effect = self.ch.effect(
@@ -518,8 +519,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_rig_fail_effect(self):
         effect = self.ch.effect(
@@ -535,8 +536,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Rig)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_pass(self):
         item = Ship(self.ch.type(category=CategoryId.ship).id)
@@ -547,8 +548,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_fail_category(self):
         item = Ship(self.ch.type(category=1008).id)
@@ -561,8 +562,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Ship)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_skill_pass(self):
         item = Skill(self.ch.type(category=CategoryId.skill).id)
@@ -573,8 +574,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_skill_fail_category(self):
         item = Skill(self.ch.type(category=1008).id)
@@ -587,8 +588,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Skill)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_stance_pass(self):
         item = Stance(self.ch.type(group=GroupId.ship_modifier).id)
@@ -599,8 +600,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_stance_fail_group(self):
         item = Stance(self.ch.type(group=1008).id)
@@ -613,8 +614,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Stance)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem_pass(self):
         effect = self.ch.effect(
@@ -628,8 +629,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem_pass_disabled_effect(self):
         effect = self.ch.effect(
@@ -644,8 +645,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem_fail_category(self):
         effect = self.ch.effect(
@@ -660,8 +661,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem_fail_effect(self):
         effect = self.ch.effect(
@@ -677,8 +678,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(restriction_error.item_class, Subsystem)
         self.assertEqual(len(restriction_error.expected_classes), 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_replacement(self):
         item = Implant(self.ch.type(
@@ -694,8 +695,8 @@ class TestItemClass(RestrictionTestCase):
         self.assertEqual(len(restriction_error.expected_classes), 1)
         self.assertIn(Booster, restriction_error.expected_classes)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_multiple_replacements(self):
         item = Drone(self.ch.type(
@@ -713,5 +714,5 @@ class TestItemClass(RestrictionTestCase):
         self.assertIn(Booster, restriction_error.expected_classes)
         self.assertIn(Implant, restriction_error.expected_classes)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

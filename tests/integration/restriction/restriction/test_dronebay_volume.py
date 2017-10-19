@@ -49,8 +49,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error.total_use, 50)
         self.assertEqual(restriction_error.item_use, 50)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_single_undefined_output(self):
         # When stats module does not specify output, make sure it's assumed to
@@ -66,8 +66,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error.total_use, 5)
         self.assertEqual(restriction_error.item_use, 5)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_multiple(self):
         # When multiple consumers require less than dronebay volume output
@@ -96,8 +96,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(restriction_error2.total_use, 45)
         self.assertEqual(restriction_error2.item_use, 20)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_mix_usage_zero(self):
         # If some item has zero usage and dronebay volume error is still raised,
@@ -122,8 +122,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
         # When total consumption is less than output, no errors should be raised
@@ -144,8 +144,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_other_class(self):
         # Make sure non-drones are not affected
@@ -159,8 +159,8 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -174,5 +174,5 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

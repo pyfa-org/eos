@@ -43,8 +43,8 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_subcap(self):
         self.fit.ship = Ship(self.ch.type().id)
@@ -60,8 +60,8 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_subcap_capattr_zero(self):
         # Make sure that mere presence of isCapital attr on a ship (with zero
@@ -80,8 +80,8 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_subcap_volume_subcap(self):
         # Make sure no error raised when non-capital item is added to fit
@@ -95,8 +95,8 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_subcap_volume_not_specified(self):
         # Check that items with no volume attribute on eve type are not
@@ -110,8 +110,8 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_capital(self):
         # Check that capital items can be added to capital ship
@@ -127,8 +127,8 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_other_class(self):
         self.fit.ship = Ship(self.ch.type().id)
@@ -140,8 +140,8 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type().id)
@@ -156,5 +156,5 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

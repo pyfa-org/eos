@@ -49,8 +49,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, 1008)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group2(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -73,8 +73,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, 1008)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group3(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -97,8 +97,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, 1008)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group4(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -121,8 +121,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, 1008)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group5(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -145,8 +145,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, 1008)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_charge_none(self):
         charge_item = Charge(self.ch.type(group=None).id)
@@ -169,8 +169,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, None)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple_same(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -195,8 +195,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(3, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, 1008)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple_different(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -222,8 +222,8 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertIn(5, restriction_error2.allowed_groups)
         self.assertEqual(restriction_error2.charge_group, 1008)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_match(self):
         charge_item = Charge(self.ch.type(group=3).id)
@@ -243,8 +243,8 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_multiple(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -266,8 +266,8 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_attr(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -285,8 +285,8 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         charge_item = Charge(self.ch.type(group=1008).id)
@@ -307,5 +307,5 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

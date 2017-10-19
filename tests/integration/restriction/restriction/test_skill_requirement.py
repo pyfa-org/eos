@@ -41,8 +41,8 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 3),))
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple(self):
         # Check that multiple errors are shown as iterable
@@ -60,8 +60,8 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, 2, 5), (48, None, 1)))
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_partial(self):
         # Make sure satisfied skill requirements are not shown up in error
@@ -79,8 +79,8 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, None, 5),))
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_replacement(self):
         # Check that failed attempt to replace skill doesn't affect restriction
@@ -99,8 +99,8 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(restriction_error)
         self.assertCountEqual(restriction_error, ((50, 1, 3),))
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_satisfied(self):
         # Check that error isn't raised when all skill requirements are met
@@ -115,8 +115,8 @@ class TestSkillRequirement(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_exception_rig(self):
         # Check that skillreqs on rigs are not checked
@@ -130,8 +130,8 @@ class TestSkillRequirement(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         item = ModuleHigh(self.ch.type(attributes={
@@ -145,5 +145,5 @@ class TestSkillRequirement(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

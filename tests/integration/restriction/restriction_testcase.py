@@ -59,3 +59,6 @@ class RestrictionTestCase(IntegrationTestCase):
             return item_error[restriction]
         else:
             return None
+
+    def get_log(self, name='eos.fit.restriction*'):
+        return super().get_log(name=name)

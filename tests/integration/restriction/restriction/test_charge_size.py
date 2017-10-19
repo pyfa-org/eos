@@ -49,8 +49,8 @@ class TestChargeSize(RestrictionTestCase):
         self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.item_size, 2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_greater(self):
         charge_item = Charge(self.ch.type(
@@ -73,8 +73,8 @@ class TestChargeSize(RestrictionTestCase):
         self.assertEqual(restriction_error2.allowed_size, 1)
         self.assertEqual(restriction_error2.item_size, 2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_charge_no_attrib(self):
         charge_item = Charge(self.ch.type().id)
@@ -96,8 +96,8 @@ class TestChargeSize(RestrictionTestCase):
         self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.item_size, None)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
         charge_item = Charge(self.ch.type(
@@ -118,8 +118,8 @@ class TestChargeSize(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_container_attrib(self):
         charge_item = Charge(self.ch.type(
@@ -138,8 +138,8 @@ class TestChargeSize(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         charge_item = Charge(self.ch.type(
@@ -161,5 +161,5 @@ class TestChargeSize(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -50,8 +50,8 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_single_no_ship(self):
         # When stats module does not specify total slot amount, make sure it's
@@ -66,8 +66,8 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(restriction_error.slots_max_allowed, 0)
         self.assertEqual(restriction_error.slots_used, 1)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
@@ -93,8 +93,8 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(restriction_error2.slots_max_allowed, 1)
         self.assertEqual(restriction_error2.slots_used, 2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
@@ -115,8 +115,8 @@ class TestLauncherSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
@@ -137,8 +137,8 @@ class TestLauncherSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
@@ -152,8 +152,8 @@ class TestLauncherSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -167,5 +167,5 @@ class TestLauncherSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

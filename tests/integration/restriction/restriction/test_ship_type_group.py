@@ -51,8 +51,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_type_multiple_different(self):
         ship_eve_type = self.ch.type(group=31)
@@ -71,8 +71,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_type_multiple_same(self):
         ship_eve_type = self.ch.type(group=31)
@@ -91,8 +91,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group(self):
         ship_eve_type = self.ch.type(group=31)
@@ -110,8 +110,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group_multiple_different(self):
         ship_eve_type = self.ch.type(group=31)
@@ -130,8 +130,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group_multiple_same(self):
         ship_eve_type = self.ch.type(group=31)
@@ -150,8 +150,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_combined(self):
         # Check that failure is appropriately generated when item specifies both
@@ -172,8 +172,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, ship_eve_type.id)
         self.assertEqual(restriction_error.ship_group, 31)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_no_ship(self):
         # Absent ship should trigger this error too
@@ -190,8 +190,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(restriction_error.ship_type, None)
         self.assertEqual(restriction_error.ship_group, None)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_type_match(self):
         # When type of ship matches type-restriction attribute, no error should
@@ -207,8 +207,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_group_match(self):
         # When type of ship matches group-restriction attribute, no error should
@@ -223,8 +223,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_combined_type_match(self):
         # Check that it's enough to match type condition to be fittable, even if
@@ -241,8 +241,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_combined_group_match(self):
         # Check that it's enough to match group condition to be fittable, even
@@ -258,8 +258,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_other_class(self):
         self.fit.ship = Ship(self.ch.type(group=31).id)
@@ -272,8 +272,8 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         ship_eve_type = self.ch.type(group=31)
@@ -288,5 +288,5 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

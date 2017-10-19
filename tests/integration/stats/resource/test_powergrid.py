@@ -51,16 +51,16 @@ class TestPowergrid(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.output, 400)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_ship(self):
         # None for output when no ship
         # Verification
         self.assertIsNone(self.fit.stats.powergrid.output)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
@@ -68,9 +68,8 @@ class TestPowergrid(StatTestCase):
         # Verification
         self.assertIsNone(self.fit.stats.powergrid.output)
         # Cleanup
-        # Log entry is due to inability to calculate requested attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_single(self):
         # Check that modified consumption attribute is used
@@ -91,8 +90,8 @@ class TestPowergrid(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_single_rounding(self):
         self.fit.modules.high.append(ModuleHigh(
@@ -103,8 +102,8 @@ class TestPowergrid(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 55.56)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
         self.fit.modules.high.append(ModuleHigh(
@@ -118,8 +117,8 @@ class TestPowergrid(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 80)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_state(self):
         self.fit.modules.high.append(ModuleHigh(
@@ -133,8 +132,8 @@ class TestPowergrid(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_disabled_effect(self):
         item1 = ModuleHigh(
@@ -151,15 +150,15 @@ class TestPowergrid(StatTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_use_none(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -177,5 +176,5 @@ class TestPowergrid(StatTestCase):
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 0)
         self.assertIsNone(self.fit.stats.powergrid.output)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -56,8 +56,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertIsNone(stats_dps.explosive)
         self.assertIsNone(stats_dps.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single(self):
         src_attr = self.ch.attr()
@@ -92,8 +92,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 11.52)
         self.assertAlmostEqual(stats_dps.total, 21.6)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_multiple(self):
         item1 = ModuleHigh(
@@ -131,8 +131,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 103.68)
         self.assertAlmostEqual(stats_dps.total, 194.4)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_arguments_custom_profile(self):
         item = ModuleHigh(
@@ -158,8 +158,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0.96)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_arguments_custom_reload(self):
         item = ModuleHigh(
@@ -184,8 +184,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 3.84)
         self.assertAlmostEqual(stats_dps.total, 7.2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_arguments_custom_filter(self):
         item1 = ModuleHigh(
@@ -225,8 +225,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 14.4)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_none_em(self):
         item = ModuleHigh(
@@ -250,9 +250,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 13.44)
         # Cleanup
-        # Failure to fetch damage value is not issue for this test
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_none_therm(self):
         item = ModuleHigh(
@@ -276,9 +275,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 12.48)
         # Cleanup
-        # Failure to fetch damage value is not issue for this test
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_none_kin(self):
         item = ModuleHigh(
@@ -302,9 +300,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 10.56)
         # Cleanup
-        # Failure to fetch damage value is not issue for this test
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_none_expl(self):
         item = ModuleHigh(
@@ -328,9 +325,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertIsNone(stats_dps.explosive)
         self.assertAlmostEqual(stats_dps.total, 6.72)
         # Cleanup
-        # Failure to fetch damage value is not issue for this test
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_none_all(self):
         item = ModuleHigh(
@@ -353,9 +349,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertIsNone(stats_dps.explosive)
         self.assertIsNone(stats_dps.total)
         # Cleanup
-        # Failure to fetch damage values is not issue for this test
-        self.assertEqual(len(self.log), 4)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_em(self):
         item = ModuleHigh(
@@ -378,9 +373,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertIsNone(stats_dps.explosive)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        # Failure to fetch damage values is not issue for this test
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_therm(self):
         item = ModuleHigh(
@@ -403,9 +397,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertIsNone(stats_dps.explosive)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        # Failure to fetch damage values is not issue for this test
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_kin(self):
         item = ModuleHigh(
@@ -428,9 +421,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertIsNone(stats_dps.explosive)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        # Failure to fetch damage values is not issue for this test
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_expl(self):
         item = ModuleHigh(
@@ -453,9 +445,8 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        # Failure to fetch damage values is not issue for this test
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_none_and_data(self):
         # As container for damage dealers is not ordered, this test may be
@@ -493,5 +484,5 @@ class TestStatsDamageDps(StatTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 14.4)
         # Cleanup
-        self.assertEqual(len(self.log), 4)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

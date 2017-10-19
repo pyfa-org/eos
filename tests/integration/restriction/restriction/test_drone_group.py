@@ -43,8 +43,8 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(restriction_error.allowed_groups, [4])
         self.assertEqual(restriction_error.drone_group, 56)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_mismatch2(self):
         # Check that error is returned on attempt to add drone from group
@@ -61,8 +61,8 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(restriction_error.allowed_groups, [69])
         self.assertEqual(restriction_error.drone_group, 797)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_mismatch_combined(self):
         # Check that error is returned on attempt to add drone from group
@@ -80,8 +80,8 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(restriction_error.allowed_groups, (48, 106))
         self.assertEqual(restriction_error.drone_group, 803)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_drone_none(self):
         # Check that drone from None group is subject to restriction
@@ -97,8 +97,8 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(restriction_error.allowed_groups, [1896])
         self.assertEqual(restriction_error.drone_group, None)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_ship(self):
         # Check that restriction isn't applied when fit doesn't have ship
@@ -110,8 +110,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_ship_no_restriction(self):
         # Check that restriction isn't applied when fit has ship, but without
@@ -125,8 +125,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_non_drone(self):
         # Check that restriction is not applied to items which are not drones
@@ -140,8 +140,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_match1(self):
         # Check that no error raised when drone of group matching to first
@@ -156,8 +156,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_match2(self):
         # Check that no error raised when drone of group matching to second
@@ -172,8 +172,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_match_combination(self):
         # Check that no error raised when drone of group matching to any of two
@@ -189,8 +189,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
@@ -204,5 +204,5 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(restriction_error)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
