@@ -46,8 +46,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charged_cycles, 25)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_ammo_round_down(self):
         fit = Fit()
@@ -60,8 +60,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charged_cycles, 2)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_ammo_no_quantity(self):
         fit = Fit()
@@ -72,9 +72,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charged_cycles)
         # Cleanup
-        # Attempts to fetch volume and capacity cause log entries to appear
-        self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_laser_combat(self):
         fit = Fit()
@@ -91,8 +90,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charged_cycles, 4400)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_laser_mining(self):
         fit = Fit()
@@ -109,8 +108,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charged_cycles, 4400)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_laser_not_damageable(self):
         fit = Fit()
@@ -127,9 +126,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charged_cycles)
         # Cleanup
-        # Attempt to fetch get_damaged attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_laser_no_hp(self):
         fit = Fit()
@@ -146,9 +144,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charged_cycles)
         # Cleanup
-        # Attempt to fetch hp attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_laser_no_chance(self):
         fit = Fit()
@@ -165,9 +162,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charged_cycles)
         # Cleanup
-        # Attempt to fetch chance attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_laser_no_damage(self):
         fit = Fit()
@@ -184,9 +180,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charged_cycles)
         # Cleanup
-        # Attempt to fetch damage attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_default_effect(self):
         fit = Fit()
@@ -202,8 +197,8 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charged_cycles)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         fit = Fit()
@@ -216,5 +211,5 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charged_cycles)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

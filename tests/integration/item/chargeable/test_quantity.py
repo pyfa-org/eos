@@ -41,8 +41,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charge_quantity, 10)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_float_error(self):
         fit = Fit()
@@ -54,8 +54,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charge_quantity, 23)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_round_down(self):
         fit = Fit()
@@ -67,8 +67,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charge_quantity, 9)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_volume(self):
         fit = Fit()
@@ -79,8 +79,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_capacity(self):
         fit = Fit()
@@ -91,8 +91,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_charge(self):
         fit = Fit()
@@ -102,8 +102,8 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         fit = Fit()
@@ -116,5 +116,5 @@ class TestItemMixinChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

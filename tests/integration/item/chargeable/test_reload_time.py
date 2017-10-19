@@ -40,8 +40,8 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.reload_time, 5.0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_generic_no_attribute(self):
         fit = Fit()
@@ -52,8 +52,8 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.reload_time)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_generic_no_default_effect(self):
         fit = Fit()
@@ -64,8 +64,8 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.reload_time, 5.0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_combat_combat_laser(self):
         fit = Fit()
@@ -78,8 +78,8 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.reload_time, 1.0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_combat_mining_laser(self):
         fit = Fit()
@@ -92,8 +92,8 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.reload_time, 1.0)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         fit = Fit()
@@ -106,5 +106,5 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.reload_time)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

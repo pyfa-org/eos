@@ -59,8 +59,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 212.5)
         self.assertAlmostEqual(volley.total, 685)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_multiplier(self):
         fit = Fit()
@@ -81,8 +81,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 85)
         self.assertAlmostEqual(volley.total, 274)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
@@ -105,8 +105,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_voley_disabled_effect(self):
         fit = Fit()
@@ -130,8 +130,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_dps_no_reload(self):
         fit = Fit()
@@ -154,8 +154,8 @@ class TestItemDamageDrone(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 53.125)
         self.assertAlmostEqual(dps.total, 171.25)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_dps_reload(self):
         fit = Fit()
@@ -178,5 +178,5 @@ class TestItemDamageDrone(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 53.125)
         self.assertAlmostEqual(dps.total, 171.25)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

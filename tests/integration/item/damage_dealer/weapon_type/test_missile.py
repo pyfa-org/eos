@@ -71,8 +71,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 8.5)
         self.assertAlmostEqual(volley.total, 27.4)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_multiplier(self):
         self.ch.attr(attribute_id=AttributeId.damage_multiplier)
@@ -103,8 +103,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 8.5)
         self.assertAlmostEqual(volley.total, 27.4)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
@@ -133,8 +133,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_disabled_item_effect(self):
         fit = Fit()
@@ -164,8 +164,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_disabled_charge_effect(self):
         fit = Fit()
@@ -196,8 +196,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_no_charge(self):
         fit = Fit()
@@ -218,8 +218,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_dps_no_reload(self):
         fit = Fit()
@@ -248,8 +248,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 4.25)
         self.assertAlmostEqual(dps.total, 13.7)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_dps_reload(self):
         fit = Fit()
@@ -278,5 +278,5 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 3.4)
         self.assertAlmostEqual(dps.total, 10.96)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

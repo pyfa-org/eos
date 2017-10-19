@@ -56,8 +56,8 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Cycle time is divided by 1000, as it's defined in ms
         self.assertAlmostEqual(item.cycle_time, 0.1)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal(self):
         fit = Fit()
@@ -66,8 +66,8 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.optimal_range, 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_falloff(self):
         fit = Fit()
@@ -76,8 +76,8 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.falloff_range, 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_tracking(self):
         fit = Fit()
@@ -86,8 +86,8 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.tracking_speed, 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     # Various errors are tested here, but just for one of access points
     def test_optimal_no_source(self):
@@ -97,8 +97,8 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal_no_defeff(self):
         attr = self.ch.attr()
@@ -111,8 +111,8 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal_no_description(self):
         attr = self.ch.attr()
@@ -125,8 +125,8 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal_no_attr(self):
         attr = self.ch.attr()
@@ -139,6 +139,5 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        # Log entry appears on attempt to get undefined attribute
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

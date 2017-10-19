@@ -70,8 +70,8 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 0)
         self.assertAlmostEqual(dps.total, 53.4)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_reactivation_shorter_than_reload(self):
         fit = Fit()
@@ -98,8 +98,8 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 8.5)
         self.assertAlmostEqual(dps.total, 27.4)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_reactivation_longer_than_reload(self):
         fit = Fit()
@@ -126,8 +126,8 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 1.0625)
         self.assertAlmostEqual(dps.total, 3.425)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         fit = Fit()
@@ -154,5 +154,5 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         self.assertIsNone(dps.explosive)
         self.assertIsNone(dps.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

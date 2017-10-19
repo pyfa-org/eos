@@ -71,8 +71,8 @@ class TestItemMixinTankingResistances(ItemMixinTestCase):
         self.assertAlmostEqual(item.resistances.shield.kinetic, 0.89)
         self.assertAlmostEqual(item.resistances.shield.explosive, 0.88)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_attr(self):
         fit = Fit()
@@ -92,8 +92,8 @@ class TestItemMixinTankingResistances(ItemMixinTestCase):
         self.assertIsNone(item.resistances.shield.kinetic)
         self.assertIsNone(item.resistances.shield.explosive)
         # Cleanup
-        self.assertEqual(len(self.log), 12)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         fit = Fit(source=None)
@@ -125,5 +125,5 @@ class TestItemMixinTankingResistances(ItemMixinTestCase):
         self.assertIsNone(item.resistances.shield.kinetic)
         self.assertIsNone(item.resistances.shield.explosive)
         # Cleanup
-        self.assertEqual(len(self.log), 12)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

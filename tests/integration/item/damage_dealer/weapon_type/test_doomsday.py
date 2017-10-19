@@ -59,8 +59,8 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 85000)
         self.assertAlmostEqual(volley.total, 274000)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_multiplier(self):
         self.ch.attr(attribute_id=AttributeId.damage_multiplier)
@@ -85,8 +85,8 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 85000)
         self.assertAlmostEqual(volley.total, 274000)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
@@ -109,8 +109,8 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_disabled_effect(self):
         fit = Fit()
@@ -134,8 +134,8 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_dps_no_reload(self):
         fit = Fit()
@@ -158,8 +158,8 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 340)
         self.assertAlmostEqual(dps.total, 1096)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_dps_reload(self):
         fit = Fit()
@@ -182,5 +182,5 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 340)
         self.assertAlmostEqual(dps.total, 1096)
         # Cleanup
-        self.assertEqual(len(self.log), 2)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

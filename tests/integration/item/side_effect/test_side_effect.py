@@ -67,8 +67,8 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertAlmostEqual(side_effect2.chance, 0.075)
         self.assertIs(side_effect2.status, True)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_data_no_source(self):
         # Setup
@@ -102,8 +102,8 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertNotIn(effect1.id, side_effects)
         self.assertNotIn(effect2.id, side_effects)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_persistence(self):
         # Here we check that when item._eve_type doesn't have effect which was
@@ -183,8 +183,8 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertAlmostEqual(side_effect3.chance, 0.4)
         self.assertIs(side_effect3.status, True)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_enabling_attached(self):
         # Setup
@@ -213,8 +213,8 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertIs(item.side_effects[effect.id].status, True)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_enabling_detached(self):
         # Setup
@@ -242,8 +242,8 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertIs(item.side_effects[effect.id].status, True)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_disabling_attached(self):
         # Setup
@@ -273,8 +273,8 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertIs(item.side_effects[effect.id].status, False)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_disabling_detached(self):
         # Setup
@@ -303,5 +303,5 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertIs(item.side_effects[effect.id].status, False)
         self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

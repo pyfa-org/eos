@@ -44,8 +44,8 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assertAlmostEqual(item.hp.shield, 12)
         self.assertAlmostEqual(item.hp.total, 30)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_unspecified(self):
         fit = Fit()
@@ -57,8 +57,8 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assertIsNone(item.hp.shield)
         self.assertIsNone(item.hp.total)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         fit = Fit(source=None)
@@ -72,5 +72,5 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assertIsNone(item.hp.shield)
         self.assertIsNone(item.hp.total)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

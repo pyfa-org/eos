@@ -67,8 +67,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 21.25)
         self.assertAlmostEqual(volley.total, 55.5)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_attrib_single_therm(self):
         fit = Fit()
@@ -94,8 +94,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 21.25)
         self.assertAlmostEqual(volley.total, 52.75)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_attrib_single_kin(self):
         fit = Fit()
@@ -121,8 +121,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 21.25)
         self.assertAlmostEqual(volley.total, 50)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_attrib_single_expl(self):
         fit = Fit()
@@ -148,8 +148,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 47.25)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_attrib_all(self):
         fit = Fit()
@@ -173,8 +173,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 4)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_attrib_em(self):
         fit = Fit()
@@ -198,8 +198,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_attrib_therm(self):
         fit = Fit()
@@ -223,8 +223,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_attrib_kin(self):
         fit = Fit()
@@ -248,8 +248,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_single_zero_attrib_expl(self):
         fit = Fit()
@@ -273,8 +273,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective(self):
         fit = Fit()
@@ -302,8 +302,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 26.7)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_no_attrib_single_em(self):
         fit = Fit()
@@ -331,8 +331,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 16.3)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_no_attrib_single_therm(self):
         fit = Fit()
@@ -360,8 +360,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 14.1)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_no_attrib_single_kin(self):
         fit = Fit()
@@ -389,8 +389,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 23)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_no_attrib_single_expl(self):
         fit = Fit()
@@ -418,8 +418,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 26.7)
         # Cleanup
-        self.assertEqual(len(self.log), 1)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_no_attrib_all(self):
         fit = Fit()
@@ -445,8 +445,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 4)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_single_zero_attrib_em(self):
         fit = Fit()
@@ -472,8 +472,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_single_zero_attrib_therm(self):
         fit = Fit()
@@ -499,8 +499,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_single_zero_attrib_kin(self):
         fit = Fit()
@@ -526,8 +526,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_effective_single_zero_attrib_expl(self):
         fit = Fit()
@@ -553,8 +553,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assertEqual(len(self.log), 3)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_charged_cycles(self):
         fit = Fit()
@@ -580,8 +580,8 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
         fit = Fit()
@@ -608,5 +608,5 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
         # Cleanup
-        self.assertEqual(len(self.log), 0)
         self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
