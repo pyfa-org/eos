@@ -24,7 +24,7 @@ from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eve import CategoryId, GroupId
+from eos.const.eve import AttributeId, CategoryId, GroupId
 from eos.util.cached_property import cached_property
 
 
@@ -133,6 +133,7 @@ class Cleaner:
         tgt_data = {}
         self._get_targets_relational(tgt_data)
         self._get_targets_yaml(tgt_data)
+        self._get_targets_default_ammo(tgt_data)
         # Now, when we have all the target data values, we may look for
         # rows, which have matching values, and restore them
         for tgt_spec, tgt_values in tgt_data.items():
@@ -286,6 +287,27 @@ class Cleaner:
             # container
             relations[effect_row['effectID']] = (types, groups, attrs)
         return relations
+
+    def _get_targets_default_ammo(self, tgt_data):
+        """Find out which types are referred via 'ammo loaded' attribute.
+
+        Some items specify which ammo is loaded into them by default, and here
+        we ensure these eve types are kept.
+
+        Args:
+            tgt_data: Dictionary which will be filled during the process. Its
+                contents should specify target field and which values this field
+                should have.
+        """
+        for row in self.data['dgmtypeattribs']:
+            if row.get('attributeID') != AttributeId.ammo_loaded:
+                continue
+            try:
+                ammo_type_id = int(row.get('value'))
+            except TypeError:
+                continue
+            tgt_spec = ('evetypes', 'typeID')
+            tgt_data.setdefault(tgt_spec, set()).add(ammo_type_id)
 
     def _report_results(self):
         """Log cleanup results."""

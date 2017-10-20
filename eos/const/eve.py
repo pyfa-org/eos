@@ -79,6 +79,7 @@ class AttributeId(IntEnum):
     armor_damage_amount = 84
     charged_armor_damage_multiplier = 1886
     # Charge-related
+    ammo_loaded = 127
     charge_group_1 = 604
     charge_group_2 = 605
     charge_group_3 = 606
