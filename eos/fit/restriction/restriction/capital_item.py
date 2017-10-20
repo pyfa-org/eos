@@ -79,13 +79,12 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     def validate(self):
         # Skip validation only if ship has special special attribute set value
         # which is evaluated as True
-        try:
-            ship_eve_type = self.__current_ship._eve_type
-        except AttributeError:
-            pass
-        else:
-            if ship_eve_type.attributes.get(AttributeId.is_capital_size):
-                return
+        ship = self.__current_ship
+        if (
+            ship is not None and
+            ship._eve_type_attributes.get(AttributeId.is_capital_size)
+        ):
+            return
         # If we got here, then we're dealing with non-capital ship, and all
         # registered items are tainted
         if self.__capital_items:
