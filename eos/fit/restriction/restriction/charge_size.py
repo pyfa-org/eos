@@ -52,7 +52,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         if not hasattr(message.item, 'charge'):
             return
         # And without size specification
-        if AttributeId.charge_size not in message.item._original_attributes:
+        if AttributeId.charge_size not in message.item._eve_type_attributes:
             return
         self.__restricted_containers.add(message.item)
 
@@ -72,9 +72,9 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             if charge is None:
                 continue
             container_size = (
-                container._original_attributes[AttributeId.charge_size])
+                container._eve_type_attributes[AttributeId.charge_size])
             charge_size = (
-                charge._original_attributes.get(AttributeId.charge_size))
+                charge._eve_type_attributes.get(AttributeId.charge_size))
             if container_size != charge_size:
                 tainted_items[charge] = ChargeSizeErrorData(
                     item_size=charge_size,

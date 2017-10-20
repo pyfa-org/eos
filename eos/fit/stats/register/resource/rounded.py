@@ -73,7 +73,7 @@ class RoundedResourceStatRegister(
     def _handle_item_effects_activation(self, message):
         if (
             self.__use_effect in message.effects and
-            self.__use_attr in message.item._original_attributes
+            self.__use_attr in message.item._eve_type_attributes
         ):
             self.__resource_users.add(message.item)
 

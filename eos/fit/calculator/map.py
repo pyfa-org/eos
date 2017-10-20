@@ -197,7 +197,7 @@ class MutableAttributeMap:
     def keys(self):
         # Return union of attributes from base, modified and override dictionary
         return set(chain(
-            self.__item._original_attributes, self.__modified_attributes,
+            self.__item._eve_type_attributes, self.__modified_attributes,
             self.__override_callbacks or {}))
 
     def items(self):
@@ -238,7 +238,7 @@ class MutableAttributeMap:
             raise AttributeMetaError(attr_id) from e
         # Base attribute value which we'll use for modification
         try:
-            result = item._original_attributes[attr_id]
+            result = item._eve_type_attributes[attr_id]
         # If attribute isn't available on eve type, base off its default value
         except KeyError:
             result = attr_meta.default_value

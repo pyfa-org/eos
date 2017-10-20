@@ -190,7 +190,7 @@ class CalculationService(BaseSubscriber):
             Set with Affector objects.
         """
         affectors = set()
-        for effect_id, effect in item._eve_type.effects.items():
+        for effect_id, effect in item._eve_type_effects.items():
             if effect_id not in effect_ids:
                 continue
             for modifier in effect.modifiers:

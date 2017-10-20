@@ -39,7 +39,7 @@ class Implant(ImmutableStateMixin):
     @property
     def slot(self):
         """Return slot this implant takes."""
-        return self._original_attributes.get(AttributeId.implantness)
+        return self._eve_type_attributes.get(AttributeId.implantness)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character

@@ -66,9 +66,9 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
             # Get volume and capacity with 0 as fallback, and compare them,
             # raising error when charge can't fit
             charge_volume = (
-                charge._original_attributes.get(AttributeId.volume, 0))
+                charge._eve_type_attributes.get(AttributeId.volume, 0))
             container_capacity = (
-                container._original_attributes.get(AttributeId.capacity, 0))
+                container._eve_type_attributes.get(AttributeId.capacity, 0))
             if charge_volume > container_capacity:
                 tainted_items[charge] = ChargeVolumeErrorData(
                     item_volume=charge_volume,

@@ -115,7 +115,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             for restriction_attr in restriction_attrs:
                 try:
                     restriction_value = (
-                        message.item._original_attributes[restriction_attr])
+                        message.item._eve_type_attributes[restriction_attr])
                 except KeyError:
                     continue
                 else:

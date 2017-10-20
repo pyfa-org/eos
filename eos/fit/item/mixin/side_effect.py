@@ -50,11 +50,7 @@ class SideEffectMixin(BaseItemMixin):
         format.
         """
         side_effects = {}
-        try:
-            eve_type_effects = self._eve_type.effects
-        except AttributeError:
-            return side_effects
-        for effect_id, effect in eve_type_effects.items():
+        for effect_id, effect in self._eve_type_effects.items():
             # Effect must be from offline category
             if effect._state != State.offline:
                 continue

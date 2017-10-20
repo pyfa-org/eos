@@ -65,10 +65,18 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         super().__init__(**kwargs)
 
     @property
-    def _original_attributes(self):
-        """Returns original attributes of the eve type."""
+    def _eve_type_attributes(self):
+        """Returns attributes with values of the eve type."""
         try:
             return self._eve_type.attributes
+        except AttributeError:
+            return {}
+
+    @property
+    def _eve_type_effects(self):
+        """Returns effect map of the eve type."""
+        try:
+            return self._eve_type.effects
         except AttributeError:
             return {}
 
@@ -159,12 +167,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         started and second with effect IDss which should be stopped to achieve
         proper state.
         """
-        try:
-            eve_type_effects = self._eve_type.effects
-        # If eve type effects are not accessible, then we cannot do anything, as
-        # we rely on effect attributes to take our decisions
-        except AttributeError:
-            return set(), set()
+        eve_type_effects = self._eve_type_effects
         # Set of effects which should be running according to new conditions
         new_running = set()
         # Process 'online' effect separately, as it's needed for all other
