@@ -49,14 +49,9 @@ class UnroundedResourceStatRegister(
     @volatile_property
     def output(self):
         try:
-            ship_attribs = self.__current_ship.attributes
-        except AttributeError:
+            return self.__current_ship.attributes[self.__output_attr]
+        except (AttributeError, KeyError):
             return None
-        else:
-            try:
-                return ship_attribs[self.__output_attr]
-            except KeyError:
-                return None
 
     @property
     def _users(self):

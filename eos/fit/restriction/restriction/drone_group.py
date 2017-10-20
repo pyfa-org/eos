@@ -69,16 +69,15 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         InstrItemRemove: _handle_item_removal}
 
     def validate(self):
+        ship = self.__current_ship
         # No ship - no restriction
-        try:
-            ship_eve_type = self.__current_ship._eve_type
-        except AttributeError:
+        if ship is None:
             return
         allowed_groups = []
         # Find out if we have restriction, and which drone groups it allows
         for restriction_attr in RESTRICTION_ATTRS:
             try:
-                restriction_value = ship_eve_type.attributes[restriction_attr]
+                restriction_value = ship._eve_type_attributes[restriction_attr]
             except KeyError:
                 continue
             else:

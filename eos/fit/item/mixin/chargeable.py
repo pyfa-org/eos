@@ -86,11 +86,10 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         if AttributeId.charge_rate in self._eve_type_attributes:
             return self.__get_ammo_cycles()
         # Detect crystal-based eve types using effects
-        try:
-            defeff_id = self._eve_type.default_effect.id
-        except AttributeError:
-            defeff_id = None
-        if defeff_id in (EffectId.target_attack, EffectId.mining_laser):
+        if self._eve_type_default_effect_id in (
+            EffectId.target_attack,
+            EffectId.mining_laser
+        ):
             return self.__get_crystal_mean_cycles()
         return None
 
@@ -123,13 +122,11 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         """Returns item reload time in seconds."""
         # Return hardcoded 1.0 if item's eve type has target_attack effect
         # (various lasers), else fetch reload time attribute from item
-        try:
-            defeff_id = self._eve_type.default_effect.id
-        except AttributeError:
-            pass
-        else:
-            if defeff_id in (EffectId.target_attack, EffectId.mining_laser):
-                return 1.0
+        if self._eve_type_default_effect_id in (
+            EffectId.target_attack,
+            EffectId.mining_laser
+        ):
+            return 1.0
         reload_ms = self.attributes.get(AttributeId.reload_time)
         if reload_ms is None:
             return None

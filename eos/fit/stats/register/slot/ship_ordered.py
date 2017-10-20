@@ -49,14 +49,9 @@ class OrderedShipSlotStatRegister(
     @volatile_property
     def total(self):
         try:
-            ship_attribs = self.__current_ship.attributes
-        except AttributeError:
+            return int(self.__current_ship.attributes[self.__slot_attr])
+        except (AttributeError, KeyError):
             return None
-        else:
-            try:
-                return int(ship_attribs[self.__slot_attr])
-            except KeyError:
-                return None
 
     @property
     def _users(self):

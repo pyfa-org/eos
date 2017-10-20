@@ -174,13 +174,9 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
     @volatile_property
     def agility_factor(self):
         try:
-            ship_attribs = self.__current_ship.attributes
-        except AttributeError:
-            return None
-        try:
-            agility = ship_attribs[AttributeId.agility]
-            mass = ship_attribs[AttributeId.mass]
-        except KeyError:
+            agility = self.__current_ship.attributes[AttributeId.agility]
+            mass = self.__current_ship.attributes[AttributeId.mass]
+        except (AttributeError, KeyError):
             return None
         real_agility = -math.log(0.25) * agility * mass / 1000000
         return real_agility

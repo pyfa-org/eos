@@ -92,10 +92,9 @@ class DamageDealerMixin(
             # influence type of weapon
             elif eff_id in CHARGE_MAP:
                 charge = getattr(self, 'charge', None)
-                try:
-                    charge_defeff_id = charge._eve_type.default_effect.id
-                except AttributeError:
+                if charge is None:
                     continue
+                charge_defeff_id = charge._eve_type_default_effect_id
                 if charge_defeff_id not in charge._running_effects:
                     continue
                 try:

@@ -40,19 +40,13 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             tgt_attr=AttributeId.max_velocity)
 
     def get_modification(self, carrier_item, ship):
-        # If attributes of any necessary items are not available, do not
+        # If attribute values of any necessary items are not available, do not
         # calculate anything
         try:
-            ship_attributes = ship.attributes
-            carrier_attributes = carrier_item.attributes
-        except AttributeError as e:
-            raise ModificationCalculationError from e
-        # Same for necessary attribute values
-        try:
-            mass = ship_attributes[AttributeId.mass]
-            speed_boost = carrier_attributes[AttributeId.speed_factor]
-            thrust = carrier_attributes[AttributeId.speed_boost_factor]
-        except KeyError as e:
+            mass = ship.attributes[AttributeId.mass]
+            speed_boost = carrier_item.attributes[AttributeId.speed_factor]
+            thrust = carrier_item.attributes[AttributeId.speed_boost_factor]
+        except (AttributeError, KeyError) as e:
             raise ModificationCalculationError from e
         try:
             ship_speed_percentage = speed_boost * thrust / mass

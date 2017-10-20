@@ -65,22 +65,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         super().__init__(**kwargs)
 
     @property
-    def _eve_type_attributes(self):
-        """Returns attributes with values of the eve type."""
-        try:
-            return self._eve_type.attributes
-        except AttributeError:
-            return {}
-
-    @property
-    def _eve_type_effects(self):
-        """Returns effect map of the eve type."""
-        try:
-            return self._eve_type.effects
-        except AttributeError:
-            return {}
-
-    @property
     def _container(self):
         """Refers container this item is placed to.
 
@@ -139,6 +123,35 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     @abstractmethod
     def state(self):
         ...
+
+    # Properties which expose various eve type properties with safe fallback
+    @property
+    def _eve_type_attributes(self):
+        try:
+            return self._eve_type.attributes
+        except AttributeError:
+            return {}
+
+    @property
+    def _eve_type_effects(self):
+        try:
+            return self._eve_type.effects
+        except AttributeError:
+            return {}
+
+    @property
+    def _eve_type_default_effect(self):
+        try:
+            return self._eve_type.default_effect
+        except AttributeError:
+            return None
+
+    @property
+    def _eve_type_default_effect_id(self):
+        try:
+            return self._eve_type.default_effect.id
+        except AttributeError:
+            return None
 
     # Properties used by attribute calculator
     @property
@@ -222,7 +235,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                     return online_running
             # Only default active effect is run in full compliance
             elif effect_state == State.active:
-                return self._eve_type.default_effect is effect
+                return self._eve_type_default_effect is effect
             # No additional restrictions for overload effects
             elif effect_state == State.overload:
                 return True

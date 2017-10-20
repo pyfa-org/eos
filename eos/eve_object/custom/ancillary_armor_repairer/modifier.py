@@ -44,13 +44,10 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             charge._eve_type_id == TypeId.nanite_repair_paste
         ):
             try:
-                carrier_attributes = carrier_item.attributes
-            except AttributeError as e:
-                raise ModificationCalculationError from e
-            mult_attr_id = AttributeId.charged_armor_damage_multiplier
-            try:
-                multiplier = carrier_attributes[mult_attr_id]
-            except KeyError as e:
+                multiplier = (
+                    carrier_item.attributes
+                    [AttributeId.charged_armor_damage_multiplier])
+            except (AttributeError, KeyError) as e:
                 raise ModificationCalculationError from e
         else:
             multiplier = 1

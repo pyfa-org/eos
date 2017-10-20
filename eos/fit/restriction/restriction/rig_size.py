@@ -73,15 +73,12 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         InstrEffectsStop: _handle_item_effects_deactivation}
 
     def validate(self):
-        # Do not apply restriction when fit doesn't have ship
+        # Do not apply restriction when fit doesn't have ship and when ship
+        # doesn't have restriction attribute
         try:
-            ship_eve_type = self.__current_ship._eve_type
-        except AttributeError:
-            return
-        # If ship doesn't have restriction attribute, allow all rigs
-        try:
-            allowed_rig_size = ship_eve_type.attributes[AttributeId.rig_size]
-        except KeyError:
+            allowed_rig_size = (
+                self.__current_ship._eve_type.attributes[AttributeId.rig_size])
+        except (AttributeError, KeyError):
             return
         tainted_items = {}
         for item in self.__restricted_items:

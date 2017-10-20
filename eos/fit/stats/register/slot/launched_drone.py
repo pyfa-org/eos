@@ -44,14 +44,10 @@ class LaunchedDroneStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
     @volatile_property
     def total(self):
         try:
-            char_attribs = self.__current_char.attributes
-        except AttributeError:
+            return int(
+                self.__current_char.attributes[AttributeId.max_active_drones])
+        except (AttributeError, KeyError):
             return None
-        else:
-            try:
-                return int(char_attribs[AttributeId.max_active_drones])
-            except KeyError:
-                return None
 
     @property
     def _users(self):

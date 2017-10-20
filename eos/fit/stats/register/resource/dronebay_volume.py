@@ -45,14 +45,9 @@ class DronebayVolumeStatRegister(
     @volatile_property
     def output(self):
         try:
-            ship_attribs = self.__current_ship.attributes
-        except AttributeError:
+            return self.__current_ship.attributes[AttributeId.drone_capacity]
+        except (AttributeError, KeyError):
             return None
-        else:
-            try:
-                return ship_attribs[AttributeId.drone_capacity]
-            except KeyError:
-                return None
 
     @property
     def _users(self):

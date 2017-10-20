@@ -47,14 +47,9 @@ class DroneBandwidthStatRegister(
     @volatile_property
     def output(self):
         try:
-            ship_attribs = self.__current_ship.attributes
-        except AttributeError:
+            return self.__current_ship.attributes[AttributeId.drone_bandwidth]
+        except (AttributeError, KeyError):
             return None
-        else:
-            try:
-                return ship_attribs[AttributeId.drone_bandwidth]
-            except KeyError:
-                return None
 
     @property
     def _users(self):

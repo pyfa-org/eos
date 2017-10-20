@@ -48,14 +48,9 @@ class TestModifierPython(CalculatorTestCase):
 
             def get_modification(self, carrier_item, ship):
                 try:
-                    carrier_attrs = carrier_item.attributes
-                    ship_attrs = ship.attributes
-                except AttributeError as e:
-                    raise ModificationCalculationError from e
-                try:
-                    carrier_mul = carrier_attrs[attr2.id]
-                    ship_mul = ship_attrs[attr3.id]
-                except KeyError as e:
+                    carrier_mul = carrier_item.attributes[attr2.id]
+                    ship_mul = ship.attributes[attr3.id]
+                except (AttributeError, KeyError) as e:
                     raise ModificationCalculationError from e
                 return ModifierOperator.post_mul, carrier_mul * ship_mul
 
