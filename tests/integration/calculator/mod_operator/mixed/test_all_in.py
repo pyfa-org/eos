@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,7 +38,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.pre_assign,
             src_attr=src_attr.id)
         effect_pre_ass = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_pre_ass])
+            category=EffectCategory.passive, modifiers=[modifier_pre_ass])
         value_pre_ass = 5
         influence_src_pre_ass = Implant(self.ch.type(
             attributes={src_attr.id: value_pre_ass},
@@ -51,7 +51,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.pre_mul,
             src_attr=src_attr.id)
         effect_pre_mul = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_pre_mul])
+            category=EffectCategory.passive, modifiers=[modifier_pre_mul])
         value_pre_mul = 50
         influence_src_pre_mul = Implant(self.ch.type(
             attributes={src_attr.id: value_pre_mul},
@@ -64,7 +64,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.pre_div,
             src_attr=src_attr.id)
         effect_pre_div = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_pre_div])
+            category=EffectCategory.passive, modifiers=[modifier_pre_div])
         value_pre_div = 0.5
         influence_src_pre_div = Implant(self.ch.type(
             attributes={src_attr.id: value_pre_div},
@@ -77,7 +77,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.mod_add,
             src_attr=src_attr.id)
         effect_mod_add = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_mod_add])
+            category=EffectCategory.passive, modifiers=[modifier_mod_add])
         value_mod_add = 10
         influence_src_mod_add = Implant(self.ch.type(
             attributes={src_attr.id: value_mod_add},
@@ -90,7 +90,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.mod_sub,
             src_attr=src_attr.id)
         effect_mod_sub = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_mod_sub])
+            category=EffectCategory.passive, modifiers=[modifier_mod_sub])
         value_mod_sub = 63
         influence_src_mod_sub = Implant(self.ch.type(
             attributes={src_attr.id: value_mod_sub},
@@ -103,7 +103,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         effect_post_mul = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_post_mul])
+            category=EffectCategory.passive, modifiers=[modifier_post_mul])
         value_post_mul = 1.35
         influence_src_post_mul = Implant(self.ch.type(
             attributes={src_attr.id: value_post_mul},
@@ -116,7 +116,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.post_div,
             src_attr=src_attr.id)
         effect_post_div = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_post_div])
+            category=EffectCategory.passive, modifiers=[modifier_post_div])
         value_post_div = 2.7
         influence_src_post_div = Implant(self.ch.type(
             attributes={src_attr.id: value_post_div},
@@ -129,7 +129,7 @@ class TestOperatorAllIn(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id)
         effect_post_perc = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_post_perc])
+            category=EffectCategory.passive, modifiers=[modifier_post_perc])
         value_post_perc = 15
         influence_src_post_perc = Implant(self.ch.type(
             attributes={src_attr.id: value_post_perc},

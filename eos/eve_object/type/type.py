@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import State
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from eos.data.cachable import BaseCachable
 from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT
@@ -37,7 +37,7 @@ FighterAbility = namedtuple(
 class Type(BaseCachable):
     """Represents eve type with all its metadata.
 
-    All characters, ships, incursion system-wide effects are actually eve types.
+    All characters, ships, incursion system-wide effects are based on eve types.
 
     Attributes:
         id: Identifier of the eve type.
@@ -77,12 +77,12 @@ class Type(BaseCachable):
     # Define attributes which describe eve type skill requirement details
     # Format: {skill eve type attribute ID: skill level attribute ID}
     __skillrq_attrs = {
-        AttributeId.required_skill_1: AttributeId.required_skill_1_level,
-        AttributeId.required_skill_2: AttributeId.required_skill_2_level,
-        AttributeId.required_skill_3: AttributeId.required_skill_3_level,
-        AttributeId.required_skill_4: AttributeId.required_skill_4_level,
-        AttributeId.required_skill_5: AttributeId.required_skill_5_level,
-        AttributeId.required_skill_6: AttributeId.required_skill_6_level}
+        Attribute.required_skill_1: Attribute.required_skill_1_level,
+        Attribute.required_skill_2: Attribute.required_skill_2_level,
+        Attribute.required_skill_3: Attribute.required_skill_3_level,
+        Attribute.required_skill_4: Attribute.required_skill_4_level,
+        Attribute.required_skill_5: Attribute.required_skill_5_level,
+        Attribute.required_skill_6: Attribute.required_skill_6_level}
 
     @cached_property
     def required_skills(self):

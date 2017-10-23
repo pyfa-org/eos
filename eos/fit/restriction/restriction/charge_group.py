@@ -22,18 +22,18 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 RESTRICTION_ATTRS = (
-    AttributeId.charge_group_1,
-    AttributeId.charge_group_2,
-    AttributeId.charge_group_3,
-    AttributeId.charge_group_4,
-    AttributeId.charge_group_5)
+    Attribute.charge_group_1,
+    Attribute.charge_group_2,
+    Attribute.charge_group_3,
+    Attribute.charge_group_4,
+    Attribute.charge_group_5)
 
 
 ChargeGroupErrorData = namedtuple(

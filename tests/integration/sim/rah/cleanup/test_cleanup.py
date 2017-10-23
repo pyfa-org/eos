@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -160,7 +160,7 @@ class TestRahSimCleanup(RahSimTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=skill_attr.id)
         skill_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[skill_modifier])
+            category=EffectCategory.passive, modifiers=[skill_modifier])
         skill_eve_type = self.ch.type(
             attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -205,7 +205,7 @@ class TestRahSimCleanup(RahSimTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=skill_attr.id)
         skill_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[skill_modifier])
+            category=EffectCategory.passive, modifiers=[skill_modifier])
         skill_eve_type = self.ch.type(
             attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -251,7 +251,7 @@ class TestRahSimCleanup(RahSimTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=skill_attr.id)
         skill_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[skill_modifier])
+            category=EffectCategory.passive, modifiers=[skill_modifier])
         skill_eve_type = self.ch.type(
             attributes={skill_attr.id: 0.1}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)

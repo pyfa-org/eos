@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import Attribute, Effect
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
@@ -81,27 +81,26 @@ class RigSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.rig_slot, AttributeId.rig_slots)
+            self, msg_broker, Effect.rig_slot, Attribute.rig_slots)
 
 
 class SubsystemSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.subsystem, AttributeId.max_subsystems)
+            self, msg_broker, Effect.subsystem, Attribute.max_subsystems)
 
 
 class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.turret_fitted,
-            AttributeId.turret_slots_left)
+            self, msg_broker, Effect.turret_fitted, Attribute.turret_slots_left)
 
 
 class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.launcher_fitted,
-            AttributeId.launcher_slots_left)
+            self, msg_broker, Effect.launcher_fitted,
+            Attribute.launcher_slots_left)

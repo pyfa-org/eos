@@ -23,7 +23,7 @@ import logging
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eve import Attribute, EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -41,15 +41,15 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         self.src_eve_type = self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect])
 
     def test_ship(self):
         influence_src = Ship(self.src_eve_type.id)
         influence_tgt = Rig(self.ch.type(attributes={
-            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-            AttributeId.required_skill_1_level: 1}).id)
+            self.tgt_attr.id: 100, Attribute.required_skill_1: 56,
+            Attribute.required_skill_1_level: 1}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.ship = influence_src
@@ -66,8 +66,8 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
     def test_character(self):
         influence_src = Character(self.src_eve_type.id)
         influence_tgt = Implant(self.ch.type(attributes={
-            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-            AttributeId.required_skill_1_level: 1}).id)
+            self.tgt_attr.id: 100, Attribute.required_skill_1: 56,
+            Attribute.required_skill_1_level: 1}).id)
         self.fit.implants.add(influence_tgt)
         # Action
         self.fit.character = influence_src

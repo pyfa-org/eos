@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -53,11 +53,11 @@ class TestEffectToggling(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id)
         self.effect1 = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier1])
+            category=EffectCategory.passive, modifiers=[modifier1])
         self.effect2 = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier2])
+            category=EffectCategory.passive, modifiers=[modifier2])
         self.effect_active = self.ch.effect(
-            category=EffectCategoryId.active, modifiers=[modifier_active])
+            category=EffectCategory.active, modifiers=[modifier_active])
         self.item = ModuleHigh(self.ch.type(
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,

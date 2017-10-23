@@ -22,7 +22,7 @@
 import logging
 from unittest.mock import patch
 
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
@@ -36,7 +36,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeattribs'].append(
-            {'typeID': 1, 'attributeID': AttributeId.ammo_loaded, 'value': 4.0})
+            {'typeID': 1, 'attributeID': Attribute.ammo_loaded, 'value': 4.0})
         self.dh.data['dgmtypeeffects'].append(
             {'typeID': 1, 'effectID': 200, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append(

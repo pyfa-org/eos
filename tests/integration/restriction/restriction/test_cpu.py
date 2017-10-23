@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -31,19 +31,19 @@ class TestCpu(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.cpu)
-        self.ch.attr(attribute_id=AttributeId.cpu_output)
+        self.ch.attr(attribute_id=Attribute.cpu)
+        self.ch.attr(attribute_id=Attribute.cpu_output)
         self.effect = self.ch.effect(
-            effect_id=EffectId.online, category=EffectCategoryId.online)
+            effect_id=Effect.online, category=EffectCategory.online)
 
     def test_fail_excess_single(self):
         # When ship provides cpu output, but single consumer demands for more,
         # error should be raised
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 40}).id)
+            attributes={Attribute.cpu_output: 40}).id)
         item = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 50}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 50}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item)
         # Action
@@ -62,7 +62,7 @@ class TestCpu(RestrictionTestCase):
         # be 0
         item = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 5}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 5}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item)
         # Action
@@ -80,15 +80,15 @@ class TestCpu(RestrictionTestCase):
         # When multiple consumers require less than cpu output alone, but in sum
         # want more than total output, it should be erroneous situation
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 40}).id)
+            attributes={Attribute.cpu_output: 40}).id)
         item1 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 25}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 25}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 20}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 20}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item2)
         # Action
@@ -112,19 +112,19 @@ class TestCpu(RestrictionTestCase):
     def test_fail_excess_modified(self):
         # Make sure modified cpu values are taken
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 50}).id)
+            attributes={Attribute.cpu_output: 50}).id)
         src_attr = self.ch.attr()
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=AttributeId.cpu,
+            tgt_attr=Attribute.cpu,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         mod_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 50, src_attr.id: 2},
+                attributes={Attribute.cpu: 50, src_attr.id: 2},
                 effects=(self.effect, mod_effect)).id,
             state=State.online)
         self.fit.modules.high.append(item)
@@ -143,15 +143,15 @@ class TestCpu(RestrictionTestCase):
         # If some item has zero usage and cpu error is still raised, check it's
         # not raised for item with zero usage
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 50}).id)
+            attributes={Attribute.cpu_output: 50}).id)
         item1 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 100}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 100}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 0}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 0}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item2)
         # Action
@@ -172,15 +172,15 @@ class TestCpu(RestrictionTestCase):
     def test_pass(self):
         # When total consumption is less than output, no errors should be raised
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 50}).id)
+            attributes={Attribute.cpu_output: 50}).id)
         item1 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 25}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 25}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 20}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 20}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item2)
         # Action
@@ -198,10 +198,10 @@ class TestCpu(RestrictionTestCase):
     def test_pass_state(self):
         # When item isn't online, it shouldn't consume anything
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 40}).id)
+            attributes={Attribute.cpu_output: 40}).id)
         item = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 50}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 50}, effects=[self.effect]).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         # Action
@@ -214,10 +214,10 @@ class TestCpu(RestrictionTestCase):
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 40}).id)
+            attributes={Attribute.cpu_output: 40}).id)
         item = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 50}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 50}, effects=[self.effect]).id,
             state=State.online)
         item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         self.fit.modules.high.append(item)
@@ -231,10 +231,10 @@ class TestCpu(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.cpu_output: 40}).id)
+            attributes={Attribute.cpu_output: 40}).id)
         item = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.cpu: 50}, effects=[self.effect]).id,
+                attributes={Attribute.cpu: 50}, effects=[self.effect]).id,
             state=State.online)
         self.fit.modules.high.append(item)
         self.fit.source = None

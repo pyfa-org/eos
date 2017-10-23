@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,13 +28,13 @@ class TestSubsystem(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.max_subsystems)
+        self.ch.attr(attribute_id=Attribute.max_subsystems)
         self.effect = self.ch.effect(
-            effect_id=EffectId.subsystem, category=EffectCategoryId.passive)
+            effect_id=Effect.subsystem, category=EffectCategory.passive)
 
     def test_output(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 3}).id)
+            attributes={Attribute.max_subsystems: 3}).id)
         # Verification
         self.assertEqual(self.fit.stats.subsystem_slots.total, 3)
         # Cleanup
@@ -99,7 +99,7 @@ class TestSubsystem(StatTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 3}).id)
+            attributes={Attribute.max_subsystems: 3}).id)
         self.fit.subsystems.add(
             Subsystem(self.ch.type(effects=[self.effect]).id))
         self.fit.subsystems.add(

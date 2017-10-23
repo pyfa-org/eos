@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,15 +30,15 @@ class TestHighSlot(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.hi_slots)
+        self.ch.attr(attribute_id=Attribute.hi_slots)
         self.effect = self.ch.effect(
-            effect_id=EffectId.hi_power, category=EffectCategoryId.passive)
+            effect_id=Effect.hi_power, category=EffectCategory.passive)
 
     def test_fail_excess_single(self):
         # Check that error is raised when number of used slots exceeds slot
         # amount provided by ship
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hi_slots: 0}).id)
+            attributes={Attribute.hi_slots: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
         # Action
@@ -72,7 +72,7 @@ class TestHighSlot(RestrictionTestCase):
         # Check that error works for multiple items, and raised only for those
         # which lie out of bounds
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hi_slots: 1}).id)
+            attributes={Attribute.hi_slots: 1}).id)
         eve_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(eve_type.id)
         item2 = ModuleHigh(eve_type.id)
@@ -97,7 +97,7 @@ class TestHighSlot(RestrictionTestCase):
     def test_fail_excess_multiple_with_nones(self):
         # Make sure Nones are processed properly
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hi_slots: 3}).id)
+            attributes={Attribute.hi_slots: 3}).id)
         eve_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(eve_type.id)
         item2 = ModuleHigh(eve_type.id)
@@ -130,7 +130,7 @@ class TestHighSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hi_slots: 2}).id)
+            attributes={Attribute.hi_slots: 2}).id)
         eve_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(eve_type.id)
         item2 = ModuleHigh(eve_type.id)
@@ -152,7 +152,7 @@ class TestHighSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hi_slots: 5}).id)
+            attributes={Attribute.hi_slots: 5}).id)
         eve_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(eve_type.id)
         item2 = ModuleHigh(eve_type.id)
@@ -174,7 +174,7 @@ class TestHighSlot(RestrictionTestCase):
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hi_slots: 0}).id)
+            attributes={Attribute.hi_slots: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         self.fit.modules.high.append(item)
@@ -189,7 +189,7 @@ class TestHighSlot(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.hi_slots: 0}).id)
+            attributes={Attribute.hi_slots: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
         self.fit.source = None

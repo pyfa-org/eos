@@ -20,8 +20,8 @@
 
 
 from eos.const.eos import (
-    EosTypeId, ModifierDomain, ModifierOperator, ModifierTargetFilter)
-from eos.const.eve import OperandId
+    EosType, ModifierDomain, ModifierOperator, ModifierTargetFilter)
+from eos.const.eve import Operand
 from eos.eve_object.modifier import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
 from ..exception import UnknownEtreeRootOperandError
@@ -66,12 +66,12 @@ class ExpressionTreeConverter:
     def _parse(self, exp_row, root=False):
         operand_id = exp_row.get('operandID')
         handler_map = {
-            OperandId.splice: self._handle_splice,
-            OperandId.add_itm_mod: self._handle_item_modifier,
-            OperandId.add_dom_mod: self._handle_domain_modifier,
-            OperandId.add_dom_grp_mod: self._handle_domain_group_modifier,
-            OperandId.add_dom_srq_mod: self._handle_domain_skillrq_modifer,
-            OperandId.add_own_srq_mod: self._handle_owner_skillrq_modifer}
+            Operand.splice: self._handle_splice,
+            Operand.add_itm_mod: self._handle_item_modifier,
+            Operand.add_dom_mod: self._handle_domain_modifier,
+            Operand.add_dom_grp_mod: self._handle_domain_group_modifier,
+            Operand.add_dom_srq_mod: self._handle_domain_skillrq_modifer,
+            Operand.add_own_srq_mod: self._handle_owner_skillrq_modifer}
         try:
             handler = handler_map[operand_id]
         except KeyError as e:
@@ -143,7 +143,7 @@ class ExpressionTreeConverter:
 
     @staticmethod
     def _get_domain(exp_row):
-        if exp_row['operandID'] != OperandId.def_dom:
+        if exp_row['operandID'] != Operand.def_dom:
             return None
         conversion_map = {
             'Self': ModifierDomain.self,
@@ -155,7 +155,7 @@ class ExpressionTreeConverter:
 
     @staticmethod
     def _get_operator(exp_row):
-        if exp_row['operandID'] != OperandId.def_optr:
+        if exp_row['operandID'] != Operand.def_optr:
             return None
         conversion_map = {
             'PreAssignment': ModifierOperator.pre_assign,
@@ -171,20 +171,20 @@ class ExpressionTreeConverter:
 
     @staticmethod
     def _get_attribute(exp_row):
-        if exp_row['operandID'] != OperandId.def_attr:
+        if exp_row['operandID'] != Operand.def_attr:
             return None
         return int(exp_row['expressionAttributeID'])
 
     @staticmethod
     def _get_type(exp_row):
         operand_id = exp_row['operandID']
-        if operand_id == OperandId.def_type:
+        if operand_id == Operand.def_type:
             return int(exp_row['expressionTypeID'])
         # Operand get_type specifies domain in its arg1; typeID of this domain
         # should be taken when needed
-        elif operand_id == OperandId.get_type:
+        elif operand_id == Operand.get_type:
             conversion_map = {
-                ModifierDomain.self: EosTypeId.current_self}
+                ModifierDomain.self: EosType.current_self}
             domain = ExpressionTreeConverter._get_domain(exp_row.arg1)
             return conversion_map[domain]
         else:
@@ -192,7 +192,7 @@ class ExpressionTreeConverter:
 
     @staticmethod
     def _get_group(exp_row):
-        if exp_row['operandID'] != OperandId.def_grp:
+        if exp_row['operandID'] != Operand.def_grp:
             return None
         return int(exp_row['expressionGroupID'])
 

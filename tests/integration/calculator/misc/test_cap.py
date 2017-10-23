@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -42,7 +42,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.src_attr.id)
         self.effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
 
     def test_cap_default(self):
         # Check that cap is applied properly when item doesn't have base value
@@ -81,7 +81,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         item = Implant(self.ch.type(
             attributes={
                 self.capped_attr.id: 3, self.src_attr.id: 6,
@@ -113,7 +113,7 @@ class TestCap(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         cap_updater = Implant(self.ch.type(
             attributes={self.src_attr.id: 3.5}, effects=[effect]).id)
         self.fit.implants.add(cap_updater)

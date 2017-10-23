@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import (
     EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from .modifier import PropulsionModuleVelocityBoostModifier
 from ...modifier import DogmaModifier
 
@@ -38,9 +38,9 @@ def add_ab_modifiers(effect):
     mass_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        tgt_attr=AttributeId.mass,
+        tgt_attr=Attribute.mass,
         operator=ModifierOperator.mod_add,
-        src_attr=AttributeId.mass_addition)
+        src_attr=Attribute.mass_addition)
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, velocity_modifier)
     effect.build_status = EffectBuildStatus.custom
@@ -53,15 +53,15 @@ def add_mwd_modifiers(effect):
     mass_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        tgt_attr=AttributeId.mass,
+        tgt_attr=Attribute.mass,
         operator=ModifierOperator.mod_add,
-        src_attr=AttributeId.mass_addition)
+        src_attr=Attribute.mass_addition)
     signature_modifier = DogmaModifier(
         tgt_filter=ModifierTargetFilter.item,
         tgt_domain=ModifierDomain.ship,
-        tgt_attr=AttributeId.signature_radius,
+        tgt_attr=Attribute.signature_radius,
         operator=ModifierOperator.post_percent,
-        src_attr=AttributeId.signature_radius_bonus)
+        src_attr=Attribute.signature_radius_bonus)
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, signature_modifier, velocity_modifier)
     effect.build_status = EffectBuildStatus.custom

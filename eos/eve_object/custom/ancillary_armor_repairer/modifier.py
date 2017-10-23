@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, TypeId
+from eos.const.eve import Attribute, Type
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrItemAdd, InstrItemRemove)
 from ...modifier.exception import ModificationCalculationError
@@ -33,7 +33,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         BasePythonModifier.__init__(
             self, tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self, tgt_filter_extra_arg=None,
-            tgt_attr=AttributeId.armor_damage_amount)
+            tgt_attr=Attribute.armor_damage_amount)
 
     def get_modification(self, carrier_item, _):
         # If carrier item has charge and it's paste, use on-carrier rep amount
@@ -41,12 +41,12 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         charge = getattr(carrier_item, 'charge', None)
         if (
             charge is not None and
-            charge._eve_type_id == TypeId.nanite_repair_paste
+            charge._eve_type_id == Type.nanite_repair_paste
         ):
             try:
                 multiplier = (
                     carrier_item.attributes
-                    [AttributeId.charged_armor_damage_multiplier])
+                    [Attribute.charged_armor_damage_multiplier])
             except (AttributeError, KeyError) as e:
                 raise ModificationCalculationError from e
         else:
@@ -58,7 +58,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         # paste, then modification value changes
         if (
             getattr(carrier_item, 'charge', None) is message.item and
-            message.item._eve_type_id == TypeId.nanite_repair_paste
+            message.item._eve_type_id == Type.nanite_repair_paste
         ):
             return True
         return False
@@ -68,7 +68,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         # should change
         if (
             message.item is carrier_item and
-            message.attr == AttributeId.charged_armor_damage_multiplier
+            message.attr == Attribute.charged_armor_damage_multiplier
         ):
             return True
         return False

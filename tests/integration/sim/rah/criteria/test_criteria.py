@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import EffectId
+from eos.const.eve import Effect
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -127,7 +127,7 @@ class TestRahSimCriteria(RahSimTestCase):
         # RAH is detected using effect, thus if item doesn't have RAH effect,
         # it's not RAH
         rah_item.set_effect_run_mode(
-            EffectId.adaptive_armor_hardener, EffectRunMode.force_stop)
+            Effect.adaptive_armor_hardener, EffectRunMode.force_stop)
         # Action
         self.fit.modules.low.equip(rah_item)
         # Verification

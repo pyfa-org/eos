@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectId, EffectCategoryId
+from eos.const.eve import Effect, EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -66,17 +66,17 @@ class TestStateSwitching(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr3.id)
         effect_cat_offline = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_off])
+            category=EffectCategory.passive, modifiers=[modifier_off])
         effect_cat_online = self.ch.effect(
-            category=EffectCategoryId.online, modifiers=[modifier_on])
+            category=EffectCategory.online, modifiers=[modifier_on])
         effect_cat_active = self.ch.effect(
-            category=EffectCategoryId.active, modifiers=[modifier_act])
+            category=EffectCategory.active, modifiers=[modifier_act])
         effect_cat_overload = self.ch.effect(
-            category=EffectCategoryId.overload, modifiers=[modifier_over])
+            category=EffectCategory.overload, modifiers=[modifier_over])
         online_effect = self.ch.effect(
-            effect_id=EffectId.online, category=EffectCategoryId.online)
+            effect_id=Effect.online, category=EffectCategory.online)
         effect_disabled = self.ch.effect(
-            category=EffectCategoryId.online, modifiers=[modifier_disabled])
+            category=EffectCategory.online, modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.ch.type(
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,

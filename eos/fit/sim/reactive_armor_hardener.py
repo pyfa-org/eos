@@ -23,7 +23,7 @@ from copy import copy
 from logging import getLogger
 from math import ceil, floor
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import Attribute, Effect
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrAttrValueChangedMasked,
     InputDefaultIncomingDamageChanged, InstrEffectsStart, InstrEffectsStop)
@@ -41,16 +41,16 @@ SIG_DIGITS = 10
 # When equal damage is received across several damage types, those which come
 # earlier in this list will be picked as donors
 res_attrs = (
-    AttributeId.armor_em_damage_resonance,
-    AttributeId.armor_explosive_damage_resonance,
-    AttributeId.armor_kinetic_damage_resonance,
-    AttributeId.armor_thermal_damage_resonance)
+    Attribute.armor_em_damage_resonance,
+    Attribute.armor_explosive_damage_resonance,
+    Attribute.armor_kinetic_damage_resonance,
+    Attribute.armor_thermal_damage_resonance)
 # Format: {resonance attribute: damage profile field}
 profile_attrib_map = {
-    AttributeId.armor_em_damage_resonance: 'em',
-    AttributeId.armor_thermal_damage_resonance: 'thermal',
-    AttributeId.armor_kinetic_damage_resonance: 'kinetic',
-    AttributeId.armor_explosive_damage_resonance: 'explosive'}
+    Attribute.armor_em_damage_resonance: 'em',
+    Attribute.armor_thermal_damage_resonance: 'thermal',
+    Attribute.armor_kinetic_damage_resonance: 'kinetic',
+    Attribute.armor_explosive_damage_resonance: 'explosive'}
 
 
 class RahState:
@@ -190,7 +190,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 # resonances
                 new_resos = self.__get_next_resos(
                     self.__data[item], cycle_dmg_data[item],
-                    item.attributes[AttributeId.resistance_shift_amount] / 100)
+                    item.attributes[Attribute.resistance_shift_amount] / 100)
 
                 # Then write these resonances to dictionary with results and
                 # notify everyone about these changes. This is needed to get
@@ -384,7 +384,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # (lowest resonance) to be exhausted
             exhaustion_cycles[item] = max(ceil(
                 (1 - item.attributes._get_without_overrides(attr)) /
-                (item.attributes[AttributeId.resistance_shift_amount] / 100)
+                (item.attributes[Attribute.resistance_shift_amount] / 100)
             ) for attr in res_attrs)
         # Slowest RAH is the one which takes the most time to exhaust its
         # highest resistance when it's used strictly as donor
@@ -418,7 +418,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
     # Message handling
     def _handle_effects_activation(self, message):
-        if EffectId.adaptive_armor_hardener in message.effects:
+        if Effect.adaptive_armor_hardener in message.effects:
             for attr in res_attrs:
                 message.item.attributes._set_override_callback(
                     attr, (self.get_reso, (message.item, attr), {}))
@@ -426,7 +426,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__clear_results()
 
     def _handle_effects_deactivation(self, message):
-        if EffectId.adaptive_armor_hardener in message.effects:
+        if Effect.adaptive_armor_hardener in message.effects:
             for attr in res_attrs:
                 message.item.attributes._del_override_callback(attr)
             try:
@@ -442,7 +442,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__clear_results()
         # RAH shift amount or cycle time
         elif item in self.__data and (
-            message.attr == AttributeId.resistance_shift_amount or
+            message.attr == Attribute.resistance_shift_amount or
             # Cycle time change invalidates results only when there're more than
             # 1 RAHs
             (
@@ -480,7 +480,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def __get_rah_effect(self, item):
         """Get RAH effect object for passed i."""
         try:
-            return item._eve_type_effects[EffectId.adaptive_armor_hardener]
+            return item._eve_type_effects[Effect.adaptive_armor_hardener]
         except KeyError:
             return None
 

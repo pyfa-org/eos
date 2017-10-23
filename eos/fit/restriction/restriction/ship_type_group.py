@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
@@ -32,38 +32,38 @@ from ..exception import RestrictionValidationError
 TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 # Containers for attribute IDs which are used to restrict fitting
 TYPE_RESTRICTION_ATTRS = (
-    AttributeId.can_fit_ship_type_1,
-    AttributeId.can_fit_ship_type_2,
-    AttributeId.can_fit_ship_type_3,
-    AttributeId.can_fit_ship_type_4,
-    AttributeId.can_fit_ship_type_5,
-    AttributeId.can_fit_ship_type_6,
-    AttributeId.can_fit_ship_type_7,
-    AttributeId.can_fit_ship_type_8,
-    AttributeId.can_fit_ship_type_9,
-    AttributeId.can_fit_ship_type_10,
-    AttributeId.fits_to_shiptype)
+    Attribute.can_fit_ship_type_1,
+    Attribute.can_fit_ship_type_2,
+    Attribute.can_fit_ship_type_3,
+    Attribute.can_fit_ship_type_4,
+    Attribute.can_fit_ship_type_5,
+    Attribute.can_fit_ship_type_6,
+    Attribute.can_fit_ship_type_7,
+    Attribute.can_fit_ship_type_8,
+    Attribute.can_fit_ship_type_9,
+    Attribute.can_fit_ship_type_10,
+    Attribute.fits_to_shiptype)
 GROUP_RESTRICTION_ATTRS = (
-    AttributeId.can_fit_ship_group_1,
-    AttributeId.can_fit_ship_group_2,
-    AttributeId.can_fit_ship_group_3,
-    AttributeId.can_fit_ship_group_4,
-    AttributeId.can_fit_ship_group_5,
-    AttributeId.can_fit_ship_group_6,
-    AttributeId.can_fit_ship_group_7,
-    AttributeId.can_fit_ship_group_8,
-    AttributeId.can_fit_ship_group_9,
-    AttributeId.can_fit_ship_group_10,
-    AttributeId.can_fit_ship_group_11,
-    AttributeId.can_fit_ship_group_12,
-    AttributeId.can_fit_ship_group_13,
-    AttributeId.can_fit_ship_group_14,
-    AttributeId.can_fit_ship_group_15,
-    AttributeId.can_fit_ship_group_16,
-    AttributeId.can_fit_ship_group_17,
-    AttributeId.can_fit_ship_group_18,
-    AttributeId.can_fit_ship_group_19,
-    AttributeId.can_fit_ship_group_20)
+    Attribute.can_fit_ship_group_1,
+    Attribute.can_fit_ship_group_2,
+    Attribute.can_fit_ship_group_3,
+    Attribute.can_fit_ship_group_4,
+    Attribute.can_fit_ship_group_5,
+    Attribute.can_fit_ship_group_6,
+    Attribute.can_fit_ship_group_7,
+    Attribute.can_fit_ship_group_8,
+    Attribute.can_fit_ship_group_9,
+    Attribute.can_fit_ship_group_10,
+    Attribute.can_fit_ship_group_11,
+    Attribute.can_fit_ship_group_12,
+    Attribute.can_fit_ship_group_13,
+    Attribute.can_fit_ship_group_14,
+    Attribute.can_fit_ship_group_15,
+    Attribute.can_fit_ship_group_16,
+    Attribute.can_fit_ship_group_17,
+    Attribute.can_fit_ship_group_18,
+    Attribute.can_fit_ship_group_19,
+    Attribute.can_fit_ship_group_20)
 
 
 ShipTypeGroupErrorData = namedtuple(

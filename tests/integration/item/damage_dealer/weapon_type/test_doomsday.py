@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,14 +28,13 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.em_damage)
-        self.ch.attr(attribute_id=AttributeId.thermal_damage)
-        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.ch.attr(attribute_id=Attribute.em_damage)
+        self.ch.attr(attribute_id=Attribute.thermal_damage)
+        self.ch.attr(attribute_id=Attribute.kinetic_damage)
+        self.ch.attr(attribute_id=Attribute.explosive_damage)
         self.cycle_attr = self.ch.attr()
         self.effect = self.ch.effect(
-            effect_id=EffectId.super_weapon_amarr,
-            category=EffectCategoryId.active,
+            effect_id=Effect.super_weapon_amarr, category=EffectCategory.active,
             duration_attribute=self.cycle_attr.id)
 
     def test_nominal_volley_generic(self):
@@ -43,10 +42,9 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.em_damage: 52000,
-                    AttributeId.thermal_damage: 63000,
-                    AttributeId.kinetic_damage: 74000,
-                    AttributeId.explosive_damage: 85000,
+                    Attribute.em_damage: 52000, Attribute.thermal_damage: 63000,
+                    Attribute.kinetic_damage: 74000,
+                    Attribute.explosive_damage: 85000,
                     self.cycle_attr.id: 250000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
@@ -63,17 +61,16 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_multiplier(self):
-        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
+        self.ch.attr(attribute_id=Attribute.damage_multiplier)
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.em_damage: 52000,
-                    AttributeId.thermal_damage: 63000,
-                    AttributeId.kinetic_damage: 74000,
-                    AttributeId.explosive_damage: 85000,
+                    Attribute.em_damage: 52000, Attribute.thermal_damage: 63000,
+                    Attribute.kinetic_damage: 74000,
+                    Attribute.explosive_damage: 85000,
                     self.cycle_attr.id: 250000,
-                    AttributeId.damage_multiplier: 5.5},
+                    Attribute.damage_multiplier: 5.5},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
@@ -93,10 +90,9 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.em_damage: 52000,
-                    AttributeId.thermal_damage: 63000,
-                    AttributeId.kinetic_damage: 74000,
-                    AttributeId.explosive_damage: 85000,
+                    Attribute.em_damage: 52000, Attribute.thermal_damage: 63000,
+                    Attribute.kinetic_damage: 74000,
+                    Attribute.explosive_damage: 85000,
                     self.cycle_attr.id: 250000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.online)
@@ -117,10 +113,9 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.em_damage: 52000,
-                    AttributeId.thermal_damage: 63000,
-                    AttributeId.kinetic_damage: 74000,
-                    AttributeId.explosive_damage: 85000,
+                    Attribute.em_damage: 52000, Attribute.thermal_damage: 63000,
+                    Attribute.kinetic_damage: 74000,
+                    Attribute.explosive_damage: 85000,
                     self.cycle_attr.id: 250000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
@@ -142,10 +137,9 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.em_damage: 52000,
-                    AttributeId.thermal_damage: 63000,
-                    AttributeId.kinetic_damage: 74000,
-                    AttributeId.explosive_damage: 85000,
+                    Attribute.em_damage: 52000, Attribute.thermal_damage: 63000,
+                    Attribute.kinetic_damage: 74000,
+                    Attribute.explosive_damage: 85000,
                     self.cycle_attr.id: 250000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
@@ -166,10 +160,9 @@ class TestItemDamageDoomsday(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.em_damage: 52000,
-                    AttributeId.thermal_damage: 63000,
-                    AttributeId.kinetic_damage: 74000,
-                    AttributeId.explosive_damage: 85000,
+                    Attribute.em_damage: 52000, Attribute.thermal_damage: 63000,
+                    Attribute.kinetic_damage: 74000,
+                    Attribute.explosive_damage: 85000,
                     self.cycle_attr.id: 250000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)

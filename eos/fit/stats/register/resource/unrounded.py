@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import Attribute, Effect
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
@@ -87,5 +87,5 @@ class CalibrationStatRegister(UnroundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         UnroundedResourceStatRegister.__init__(
-            self, msg_broker, AttributeId.upgrade_capacity, EffectId.rig_slot,
-            AttributeId.upgrade_cost)
+            self, msg_broker, Attribute.upgrade_capacity, Effect.rig_slot,
+            Attribute.upgrade_cost)

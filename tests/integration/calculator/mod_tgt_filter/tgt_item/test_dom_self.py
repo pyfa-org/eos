@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,7 +38,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=self.src_attr.id)
         self.effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
 
     def test_independent(self):
         item = Ship(self.ch.type(

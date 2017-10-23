@@ -20,9 +20,9 @@
 
 
 from eos.const.eos import (
-    EffectBuildStatus, EosEffectId, ModifierDomain, ModifierOperator,
+    EffectBuildStatus, EosEffect, ModifierDomain, ModifierOperator,
     ModifierTargetFilter)
-from eos.const.eve import AttributeId, EffectCategoryId, TypeId
+from eos.const.eve import Attribute, EffectCategory, Type
 from ...effect import Effect
 from ...modifier import DogmaModifier
 
@@ -38,21 +38,21 @@ def add_character_missile_damage_multiplier(eve_type):
     """
     modifiers = []
     for damage_attr in (
-        AttributeId.em_damage,
-        AttributeId.thermal_damage,
-        AttributeId.kinetic_damage,
-        AttributeId.explosive_damage
+        Attribute.em_damage,
+        Attribute.thermal_damage,
+        Attribute.kinetic_damage,
+        Attribute.explosive_damage
     ):
         modifiers.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=ModifierDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
+            tgt_filter_extra_arg=Type.missile_launcher_operation,
             tgt_attr=damage_attr,
             operator=ModifierOperator.pre_mul,
-            src_attr=AttributeId.missile_damage_multiplier))
+            src_attr=Attribute.missile_damage_multiplier))
     effect = Effect(
-        effect_id=EosEffectId.char_missile_dmg,
-        category=EffectCategoryId.passive,
+        effect_id=EosEffect.char_missile_dmg,
+        category=EffectCategory.passive,
         is_offensive=False,
         is_assistance=False,
         build_status=EffectBuildStatus.custom,

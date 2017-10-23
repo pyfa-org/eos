@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,20 +28,19 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.capacity)
-        self.ch.attr(attribute_id=AttributeId.volume)
-        self.ch.attr(attribute_id=AttributeId.charge_rate)
-        self.ch.attr(attribute_id=AttributeId.reload_time)
-        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
-        self.ch.attr(attribute_id=AttributeId.em_damage)
-        self.ch.attr(attribute_id=AttributeId.thermal_damage)
-        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attr(attribute_id=AttributeId.explosive_damage)
-        self.ch.attr(attribute_id=AttributeId.module_reactivation_delay)
+        self.ch.attr(attribute_id=Attribute.capacity)
+        self.ch.attr(attribute_id=Attribute.volume)
+        self.ch.attr(attribute_id=Attribute.charge_rate)
+        self.ch.attr(attribute_id=Attribute.reload_time)
+        self.ch.attr(attribute_id=Attribute.damage_multiplier)
+        self.ch.attr(attribute_id=Attribute.em_damage)
+        self.ch.attr(attribute_id=Attribute.thermal_damage)
+        self.ch.attr(attribute_id=Attribute.kinetic_damage)
+        self.ch.attr(attribute_id=Attribute.explosive_damage)
+        self.ch.attr(attribute_id=Attribute.module_reactivation_delay)
         self.cycle_attr = self.ch.attr()
         self.effect = self.ch.effect(
-            effect_id=EffectId.projectile_fired,
-            category=EffectCategoryId.active,
+            effect_id=Effect.projectile_fired, category=EffectCategory.active,
             duration_attribute=self.cycle_attr.id)
 
     def test_effective(self):
@@ -49,16 +48,15 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
-                    self.cycle_attr.id: 500, AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    Attribute.damage_multiplier: 2.5, Attribute.capacity: 2.0,
+                    self.cycle_attr.id: 500, Attribute.charge_rate: 1.0,
+                    Attribute.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2, AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3, AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+            Attribute.volume: 0.2, Attribute.em_damage: 5.2,
+            Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+            Attribute.explosive_damage: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         profile = ResistanceProfile(
@@ -78,17 +76,16 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
-                    self.cycle_attr.id: 500, AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 6500,
-                    AttributeId.module_reactivation_delay: 1500},
+                    Attribute.damage_multiplier: 2.5, Attribute.capacity: 2.0,
+                    self.cycle_attr.id: 500, Attribute.charge_rate: 1.0,
+                    Attribute.reload_time: 6500,
+                    Attribute.module_reactivation_delay: 1500},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2, AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3, AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+            Attribute.volume: 0.2, Attribute.em_damage: 5.2,
+            Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+            Attribute.explosive_damage: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_nominal_dps(reload=True)
@@ -106,17 +103,16 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
-                    self.cycle_attr.id: 500, AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 6500,
-                    AttributeId.module_reactivation_delay: 19500},
+                    Attribute.damage_multiplier: 2.5, Attribute.capacity: 2.0,
+                    self.cycle_attr.id: 500, Attribute.charge_rate: 1.0,
+                    Attribute.reload_time: 6500,
+                    Attribute.module_reactivation_delay: 19500},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2, AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3, AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+            Attribute.volume: 0.2, Attribute.em_damage: 5.2,
+            Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+            Attribute.explosive_damage: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_nominal_dps(reload=True)
@@ -134,16 +130,15 @@ class TestItemDamageMiscNominalDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
-                    self.cycle_attr.id: 500, AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    Attribute.damage_multiplier: 2.5, Attribute.capacity: 2.0,
+                    self.cycle_attr.id: 500, Attribute.charge_rate: 1.0,
+                    Attribute.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2, AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3, AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+            Attribute.volume: 0.2, Attribute.em_damage: 5.2,
+            Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+            Attribute.explosive_damage: 8.5}).id)
         fit.modules.high.append(item)
         fit.source = None
         # Verification

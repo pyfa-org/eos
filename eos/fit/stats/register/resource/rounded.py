@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import Attribute, Effect
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
@@ -87,13 +87,13 @@ class CpuStatRegister(RoundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         RoundedResourceStatRegister.__init__(
-            self, msg_broker, AttributeId.cpu_output, EffectId.online,
-            AttributeId.cpu)
+            self, msg_broker, Attribute.cpu_output, Effect.online,
+            Attribute.cpu)
 
 
 class PowergridStatRegister(RoundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         RoundedResourceStatRegister.__init__(
-            self, msg_broker, AttributeId.power_output, EffectId.online,
-            AttributeId.power)
+            self, msg_broker, Attribute.power_output, Effect.online,
+            Attribute.power)

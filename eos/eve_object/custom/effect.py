@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import EffectId
+from eos.const.eve import Effect
 from .ancillary_armor_repairer import add_aar_modifier
 from .online_effect_category import fix_online_category
 from .propulsion_modules import add_ab_modifiers, add_mwd_modifiers
@@ -28,12 +28,12 @@ from .reactive_armor_hardener import add_rah_modifiers
 
 # Format: {effect ID: customization method}
 _effect_id_map = {
-    EffectId.adaptive_armor_hardener: add_rah_modifiers,
-    EffectId.fueled_armor_repair: add_aar_modifier,
-    EffectId.module_bonus_afterburner: add_ab_modifiers,
-    EffectId.module_bonus_ancillary_remote_armor_repairer: add_aar_modifier,
-    EffectId.module_bonus_microwarpdrive: add_mwd_modifiers,
-    EffectId.online: fix_online_category}
+    Effect.adaptive_armor_hardener: add_rah_modifiers,
+    Effect.fueled_armor_repair: add_aar_modifier,
+    Effect.module_bonus_afterburner: add_ab_modifiers,
+    Effect.module_bonus_ancillary_remote_armor_repairer: add_aar_modifier,
+    Effect.module_bonus_microwarpdrive: add_mwd_modifiers,
+    Effect.online: fix_online_category}
 
 
 def customize_effect(effect):

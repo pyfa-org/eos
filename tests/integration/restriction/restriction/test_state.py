@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -29,7 +29,7 @@ class TestState(RestrictionTestCase):
     """Check functionality of item state restriction."""
 
     def test_fail_state_higher(self):
-        effect = self.ch.effect(category=EffectCategoryId.active)
+        effect = self.ch.effect(category=EffectCategory.active)
         item = ModuleHigh(
             self.ch.type(effects=[effect], default_effect=effect).id,
             state=State.overload)
@@ -47,7 +47,7 @@ class TestState(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_state_lower(self):
-        effect = self.ch.effect(category=EffectCategoryId.active)
+        effect = self.ch.effect(category=EffectCategory.active)
         item = ModuleHigh(
             self.ch.type(effects=[effect], default_effect=effect).id,
             state=State.online)
@@ -61,7 +61,7 @@ class TestState(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_state_equal(self):
-        effect = self.ch.effect(category=EffectCategoryId.active)
+        effect = self.ch.effect(category=EffectCategory.active)
         item = ModuleHigh(
             self.ch.type(effects=[effect], default_effect=effect).id,
             state=State.active)
@@ -75,7 +75,7 @@ class TestState(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        effect = self.ch.effect(category=EffectCategoryId.active)
+        effect = self.ch.effect(category=EffectCategory.active)
         item = ModuleHigh(
             self.ch.type(effects=[effect], default_effect=effect).id,
             state=State.overload)

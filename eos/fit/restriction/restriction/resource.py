@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -75,7 +75,7 @@ class CpuRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'cpu', AttributeId.cpu)
+            self, stats, 'cpu', Attribute.cpu)
 
     @property
     def type(self):
@@ -91,7 +91,7 @@ class PowergridRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'powergrid', AttributeId.power)
+            self, stats, 'powergrid', Attribute.power)
 
     @property
     def type(self):
@@ -107,7 +107,7 @@ class CalibrationRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'calibration', AttributeId.upgrade_cost)
+            self, stats, 'calibration', Attribute.upgrade_cost)
 
     @property
     def type(self):
@@ -123,7 +123,7 @@ class DroneBayVolumeRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'dronebay', AttributeId.volume)
+            self, stats, 'dronebay', Attribute.volume)
 
     @property
     def type(self):
@@ -139,7 +139,7 @@ class DroneBandwidthRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'drone_bandwidth', AttributeId.drone_bandwidth_used)
+            self, stats, 'drone_bandwidth', Attribute.drone_bandwidth_used)
 
     @property
     def type(self):

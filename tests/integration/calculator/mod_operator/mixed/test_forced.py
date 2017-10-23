@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,7 +38,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.pre_assign,
             src_attr=src_attr.id)
         effect_pre_ass = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_pre_ass])
+            category=EffectCategory.passive, modifiers=[modifier_pre_ass])
         influence_src_pre_ass = Implant(self.ch.type(
             attributes={src_attr.id: 5}, effects=[effect_pre_ass]).id)
         self.fit.implants.add(influence_src_pre_ass)
@@ -49,7 +49,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.pre_mul,
             src_attr=src_attr.id)
         effect_pre_mul = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_pre_mul])
+            category=EffectCategory.passive, modifiers=[modifier_pre_mul])
         influence_src_pre_mul = Implant(self.ch.type(
             attributes={src_attr.id: 50}, effects=[effect_pre_mul]).id)
         self.fit.implants.add(influence_src_pre_mul)
@@ -60,7 +60,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.pre_div,
             src_attr=src_attr.id)
         effect_pre_div = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_pre_div])
+            category=EffectCategory.passive, modifiers=[modifier_pre_div])
         influence_src_pre_div = Implant(self.ch.type(
             attributes={src_attr.id: 0.5}, effects=[effect_pre_div]).id)
         self.fit.implants.add(influence_src_pre_div)
@@ -71,7 +71,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.mod_add,
             src_attr=src_attr.id)
         effect_mod_add = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_mod_add])
+            category=EffectCategory.passive, modifiers=[modifier_mod_add])
         influence_src_mod_add = Implant(self.ch.type(
             attributes={src_attr.id: 10}, effects=[effect_mod_add]).id)
         self.fit.implants.add(influence_src_mod_add)
@@ -82,7 +82,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.mod_sub,
             src_attr=src_attr.id)
         effect_mod_sub = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_mod_sub])
+            category=EffectCategory.passive, modifiers=[modifier_mod_sub])
         influence_src_mod_sub = Implant(self.ch.type(
             attributes={src_attr.id: 63}, effects=[effect_mod_sub]).id)
         self.fit.implants.add(influence_src_mod_sub)
@@ -93,7 +93,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         effect_post_mul = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_post_mul])
+            category=EffectCategory.passive, modifiers=[modifier_post_mul])
         influence_src_post_mul = Implant(self.ch.type(
             attributes={src_attr.id: 1.35}, effects=[effect_post_mul]).id)
         self.fit.implants.add(influence_src_post_mul)
@@ -104,7 +104,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_div,
             src_attr=src_attr.id)
         effect_post_div = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_post_div])
+            category=EffectCategory.passive, modifiers=[modifier_post_div])
         influence_src_post_div = Implant(self.ch.type(
             attributes={src_attr.id: 2.7}, effects=[effect_post_div]).id)
         self.fit.implants.add(influence_src_post_div)
@@ -115,7 +115,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id)
         effect_post_perc = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_post_perc])
+            category=EffectCategory.passive, modifiers=[modifier_post_perc])
         influence_src_post_perc = Implant(self.ch.type(
             attributes={src_attr.id: 15}, effects=[effect_post_perc]).id)
         self.fit.implants.add(influence_src_post_perc)
@@ -126,7 +126,7 @@ class TestOperatorForcedValue(CalculatorTestCase):
             operator=ModifierOperator.post_assign,
             src_attr=src_attr.id)
         effect_post_ass = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier_post_ass])
+            category=EffectCategory.passive, modifiers=[modifier_post_ass])
         influence_src_post_ass = Implant(self.ch.type(
             attributes={src_attr.id: 68}, effects=[effect_post_ass]).id)
         self.fit.implants.add(influence_src_post_ass)

@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,38 +28,35 @@ class TestItemDamageMissile(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.capacity)
-        self.ch.attr(attribute_id=AttributeId.volume)
-        self.ch.attr(attribute_id=AttributeId.charge_rate)
-        self.ch.attr(attribute_id=AttributeId.reload_time)
-        self.ch.attr(attribute_id=AttributeId.em_damage)
-        self.ch.attr(attribute_id=AttributeId.thermal_damage)
-        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.ch.attr(attribute_id=Attribute.capacity)
+        self.ch.attr(attribute_id=Attribute.volume)
+        self.ch.attr(attribute_id=Attribute.charge_rate)
+        self.ch.attr(attribute_id=Attribute.reload_time)
+        self.ch.attr(attribute_id=Attribute.em_damage)
+        self.ch.attr(attribute_id=Attribute.thermal_damage)
+        self.ch.attr(attribute_id=Attribute.kinetic_damage)
+        self.ch.attr(attribute_id=Attribute.explosive_damage)
         self.cycle_attr = self.ch.attr()
         self.effect_item = self.ch.effect(
-            effect_id=EffectId.use_missiles, category=EffectCategoryId.active,
+            effect_id=Effect.use_missiles, category=EffectCategory.active,
             duration_attribute=self.cycle_attr.id)
         self.effect_charge = self.ch.effect(
-            effect_id=EffectId.bomb_launching,
-            category=EffectCategoryId.passive)
+            effect_id=Effect.bomb_launching, category=EffectCategory.passive)
 
     def test_nominal_volley_generic(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
-                AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
-                AttributeId.thermal_damage: 6.3,
-                AttributeId.kinetic_damage: 7.4,
-                AttributeId.explosive_damage: 8.5},
+                Attribute.volume: 0.1, Attribute.em_damage: 5.2,
+                Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+                Attribute.explosive_damage: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -75,23 +72,21 @@ class TestItemDamageMissile(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_multiplier(self):
-        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
+        self.ch.attr(attribute_id=Attribute.damage_multiplier)
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000,
-                    AttributeId.damage_multiplier: 5.5},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000,
+                    Attribute.damage_multiplier: 5.5},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
-                AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
-                AttributeId.thermal_damage: 6.3,
-                AttributeId.kinetic_damage: 7.4,
-                AttributeId.explosive_damage: 8.5},
+                Attribute.volume: 0.1, Attribute.em_damage: 5.2,
+                Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+                Attribute.explosive_damage: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -111,17 +106,15 @@ class TestItemDamageMissile(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.online)
         item.charge = Charge(self.ch.type(
             attributes={
-                AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
-                AttributeId.thermal_damage: 6.3,
-                AttributeId.kinetic_damage: 7.4,
-                AttributeId.explosive_damage: 8.5},
+                Attribute.volume: 0.1, Attribute.em_damage: 5.2,
+                Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+                Attribute.explosive_damage: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -141,18 +134,16 @@ class TestItemDamageMissile(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.active)
         item.set_effect_run_mode(self.effect_item.id, EffectRunMode.force_stop)
         item.charge = Charge(self.ch.type(
             attributes={
-                AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
-                AttributeId.thermal_damage: 6.3,
-                AttributeId.kinetic_damage: 7.4,
-                AttributeId.explosive_damage: 8.5},
+                Attribute.volume: 0.1, Attribute.em_damage: 5.2,
+                Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+                Attribute.explosive_damage: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -172,17 +163,15 @@ class TestItemDamageMissile(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
-                AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
-                AttributeId.thermal_damage: 6.3,
-                AttributeId.kinetic_damage: 7.4,
-                AttributeId.explosive_damage: 8.5},
+                Attribute.volume: 0.1, Attribute.em_damage: 5.2,
+                Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+                Attribute.explosive_damage: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         item.charge.set_effect_run_mode(
@@ -204,9 +193,8 @@ class TestItemDamageMissile(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.active)
         fit.modules.high.append(item)
@@ -226,17 +214,15 @@ class TestItemDamageMissile(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
-                AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
-                AttributeId.thermal_damage: 6.3,
-                AttributeId.kinetic_damage: 7.4,
-                AttributeId.explosive_damage: 8.5},
+                Attribute.volume: 0.1, Attribute.em_damage: 5.2,
+                Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+                Attribute.explosive_damage: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -256,17 +242,15 @@ class TestItemDamageMissile(ItemMixinTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    AttributeId.capacity: 2.0, self.cycle_attr.id: 2000,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 10000},
+                    Attribute.capacity: 2.0, self.cycle_attr.id: 2000,
+                    Attribute.charge_rate: 1.0, Attribute.reload_time: 10000},
                 effects=[self.effect_item], default_effect=self.effect_item).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
             attributes={
-                AttributeId.volume: 0.1, AttributeId.em_damage: 5.2,
-                AttributeId.thermal_damage: 6.3,
-                AttributeId.kinetic_damage: 7.4,
-                AttributeId.explosive_damage: 8.5},
+                Attribute.volume: 0.1, Attribute.em_damage: 5.2,
+                Attribute.thermal_damage: 6.3, Attribute.kinetic_damage: 7.4,
+                Attribute.explosive_damage: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)

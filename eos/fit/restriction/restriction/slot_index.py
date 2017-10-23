@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
@@ -88,7 +88,7 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttributeId.subsystem_slot)
+            self, msg_broker, Attribute.subsystem_slot)
 
     @property
     def type(self):
@@ -104,7 +104,7 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttributeId.implantness)
+            self, msg_broker, Attribute.implantness)
 
     @property
     def type(self):
@@ -120,7 +120,7 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttributeId.boosterness)
+            self, msg_broker, Attribute.boosterness)
 
     @property
     def type(self):

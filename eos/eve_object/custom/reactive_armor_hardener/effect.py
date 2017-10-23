@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import (
     EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from ...modifier import DogmaModifier
 
 
@@ -42,8 +42,8 @@ def add_rah_modifiers(effect):
             operator=ModifierOperator.pre_mul,
             src_attr=attr)
         for attr in (
-            AttributeId.armor_em_damage_resonance,
-            AttributeId.armor_thermal_damage_resonance,
-            AttributeId.armor_kinetic_damage_resonance,
-            AttributeId.armor_explosive_damage_resonance))
+            Attribute.armor_em_damage_resonance,
+            Attribute.armor_thermal_damage_resonance,
+            Attribute.armor_kinetic_damage_resonance,
+            Attribute.armor_explosive_damage_resonance))
     effect.build_status = EffectBuildStatus.custom

@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 
 
 logger = getLogger(__name__)
@@ -34,8 +34,8 @@ def fix_online_category(effect):
     in active state. We do not want any special processing, thus just fix it
     here.
     """
-    if effect.category == EffectCategoryId.online:
+    if effect.category == EffectCategory.online:
         msg = 'online effect category does not need to be adjusted'
         logger.info(msg)
     else:
-        effect.category = EffectCategoryId.online
+        effect.category = EffectCategory.online

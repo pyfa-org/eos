@@ -24,7 +24,7 @@ from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eve import AttributeId, CategoryId, GroupId
+from eos.const.eve import Attribute, Category, Group
 from eos.util.cached_property import cached_property
 
 
@@ -60,17 +60,17 @@ class Cleaner:
         """Mark some hardcoded eve types as strong."""
         # Tuple with category IDs of eve types we want to keep
         strong_categories = (
-            CategoryId.charge,
-            CategoryId.drone,
-            CategoryId.fighter,
-            CategoryId.implant,
-            CategoryId.module,
-            CategoryId.ship,
-            CategoryId.skill,
-            CategoryId.subsystem)
+            Category.charge,
+            Category.drone,
+            Category.fighter,
+            Category.implant,
+            Category.module,
+            Category.ship,
+            Category.skill,
+            Category.subsystem)
         # Set with group IDs of eve types we want to keep
         # It is set because we will need to modify it
-        strong_groups = {GroupId.character, GroupId.effect_beacon}
+        strong_groups = {Group.character, Group.effect_beacon}
         # Go through table data, filling valid groups set according to valid
         # categories
         for datarow in self.data['evegroups']:
@@ -300,7 +300,7 @@ class Cleaner:
                 should have.
         """
         for row in self.data['dgmtypeattribs']:
-            if row.get('attributeID') != AttributeId.ammo_loaded:
+            if row.get('attributeID') != Attribute.ammo_loaded:
                 continue
             try:
                 ammo_type_id = int(row.get('value'))

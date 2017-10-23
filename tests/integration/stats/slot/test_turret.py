@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -29,9 +29,9 @@ class TestTurretSlot(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.turret_slots_left)
+        self.ch.attr(attribute_id=Attribute.turret_slots_left)
         self.effect = self.ch.effect(
-            effect_id=EffectId.turret_fitted, category=EffectCategoryId.passive)
+            effect_id=Effect.turret_fitted, category=EffectCategory.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -39,13 +39,13 @@ class TestTurretSlot(StatTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=AttributeId.turret_slots_left,
+            tgt_attr=Attribute.turret_slots_left,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         mod_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 3, src_attr.id: 2},
+            attributes={Attribute.turret_slots_left: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.total, 6)
@@ -114,7 +114,7 @@ class TestTurretSlot(StatTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 3}).id)
+            attributes={Attribute.turret_slots_left: 3}).id)
         self.fit.modules.high.append(
             ModuleHigh(self.ch.type(effects=[self.effect]).id))
         self.fit.modules.high.append(

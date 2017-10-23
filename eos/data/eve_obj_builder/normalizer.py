@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eve import AttributeId, GroupId, OperandId
+from eos.const.eve import Attribute, Group, Operand
 from eos.util.frozen_dict import FrozenDict
 
 
@@ -56,10 +56,10 @@ class Normalizer:
             data: Dictionary in {table name: {table, rows}} format.
         """
         atrrib_map = {
-            'radius': AttributeId.radius,
-            'mass': AttributeId.mass,
-            'volume': AttributeId.volume,
-            'capacity': AttributeId.capacity}
+            'radius': Attribute.radius,
+            'mass': Attribute.mass,
+            'volume': Attribute.volume,
+            'capacity': Attribute.capacity}
         attr_ids = tuple(atrrib_map.values())
         # Here we will store pairs (typeID, attrID) already defined in
         # dgmtypeattribs
@@ -130,21 +130,21 @@ class Normalizer:
         # )
         repl_spec = (
             (
-                OperandId.def_attr,
+                Operand.def_attr,
                 'expressionAttributeID',
                 {},
                 ('shieldDamage',)),
             (
-                OperandId.def_grp,
+                Operand.def_grp,
                 'expressionGroupID',
                 {
-                    'EnergyWeapon': GroupId.energy_weapon,
-                    'HybridWeapon': GroupId.hydrid_weapon,
-                    'MiningLaser': GroupId.mining_laser,
-                    'ProjectileWeapon': GroupId.projectile_weapon},
+                    'EnergyWeapon': Group.energy_weapon,
+                    'HybridWeapon': Group.hydrid_weapon,
+                    'MiningLaser': Group.mining_laser,
+                    'ProjectileWeapon': Group.projectile_weapon},
                 ('Structure', 'PowerCore', '    None')),
             (
-                OperandId.def_type,
+                Operand.def_type,
                 'expressionTypeID',
                 {},
                 ('Acceration Control',)))

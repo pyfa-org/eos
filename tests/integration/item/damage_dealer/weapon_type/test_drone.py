@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,14 +28,14 @@ class TestItemDamageDrone(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
-        self.ch.attr(attribute_id=AttributeId.em_damage)
-        self.ch.attr(attribute_id=AttributeId.thermal_damage)
-        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.ch.attr(attribute_id=Attribute.damage_multiplier)
+        self.ch.attr(attribute_id=Attribute.em_damage)
+        self.ch.attr(attribute_id=Attribute.thermal_damage)
+        self.ch.attr(attribute_id=Attribute.kinetic_damage)
+        self.ch.attr(attribute_id=Attribute.explosive_damage)
         self.cycle_attr = self.ch.attr()
         self.effect = self.ch.effect(
-            effect_id=EffectId.target_attack, category=EffectCategoryId.active,
+            effect_id=Effect.target_attack, category=EffectCategory.active,
             duration_attribute=self.cycle_attr.id)
 
     def test_nominal_volley_generic(self):
@@ -43,11 +43,9 @@ class TestItemDamageDrone(ItemMixinTestCase):
         item = Drone(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000},
+                    Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52,
+                    Attribute.thermal_damage: 63, Attribute.kinetic_damage: 74,
+                    Attribute.explosive_damage: 85, self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)
@@ -67,9 +65,9 @@ class TestItemDamageDrone(ItemMixinTestCase):
         item = Drone(
             self.ch.type(
                 attributes={
-                    AttributeId.em_damage: 52, AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000},
+                    Attribute.em_damage: 52, Attribute.thermal_damage: 63,
+                    Attribute.kinetic_damage: 74,
+                    Attribute.explosive_damage: 85, self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)
@@ -89,11 +87,9 @@ class TestItemDamageDrone(ItemMixinTestCase):
         item = Drone(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000},
+                    Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52,
+                    Attribute.thermal_damage: 63, Attribute.kinetic_damage: 74,
+                    Attribute.explosive_damage: 85, self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.online)
         fit.drones.add(item)
@@ -113,11 +109,9 @@ class TestItemDamageDrone(ItemMixinTestCase):
         item = Drone(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000},
+                    Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52,
+                    Attribute.thermal_damage: 63, Attribute.kinetic_damage: 74,
+                    Attribute.explosive_damage: 85, self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
@@ -138,11 +132,9 @@ class TestItemDamageDrone(ItemMixinTestCase):
         item = Drone(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000},
+                    Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52,
+                    Attribute.thermal_damage: 63, Attribute.kinetic_damage: 74,
+                    Attribute.explosive_damage: 85, self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)
@@ -162,11 +154,9 @@ class TestItemDamageDrone(ItemMixinTestCase):
         item = Drone(
             self.ch.type(
                 attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85, self.cycle_attr.id: 4000},
+                    Attribute.damage_multiplier: 2.5, Attribute.em_damage: 52,
+                    Attribute.thermal_damage: 63, Attribute.kinetic_damage: 74,
+                    Attribute.explosive_damage: 85, self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)

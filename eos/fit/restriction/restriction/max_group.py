@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
 from eos.fit.pubsub.message import (
     InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate)
@@ -106,7 +106,7 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_fitted)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_fitted)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
@@ -133,7 +133,7 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_online)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_online)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_states_activation(self, message):
@@ -162,7 +162,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_active)
+        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_active)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_states_activation(self, message):

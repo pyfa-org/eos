@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -32,7 +32,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # Make sure error is raised for all items exceeding their group
         # restriction
         eve_type = self.ch.type(
-            group=6, attributes={AttributeId.max_group_online: 1})
+            group=6, attributes={Attribute.max_group_online: 1})
         item1 = ModuleHigh(eve_type.id, state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id, state=State.online)
@@ -62,12 +62,12 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # even if both are from the same group
         item1 = ModuleHigh(
             self.ch.type(
-                group=92, attributes={AttributeId.max_group_online: 1}).id,
+                group=92, attributes={Attribute.max_group_online: 1}).id,
             state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.ch.type(
-                group=92, attributes={AttributeId.max_group_online: 2}).id,
+                group=92, attributes={Attribute.max_group_online: 2}).id,
             state=State.online)
         self.fit.modules.high.append(item2)
         # Action
@@ -91,7 +91,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # Make sure no errors are raised when number of added items doesn't
         # exceed any restrictions
         eve_type = self.ch.type(
-            group=860, attributes={AttributeId.max_group_online: 2})
+            group=860, attributes={Attribute.max_group_online: 2})
         item1 = ModuleHigh(eve_type.id, state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id, state=State.online)
@@ -113,7 +113,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
     def test_pass_item_none_group(self):
         # Check that items with None group are not affected
         eve_type = self.ch.type(
-            group=None, attributes={AttributeId.max_group_online: 1})
+            group=None, attributes={Attribute.max_group_online: 1})
         item1 = ModuleHigh(eve_type.id, state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id, state=State.online)
@@ -135,7 +135,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
     def test_pass_state(self):
         # No errors should occur if items are not active+
         eve_type = self.ch.type(
-            group=886, attributes={AttributeId.max_group_online: 1})
+            group=886, attributes={Attribute.max_group_online: 1})
         item1 = ModuleHigh(eve_type.id, state=State.offline)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id, state=State.offline)
@@ -156,7 +156,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
 
     def test_pass_item_other_class(self):
         eve_type = self.ch.type(
-            group=12, attributes={AttributeId.max_group_online: 1})
+            group=12, attributes={Attribute.max_group_online: 1})
         item1 = Drone(eve_type.id, state=State.online)
         self.fit.drones.add(item1)
         item2 = Drone(eve_type.id, state=State.online)
@@ -177,7 +177,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
 
     def test_pass_no_source(self):
         eve_type = self.ch.type(
-            group=6, attributes={AttributeId.max_group_online: 1})
+            group=6, attributes={Attribute.max_group_online: 1})
         item1 = ModuleHigh(eve_type.id, state=State.online)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(eve_type.id, state=State.online)

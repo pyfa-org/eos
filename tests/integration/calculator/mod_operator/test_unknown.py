@@ -23,7 +23,7 @@ import logging
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -40,7 +40,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=1008,
             src_attr=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[invalid_modifier])
+            category=EffectCategory.passive, modifiers=[invalid_modifier])
         item_eve_type = self.ch.type(
             attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_eve_type.id)
@@ -78,7 +78,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive,
+            category=EffectCategory.passive,
             modifiers=(invalid_modifier, valid_modifier))
         item_eve_type = self.ch.type(
             attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
@@ -115,7 +115,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive,
+            category=EffectCategory.passive,
             modifiers=(invalid_modifier, valid_modifier))
         item = Rig(self.ch.type(
             attributes={src_attr.id: 1.5, tgt_attr.id: 100},

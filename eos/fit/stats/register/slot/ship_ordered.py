@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import Attribute, Effect
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
@@ -84,18 +84,18 @@ class HighSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.hi_power, AttributeId.hi_slots)
+            self, msg_broker, Effect.hi_power, Attribute.hi_slots)
 
 
 class MediumSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.med_power, AttributeId.med_slots)
+            self, msg_broker, Effect.med_power, Attribute.med_slots)
 
 
 class LowSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.lo_power, AttributeId.low_slots)
+            self, msg_broker, Effect.lo_power, Attribute.low_slots)

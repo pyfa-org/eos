@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eve import Attribute, EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,12 +38,12 @@ class TestTgtDomainSkillrqDomainTarget(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         influence_src = Implant(self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect]).id)
         influence_tgt = Rig(self.ch.type(attributes={
-            tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-            AttributeId.required_skill_1_level: 1}).id)
+            tgt_attr.id: 100, Attribute.required_skill_1: 56,
+            Attribute.required_skill_1_level: 1}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.implants.add(influence_src)

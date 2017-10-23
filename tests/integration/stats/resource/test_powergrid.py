@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import Attribute, Effect, EffectCategory
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -29,10 +29,10 @@ class TestPowergrid(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.power_output)
-        self.ch.attr(attribute_id=AttributeId.power)
+        self.ch.attr(attribute_id=Attribute.power_output)
+        self.ch.attr(attribute_id=Attribute.power)
         self.effect = self.ch.effect(
-            effect_id=EffectId.online, category=EffectCategoryId.online)
+            effect_id=Effect.online, category=EffectCategory.online)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -40,13 +40,13 @@ class TestPowergrid(StatTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=AttributeId.power_output,
+            tgt_attr=Attribute.power_output,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         mod_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.power_output: 200, src_attr.id: 2},
+            attributes={Attribute.power_output: 200, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.output, 400)
@@ -77,14 +77,14 @@ class TestPowergrid(StatTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=AttributeId.power,
+            tgt_attr=Attribute.power,
             operator=ModifierOperator.post_mul,
             src_attr=src_attr.id)
         mod_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 100, src_attr.id: 0.5},
+                attributes={Attribute.power: 100, src_attr.id: 0.5},
                 effects=(self.effect, mod_effect)).id,
             state=State.online))
         # Verification
@@ -96,7 +96,7 @@ class TestPowergrid(StatTestCase):
     def test_use_single_rounding(self):
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 55.5555555555},
+                attributes={Attribute.power: 55.5555555555},
                 effects=[self.effect]).id,
             state=State.online))
         # Verification
@@ -108,11 +108,11 @@ class TestPowergrid(StatTestCase):
     def test_use_multiple(self):
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attributes={Attribute.power: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attributes={Attribute.power: 30}, effects=[self.effect]).id,
             state=State.online))
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 80)
@@ -123,11 +123,11 @@ class TestPowergrid(StatTestCase):
     def test_use_state(self):
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attributes={Attribute.power: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attributes={Attribute.power: 30}, effects=[self.effect]).id,
             state=State.offline))
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
@@ -138,11 +138,11 @@ class TestPowergrid(StatTestCase):
     def test_use_disabled_effect(self):
         item1 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attributes={Attribute.power: 50}, effects=[self.effect]).id,
             state=State.online)
         item2 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attributes={Attribute.power: 30}, effects=[self.effect]).id,
             state=State.online)
         item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
         self.fit.modules.high.append(item1)
@@ -162,14 +162,14 @@ class TestPowergrid(StatTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.power_output: 200}).id)
+            attributes={Attribute.power_output: 200}).id)
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attributes={Attribute.power: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attributes={Attribute.power: 30}, effects=[self.effect]).id,
             state=State.online))
         self.fit.source = None
         # Verification

@@ -22,7 +22,7 @@
 from abc import ABCMeta, abstractmethod
 
 from eos.const.eos import EffectRunMode, State
-from eos.const.eve import EffectId
+from eos.const.eve import Effect
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import (
     InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved,
@@ -185,16 +185,16 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         new_running = set()
         # Process 'online' effect separately, as it's needed for all other
         # effects from online categories
-        if EffectId.online in eve_type_effects:
+        if Effect.online in eve_type_effects:
             online_running = self.__get_wanted_effect_run_status(
-                eve_type_effects[EffectId.online], None)
+                eve_type_effects[Effect.online], None)
             if online_running is True:
-                new_running.add(EffectId.online)
+                new_running.add(Effect.online)
         else:
             online_running = False
         # Do a pass over regular effects
         for effect_id, effect in eve_type_effects.items():
-            if effect_id == EffectId.online:
+            if effect_id == Effect.online:
                 continue
             if self.__get_wanted_effect_run_status(effect, online_running):
                 new_running.add(effect_id)
@@ -228,7 +228,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             elif effect_state == State.online:
                 # If we've been requested 'online' effect status, it has no
                 # additional restrictions
-                if effect.id == EffectId.online:
+                if effect.id == Effect.online:
                     return True
                 # For regular online effects, check if 'online' is running
                 else:

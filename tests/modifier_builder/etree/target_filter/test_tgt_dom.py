@@ -21,7 +21,7 @@
 
 from eos.const.eos import (
     EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
-from eos.const.eve import OperandId
+from eos.const.eve import Operand
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -29,24 +29,24 @@ class TestBuilderEtreeTgtDom(ModBuilderTestCase):
 
     def make_etree(self, domain):
         e_tgt = self.ef.make(
-            1, operandID=OperandId.def_dom, expressionValue=domain)
+            1, operandID=Operand.def_dom, expressionValue=domain)
         e_tgt_attr = self.ef.make(
-            2, operandID=OperandId.def_attr, expressionAttributeID=1211)
+            2, operandID=Operand.def_attr, expressionAttributeID=1211)
         e_optr = self.ef.make(
-            3, operandID=OperandId.def_optr, expressionValue='PostPercent')
+            3, operandID=Operand.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(
-            4, operandID=OperandId.def_attr, expressionAttributeID=1503)
+            4, operandID=Operand.def_attr, expressionAttributeID=1503)
         e_tgt_spec = self.ef.make(
-            5, operandID=OperandId.itm_attr, arg1=e_tgt['expressionID'],
+            5, operandID=Operand.itm_attr, arg1=e_tgt['expressionID'],
             arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            6, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
+            6, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
             arg2=e_tgt_spec['expressionID'])
         e_add_mod = self.ef.make(
-            7, operandID=OperandId.add_dom_mod, arg1=e_optr_tgt['expressionID'],
+            7, operandID=Operand.add_dom_mod, arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID'])
         e_rm_mod = self.ef.make(
-            8, operandID=OperandId.rm_dom_mod, arg1=e_optr_tgt['expressionID'],
+            8, operandID=Operand.rm_dom_mod, arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID'])
         self.effect_row = {
             'preExpression': e_add_mod['expressionID'],

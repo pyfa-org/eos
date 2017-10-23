@@ -24,7 +24,7 @@ from unittest.mock import patch
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -439,7 +439,7 @@ class TestRahSimResult(RahSimTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=skill_attr.id)
         skill_effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[skill_modifier])
+            category=EffectCategory.passive, modifiers=[skill_modifier])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship_item
         rah_item = ModuleLow(

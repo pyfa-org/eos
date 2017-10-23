@@ -151,8 +151,7 @@ def print_results(enum_data, header):
                 print('    {}'.format(attr_name))
 
 
-if __name__ == '__main__':
-
+def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     root_dir = os.path.abspath(os.path.join(script_dir, '..'))
 
@@ -180,3 +179,7 @@ if __name__ == '__main__':
 
     print_results(unused, 'Enum entries which are not used at all')
     print_results(only_tests, 'Enum entries which are used only in tests')
+
+
+if __name__ == '__main__':
+    main()

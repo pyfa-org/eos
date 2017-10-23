@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
 from .base import BaseItemMixin
@@ -34,9 +34,9 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
 
         Returns: TankingLayersTotal helper container instance.
         """
-        hull = self.attributes.get(AttributeId.hp, None)
-        armor = self.attributes.get(AttributeId.armor_hp, None)
-        shield = self.attributes.get(AttributeId.shield_capacity, None)
+        hull = self.attributes.get(Attribute.hp, None)
+        armor = self.attributes.get(Attribute.armor_hp, None)
+        shield = self.attributes.get(Attribute.shield_capacity, None)
         return TankingLayersTotal(hull=hull, armor=armor, shield=shield)
 
     @volatile_property
@@ -48,31 +48,31 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         """
         hull = DamageTypes(
             em=self.__get_resistance_by_attr(
-                AttributeId.em_damage_resonance),
+                Attribute.em_damage_resonance),
             thermal=self.__get_resistance_by_attr(
-                AttributeId.thermal_damage_resonance),
+                Attribute.thermal_damage_resonance),
             kinetic=self.__get_resistance_by_attr(
-                AttributeId.kinetic_damage_resonance),
+                Attribute.kinetic_damage_resonance),
             explosive=self.__get_resistance_by_attr(
-                AttributeId.explosive_damage_resonance))
+                Attribute.explosive_damage_resonance))
         armor = DamageTypes(
             em=self.__get_resistance_by_attr(
-                AttributeId.armor_em_damage_resonance),
+                Attribute.armor_em_damage_resonance),
             thermal=self.__get_resistance_by_attr(
-                AttributeId.armor_thermal_damage_resonance),
+                Attribute.armor_thermal_damage_resonance),
             kinetic=self.__get_resistance_by_attr(
-                AttributeId.armor_kinetic_damage_resonance),
+                Attribute.armor_kinetic_damage_resonance),
             explosive=self.__get_resistance_by_attr(
-                AttributeId.armor_explosive_damage_resonance))
+                Attribute.armor_explosive_damage_resonance))
         shield = DamageTypes(
             em=self.__get_resistance_by_attr(
-                AttributeId.shield_em_damage_resonance),
+                Attribute.shield_em_damage_resonance),
             thermal=self.__get_resistance_by_attr(
-                AttributeId.shield_thermal_damage_resonance),
+                Attribute.shield_thermal_damage_resonance),
             kinetic=self.__get_resistance_by_attr(
-                AttributeId.shield_kinetic_damage_resonance),
+                Attribute.shield_kinetic_damage_resonance),
             explosive=self.__get_resistance_by_attr(
-                AttributeId.shield_explosive_damage_resonance))
+                Attribute.shield_explosive_damage_resonance))
         return TankingLayers(hull=hull, armor=armor, shield=shield)
 
     def __get_resistance_by_attr(self, attr):

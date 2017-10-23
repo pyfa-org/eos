@@ -25,7 +25,7 @@ from logging import getLogger
 from math import exp
 
 from eos.const.eos import ModifierOperator
-from eos.const.eve import AttributeId, CategoryId
+from eos.const.eve import Attribute, Category
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrAttrValueChangedMasked)
@@ -45,11 +45,11 @@ PENALTY_BASE = 1 / exp((1 / 2.67) ** 2)
 # Items belonging to these categories never have their effects stacking
 # penalized
 PENALTY_IMMUNE_CATS = (
-    CategoryId.ship,
-    CategoryId.charge,
-    CategoryId.skill,
-    CategoryId.implant,
-    CategoryId.subsystem)
+    Category.ship,
+    Category.charge,
+    Category.skill,
+    Category.implant,
+    Category.subsystem)
 
 # Tuple with penalizable operators
 PENALIZABLE_OPERATORS = (
@@ -90,10 +90,10 @@ MULTIPLICATIONS = (
 # Following attributes have limited precision - only to second number after
 # decimal separator
 LIMITED_PRECISION = (
-    AttributeId.cpu,
-    AttributeId.power,
-    AttributeId.cpu_output,
-    AttributeId.power_output)
+    Attribute.cpu,
+    Attribute.power,
+    Attribute.cpu_output,
+    Attribute.power_output)
 
 # List of exceptions calculate method may throw
 CALCULATE_RAISABLE_EXCEPTIONS = (AttributeMetaError, BaseValueError)

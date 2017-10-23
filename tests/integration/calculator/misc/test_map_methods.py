@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -60,7 +60,7 @@ class TestMapMethods(CalculatorTestCase):
             operator=ModifierOperator.post_mul,
             src_attr=self.attr5.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive,
+            category=EffectCategory.passive,
             modifiers=(modifier1, modifier2, modifier3, modifier4))
         self.item = Implant(self.ch.type(
             attributes={

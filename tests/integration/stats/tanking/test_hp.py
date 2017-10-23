@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,15 +28,15 @@ class TestHp(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=AttributeId.hp)
-        self.ch.attr(attribute_id=AttributeId.armor_hp)
-        self.ch.attr(attribute_id=AttributeId.shield_capacity)
+        self.ch.attr(attribute_id=Attribute.hp)
+        self.ch.attr(attribute_id=Attribute.armor_hp)
+        self.ch.attr(attribute_id=Attribute.shield_capacity)
 
     def test_relay(self):
         # Check that stats service relays hp stats properly
         self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.hp: 10, AttributeId.armor_hp: 15,
-            AttributeId.shield_capacity: 20}).id)
+            Attribute.hp: 10, Attribute.armor_hp: 15,
+            Attribute.shield_capacity: 20}).id)
         # Action
         hp_stats = self.fit.stats.hp
         # Verification
@@ -64,8 +64,8 @@ class TestHp(StatTestCase):
     def test_no_source(self):
         # Check that stats service relays hp stats properly
         self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.hp: 10, AttributeId.armor_hp: 15,
-            AttributeId.shield_capacity: 20}).id)
+            Attribute.hp: 10, Attribute.armor_hp: 15,
+            Attribute.shield_capacity: 20}).id)
         self.fit.source = None
         # Action
         hp_stats = self.fit.stats.hp

@@ -27,13 +27,13 @@ __all__ = [
 ]
 
 
-from eos.const.eve import EffectId, TypeId
+from eos.const.eve import Effect, Type
 from eos.fit.item import Drone
 
 
 def turret_filter(item):
     """True for item which occupies turret hardpoint."""
-    if EffectId.turret_fitted in item._running_effects:
+    if Effect.turret_fitted in item._running_effects:
         return True
     else:
         return False
@@ -41,7 +41,7 @@ def turret_filter(item):
 
 def missile_filter(item):
     """True for item which occupies launcher hardpoint."""
-    if EffectId.launcher_fitted in item._running_effects:
+    if Effect.launcher_fitted in item._running_effects:
         return True
     else:
         return False
@@ -60,7 +60,7 @@ def sentry_drone_filter(item):
         skillrqs = item._eve_type.required_skills
     except AttributeError:
         return False
-    if TypeId.sentry_drone_interfacing in skillrqs:
+    if Type.sentry_drone_interfacing in skillrqs:
         return True
     else:
         return False

@@ -21,14 +21,14 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eve import Attribute, EffectCategory
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestRounding(CalculatorTestCase):
 
     def test_cpu_down(self):
-        attr = self.ch.attr(attribute_id=AttributeId.cpu)
+        attr = self.ch.attr(attribute_id=Attribute.cpu)
         item = Implant(self.ch.type(attributes={attr.id: 2.3333}).id)
         self.fit.implants.add(item)
         # Verification
@@ -38,7 +38,7 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_up(self):
-        attr = self.ch.attr(attribute_id=AttributeId.cpu)
+        attr = self.ch.attr(attribute_id=Attribute.cpu)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
@@ -49,7 +49,7 @@ class TestRounding(CalculatorTestCase):
 
     def test_cpu_modified(self):
         src_attr = self.ch.attr()
-        tgt_attr = self.ch.attr(attribute_id=AttributeId.cpu)
+        tgt_attr = self.ch.attr(attribute_id=Attribute.cpu)
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
@@ -57,7 +57,7 @@ class TestRounding(CalculatorTestCase):
             operator=ModifierOperator.post_percent,
             src_attr=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategoryId.passive, modifiers=[modifier])
+            category=EffectCategory.passive, modifiers=[modifier])
         item = Implant(self.ch.type(
             attributes={src_attr.id: 20, tgt_attr.id: 1.9444},
             effects=[effect]).id)
@@ -69,7 +69,7 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_output(self):
-        attr = self.ch.attr(attribute_id=AttributeId.cpu_output)
+        attr = self.ch.attr(attribute_id=Attribute.cpu_output)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
@@ -79,7 +79,7 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power(self):
-        attr = self.ch.attr(attribute_id=AttributeId.power)
+        attr = self.ch.attr(attribute_id=Attribute.power)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
@@ -89,7 +89,7 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power_output(self):
-        attr = self.ch.attr(attribute_id=AttributeId.power_output)
+        attr = self.ch.attr(attribute_id=Attribute.power_output)
         item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification

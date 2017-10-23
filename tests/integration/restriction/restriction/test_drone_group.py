@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import Attribute
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -32,7 +32,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that error is returned on attempt to add drone from group
         # mismatching to first restriction attribute
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.allowed_drone_group_1: 4}).id)
+            attributes={Attribute.allowed_drone_group_1: 4}).id)
         item = Drone(self.ch.type(group=56).id)
         self.fit.drones.add(item)
         # Action
@@ -50,7 +50,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that error is returned on attempt to add drone from group
         # mismatching to second restriction attribute
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.allowed_drone_group_2: 69}).id)
+            attributes={Attribute.allowed_drone_group_2: 69}).id)
         item = Drone(self.ch.type(group=797).id)
         self.fit.drones.add(item)
         # Action
@@ -68,8 +68,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that error is returned on attempt to add drone from group
         # mismatching to both restriction attributes
         self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.allowed_drone_group_1: 48,
-            AttributeId.allowed_drone_group_2: 106}).id)
+            Attribute.allowed_drone_group_1: 48,
+            Attribute.allowed_drone_group_2: 106}).id)
         item = Drone(self.ch.type(group=803).id)
         self.fit.drones.add(item)
         # Action
@@ -86,7 +86,7 @@ class TestDroneGroup(RestrictionTestCase):
     def test_fail_drone_none(self):
         # Check that drone from None group is subject to restriction
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.allowed_drone_group_1: 1896}).id)
+            attributes={Attribute.allowed_drone_group_1: 1896}).id)
         item = Drone(self.ch.type(group=None).id)
         self.fit.drones.add(item)
         # Action
@@ -131,7 +131,7 @@ class TestDroneGroup(RestrictionTestCase):
     def test_pass_non_drone(self):
         # Check that restriction is not applied to items which are not drones
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.allowed_drone_group_1: 4}).id)
+            attributes={Attribute.allowed_drone_group_1: 4}).id)
         item = Implant(self.ch.type(group=56).id)
         self.fit.implants.add(item)
         # Action
@@ -147,7 +147,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group matching to first
         # restriction attribute is added
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.allowed_drone_group_1: 22}).id)
+            attributes={Attribute.allowed_drone_group_1: 22}).id)
         item = Drone(self.ch.type(group=22).id)
         self.fit.drones.add(item)
         # Action
@@ -163,7 +163,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group matching to second
         # restriction attribute is added
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.allowed_drone_group_2: 67}).id)
+            attributes={Attribute.allowed_drone_group_2: 67}).id)
         item = Drone(self.ch.type(group=67).id)
         self.fit.drones.add(item)
         # Action
@@ -179,8 +179,8 @@ class TestDroneGroup(RestrictionTestCase):
         # Check that no error raised when drone of group matching to any of two
         # restriction attributes is added
         self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.allowed_drone_group_1: 907,
-            AttributeId.allowed_drone_group_2: 53}).id)
+            Attribute.allowed_drone_group_1: 907,
+            Attribute.allowed_drone_group_2: 53}).id)
         item = Drone(self.ch.type(group=53).id)
         self.fit.drones.add(item)
         # Action
@@ -194,7 +194,7 @@ class TestDroneGroup(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.allowed_drone_group_1: 4}).id)
+            attributes={Attribute.allowed_drone_group_1: 4}).id)
         item = Drone(self.ch.type(group=56).id)
         self.fit.drones.add(item)
         self.fit.source = None
