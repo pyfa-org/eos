@@ -19,13 +19,13 @@
 # ==============================================================================
 
 
-from eos.const.eve import Type
+from eos.const.eve import TypeId
 from eos.data.source import Source, SourceManager
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import (
-    ItemDescriptorOnFit, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
+    ItemDescriptor, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
 from .helper import DamageTypes
 from .item import *
 from .pubsub.broker import FitMessageBroker
@@ -103,12 +103,12 @@ class Fit(FitMessageBroker, BaseSubscriber):
         # As character object shouldn't change in any sane cases, initialize it
         # here. It has to be assigned after fit starts to track list of items
         # to make sure it's part of it
-        self.character = Character(Type.character_static)
+        self.character = Character(TypeId.character_static)
 
-    ship = ItemDescriptorOnFit('_ship', Ship)
-    stance = ItemDescriptorOnFit('_stance', Stance)
-    character = ItemDescriptorOnFit('_character', Character)
-    effect_beacon = ItemDescriptorOnFit('_effect_beacon', EffectBeacon)
+    ship = ItemDescriptor('_ship', Ship)
+    stance = ItemDescriptor('_stance', Stance)
+    character = ItemDescriptor('_character', Character)
+    effect_beacon = ItemDescriptor('_effect_beacon', EffectBeacon)
 
     def validate(self, skip_checks=()):
         """Run fit validation.

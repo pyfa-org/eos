@@ -24,7 +24,7 @@ from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eve import Attribute, Category, Group
+from eos.const.eve import AttributeId, TypeCategoryId, TypeGroupId
 from eos.util.cached_property import cached_property
 
 
@@ -59,26 +59,26 @@ class Cleaner:
     def _pump_evetypes(self):
         """Mark some hardcoded eve types as strong."""
         # Tuple with category IDs of eve types we want to keep
-        strong_categories = (
-            Category.charge,
-            Category.drone,
-            Category.fighter,
-            Category.implant,
-            Category.module,
-            Category.ship,
-            Category.skill,
-            Category.subsystem)
+        strong_category_ids = (
+            TypeCategoryId.charge,
+            TypeCategoryId.drone,
+            TypeCategoryId.fighter,
+            TypeCategoryId.implant,
+            TypeCategoryId.module,
+            TypeCategoryId.ship,
+            TypeCategoryId.skill,
+            TypeCategoryId.subsystem)
         # Set with group IDs of eve types we want to keep
         # It is set because we will need to modify it
-        strong_groups = {Group.character, Group.effect_beacon}
+        strong_group_ids = {TypeGroupId.character, TypeGroupId.effect_beacon}
         # Go through table data, filling valid groups set according to valid
         # categories
         for datarow in self.data['evegroups']:
-            if datarow.get('categoryID') in strong_categories:
-                strong_groups.add(datarow['groupID'])
+            if datarow.get('categoryID') in strong_category_ids:
+                strong_group_ids.add(datarow['groupID'])
         rows_to_pump = set()
         for datarow in self.data['evetypes']:
-            if datarow.get('groupID') in strong_groups:
+            if datarow.get('groupID') in strong_group_ids:
                 rows_to_pump.add(datarow)
         self._pump_data('evetypes', rows_to_pump)
 
@@ -108,12 +108,11 @@ class Cleaner:
         Restore rows in tables, which complement evetypes or serve as m:n
         mapping between evetypes and other tables.
         """
-        # As we filter whole database using evetypes table,
-        # gather evetype IDs we currently have in there
+        # As we filter whole database using evetypes table, gather type IDs we
+        # currently have in there
         type_ids = {row['typeID'] for row in self.data['evetypes']}
-        # Auxiliary tables are those which do not define
-        # any entities, they just map one entities to others
-        # or complement entities with additional data
+        # Auxiliary tables are those which do not define any entities, they just
+        # map one entities to others or complement entities with additional data
         aux_tables = ('dgmtypeattribs', 'dgmtypeeffects', 'typefighterabils')
         for table_name in aux_tables:
             to_restore = set()
@@ -214,13 +213,14 @@ class Cleaner:
         for effect_row in self.data['dgmeffects']:
             effect_id = effect_row['effectID']
             try:
-                types, groups, attrs = self._yaml_modinfo_relations[effect_id]
+                relations = self._yaml_modinfo_relations[effect_id]
             except KeyError:
                 continue
+            type_ids, group_ids, attr_ids = relations
             for references, tgt_table_name, tgt_column_name in (
-                (types, 'evetypes', 'typeID'),
-                (groups, 'evegroups', 'groupID'),
-                (attrs, 'dgmattribs', 'attributeID')
+                (type_ids, 'evetypes', 'typeID'),
+                (group_ids, 'evegroups', 'groupID'),
+                (attr_ids, 'dgmattribs', 'attributeID')
             ):
                 # If there're any references for given entity, add them to
                 # dictionary
@@ -270,22 +270,22 @@ class Cleaner:
             # Modifier infos should be basic python iterable
             if not isinstance(mod_infos, Iterable):
                 continue
-            types = set()
-            groups = set()
-            attrs = set()
+            type_ids = set()
+            group_ids = set()
+            attr_ids = set()
             # Fill in sets with IDs from each modifier info dict
             for mod_info in mod_infos:
-                add_entity(mod_info, 'skillTypeID', types)
-                add_entity(mod_info, 'groupID', groups)
-                add_entity(mod_info, 'modifyingAttributeID', attrs)
-                add_entity(mod_info, 'modifiedAttributeID', attrs)
+                add_entity(mod_info, 'skillTypeID', type_ids)
+                add_entity(mod_info, 'groupID', group_ids)
+                add_entity(mod_info, 'modifyingAttributeID', attr_ids)
+                add_entity(mod_info, 'modifiedAttributeID', attr_ids)
             # If all of the sets are empty, do not add anything to primary
             # container
-            if not types and not groups and not attrs:
+            if not type_ids and not group_ids and not attr_ids:
                 continue
             # Otherwise, add all the data we've gathered for current effect to
             # container
-            relations[effect_row['effectID']] = (types, groups, attrs)
+            relations[effect_row['effectID']] = (type_ids, group_ids, attr_ids)
         return relations
 
     def _get_targets_default_ammo(self, tgt_data):
@@ -300,7 +300,7 @@ class Cleaner:
                 should have.
         """
         for row in self.data['dgmtypeattribs']:
-            if row.get('attributeID') != Attribute.ammo_loaded:
+            if row.get('attributeID') != AttributeId.ammo_loaded:
                 continue
             try:
                 ammo_type_id = int(row.get('value'))

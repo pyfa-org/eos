@@ -22,18 +22,18 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-RESTRICTION_ATTRS = (
-    Attribute.charge_group_1,
-    Attribute.charge_group_2,
-    Attribute.charge_group_3,
-    Attribute.charge_group_4,
-    Attribute.charge_group_5)
+ALLOWED_GROUP_ATTR_IDS = (
+    AttributeId.charge_group_1,
+    AttributeId.charge_group_2,
+    AttributeId.charge_group_3,
+    AttributeId.charge_group_4,
+    AttributeId.charge_group_5)
 
 
 ChargeGroupErrorData = namedtuple(
@@ -61,18 +61,19 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         if not hasattr(message.item, 'charge'):
             return
         # Compose set of charge groups this container is able to fit
-        allowed_groups = set()
-        for restriction_attr in RESTRICTION_ATTRS:
+        allowed_group_ids = set()
+        for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
-                restriction_value = (
-                    message.item._eve_type_attributes[restriction_attr])
+                allowed_group_id = (
+                    message.item._eve_type_attributes[allowed_group_attr_id])
             except KeyError:
                 continue
             else:
-                allowed_groups.add(restriction_value)
+                allowed_group_ids.add(allowed_group_id)
         # Only if groups were specified, consider restriction enabled
-        if allowed_groups:
-            self.__restricted_containers[message.item] = tuple(allowed_groups)
+        if allowed_group_ids:
+            self.__restricted_containers[message.item] = (
+                tuple(allowed_group_ids))
 
     def _handle_item_removal(self, message):
         if message.item in self.__restricted_containers:
@@ -86,14 +87,16 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         tainted_items = {}
         # If item has charge and its group is not allowed, taint charge item
         # (not container)
-        for container, allowed_groups in self.__restricted_containers.items():
+        for container, allowed_group_ids in (
+            self.__restricted_containers.items()
+        ):
             charge = container.charge
             if charge is None:
                 continue
-            if charge._eve_type.group not in allowed_groups:
+            if charge._eve_type.group_id not in allowed_group_ids:
                 tainted_items[charge] = ChargeGroupErrorData(
-                    charge_group=charge._eve_type.group,
-                    allowed_groups=allowed_groups)
+                    charge_group=charge._eve_type.group_id,
+                    allowed_groups=allowed_group_ids)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

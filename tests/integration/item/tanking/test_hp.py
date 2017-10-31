@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,15 +28,15 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=Attribute.hp)
-        self.ch.attr(attribute_id=Attribute.armor_hp)
-        self.ch.attr(attribute_id=Attribute.shield_capacity)
+        self.ch.attr(attribute_id=AttributeId.hp)
+        self.ch.attr(attribute_id=AttributeId.armor_hp)
+        self.ch.attr(attribute_id=AttributeId.shield_capacity)
 
     def test_generic(self):
         fit = Fit()
         item = Ship(self.ch.type(attributes={
-            Attribute.hp: 8, Attribute.armor_hp: 10,
-            Attribute.shield_capacity: 12}).id)
+            AttributeId.hp: 8, AttributeId.armor_hp: 10,
+            AttributeId.shield_capacity: 12}).id)
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.hp.hull, 8)
@@ -63,8 +63,8 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
     def test_no_source(self):
         fit = Fit(source=None)
         item = Ship(self.ch.type(attributes={
-            Attribute.hp: 8, Attribute.armor_hp: 10,
-            Attribute.shield_capacity: 12}).id)
+            AttributeId.hp: 8, AttributeId.armor_hp: 10,
+            AttributeId.shield_capacity: 12}).id)
         fit.ship = item
         # Verification
         self.assertIsNone(item.hp.hull)

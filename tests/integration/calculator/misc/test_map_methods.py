@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,29 +38,29 @@ class TestMapMethods(CalculatorTestCase):
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.attr1.id,
+            tgt_attr_id=self.attr1.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr5.id)
+            src_attr_id=self.attr5.id)
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.attr2.id,
+            tgt_attr_id=self.attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr5.id)
+            src_attr_id=self.attr5.id)
         modifier3 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.attr3.id,
+            tgt_attr_id=self.attr3.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr5.id)
+            src_attr_id=self.attr5.id)
         modifier4 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.attr4.id,
+            tgt_attr_id=self.attr4.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr5.id)
+            src_attr_id=self.attr5.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive,
+            category_id=EffectCategoryId.passive,
             modifiers=(modifier1, modifier2, modifier3, modifier4))
         self.item = Implant(self.ch.type(
             attributes={

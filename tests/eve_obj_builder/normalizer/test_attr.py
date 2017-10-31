@@ -21,7 +21,7 @@
 
 import logging
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
@@ -34,7 +34,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'radius': 50.0})
         self.run_builder()
-        self.assertEqual(self.types[1].attributes[Attribute.radius], 50.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.radius], 50.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
@@ -44,7 +44,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'mass': 5.0})
         self.run_builder()
-        self.assertEqual(self.types[1].attributes[Attribute.mass], 5.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.mass], 5.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
@@ -54,7 +54,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'volume': 500.0})
         self.run_builder()
-        self.assertEqual(self.types[1].attributes[Attribute.volume], 500.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.volume], 500.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
@@ -64,7 +64,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'capacity': 0.5})
         self.run_builder()
-        self.assertEqual(self.types[1].attributes[Attribute.capacity], 0.5)
+        self.assertEqual(self.types[1].attributes[AttributeId.capacity], 0.5)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         idzing_stats = log[0]
@@ -76,9 +76,9 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'mass': 5.0})
         self.dh.data['dgmtypeattribs'].append(
-            {'typeID': 1, 'attributeID': Attribute.mass, 'value': 6.0})
+            {'typeID': 1, 'attributeID': AttributeId.mass, 'value': 6.0})
         self.run_builder()
-        self.assertEqual(self.types[1].attributes[Attribute.mass], 6.0)
+        self.assertEqual(self.types[1].attributes[AttributeId.mass], 6.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 2)
         duplicate_error = log[0]

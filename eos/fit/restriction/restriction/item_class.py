@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute, Category, Effect, Group
+from eos.const.eve import AttributeId, TypeCategoryId, EffectId, TypeGroupId
 from eos.fit.item import *
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
@@ -34,39 +34,46 @@ ItemClassErrorData = namedtuple(
 
 
 CLASS_VALIDATORS = {
-    Booster: lambda eve_type: (
-        eve_type.category == Category.implant and
-        Attribute.boosterness in eve_type.attributes),
-    Character: lambda eve_type: eve_type.group == Group.character,
-    Charge: lambda eve_type: eve_type.category == Category.charge,
-    Drone: lambda eve_type: eve_type.category == Category.drone,
-    EffectBeacon: lambda eve_type: eve_type.group == Group.effect_beacon,
-    FighterSquad: lambda eve_type: (
-        eve_type.category == Category.fighter and (
-            Attribute.fighter_squadron_is_heavy in eve_type.attributes or
-            Attribute.fighter_squadron_is_light in eve_type.attributes or
-            Attribute.fighter_squadron_is_support in eve_type.attributes)),
-    Implant: lambda eve_type: (
-        eve_type.category == Category.implant and
-        Attribute.implantness in eve_type.attributes),
-    ModuleHigh: lambda eve_type: (
-        eve_type.category == Category.module and
-        Effect.hi_power in eve_type.effects),
-    ModuleMed: lambda eve_type: (
-        eve_type.category == Category.module and
-        Effect.med_power in eve_type.effects),
-    ModuleLow: lambda eve_type: (
-        eve_type.category == Category.module and
-        Effect.lo_power in eve_type.effects),
-    Rig: lambda eve_type: (
-        eve_type.category == Category.module and
-        Effect.rig_slot in eve_type.effects),
-    Ship: lambda eve_type: eve_type.category == Category.ship,
-    Skill: lambda eve_type: eve_type.category == Category.skill,
-    Stance: lambda eve_type: eve_type.group == Group.ship_modifier,
-    Subsystem: lambda eve_type: (
-        eve_type.category == Category.subsystem and
-        Effect.subsystem in eve_type.effects)}
+    Booster: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.implant and
+        AttributeId.boosterness in eve_type.attributes,
+    Character: lambda eve_type:
+        eve_type.group_id == TypeGroupId.character,
+    Charge: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.charge,
+    Drone: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.drone,
+    EffectBeacon: lambda eve_type:
+        eve_type.group_id == TypeGroupId.effect_beacon,
+    FighterSquad: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.fighter and (
+            AttributeId.fighter_squadron_is_heavy in eve_type.attributes or
+            AttributeId.fighter_squadron_is_light in eve_type.attributes or
+            AttributeId.fighter_squadron_is_support in eve_type.attributes),
+    Implant: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.implant and
+        AttributeId.implantness in eve_type.attributes,
+    ModuleHigh: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.module and
+        EffectId.hi_power in eve_type.effects,
+    ModuleMed: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.module and
+        EffectId.med_power in eve_type.effects,
+    ModuleLow: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.module and
+        EffectId.lo_power in eve_type.effects,
+    Rig: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.module and
+        EffectId.rig_slot in eve_type.effects,
+    Ship: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.ship,
+    Skill: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.skill,
+    Stance: lambda eve_type:
+        eve_type.group_id == TypeGroupId.ship_modifier,
+    Subsystem: lambda eve_type:
+        eve_type.category_id == TypeCategoryId.subsystem and
+        EffectId.subsystem in eve_type.effects}
 
 
 class ItemClassRestrictionRegister(BaseRestrictionRegister):

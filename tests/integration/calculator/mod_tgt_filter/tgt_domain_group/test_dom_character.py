@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -35,17 +35,17 @@ class TestTgtDomainGroupDomainChar(CalculatorTestCase):
             tgt_filter=ModifierTargetFilter.domain_group,
             tgt_domain=ModifierDomain.character,
             tgt_filter_extra_arg=35,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.influence_src = Rig(self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect]).id)
 
     def test_parent_domain_character(self):
         influence_tgt = Implant(self.ch.type(
-            group=35, attributes={self.tgt_attr.id: 100}).id)
+            group_id=35, attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(influence_tgt)
         # Action
         self.fit.rigs.add(self.influence_src)
@@ -61,7 +61,7 @@ class TestTgtDomainGroupDomainChar(CalculatorTestCase):
 
     def test_parent_domain_other(self):
         influence_tgt = Drone(self.ch.type(
-            group=35, attributes={self.tgt_attr.id: 100}).id)
+            group_id=35, attributes={self.tgt_attr.id: 100}).id)
         self.fit.drones.add(influence_tgt)
         # Action
         self.fit.rigs.add(self.influence_src)
@@ -73,7 +73,7 @@ class TestTgtDomainGroupDomainChar(CalculatorTestCase):
 
     def test_group_other(self):
         influence_tgt = Implant(self.ch.type(
-            group=3, attributes={self.tgt_attr.id: 100}).id)
+            group_id=3, attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(influence_tgt)
         # Action
         self.fit.rigs.add(self.influence_src)

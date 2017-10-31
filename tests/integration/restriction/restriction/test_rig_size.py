@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -31,14 +31,14 @@ class TestRigSize(RestrictionTestCase):
     def setUp(self):
         super().setUp()
         self.effect = self.ch.effect(
-            effect_id=Effect.rig_slot, category=EffectCategory.passive)
+            effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)
 
     def test_fail_mismatch(self):
         # Error should be raised when mismatching rig size is added to ship
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_size: 6}).id)
+            attributes={AttributeId.rig_size: 6}).id)
         item = Rig(self.ch.type(
-            attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
+            attributes={AttributeId.rig_size: 10}, effects=[self.effect]).id)
         self.fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -54,7 +54,7 @@ class TestRigSize(RestrictionTestCase):
     def test_pass_no_ship(self):
         # When no ship is assigned, no restriction should be applied to ships
         item = Rig(self.ch.type(
-            attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
+            attributes={AttributeId.rig_size: 10}, effects=[self.effect]).id)
         self.fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -70,7 +70,7 @@ class TestRigSize(RestrictionTestCase):
         # onto rigs
         self.fit.ship = Ship(self.ch.type().id)
         item = Rig(self.ch.type(
-            attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
+            attributes={AttributeId.rig_size: 10}, effects=[self.effect]).id)
         self.fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -83,10 +83,10 @@ class TestRigSize(RestrictionTestCase):
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_size: 6}).id)
+            attributes={AttributeId.rig_size: 6}).id)
         item = Rig(self.ch.type(
-            attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
-        item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
+            attributes={AttributeId.rig_size: 10}, effects=[self.effect]).id)
+        item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -99,9 +99,9 @@ class TestRigSize(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_size: 6}).id)
+            attributes={AttributeId.rig_size: 6}).id)
         item = Rig(self.ch.type(
-            attributes={Attribute.rig_size: 10}, effects=[self.effect]).id)
+            attributes={AttributeId.rig_size: 10}, effects=[self.effect]).id)
         self.fit.rigs.add(item)
         self.fit.source = None
         # Action

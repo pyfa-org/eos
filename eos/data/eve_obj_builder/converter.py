@@ -40,9 +40,9 @@ class Converter:
         # Before actually instantiating anything, we need to collect some data
         # in convenient form
         # Format: {group ID: group row}
-        evegroups_keyed = {}
+        groups_keyed = {}
         for row in data['evegroups']:
-            evegroups_keyed[row['groupID']] = row
+            groups_keyed[row['groupID']] = row
         # Format: {type ID: default effect ID}
         types_defeff_map = {}
         for row in data['dgmtypeeffects']:
@@ -71,7 +71,7 @@ class Converter:
         for row in data['dgmattribs']:
             attributes.append(Attribute(
                 attribute_id=row['attributeID'],
-                max_attribute=row.get('maxAttributeID'),
+                max_attribute_id=row.get('maxAttributeID'),
                 default_value=row.get('defaultValue'),
                 high_is_good=row.get('highIsGood'),
                 stackable=row.get('stackable')))
@@ -83,15 +83,15 @@ class Converter:
             mods, build_status = mod_builder.build(row)
             effects.append(Effect(
                 effect_id=row['effectID'],
-                category=row.get('effectCategory'),
+                category_id=row.get('effectCategory'),
                 is_offensive=row.get('isOffensive'),
                 is_assistance=row.get('isAssistance'),
-                duration_attribute=row.get('durationAttributeID'),
-                discharge_attribute=row.get('dischargeAttributeID'),
-                range_attribute=row.get('rangeAttributeID'),
-                falloff_attribute=row.get('falloffAttributeID'),
-                tracking_speed_attribute=row.get('trackingSpeedAttributeID'),
-                fitting_usage_chance_attribute=row.get(
+                duration_attribute_id=row.get('durationAttributeID'),
+                discharge_attribute_id=row.get('dischargeAttributeID'),
+                range_attribute_id=row.get('rangeAttributeID'),
+                falloff_attribute_id=row.get('falloffAttributeID'),
+                tracking_speed_attribute_id=row.get('trackingSpeedAttributeID'),
+                fitting_usage_chance_attribute_id=row.get(
                     'fittingUsageChanceAttributeID'),
                 build_status=build_status,
                 modifiers=tuple(mods),
@@ -107,8 +107,8 @@ class Converter:
             type_effect_ids.intersection_update(effect_map)
             types.append(Type(
                 type_id=type_id,
-                group=type_group,
-                category=evegroups_keyed.get(type_group, {}).get('categoryID'),
+                group_id=type_group,
+                category_id=groups_keyed.get(type_group, {}).get('categoryID'),
                 attributes=types_attribs.get(type_id, {}),
                 effects=tuple(effect_map[eid] for eid in type_effect_ids),
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),

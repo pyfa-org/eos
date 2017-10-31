@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -31,18 +31,18 @@ class TestCap(CalculatorTestCase):
     def setUp(self):
         super().setUp()
         self.capping_attr = self.ch.attr(default_value=5)
-        self.capped_attr = self.ch.attr(max_attribute=self.capping_attr.id)
+        self.capped_attr = self.ch.attr(max_attribute_id=self.capping_attr.id)
         self.src_attr = self.ch.attr()
         # Just to make sure cap is applied to final value, not base, make some
         # basic modification modifier
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.capped_attr.id,
+            tgt_attr_id=self.capped_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.src_attr.id)
+            src_attr_id=self.src_attr.id)
         self.effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
 
     def test_cap_default(self):
         # Check that cap is applied properly when item doesn't have base value
@@ -77,11 +77,11 @@ class TestCap(CalculatorTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.capping_attr.id,
+            tgt_attr_id=self.capping_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.src_attr.id)
+            src_attr_id=self.src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
         item = Implant(self.ch.type(
             attributes={
                 self.capped_attr.id: 3, self.src_attr.id: 6,
@@ -109,11 +109,11 @@ class TestCap(CalculatorTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=self.capping_attr.id,
+            tgt_attr_id=self.capping_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.src_attr.id)
+            src_attr_id=self.src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
         cap_updater = Implant(self.ch.type(
             attributes={self.src_attr.id: 3.5}, effects=[effect]).id)
         self.fit.implants.add(cap_updater)

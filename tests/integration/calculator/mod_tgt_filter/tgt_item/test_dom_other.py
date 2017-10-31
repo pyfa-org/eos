@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -34,11 +34,11 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.other,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=self.src_attr.id)
+            src_attr_id=self.src_attr.id)
         self.effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
 
     def test_other_domain_container(self):
         influence_src = ModuleHigh(self.ch.type(

@@ -28,7 +28,7 @@ from enum import IntEnum, unique
 
 
 @unique
-class Attribute(IntEnum):
+class AttributeId(IntEnum):
     """Contains necessary attribute IDs."""
     # Resources
     cpu = 50
@@ -166,7 +166,7 @@ class Attribute(IntEnum):
 
 
 @unique
-class Type(IntEnum):
+class TypeId(IntEnum):
     """Contains necessary eve type IDs."""
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
@@ -175,8 +175,8 @@ class Type(IntEnum):
 
 
 @unique
-class Group(IntEnum):
-    """Contains necessary group IDs."""
+class TypeGroupId(IntEnum):
+    """Contains necessary type group IDs."""
     character = 1
     effect_beacon = 920
     energy_weapon = 53
@@ -187,8 +187,8 @@ class Group(IntEnum):
 
 
 @unique
-class Category(IntEnum):
-    """Contains necessary category IDs."""
+class TypeCategoryId(IntEnum):
+    """Contains necessary type category IDs."""
     charge = 8
     drone = 18
     fighter = 87
@@ -200,7 +200,7 @@ class Category(IntEnum):
 
 
 @unique
-class Effect(IntEnum):
+class EffectId(IntEnum):
     """Contains necessary effect IDs."""
     adaptive_armor_hardener = 4928
     bomb_launching = 2971
@@ -231,7 +231,7 @@ class Effect(IntEnum):
 
 
 @unique
-class EffectCategory(IntEnum):
+class EffectCategoryId(IntEnum):
     """Contains necessary effect category IDs."""
     passive = 0
     active = 1
@@ -244,7 +244,7 @@ class EffectCategory(IntEnum):
 
 
 @unique
-class Operand(IntEnum):
+class OperandId(IntEnum):
     """Contains necessary expression operand IDs."""
     add_dom_grp_mod = 7
     add_dom_mod = 8

@@ -22,7 +22,7 @@
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eos import EosType, ModifierDomain, ModifierTargetFilter
+from eos.const.eos import EosTypeId, ModifierDomain, ModifierTargetFilter
 from eos.util.keyed_storage import KeyedStorage
 from .exception import UnexpectedDomainError, UnknownTargetFilterError
 
@@ -50,15 +50,15 @@ class AffectionRegister:
         self.__affectee_domain = KeyedStorage()
 
         # Items belonging to certain domain and group
-        # Format: {(domain, group): set(target items)}
+        # Format: {(domain, group ID): set(target items)}
         self.__affectee_domain_group = KeyedStorage()
 
         # Items belonging to certain domain and having certain skill requirement
-        # Format: {(domain, skill): set(target items)}
+        # Format: {(domain, skill type ID): set(target items)}
         self.__affectee_domain_skillrq = KeyedStorage()
 
         # Owner-modifiable items which have certain skill requirement
-        # Format: {skill: set(target items)}
+        # Format: {skill type ID: set(target items)}
         self.__affectee_owner_skillrq = KeyedStorage()
 
         # Affectors influencing items directly
@@ -75,17 +75,17 @@ class AffectionRegister:
         self.__affector_domain = KeyedStorage()
 
         # Affectors influencing items belonging to certain domain and group
-        # Format: {(domain, group): set(affectors)}
+        # Format: {(domain, group ID): set(affectors)}
         self.__affector_domain_group = KeyedStorage()
 
         # Affectors influencing items belonging to certain domain and having
         # certain skill requirement
-        # Format: {(domain, skill): set(affectors)}
+        # Format: {(domain, skill type ID): set(affectors)}
         self.__affector_domain_skillrq = KeyedStorage()
 
         # Affectors influencing owner-modifiable items which have certain skill
         # requirement
-        # Format: {skill: set(affectors)}
+        # Format: {skill type ID: set(affectors)}
         self.__affector_owner_skillrq = KeyedStorage()
 
     # Helpers for affectee getter - they find map and get data from it according
@@ -134,21 +134,21 @@ class AffectionRegister:
 
     def __affectee_getter_domain_group(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
-        group = affector.modifier.tgt_filter_extra_arg
-        return self.__affectee_domain_group.get((domain, group), ())
+        group_id = affector.modifier.tgt_filter_extra_arg
+        return self.__affectee_domain_group.get((domain, group_id), ())
 
     def __affectee_getter_domain_skillrq(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
-        skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosType.current_self:
-            skill = affector.carrier_item._eve_type_id
-        return self.__affectee_domain_skillrq.get((domain, skill), ())
+        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        if skill_type_id == EosTypeId.current_self:
+            skill_type_id = affector.carrier_item._eve_type_id
+        return self.__affectee_domain_skillrq.get((domain, skill_type_id), ())
 
     def __affectee_getter_owner_skillrq(self, affector):
-        skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosType.current_self:
-            skill = affector.carrier_item._eve_type_id
-        return self.__affectee_owner_skillrq.get(skill, ())
+        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        if skill_type_id == EosTypeId.current_self:
+            skill_type_id = affector.carrier_item._eve_type_id
+        return self.__affectee_owner_skillrq.get(skill_type_id, ())
 
     __affectee_getters = {
         ModifierTargetFilter.item: __affectee_getter_item,
@@ -208,19 +208,20 @@ class AffectionRegister:
         if domain is not None:
             # Domain
             affectee_maps.append((domain, self.__affectee_domain))
-            group = target_item._eve_type.group
-            if group is not None:
+            group_id = target_item._eve_type.group_id
+            if group_id is not None:
                 # Domain and group
                 affectee_maps.append(
-                    ((domain, group), self.__affectee_domain_group))
-            for skill in target_item._eve_type.required_skills:
+                    ((domain, group_id), self.__affectee_domain_group))
+            for skill_type_id in target_item._eve_type.required_skills:
                 # Domain and skill requirement
                 affectee_maps.append(
-                    ((domain, skill), self.__affectee_domain_skillrq))
+                    ((domain, skill_type_id), self.__affectee_domain_skillrq))
         if target_item._owner_modifiable is True:
-            for skill in target_item._eve_type.required_skills:
+            for skill_type_id in target_item._eve_type.required_skills:
                 # Owner-modifiable and skill requirement
-                affectee_maps.append((skill, self.__affectee_owner_skillrq))
+                affectee_maps.append(
+                    (skill_type_id, self.__affectee_owner_skillrq))
         return affectee_maps
 
     def __find_and_enable_awaitable_affectors(self, target_item):
@@ -316,15 +317,16 @@ class AffectionRegister:
             affectors.update(self.__affector_domain.get(domain, ()))
             # Domain and group
             affectors.update(self.__affector_domain_group.get(
-                (domain, target_item._eve_type.group), ()))
-            for skill in target_item._eve_type.required_skills:
+                (domain, target_item._eve_type.group_id), ()))
+            for skill_type_id in target_item._eve_type.required_skills:
                 # Domain and skill requirement
                 affectors.update(self.__affector_domain_skillrq.get(
-                    (domain, skill), ()))
+                    (domain, skill_type_id), ()))
         if target_item._owner_modifiable is True:
-            for skill in target_item._eve_type.required_skills:
+            for skill_type_id in target_item._eve_type.required_skills:
                 # Owner-modifiable and skill requirement
-                affectors.update(self.__affector_owner_skillrq.get(skill, ()))
+                affectors.update(self.__affector_owner_skillrq.get(
+                    skill_type_id, ()))
         return affectors
 
     def register_affector(self, affector):
@@ -396,21 +398,21 @@ class AffectionRegister:
 
     def __affector_map_getter_domain_group(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
-        group = affector.modifier.tgt_filter_extra_arg
-        return (domain, group), self.__affector_domain_group
+        group_id = affector.modifier.tgt_filter_extra_arg
+        return (domain, group_id), self.__affector_domain_group
 
     def __affector_map_getter_domain_skillrq(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
-        skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosType.current_self:
-            skill = affector.carrier_item._eve_type_id
-        return (domain, skill), self.__affector_domain_skillrq
+        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        if skill_type_id == EosTypeId.current_self:
+            skill_type_id = affector.carrier_item._eve_type_id
+        return (domain, skill_type_id), self.__affector_domain_skillrq
 
     def __affector_map_getter_owner_skillrq(self, affector):
-        skill = affector.modifier.tgt_filter_extra_arg
-        if skill == EosType.current_self:
-            skill = affector.carrier_item._eve_type_id
-        return skill, self.__affector_owner_skillrq
+        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        if skill_type_id == EosTypeId.current_self:
+            skill_type_id = affector.carrier_item._eve_type_id
+        return skill_type_id, self.__affector_owner_skillrq
 
     __affector_map_getters = {
         ModifierTargetFilter.item:

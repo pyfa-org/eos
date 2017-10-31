@@ -22,7 +22,7 @@
 from logging import getLogger
 
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InstrAttrValueChanged
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
@@ -37,15 +37,15 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         BasePythonModifier.__init__(
             self, tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship, tgt_filter_extra_arg=None,
-            tgt_attr=Attribute.max_velocity)
+            tgt_attr_id=AttributeId.max_velocity)
 
     def get_modification(self, carrier_item, ship):
         # If attribute values of any necessary items are not available, do not
         # calculate anything
         try:
-            mass = ship.attributes[Attribute.mass]
-            speed_boost = carrier_item.attributes[Attribute.speed_factor]
-            thrust = carrier_item.attributes[Attribute.speed_boost_factor]
+            mass = ship.attributes[AttributeId.mass]
+            speed_boost = carrier_item.attributes[AttributeId.speed_factor]
+            thrust = carrier_item.attributes[AttributeId.speed_boost_factor]
         except (AttributeError, KeyError) as e:
             raise ModificationCalculationError from e
         try:
@@ -64,13 +64,13 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         then modification value can be changed as well.
         """
         if (
-            (message.item is ship and message.attr == Attribute.mass) or
+            (message.item is ship and message.attr == AttributeId.mass) or
             (
                 message.item is carrier_item and
-                message.attr == Attribute.speed_factor
+                message.attr == AttributeId.speed_factor
             ) or (
                 message.item is carrier_item and
-                message.attr == Attribute.speed_boost_factor
+                message.attr == AttributeId.speed_boost_factor
             )
         ):
             return True

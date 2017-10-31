@@ -42,23 +42,23 @@ class TestConversionEffect(EveObjBuilderTestCase):
             'effectCategory': 111, 'trackingSpeedAttributeID': 6,
             'modifierInfo': None})
         mod = self.mod(
-            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5, tgt_attr=6,
-            operator=7, src_attr=8)
+            tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5, tgt_attr_id=6,
+            operator=7, src_attr_id=8)
         mod_builder.return_value.build.return_value = ([mod], 29)
         self.run_builder()
         self.assertEqual(len(self.effects), 1)
         self.assertIn(112, self.effects)
         effect = self.effects[112]
         self.assertEqual(effect.id, 112)
-        self.assertEqual(effect.category, 111)
+        self.assertEqual(effect.category_id, 111)
         self.assertIs(effect.is_offensive, True)
         self.assertIs(effect.is_assistance, False)
-        self.assertEqual(effect.duration_attribute, 781)
-        self.assertEqual(effect.discharge_attribute, 72)
-        self.assertEqual(effect.range_attribute, 2)
-        self.assertEqual(effect.falloff_attribute, 3)
-        self.assertEqual(effect.tracking_speed_attribute, 6)
-        self.assertEqual(effect.fitting_usage_chance_attribute, 96)
+        self.assertEqual(effect.duration_attribute_id, 781)
+        self.assertEqual(effect.discharge_attribute_id, 72)
+        self.assertEqual(effect.range_attribute_id, 2)
+        self.assertEqual(effect.falloff_attribute_id, 3)
+        self.assertEqual(effect.tracking_speed_attribute_id, 6)
+        self.assertEqual(effect.fitting_usage_chance_attribute_id, 96)
         self.assertEqual(effect.build_status, 29)
         self.assertIn(mod, effect.modifiers)
         self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

@@ -57,8 +57,8 @@ class TestConversionType(EveObjBuilderTestCase):
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         evetype = self.types[1]
-        self.assertEqual(evetype.group, 6)
-        self.assertEqual(evetype.category, 16)
+        self.assertEqual(evetype.group_id, 6)
+        self.assertEqual(evetype.category_id, 16)
         type_attributes = evetype.attributes
         self.assertEqual(len(type_attributes), 2)
         self.assertEqual(type_attributes[5], 10.0)

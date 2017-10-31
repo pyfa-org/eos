@@ -21,7 +21,7 @@
 
 from eos.const.eos import (
     EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
-from eos.const.eve import Operand
+from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -31,24 +31,24 @@ class TestBuilderPriority(ModBuilderTestCase):
     def setUp(self):
         super().setUp()
         e_tgt = self.ef.make(
-            1, operandID=Operand.def_dom, expressionValue='Ship')
+            1, operandID=OperandId.def_dom, expressionValue='Ship')
         e_tgt_attr = self.ef.make(
-            2, operandID=Operand.def_attr, expressionAttributeID=9)
+            2, operandID=OperandId.def_attr, expressionAttributeID=9)
         e_optr = self.ef.make(
-            3, operandID=Operand.def_optr, expressionValue='PostPercent')
+            3, operandID=OperandId.def_optr, expressionValue='PostPercent')
         e_src_attr = self.ef.make(
-            4, operandID=Operand.def_attr, expressionAttributeID=327)
+            4, operandID=OperandId.def_attr, expressionAttributeID=327)
         e_tgt_spec = self.ef.make(
-            5, operandID=Operand.itm_attr, arg1=e_tgt['expressionID'],
+            5, operandID=OperandId.itm_attr, arg1=e_tgt['expressionID'],
             arg2=e_tgt_attr['expressionID'])
         e_optr_tgt = self.ef.make(
-            6, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
+            6, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
             arg2=e_tgt_spec['expressionID'])
         self.e_add_mod = self.ef.make(
-            7, operandID=Operand.add_itm_mod, arg1=e_optr_tgt['expressionID'],
+            7, operandID=OperandId.add_itm_mod, arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID'])
         self.e_rm_mod = self.ef.make(
-            8, operandID=Operand.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
+            8, operandID=OperandId.rm_itm_mod, arg1=e_optr_tgt['expressionID'],
             arg2=e_src_attr['expressionID'])
 
     def test_etree(self):
@@ -63,9 +63,9 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr, 9)
+        self.assertEqual(modifier.tgt_attr_id, 9)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.src_attr, 327)
+        self.assertEqual(modifier.src_attr_id, 327)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_modinfo(self):
@@ -83,7 +83,7 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr, 164)
+        self.assertEqual(modifier.tgt_attr_id, 164)
         self.assertEqual(modifier.operator, ModifierOperator.mod_add)
-        self.assertEqual(modifier.src_attr, 175)
+        self.assertEqual(modifier.src_attr_id, 175)
         self.assertEqual(len(self.get_log()), 0)

@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
@@ -30,11 +30,11 @@ from .base import BaseSlotStatRegister
 class UnorderedShipSlotStatRegister(
         BaseSlotStatRegister, InheritableVolatileMixin):
 
-    def __init__(self, msg_broker, slot_effect, slot_attr):
+    def __init__(self, msg_broker, slot_effect_id, slot_attr_id):
         BaseSlotStatRegister.__init__(self)
         InheritableVolatileMixin.__init__(self)
-        self.__slot_effect = slot_effect
-        self.__slot_attr = slot_attr
+        self.__slot_effect_id = slot_effect_id
+        self.__slot_attr_id = slot_attr_id
         self.__current_ship = None
         self.__slot_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
@@ -46,7 +46,7 @@ class UnorderedShipSlotStatRegister(
     @volatile_property
     def total(self):
         try:
-            return int(self.__current_ship.attributes[self.__slot_attr])
+            return int(self.__current_ship.attributes[self.__slot_attr_id])
         except (AttributeError, KeyError):
             return None
 
@@ -63,11 +63,11 @@ class UnorderedShipSlotStatRegister(
             self.__current_ship = None
 
     def _handle_item_effects_activation(self, message):
-        if self.__slot_effect in message.effects:
+        if self.__slot_effect_id in message.effect_ids:
             self.__slot_users.add(message.item)
 
     def _handle_item_effects_deactivation(self, message):
-        if self.__slot_effect in message.effects:
+        if self.__slot_effect_id in message.effect_ids:
             self.__slot_users.discard(message.item)
 
     _handler_map = {
@@ -81,26 +81,27 @@ class RigSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, Effect.rig_slot, Attribute.rig_slots)
+            self, msg_broker, EffectId.rig_slot, AttributeId.rig_slots)
 
 
 class SubsystemSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, Effect.subsystem, Attribute.max_subsystems)
+            self, msg_broker, EffectId.subsystem, AttributeId.max_subsystems)
 
 
 class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, Effect.turret_fitted, Attribute.turret_slots_left)
+            self, msg_broker, EffectId.turret_fitted,
+            AttributeId.turret_slots_left)
 
 
 class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, Effect.launcher_fitted,
-            Attribute.launcher_slots_left)
+            self, msg_broker, EffectId.launcher_fitted,
+            AttributeId.launcher_slots_left)

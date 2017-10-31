@@ -21,8 +21,8 @@
 
 from abc import ABCMeta, abstractmethod
 
-from eos.const.eos import EffectRunMode, State
-from eos.const.eve import Effect
+from eos.const.eos import EffectMode, State
+from eos.const.eve import EffectId
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import (
     InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved,
@@ -30,7 +30,7 @@ from eos.fit.pubsub.message import (
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
 
-DEFAULT_EFFECT_MODE = EffectRunMode.full_compliance
+DEFAULT_EFFECT_MODE = EffectMode.full_compliance
 
 
 class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
@@ -55,7 +55,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # related to their calculation
         self.attributes = MutableAttributeMap(self)
         # Container for effects IDs which are currently running
-        self._running_effects = set()
+        self._running_effect_ids = set()
         # Effect run modes, if they are any different from default
         # Format: {effect ID: effect run mode}
         self.__effect_mode_overrides = None
@@ -173,36 +173,36 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             return None
 
     # Effect methods
-    def _get_wanted_effect_run_status_changes(self):
+    def _get_wanted_effect_status_changes(self):
         """Get changes needed to actualize effect running statuses.
 
         Returns: Tuple with two sets, first with effect IDs which should be
         started and second with effect IDss which should be stopped to achieve
         proper state.
         """
-        eve_type_effects = self._eve_type_effects
+        effects = self._eve_type_effects
         # Set of effects which should be running according to new conditions
-        new_running = set()
+        new_running_effect_ids = set()
         # Process 'online' effect separately, as it's needed for all other
         # effects from online categories
-        if Effect.online in eve_type_effects:
-            online_running = self.__get_wanted_effect_run_status(
-                eve_type_effects[Effect.online], None)
+        if EffectId.online in effects:
+            online_running = self.__get_wanted_effect_status(
+                effects[EffectId.online], None)
             if online_running is True:
-                new_running.add(Effect.online)
+                new_running_effect_ids.add(EffectId.online)
         else:
             online_running = False
         # Do a pass over regular effects
-        for effect_id, effect in eve_type_effects.items():
-            if effect_id == Effect.online:
+        for effect_id, effect in effects.items():
+            if effect_id == EffectId.online:
                 continue
-            if self.__get_wanted_effect_run_status(effect, online_running):
-                new_running.add(effect_id)
-        to_start = new_running.difference(self._running_effects)
-        to_stop = self._running_effects.difference(new_running)
+            if self.__get_wanted_effect_status(effect, online_running):
+                new_running_effect_ids.add(effect_id)
+        to_start = new_running_effect_ids.difference(self._running_effect_ids)
+        to_stop = self._running_effect_ids.difference(new_running_effect_ids)
         return to_start, to_stop
 
-    def __get_wanted_effect_run_status(self, effect, online_running):
+    def __get_wanted_effect_status(self, effect, online_running):
         """Decide if effect should be running or not.
 
         Decision is taken based on effect's run mode, item's state and multiple
@@ -214,8 +214,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 this item or not.
         """
         # Decide how we handle effect based on its run mode
-        effect_run_mode = self.get_effect_run_mode(effect.id)
-        if effect_run_mode == EffectRunMode.full_compliance:
+        effect_mode = self.get_effect_mode(effect.id)
+        if effect_mode == EffectMode.full_compliance:
             # Check state restriction first, as it should be checked regardless
             # of effect category
             effect_state = effect._state
@@ -223,12 +223,12 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 return False
             # Offline effects must NOT specify fitting usage chance
             if effect_state == State.offline:
-                return effect.fitting_usage_chance_attribute is None
+                return effect.fitting_usage_chance_attribute_id is None
             # Online effects depend on 'online' effect
             elif effect_state == State.online:
                 # If we've been requested 'online' effect status, it has no
                 # additional restrictions
-                if effect.id == Effect.online:
+                if effect.id == EffectId.online:
                     return True
                 # For regular online effects, check if 'online' is running
                 else:
@@ -244,27 +244,28 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 return False
         # In state compliance, consider effect running if item's state is at
         # least as high as required by the effect
-        elif effect_run_mode == EffectRunMode.state_compliance:
+        elif effect_mode == EffectMode.state_compliance:
             return self.state >= effect._state
         # If it's supposed to always run, make it so without a second thought
-        elif effect_run_mode == EffectRunMode.force_run:
+        elif effect_mode == EffectMode.force_run:
             return True
         # Same for always-stop
-        elif effect_run_mode == EffectRunMode.force_stop:
+        elif effect_mode == EffectMode.force_stop:
             return False
         # For safety, generally should never happen
         else:
             return False
 
-    def get_effect_run_mode(self, effect_id):
+    def get_effect_mode(self, effect_id):
         if self.__effect_mode_overrides is None:
             return DEFAULT_EFFECT_MODE
-        return self.__effect_mode_overrides.get(effect_id, DEFAULT_EFFECT_MODE)
+        return self.__effect_mode_overrides.get(
+            effect_id, DEFAULT_EFFECT_MODE)
 
-    def set_effect_run_mode(self, effect_id, new_mode):
-        self._set_effects_run_modes({effect_id: new_mode})
+    def set_effect_mode(self, effect_id, new_mode):
+        self._set_effects_modes({effect_id: new_mode})
 
-    def _set_effects_run_modes(self, effects_modes):
+    def _set_effects_modes(self, effects_modes):
         """
         Set modes of multiple effects for this item.
 

@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import ModifierDomain, State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.util.repr import make_repr_str
 from .mixin.side_effect import SideEffectMixin
 from .mixin.state import ImmutableStateMixin
@@ -40,7 +40,7 @@ class Booster(ImmutableStateMixin, SideEffectMixin):
     @property
     def slot(self):
         """Return slot this booster takes."""
-        return self._eve_type_attributes.get(Attribute.boosterness)
+        return self._eve_type_attributes.get(AttributeId.boosterness)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character

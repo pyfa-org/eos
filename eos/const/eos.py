@@ -44,7 +44,7 @@ class State(IntEnum):
 
 
 @unique
-class EffectRunMode(IntEnum):
+class EffectMode(IntEnum):
     """Contains possible effect run modes.
 
     Run modes define under which conditions effects are run.
@@ -164,7 +164,7 @@ class Restriction(IntEnum):
 
 
 @unique
-class EosType(IntEnum):
+class EosTypeId(IntEnum):
     """Contains Eos-specific eve type IDs.
 
     Any values defined here must not overlap with regular eve type IDs.
@@ -173,7 +173,7 @@ class EosType(IntEnum):
 
 
 @unique
-class EosEffect(IntEnum):
+class EosEffectId(IntEnum):
     """Contains Eos-specific effect IDs.
 
     Any values defined here must not overlap with regular effect IDs.

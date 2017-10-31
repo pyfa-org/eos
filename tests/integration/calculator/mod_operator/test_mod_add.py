@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -34,11 +34,11 @@ class TestOperatorAdd(CalculatorTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.mod_add,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.influence_src1 = Implant(self.ch.type(
             attributes={src_attr.id: 10}, effects=[effect]).id)
         self.influence_src2 = Implant(self.ch.type(

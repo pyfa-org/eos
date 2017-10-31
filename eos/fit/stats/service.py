@@ -21,7 +21,7 @@
 
 import math
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
@@ -174,8 +174,8 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
     @volatile_property
     def agility_factor(self):
         try:
-            agility = self.__current_ship.attributes[Attribute.agility]
-            mass = self.__current_ship.attributes[Attribute.mass]
+            agility = self.__current_ship.attributes[AttributeId.agility]
+            mass = self.__current_ship.attributes[AttributeId.mass]
         except (AttributeError, KeyError):
             return None
         real_agility = -math.log(0.25) * agility * mass / 1000000

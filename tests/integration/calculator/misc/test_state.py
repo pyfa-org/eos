@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Effect, EffectCategory
+from eos.const.eve import EffectId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -38,45 +38,45 @@ class TestStateSwitching(CalculatorTestCase):
         modifier_off = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr1.id)
+            src_attr_id=src_attr1.id)
         modifier_on = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr2.id)
+            src_attr_id=src_attr2.id)
         modifier_act = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr3.id)
+            src_attr_id=src_attr3.id)
         modifier_over = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr4.id)
+            src_attr_id=src_attr4.id)
         modifier_disabled = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr3.id)
+            src_attr_id=src_attr3.id)
         effect_cat_offline = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier_off])
+            category_id=EffectCategoryId.passive, modifiers=[modifier_off])
         effect_cat_online = self.ch.effect(
-            category=EffectCategory.online, modifiers=[modifier_on])
+            category_id=EffectCategoryId.online, modifiers=[modifier_on])
         effect_cat_active = self.ch.effect(
-            category=EffectCategory.active, modifiers=[modifier_act])
+            category_id=EffectCategoryId.active, modifiers=[modifier_act])
         effect_cat_overload = self.ch.effect(
-            category=EffectCategory.overload, modifiers=[modifier_over])
+            category_id=EffectCategoryId.overload, modifiers=[modifier_over])
         online_effect = self.ch.effect(
-            effect_id=Effect.online, category=EffectCategory.online)
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
         effect_disabled = self.ch.effect(
-            category=EffectCategory.online, modifiers=[modifier_disabled])
+            category_id=EffectCategoryId.online, modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.ch.type(
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
@@ -85,8 +85,8 @@ class TestStateSwitching(CalculatorTestCase):
                 effect_cat_offline, effect_cat_online, effect_cat_active,
                 effect_cat_overload, online_effect, effect_disabled),
             default_effect=effect_cat_active).id)
-        self.item.set_effect_run_mode(
-            effect_disabled.id, EffectRunMode.force_stop)
+        self.item.set_effect_mode(
+            effect_disabled.id, EffectMode.force_stop)
 
     def test_fit_offline(self):
         # Setup

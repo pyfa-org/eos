@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -37,27 +37,27 @@ class TestEffectToggling(CalculatorTestCase):
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr1.id)
+            src_attr_id=src_attr1.id)
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr2.id)
+            src_attr_id=src_attr2.id)
         modifier_active = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr3.id)
+            src_attr_id=src_attr3.id)
         self.effect1 = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier1])
+            category_id=EffectCategoryId.passive, modifiers=[modifier1])
         self.effect2 = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier2])
+            category_id=EffectCategoryId.passive, modifiers=[modifier2])
         self.effect_active = self.ch.effect(
-            category=EffectCategory.active, modifiers=[modifier_active])
+            category_id=EffectCategoryId.active, modifiers=[modifier_active])
         self.item = ModuleHigh(self.ch.type(
             attributes={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
@@ -70,7 +70,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.modules.high.append(self.item)
         # Action
-        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
+        self.item.set_effect_mode(self.effect1.id, EffectMode.force_stop)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
         # Cleanup
@@ -82,10 +82,10 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.state = State.offline
         self.fit.modules.high.append(self.item)
         # Action
-        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
-        self.item.set_effect_run_mode(self.effect2.id, EffectRunMode.force_stop)
-        self.item.set_effect_run_mode(
-            self.effect_active.id, EffectRunMode.force_stop)
+        self.item.set_effect_mode(self.effect1.id, EffectMode.force_stop)
+        self.item.set_effect_mode(self.effect2.id, EffectMode.force_stop)
+        self.item.set_effect_mode(
+            self.effect_active.id, EffectMode.force_stop)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
         # Cleanup
@@ -95,11 +95,11 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling(self):
         # Setup
         self.item.state = State.offline
-        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
+        self.item.set_effect_mode(self.effect1.id, EffectMode.force_stop)
         self.fit.modules.high.append(self.item)
         # Action
-        self.item.set_effect_run_mode(
-            self.effect1.id, EffectRunMode.state_compliance)
+        self.item.set_effect_mode(
+            self.effect1.id, EffectMode.state_compliance)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
@@ -109,16 +109,16 @@ class TestEffectToggling(CalculatorTestCase):
     def test_effect_enabling_multiple(self):
         # Setup
         self.item.state = State.offline
-        self.item.set_effect_run_mode(self.effect1.id, EffectRunMode.force_stop)
-        self.item.set_effect_run_mode(self.effect2.id, EffectRunMode.force_stop)
+        self.item.set_effect_mode(self.effect1.id, EffectMode.force_stop)
+        self.item.set_effect_mode(self.effect2.id, EffectMode.force_stop)
         self.fit.modules.high.append(self.item)
         # Action
-        self.item.set_effect_run_mode(
-            self.effect1.id, EffectRunMode.state_compliance)
-        self.item.set_effect_run_mode(
-            self.effect2.id, EffectRunMode.state_compliance)
-        self.item.set_effect_run_mode(
-            self.effect_active.id, EffectRunMode.state_compliance)
+        self.item.set_effect_mode(
+            self.effect1.id, EffectMode.state_compliance)
+        self.item.set_effect_mode(
+            self.effect2.id, EffectMode.state_compliance)
+        self.item.set_effect_mode(
+            self.effect_active.id, EffectMode.state_compliance)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup

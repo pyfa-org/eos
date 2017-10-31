@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,15 +30,15 @@ class TestRigSlot(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=Attribute.rig_slots)
+        self.ch.attr(attribute_id=AttributeId.rig_slots)
         self.effect = self.ch.effect(
-            effect_id=Effect.rig_slot, category=EffectCategory.passive)
+            effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)
 
     def test_fail_excess_single(self):
         # Check that error is raised when number of used slots exceeds slot
         # amount provided by ship
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 0}).id)
+            attributes={AttributeId.rig_slots: 0}).id)
         item = Rig(self.ch.type(effects=[self.effect]).id)
         self.fit.rigs.add(item)
         # Action
@@ -71,7 +71,7 @@ class TestRigSlot(RestrictionTestCase):
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 1}).id)
+            attributes={AttributeId.rig_slots: 1}).id)
         eve_type = self.ch.type(effects=[self.effect])
         item1 = Rig(eve_type.id)
         item2 = Rig(eve_type.id)
@@ -97,7 +97,7 @@ class TestRigSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 2}).id)
+            attributes={AttributeId.rig_slots: 2}).id)
         eve_type = self.ch.type(effects=[self.effect])
         item1 = Rig(eve_type.id)
         item2 = Rig(eve_type.id)
@@ -119,7 +119,7 @@ class TestRigSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 5}).id)
+            attributes={AttributeId.rig_slots: 5}).id)
         eve_type = self.ch.type(effects=[self.effect])
         item1 = Rig(eve_type.id)
         item2 = Rig(eve_type.id)
@@ -141,9 +141,9 @@ class TestRigSlot(RestrictionTestCase):
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 0}).id)
+            attributes={AttributeId.rig_slots: 0}).id)
         item = Rig(self.ch.type(effects=[self.effect]).id)
-        item.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
+        item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.rigs.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -156,7 +156,7 @@ class TestRigSlot(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 0}).id)
+            attributes={AttributeId.rig_slots: 0}).id)
         item = Rig(self.ch.type(effects=[self.effect]).id)
         self.fit.rigs.add(item)
         self.fit.source = None

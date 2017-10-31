@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -156,11 +156,11 @@ class TestRahSimCleanup(RahSimTestCase):
         skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=self.armor_therm.id,
+            tgt_attr_id=self.armor_therm.id,
             operator=ModifierOperator.post_mul,
-            src_attr=skill_attr.id)
+            src_attr_id=skill_attr.id)
         skill_effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[skill_modifier])
+            category_id=EffectCategoryId.passive, modifiers=[skill_modifier])
         skill_eve_type = self.ch.type(
             attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -201,11 +201,11 @@ class TestRahSimCleanup(RahSimTestCase):
         skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=self.armor_kin.id,
+            tgt_attr_id=self.armor_kin.id,
             operator=ModifierOperator.post_mul,
-            src_attr=skill_attr.id)
+            src_attr_id=skill_attr.id)
         skill_effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[skill_modifier])
+            category_id=EffectCategoryId.passive, modifiers=[skill_modifier])
         skill_eve_type = self.ch.type(
             attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -247,11 +247,11 @@ class TestRahSimCleanup(RahSimTestCase):
         skill_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=self.shift_attr.id,
+            tgt_attr_id=self.shift_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=skill_attr.id)
+            src_attr_id=skill_attr.id)
         skill_effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[skill_modifier])
+            category_id=EffectCategoryId.passive, modifiers=[skill_modifier])
         skill_eve_type = self.ch.type(
             attributes={skill_attr.id: 0.1}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)

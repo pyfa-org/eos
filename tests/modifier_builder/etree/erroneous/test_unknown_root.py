@@ -22,7 +22,7 @@
 import logging
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import Operand
+from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -30,7 +30,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
 
     def test_int_stub(self):
         e_stub = self.ef.make(
-            1, operandID=Operand.def_int, expressionValue='0')
+            1, operandID=OperandId.def_int, expressionValue='0')
         effect_row = {
             'preExpression': e_stub['expressionID'],
             'postExpression': e_stub['expressionID']}

@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import Drone, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
@@ -39,13 +39,13 @@ class DronebayVolumeStatRegister(
     @volatile_property
     def used(self):
         return sum(
-            item.attributes[Attribute.volume]
+            item.attributes[AttributeId.volume]
             for item in self.__resource_users)
 
     @volatile_property
     def output(self):
         try:
-            return self.__current_ship.attributes[Attribute.drone_capacity]
+            return self.__current_ship.attributes[AttributeId.drone_capacity]
         except (AttributeError, KeyError):
             return None
 
@@ -56,7 +56,7 @@ class DronebayVolumeStatRegister(
     def _handle_item_addition(self, message):
         if (
             isinstance(message.item, Drone) and
-            Attribute.volume in message.item._eve_type_attributes
+            AttributeId.volume in message.item._eve_type_attributes
         ):
             self.__resource_users.add(message.item)
         elif isinstance(message.item, Ship):

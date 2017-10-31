@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import Character, Drone
 from eos.fit.pubsub.message import (
     InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate)
@@ -45,7 +45,7 @@ class LaunchedDroneStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
     def total(self):
         try:
             return int(
-                self.__current_char.attributes[Attribute.max_active_drones])
+                self.__current_char.attributes[AttributeId.max_active_drones])
         except (AttributeError, KeyError):
             return None
 

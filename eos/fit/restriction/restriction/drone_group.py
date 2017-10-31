@@ -22,16 +22,16 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import Drone, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-RESTRICTION_ATTRS = (
-    Attribute.allowed_drone_group_1,
-    Attribute.allowed_drone_group_2)
+ALLOWED_GROUP_ATTR_IDS = (
+    AttributeId.allowed_drone_group_1,
+    AttributeId.allowed_drone_group_2)
 
 
 DroneGroupErrorData = namedtuple(
@@ -73,29 +73,30 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         # No ship - no restriction
         if ship is None:
             return
-        allowed_groups = []
+        allowed_group_ids = []
         # Find out if we have restriction, and which drone groups it allows
-        for restriction_attr in RESTRICTION_ATTRS:
+        for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
-                restriction_value = ship._eve_type_attributes[restriction_attr]
+                allowed_group_id = (
+                    ship._eve_type_attributes[allowed_group_attr_id])
             except KeyError:
                 continue
             else:
-                allowed_groups.append(restriction_value)
+                allowed_group_ids.append(allowed_group_id)
         # No allowed group attributes - no restriction
-        if not allowed_groups:
+        if not allowed_group_ids:
             return
         tainted_items = {}
         # Convert set to tuple, this way we can use it multiple times in error
         # data, making sure that it can't be modified by validation caller
-        allowed_groups = tuple(allowed_groups)
+        allowed_group_ids = tuple(allowed_group_ids)
         for drone in self.__drones:
             # Taint items, whose group is not allowed
-            drone_group = drone._eve_type.group
-            if drone_group not in allowed_groups:
+            drone_group_id = drone._eve_type.group_id
+            if drone_group_id not in allowed_group_ids:
                 tainted_items[drone] = DroneGroupErrorData(
-                    drone_group=drone_group,
-                    allowed_groups=allowed_groups)
+                    drone_group=drone_group_id,
+                    allowed_groups=allowed_group_ids)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

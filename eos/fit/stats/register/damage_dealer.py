@@ -45,14 +45,14 @@ class DamageDealerRegister(BaseStatRegister):
     def _handle_item_effects_activation(self, message):
         if not isinstance(message.item, DamageDealerMixin):
             return
-        damage_effects = message.effects.intersection(PRIMARY_DAMAGE_EFFECTS)
+        damage_effects = message.effect_ids.intersection(PRIMARY_DAMAGE_EFFECTS)
         if damage_effects:
             self.__dealers.add_data_set(message.item, damage_effects)
 
     def _handle_item_effects_deactivation(self, message):
         if not isinstance(message.item, DamageDealerMixin):
             return
-        damage_effects = message.effects.intersection(PRIMARY_DAMAGE_EFFECTS)
+        damage_effects = message.effect_ids.intersection(PRIMARY_DAMAGE_EFFECTS)
         if damage_effects:
             self.__dealers.rm_data_set(message.item, damage_effects)
 

@@ -23,7 +23,7 @@ import logging
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -36,11 +36,11 @@ class TestOperatorUnknown(CalculatorTestCase):
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr.id,
+            tgt_attr_id=tgt_attr.id,
             operator=1008,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[invalid_modifier])
+            category_id=EffectCategoryId.passive, modifiers=[invalid_modifier])
         item_eve_type = self.ch.type(
             attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_eve_type.id)
@@ -68,17 +68,17 @@ class TestOperatorUnknown(CalculatorTestCase):
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr.id,
+            tgt_attr_id=tgt_attr.id,
             operator=None,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr.id,
+            tgt_attr_id=tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive,
+            category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
         item_eve_type = self.ch.type(
             attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
@@ -105,17 +105,17 @@ class TestOperatorUnknown(CalculatorTestCase):
         invalid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr.id,
+            tgt_attr_id=tgt_attr.id,
             operator=1008,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr.id,
+            tgt_attr_id=tgt_attr.id,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive,
+            category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
         item = Rig(self.ch.type(
             attributes={src_attr.id: 1.5, tgt_attr.id: 100},

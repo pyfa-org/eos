@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eve import Attribute, Group, Operand
+from eos.const.eve import AttributeId, TypeGroupId, OperandId
 from eos.util.frozen_dict import FrozenDict
 
 
@@ -55,18 +55,18 @@ class Normalizer:
         Args:
             data: Dictionary in {table name: {table, rows}} format.
         """
-        atrrib_map = {
-            'radius': Attribute.radius,
-            'mass': Attribute.mass,
-            'volume': Attribute.volume,
-            'capacity': Attribute.capacity}
-        attr_ids = tuple(atrrib_map.values())
+        attribute_map = {
+            'radius': AttributeId.radius,
+            'mass': AttributeId.mass,
+            'volume': AttributeId.volume,
+            'capacity': AttributeId.capacity}
+        attribute_ids = tuple(attribute_map.values())
         # Here we will store pairs (typeID, attrID) already defined in
         # dgmtypeattribs
         defined_pairs = set()
         dgmtypeattribs = data['dgmtypeattribs']
         for row in dgmtypeattribs:
-            if row['attributeID'] not in attr_ids:
+            if row['attributeID'] not in attribute_ids:
                 continue
             defined_pairs.add((row['typeID'], row['attributeID']))
         attrs_skipped = 0
@@ -77,20 +77,20 @@ class Normalizer:
             type_id = row['typeID']
             new_row = {}
             for field, value in row.items():
-                if field in atrrib_map:
+                if field in attribute_map:
                     # If row didn't have such attribute defined, skip it
                     if value is None:
                         continue
                     # If such attribute already exists in dgmtypeattribs, do not
                     # modify it - values from dgmtypeattribs table have priority
-                    attr_id = atrrib_map[field]
-                    if (type_id, attr_id) in defined_pairs:
+                    attribute_id = attribute_map[field]
+                    if (type_id, attribute_id) in defined_pairs:
                         attrs_skipped += 1
                         continue
                     # Generate row and add it to proper attribute table
                     dgmtypeattribs.add(FrozenDict({
                         'typeID': type_id,
-                        'attributeID': attr_id,
+                        'attributeID': attribute_id,
                         'value': value}))
                 else:
                     new_row[field] = value
@@ -130,21 +130,21 @@ class Normalizer:
         # )
         repl_spec = (
             (
-                Operand.def_attr,
+                OperandId.def_attr,
                 'expressionAttributeID',
                 {},
                 ('shieldDamage',)),
             (
-                Operand.def_grp,
+                OperandId.def_grp,
                 'expressionGroupID',
                 {
-                    'EnergyWeapon': Group.energy_weapon,
-                    'HybridWeapon': Group.hydrid_weapon,
-                    'MiningLaser': Group.mining_laser,
-                    'ProjectileWeapon': Group.projectile_weapon},
+                    'EnergyWeapon': TypeGroupId.energy_weapon,
+                    'HybridWeapon': TypeGroupId.hydrid_weapon,
+                    'MiningLaser': TypeGroupId.mining_laser,
+                    'ProjectileWeapon': TypeGroupId.projectile_weapon},
                 ('Structure', 'PowerCore', '    None')),
             (
-                Operand.def_type,
+                OperandId.def_type,
                 'expressionTypeID',
                 {},
                 ('Acceration Control',)))

@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -29,9 +29,10 @@ class TestLauncherSlot(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=Attribute.launcher_slots_left)
+        self.ch.attr(attribute_id=AttributeId.launcher_slots_left)
         self.effect = self.ch.effect(
-            effect_id=Effect.launcher_fitted, category=EffectCategory.passive)
+            effect_id=EffectId.launcher_fitted,
+            category_id=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -39,13 +40,13 @@ class TestLauncherSlot(StatTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=Attribute.launcher_slots_left,
+            tgt_attr_id=AttributeId.launcher_slots_left,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         mod_effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.launcher_slots_left: 3, src_attr.id: 2},
+            attributes={AttributeId.launcher_slots_left: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertEqual(self.fit.stats.launcher_slots.total, 6)
@@ -103,7 +104,7 @@ class TestLauncherSlot(StatTestCase):
     def test_use_disabled_effect(self):
         item1 = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         item2 = ModuleHigh(self.ch.type(effects=[self.effect]).id)
-        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
+        item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Verification
@@ -114,7 +115,7 @@ class TestLauncherSlot(StatTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.launcher_slots_left: 3}).id)
+            attributes={AttributeId.launcher_slots_left: 3}).id)
         self.fit.modules.high.append(
             ModuleHigh(self.ch.type(effects=[self.effect]).id))
         self.fit.modules.high.append(

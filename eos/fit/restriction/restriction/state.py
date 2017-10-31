@@ -38,16 +38,16 @@ class StateRestrictionRegister(BaseRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        self.__items = set()
+        self.__restricted_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_states_activation(self, message):
         if State.online in message.states:
-            self.__items.add(message.item)
+            self.__restricted_items.add(message.item)
 
     def _handle_item_states_deactivation(self, message):
         if State.online in message.states:
-            self.__items.discard(message.item)
+            self.__restricted_items.discard(message.item)
 
     _handler_map = {
         InstrStatesActivate: _handle_item_states_activation,
@@ -55,7 +55,7 @@ class StateRestrictionRegister(BaseRestrictionRegister):
 
     def validate(self):
         tainted_items = {}
-        for item in self.__items:
+        for item in self.__restricted_items:
             if item.state > item._eve_type.max_state:
                 allowed_states = tuple(
                     s for s in State if s <= item._eve_type.max_state)

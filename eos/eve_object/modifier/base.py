@@ -32,11 +32,12 @@ class BaseModifier(metaclass=ABCMeta):
     when it should be applied, on which items, how to apply it, and so on.
     """
 
-    def __init__(self, tgt_filter, tgt_domain, tgt_filter_extra_arg, tgt_attr):
+    def __init__(
+            self, tgt_filter, tgt_domain, tgt_filter_extra_arg, tgt_attr_id):
         self.tgt_filter = tgt_filter
         self.tgt_domain = tgt_domain
         self.tgt_filter_extra_arg = tgt_filter_extra_arg
-        self.tgt_attr = tgt_attr
+        self.tgt_attr_id = tgt_attr_id
 
     @abstractmethod
     def get_modification(self, carrier_item, ship):
@@ -80,7 +81,7 @@ class BaseModifier(metaclass=ABCMeta):
         return all((
             self.tgt_filter in ModifierTargetFilter.__members__.values(),
             self.tgt_domain in ModifierDomain.__members__.values(),
-            isinstance(self.tgt_attr, Integral)))
+            isinstance(self.tgt_attr_id, Integral)))
 
     def __validate_tgt_filter_item(self):
         return all((

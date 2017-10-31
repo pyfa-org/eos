@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import ModifierDomain, State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.util.repr import make_repr_str
 from .mixin.chargeable import ChargeableMixin
 from .mixin.damage_dealer import DamageDealerMixin
@@ -36,7 +36,7 @@ class Module(
 
     @property
     def reactivation_delay(self):
-        delay_ms = self.attributes.get(Attribute.module_reactivation_delay)
+        delay_ms = self.attributes.get(AttributeId.module_reactivation_delay)
         if delay_ms is None:
             return None
         return delay_ms / 1000

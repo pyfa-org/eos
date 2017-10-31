@@ -67,7 +67,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
-        self.assertEqual(self.types[1].group, 1)
+        self.assertEqual(self.types[1].group_id, 1)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -82,7 +82,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
-        self.assertEqual(self.types[1].group, 920)
+        self.assertEqual(self.types[1].group_id, 920)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -207,7 +207,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['evegroups'].append({'groupID': 1, 'categoryID': 32})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
-        self.assertEqual(self.types[1].category, 7)
+        self.assertEqual(self.types[1].category_id, 7)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -226,7 +226,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
             {'attributeID': 7, 'maxAttributeID': 55})
         self.run_builder()
         self.assertEqual(len(self.attributes), 1)
-        self.assertEqual(self.attributes[7].max_attribute, 50)
+        self.assertEqual(self.attributes[7].max_attribute_id, 50)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -243,7 +243,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['dgmeffects'].append({'effectID': 7, 'effectCategory': 55})
         self.run_builder()
         self.assertEqual(len(self.effects), 1)
-        self.assertEqual(self.effects[7].category, 50)
+        self.assertEqual(self.effects[7].category_id, 50)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]

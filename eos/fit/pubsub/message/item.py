@@ -41,13 +41,13 @@ class InputItemAdded(BaseInputMessage):
         states = {s for s in State if s <= item.state}
         instructions.append(InstrStatesActivate(item, states))
         # Handle effect activation
-        to_start, to_stop = item._get_wanted_effect_run_status_changes()
+        to_start, to_stop = item._get_wanted_effect_status_changes()
         if to_start:
-            item._running_effects.update(to_start)
+            item._running_effect_ids.update(to_start)
             instructions.append(InstrEffectsStart(item, to_start))
         if to_stop:
             instructions.append(InstrEffectsStop(item, to_stop))
-            item._running_effects.difference_update(to_stop)
+            item._running_effect_ids.difference_update(to_stop)
         return instructions
 
     def __repr__(self):
@@ -68,10 +68,10 @@ class InputItemRemoved(BaseInputMessage):
         instructions = []
         states = {s for s in State if s <= item.state}
         # Handle effect deactivation
-        running_effects_copy = set(item._running_effects)
+        running_effects_copy = set(item._running_effect_ids)
         if running_effects_copy:
             instructions.append(InstrEffectsStop(item, running_effects_copy))
-            item._running_effects.clear()
+            item._running_effect_ids.clear()
         # Handle state deactivation
         instructions.append(InstrStatesDeactivate(item, states))
         # Handle item removal
@@ -106,13 +106,13 @@ class InputStateChanged(BaseInputMessage):
             states = {s for s in State if self.new < s <= self.old}
             instructions.append(InstrStatesDeactivate(item, states))
         # Effect changes
-        to_start, to_stop = item._get_wanted_effect_run_status_changes()
+        to_start, to_stop = item._get_wanted_effect_status_changes()
         if to_start:
-            item._running_effects.update(to_start)
+            item._running_effect_ids.update(to_start)
             instructions.append(InstrEffectsStart(item, to_start))
         if to_stop:
             instructions.append(InstrEffectsStop(item, to_stop))
-            item._running_effects.difference_update(to_stop)
+            item._running_effect_ids.difference_update(to_stop)
         return instructions
 
     def __repr__(self):
@@ -131,13 +131,13 @@ class InputEffectsRunModeChanged(BaseInputMessage):
         if item._fit.source is None:
             return ()
         instructions = []
-        to_start, to_stop = item._get_wanted_effect_run_status_changes()
+        to_start, to_stop = item._get_wanted_effect_status_changes()
         if to_start:
-            item._running_effects.update(to_start)
+            item._running_effect_ids.update(to_start)
             instructions.append(InstrEffectsStart(item, to_start))
         if to_stop:
             instructions.append(InstrEffectsStop(item, to_stop))
-            item._running_effects.difference_update(to_stop)
+            item._running_effect_ids.difference_update(to_stop)
         return instructions
 
     def __repr__(self):
@@ -191,23 +191,23 @@ class InstrStatesDeactivate(BaseInstructionMessage):
 
 class InstrEffectsStart(BaseInstructionMessage):
 
-    def __init__(self, item, effects):
+    def __init__(self, item, effect_ids):
         self.item = item
         # Format: {effect IDs}
-        self.effects = effects
+        self.effect_ids = effect_ids
 
     def __repr__(self):
-        spec = ['item', 'effects']
+        spec = ['item', 'effect_ids']
         return make_repr_str(self, spec)
 
 
 class InstrEffectsStop(BaseInstructionMessage):
 
-    def __init__(self, item, effects):
+    def __init__(self, item, effect_ids):
         self.item = item
         # Format: {effect IDs}
-        self.effects = effects
+        self.effect_ids = effect_ids
 
     def __repr__(self):
-        spec = ['item', 'effects']
+        spec = ['item', 'effect_ids']
         return make_repr_str(self, spec)

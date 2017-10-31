@@ -81,27 +81,27 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         # Go through restricted items
         for item in self.__restricted_items:
             # Container for skill requirement errors for current item
-            skill_requirement_errors = []
+            skillrq_errors = []
             # Check each skill requirement
-            for required_skill_id in item._eve_type.required_skills:
-                required_skill_level = (
-                    item._eve_type.required_skills[required_skill_id])
-                # Get skill level with None as fallback value for case
-                # when we don't have such skill
+            for skillrq_type_id, skillrq_level in (
+                item._eve_type.required_skills.items()
+            ):
+                # Get skill level with None as fallback value for case when we
+                # don't have such skill
                 try:
-                    skill_level = self.__skills[required_skill_id].level
+                    skill_level = self.__skills[skillrq_type_id].level
                 except KeyError:
                     skill_level = None
                 # Last check - if skill level is lower than expected, current
                 # item is tainted; mark it so and move to the next one
-                if skill_level is None or skill_level < required_skill_level:
+                if skill_level is None or skill_level < skillrq_level:
                     skill_requirement_error = SkillRequirementErrorData(
-                        skill=required_skill_id,
+                        skill=skillrq_type_id,
                         level=skill_level,
-                        required_level=required_skill_level)
-                    skill_requirement_errors.append(skill_requirement_error)
-            if skill_requirement_errors:
-                tainted_items[item] = tuple(skill_requirement_errors)
+                        required_level=skillrq_level)
+                    skillrq_errors.append(skill_requirement_error)
+            if skillrq_errors:
+                tainted_items[item] = tuple(skillrq_errors)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

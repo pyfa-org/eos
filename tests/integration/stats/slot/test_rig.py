@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,13 +28,13 @@ class TestRig(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=Attribute.rig_slots)
+        self.ch.attr(attribute_id=AttributeId.rig_slots)
         self.effect = self.ch.effect(
-            effect_id=Effect.rig_slot, category=EffectCategory.passive)
+            effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)
 
     def test_output(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 3}).id)
+            attributes={AttributeId.rig_slots: 3}).id)
         # Verification
         self.assertEqual(self.fit.stats.rig_slots.total, 3)
         # Cleanup
@@ -77,7 +77,7 @@ class TestRig(StatTestCase):
     def test_use_disabled_effect(self):
         item1 = Rig(self.ch.type(effects=[self.effect]).id)
         item2 = Rig(self.ch.type(effects=[self.effect]).id)
-        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
+        item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.rigs.add(item1)
         self.fit.rigs.add(item2)
         # Verification
@@ -97,7 +97,7 @@ class TestRig(StatTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.rig_slots: 3}).id)
+            attributes={AttributeId.rig_slots: 3}).id)
         self.fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
         self.fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
         self.fit.source = None

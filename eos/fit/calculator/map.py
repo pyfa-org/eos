@@ -25,12 +25,12 @@ from logging import getLogger
 from math import exp
 
 from eos.const.eos import ModifierOperator
-from eos.const.eve import Attribute, Category
+from eos.const.eve import AttributeId, TypeCategoryId
 from eos.data.cache_handler.exception import AttributeFetchError
 from eos.fit.pubsub.message import (
     InstrAttrValueChanged, InstrAttrValueChangedMasked)
 from eos.util.keyed_storage import KeyedStorage
-from .exception import AttributeMetaError, BaseValueError
+from .exception import AttributeMetadataError, BaseValueError
 
 
 OverrideData = namedtuple('OverrideData', ('value', 'persistent'))
@@ -44,12 +44,12 @@ PENALTY_BASE = 1 / exp((1 / 2.67) ** 2)
 
 # Items belonging to these categories never have their effects stacking
 # penalized
-PENALTY_IMMUNE_CATS = (
-    Category.ship,
-    Category.charge,
-    Category.skill,
-    Category.implant,
-    Category.subsystem)
+PENALTY_IMMUNE_CATEGORY_IDS = (
+    TypeCategoryId.ship,
+    TypeCategoryId.charge,
+    TypeCategoryId.skill,
+    TypeCategoryId.implant,
+    TypeCategoryId.subsystem)
 
 # Tuple with penalizable operators
 PENALIZABLE_OPERATORS = (
@@ -73,13 +73,13 @@ NORMALIZATION_MAP = {
     ModifierOperator.post_assign: lambda val: val}
 
 # List operator types, according to their already normalized values
-ASSIGNMENTS = (
+ASSIGNMENT_OPERATORS = (
     ModifierOperator.pre_assign,
     ModifierOperator.post_assign)
-ADDITIONS = (
+ADDITION_OPERATORS = (
     ModifierOperator.mod_add,
     ModifierOperator.mod_sub)
-MULTIPLICATIONS = (
+MULTIPLICATION_OPERATORS = (
     ModifierOperator.pre_mul,
     ModifierOperator.pre_div,
     ModifierOperator.post_mul,
@@ -89,14 +89,14 @@ MULTIPLICATIONS = (
 
 # Following attributes have limited precision - only to second number after
 # decimal separator
-LIMITED_PRECISION = (
-    Attribute.cpu,
-    Attribute.power,
-    Attribute.cpu_output,
-    Attribute.power_output)
+LIMITED_PRECISION_ATTR_IDS = (
+    AttributeId.cpu,
+    AttributeId.power,
+    AttributeId.cpu_output,
+    AttributeId.power_output)
 
 # List of exceptions calculate method may throw
-CALCULATE_RAISABLE_EXCEPTIONS = (AttributeMetaError, BaseValueError)
+CALCULATE_RAISABLE_EXCEPTIONS = (AttributeMetadataError, BaseValueError)
 
 
 class MutableAttributeMap:
@@ -167,10 +167,10 @@ class MutableAttributeMap:
                 attr_id in self.__override_callbacks
             ):
                 msg = InstrAttrValueChangedMasked(
-                    item=self.__item, attr=attr_id)
+                    item=self.__item, attr_id=attr_id)
                 self.__publish(msg)
             else:
-                msg = InstrAttrValueChanged(item=self.__item, attr=attr_id)
+                msg = InstrAttrValueChanged(item=self.__item, attr_id=attr_id)
                 self.__publish(msg)
 
     def get(self, attr_id, default=None):
@@ -205,8 +205,8 @@ class MutableAttributeMap:
 
     def clear(self):
         """Reset map to its initial state"""
-        for attr in set(self.__modified_attributes):
-            del self[attr]
+        for attr_id in set(self.__modified_attributes):
+            del self[attr_id]
         self.__cap_map = None
 
     def __calculate(self, attr_id):
@@ -227,7 +227,7 @@ class MutableAttributeMap:
         item = self.__item
         # Attribute object for attribute being calculated
         try:
-            attr_meta = item._fit.source.cache_handler.get_attribute(attr_id)
+            attr = item._fit.source.cache_handler.get_attribute(attr_id)
         # Raise error if we can't get metadata for requested attribute
         except (AttributeError, AttributeFetchError) as e:
             msg = (
@@ -235,13 +235,13 @@ class MutableAttributeMap:
                 'requested for eve type {}'
             ).format(attr_id, item._eve_type_id)
             logger.warning(msg)
-            raise AttributeMetaError(attr_id) from e
+            raise AttributeMetadataError(attr_id) from e
         # Base attribute value which we'll use for modification
         try:
             result = item._eve_type_attributes[attr_id]
         # If attribute isn't available on eve type, base off its default value
         except KeyError:
-            result = attr_meta.default_value
+            result = attr.default_value
             # If eve type attribute is not specified and default value isn't
             # available, raise error - without valid base we can't keep going
             if result is None:
@@ -262,8 +262,9 @@ class MutableAttributeMap:
             # Decide if it should be stacking penalized or not, based on
             # stackable property, carrier item eve type category and operator
             penalize = (
-                not attr_meta.stackable and
-                carrier_item._eve_type.category not in PENALTY_IMMUNE_CATS and
+                not attr.stackable and
+                carrier_item._eve_type.category_id not in
+                PENALTY_IMMUNE_CATEGORY_IDS and
                 operator in PENALIZABLE_OPERATORS)
             # Normalize operations to just three types: assignments, additions,
             # multiplications
@@ -293,21 +294,21 @@ class MutableAttributeMap:
             mod_list = normal_mods[operator]
             # Pick best modification for assignments, based on high_is_good
             # value
-            if operator in ASSIGNMENTS:
-                if attr_meta.high_is_good:
+            if operator in ASSIGNMENT_OPERATORS:
+                if attr.high_is_good:
                     result = max(mod_list)
                 else:
                     result = min(mod_list)
-            elif operator in ADDITIONS:
+            elif operator in ADDITION_OPERATORS:
                 for mod_val in mod_list:
                     result += mod_val
-            elif operator in MULTIPLICATIONS:
+            elif operator in MULTIPLICATION_OPERATORS:
                 for mod_val in mod_list:
                     result *= mod_val
         # If attribute has upper cap, do not let its value to grow above it
-        if attr_meta.max_attribute is not None:
+        if attr.max_attribute_id is not None:
             try:
-                max_value = self[attr_meta.max_attribute]
+                max_value = self[attr.max_attribute_id]
             # If max value isn't available, don't cap anything
             except KeyError:
                 pass
@@ -315,10 +316,10 @@ class MutableAttributeMap:
                 result = min(result, max_value)
                 # Let map know that capping attribute restricts current
                 # attribute
-                self._cap_set(attr_meta.max_attribute, attr_id)
+                self._cap_set(attr.max_attribute_id, attr_id)
         # Some of attributes are rounded for whatever reason, deal with it
         # after all the calculations
-        if attr_id in LIMITED_PRECISION:
+        if attr_id in LIMITED_PRECISION_ATTR_IDS:
             result = round(result, 2)
         return result
 
@@ -372,7 +373,7 @@ class MutableAttributeMap:
             return
         self.__override_callbacks[attr_id] = callback
         # Exposed attribute value may change after setting/resetting override
-        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr_id=attr_id))
 
     def _del_override_callback(self, attr_id):
         """Remove override callback from attribute."""
@@ -384,7 +385,7 @@ class MutableAttributeMap:
         if not overrides:
             self.__override_callbacks = None
         # Exposed attribute value may change after removing override
-        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr_id=attr_id))
 
     def _override_value_may_change(self, attr_id):
         """Notify everyone that callback value may change.
@@ -393,7 +394,7 @@ class MutableAttributeMap:
         will) change for an attribute, it should invoke this method.
         """
 
-        self.__publish(InstrAttrValueChanged(item=self.__item, attr=attr_id))
+        self.__publish(InstrAttrValueChanged(item=self.__item, attr_id=attr_id))
 
     def _get_without_overrides(self, attr_id, default=None):
         """Get attribute value without using overrides."""
@@ -417,13 +418,13 @@ class MutableAttributeMap:
         # Format {capping attribute ID: {capped attribute IDs}}
         return self.__cap_map or {}
 
-    def _cap_set(self, capping_attr, capped_attr):
+    def _cap_set(self, capping_attr_id, capped_attr_id):
         if self.__cap_map is None:
             self.__cap_map = KeyedStorage()
-        self.__cap_map.add_data_entry(capping_attr, capped_attr)
+        self.__cap_map.add_data_entry(capping_attr_id, capped_attr_id)
 
-    def _cap_del(self, capping_attr, capped_attr):
-        self.__cap_map.rm_data_entry(capping_attr, capped_attr)
+    def _cap_del(self, capping_attr_id, capped_attr_id):
+        self.__cap_map.rm_data_entry(capping_attr_id, capped_attr_id)
         if not self.__cap_map:
             self.__cap_map = None
 

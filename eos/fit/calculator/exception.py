@@ -43,7 +43,7 @@ class UnknownTargetFilterError(AttributeCalculatorError):
 
 
 # Exception classes used by map's calculation method
-class AttributeMetaError(AttributeCalculatorError):
+class AttributeMetadataError(AttributeCalculatorError):
     """Raised when attribute cannot be found in attribute database."""
     ...
 

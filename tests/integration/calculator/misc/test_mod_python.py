@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Effect, EffectCategory
+from eos.const.eve import EffectId, EffectCategoryId
 from eos.eve_object.modifier import ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.pubsub.message import InstrAttrValueChanged
@@ -44,7 +44,7 @@ class TestModifierPython(CalculatorTestCase):
                     tgt_filter=ModifierTargetFilter.item,
                     tgt_domain=ModifierDomain.self,
                     tgt_filter_extra_arg=None,
-                    tgt_attr=attr1.id)
+                    tgt_attr_id=attr1.id)
 
             def get_modification(self, carrier_item, ship):
                 try:
@@ -62,19 +62,20 @@ class TestModifierPython(CalculatorTestCase):
                 if (
                     (
                         message.item is carrier_item and
-                        message.attr == attr2.id
+                        message.attr_id == attr2.id
                     ) or (
                         message.item is ship and
-                        message.attr == attr3.id
+                        message.attr_id == attr3.id
                     )
                 ):
                     return True
                 return False
 
         self.python_effect = self.ch.effect(
-            category=EffectCategory.online, modifiers=(TestPythonModifier(),))
+            category_id=EffectCategoryId.online,
+            modifiers=(TestPythonModifier(),))
         self.online_effect = self.ch.effect(
-            effect_id=Effect.online, category=EffectCategory.online)
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
         self.fit.ship = Ship(self.ch.type(attributes={attr3.id: 3}).id)
 
     def test_enabling(self):
@@ -116,11 +117,11 @@ class TestModifierPython(CalculatorTestCase):
         dogma_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.attr2.id,
+            tgt_attr_id=self.attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=attr4.id)
+            src_attr_id=attr4.id)
         dogma_effect = self.ch.effect(
-            category=EffectCategory.active, modifiers=[dogma_modifier])
+            category_id=EffectCategoryId.active, modifiers=[dogma_modifier])
         item = ModuleHigh(self.ch.type(
             attributes={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5},
             effects=(self.python_effect, self.online_effect, dogma_effect),
@@ -143,19 +144,19 @@ class TestModifierPython(CalculatorTestCase):
         dogma_modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.attr1.id,
+            tgt_attr_id=self.attr1.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr2.id)
+            src_attr_id=self.attr2.id)
         dogma_effect1 = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[dogma_modifier1])
+            category_id=EffectCategoryId.passive, modifiers=[dogma_modifier1])
         dogma_modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.attr2.id,
+            tgt_attr_id=self.attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=self.attr3.id)
+            src_attr_id=self.attr3.id)
         dogma_effect2 = self.ch.effect(
-            category=EffectCategory.online, modifiers=[dogma_modifier2])
+            category_id=EffectCategoryId.online, modifiers=[dogma_modifier2])
         python_item = ModuleHigh(self.ch.type(
             attributes={self.attr1.id: 100, self.attr2.id: 2},
             effects=(self.python_effect, self.online_effect)).id)

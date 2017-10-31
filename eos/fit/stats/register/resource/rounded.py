@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
@@ -30,12 +30,12 @@ from .base import BaseResourceStatRegister
 class RoundedResourceStatRegister(
         BaseResourceStatRegister, InheritableVolatileMixin):
 
-    def __init__(self, msg_broker, output_attr, use_effect, use_attr):
+    def __init__(self, msg_broker, output_attr_id, use_effect_id, use_attr_id):
         BaseResourceStatRegister.__init__(self)
         InheritableVolatileMixin.__init__(self)
-        self.__output_attr = output_attr
-        self.__use_effect = use_effect
-        self.__use_attr = use_attr
+        self.__output_attr_id = output_attr_id
+        self.__use_effect_id = use_effect_id
+        self.__use_attr_id = use_attr_id
         self.__current_ship = None
         self.__resource_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
@@ -43,13 +43,13 @@ class RoundedResourceStatRegister(
     @volatile_property
     def used(self):
         return round(sum(
-            item.attributes[self.__use_attr]
+            item.attributes[self.__use_attr_id]
             for item in self.__resource_users), 2)
 
     @volatile_property
     def output(self):
         try:
-            return self.__current_ship.attributes[self.__output_attr]
+            return self.__current_ship.attributes[self.__output_attr_id]
         except (AttributeError, KeyError):
             return None
 
@@ -67,13 +67,13 @@ class RoundedResourceStatRegister(
 
     def _handle_item_effects_activation(self, message):
         if (
-            self.__use_effect in message.effects and
-            self.__use_attr in message.item._eve_type_attributes
+            self.__use_effect_id in message.effect_ids and
+            self.__use_attr_id in message.item._eve_type_attributes
         ):
             self.__resource_users.add(message.item)
 
     def _handle_item_effects_deactivation(self, message):
-        if self.__use_effect in message.effects:
+        if self.__use_effect_id in message.effect_ids:
             self.__resource_users.discard(message.item)
 
     _handler_map = {
@@ -87,13 +87,13 @@ class CpuStatRegister(RoundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         RoundedResourceStatRegister.__init__(
-            self, msg_broker, Attribute.cpu_output, Effect.online,
-            Attribute.cpu)
+            self, msg_broker, AttributeId.cpu_output, EffectId.online,
+            AttributeId.cpu)
 
 
 class PowergridStatRegister(RoundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         RoundedResourceStatRegister.__init__(
-            self, msg_broker, Attribute.power_output, Effect.online,
-            Attribute.power)
+            self, msg_broker, AttributeId.power_output, EffectId.online,
+            AttributeId.power)

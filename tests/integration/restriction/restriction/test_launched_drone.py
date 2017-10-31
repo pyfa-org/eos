@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,13 +30,13 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=Attribute.max_active_drones)
+        self.ch.attr(attribute_id=AttributeId.max_active_drones)
 
     def test_fail_excess_single(self):
         # Check that error is raised when number of used slots exceeds slot
         # amount provided by char
         self.fit.character = Character(self.ch.type(
-            attributes={Attribute.max_active_drones: 0}).id)
+            attributes={AttributeId.max_active_drones: 0}).id)
         item = Drone(self.ch.type().id, state=State.online)
         self.fit.drones.add(item)
         # Action
@@ -70,7 +70,7 @@ class TestLaunchedDrone(RestrictionTestCase):
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
         self.fit.character = Character(self.ch.type(
-            attributes={Attribute.max_active_drones: 1}).id)
+            attributes={AttributeId.max_active_drones: 1}).id)
         eve_type = self.ch.type()
         item1 = Drone(eve_type.id, state=State.online)
         item2 = Drone(eve_type.id, state=State.online)
@@ -96,7 +96,7 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def test_pass_equal(self):
         self.fit.character = Character(self.ch.type(
-            attributes={Attribute.max_active_drones: 2}).id)
+            attributes={AttributeId.max_active_drones: 2}).id)
         eve_type = self.ch.type()
         item1 = Drone(eve_type.id, state=State.online)
         item2 = Drone(eve_type.id, state=State.online)
@@ -118,7 +118,7 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def test_pass_greater(self):
         self.fit.character = Character(self.ch.type(
-            attributes={Attribute.max_active_drones: 5}).id)
+            attributes={AttributeId.max_active_drones: 5}).id)
         eve_type = self.ch.type()
         item1 = Drone(eve_type.id, state=State.online)
         item2 = Drone(eve_type.id, state=State.online)
@@ -140,7 +140,7 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def test_pass_state(self):
         self.fit.character = Character(self.ch.type(
-            attributes={Attribute.max_active_drones: 0}).id)
+            attributes={AttributeId.max_active_drones: 0}).id)
         item = Drone(self.ch.type().id, state=State.offline)
         self.fit.drones.add(item)
         # Action
@@ -156,7 +156,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Check that error is raised when number of used slots exceeds slot
         # amount provided by char
         self.fit.character = Character(self.ch.type(
-            attributes={Attribute.max_active_drones: 0}).id)
+            attributes={AttributeId.max_active_drones: 0}).id)
         item = ModuleHigh(self.ch.type().id, state=State.online)
         self.fit.modules.high.append(item)
         # Action
@@ -170,7 +170,7 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.character = Character(self.ch.type(
-            attributes={Attribute.max_active_drones: 0}).id)
+            attributes={AttributeId.max_active_drones: 0}).id)
         item = Drone(self.ch.type().id, state=State.online)
         self.fit.drones.add(item)
         self.fit.source = None

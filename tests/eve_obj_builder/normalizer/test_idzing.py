@@ -22,7 +22,7 @@
 import logging
 from unittest.mock import patch
 
-from eos.const.eve import Operand
+from eos.const.eve import OperandId
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
@@ -38,7 +38,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['dgmeffects'].append(
             {'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'EnergyWeapon',
             'expressionTypeID': 567, 'expressionGroupID': None,
             'expressionAttributeID': 102})
@@ -49,7 +49,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': None, 'expressionTypeID': 567,
             'expressionGroupID': 53, 'expressionAttributeID': 102,
             'table_pos': 0}
@@ -65,7 +65,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['dgmeffects'].append(
             {'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'PowerCore', 'expressionTypeID': 567,
             'expressionGroupID': None, 'expressionAttributeID': 102})
         mod_builder.return_value.build.return_value = ([], 0)
@@ -75,7 +75,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         expressions = tuple(mod_builder.mock_calls[0][1][0])
         self.assertEqual(len(expressions), 1)
         expected = {
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'PowerCore', 'expressionTypeID': 567,
             'expressionGroupID': None, 'expressionAttributeID': 102,
             'table_pos': 0}
@@ -105,7 +105,7 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         self.dh.data['dgmeffects'].append(
             {'effectID': 111, 'preExpression': 57, 'postExpression': 57})
         self.dh.data['dgmexpressions'].append({
-            'expressionID': 57, 'operandID': Operand.def_grp, 'arg1': 5007,
+            'expressionID': 57, 'operandID': OperandId.def_grp, 'arg1': 5007,
             'arg2': 66, 'expressionValue': 'EnergyWeaponry',
             'expressionTypeID': 567, 'expressionGroupID': None,
             'expressionAttributeID': 102})

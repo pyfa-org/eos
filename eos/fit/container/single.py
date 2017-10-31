@@ -23,20 +23,18 @@ from .base import ItemContainerBase
 from .exception import ItemAlreadyAssignedError
 
 
-class ItemDescriptorOnItem(ItemContainerBase):
-    """Container for single item, intended to be used as item attribute.
+class ItemDescriptor(ItemContainerBase):
+    """Container for single item, intended to be used as fit attribute.
 
     Args:
-        direct_attr_name: Name of instance attribute which should be used to
-            store data processed by the descriptor.
-        reverse_attr_name: Name of attribute which will be used to refer
-            container item from contained item.
+        attr_name: Name of instance attribute which should be used to store data
+            processed by the descriptor.
         item_class: Class of items this container is allowed to contain.
     """
 
-    def __init__(self, direct_attr_name, item_class):
+    def __init__(self, attr_name, item_class):
         ItemContainerBase.__init__(self, item_class)
-        self.__attr_name = direct_attr_name
+        self.__attr_name = attr_name
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -45,16 +43,16 @@ class ItemDescriptorOnItem(ItemContainerBase):
 
     def __set__(self, instance, new_item):
         self._check_class(new_item, allow_none=True)
-        direct_attr_name = self.__attr_name
-        old_item = getattr(instance, direct_attr_name, None)
+        attr_name = self.__attr_name
+        old_item = getattr(instance, attr_name, None)
         if old_item is not None:
             self._handle_item_removal(old_item)
-        setattr(instance, direct_attr_name, new_item)
+        setattr(instance, attr_name, new_item)
         if new_item is not None:
             try:
                 self._handle_item_addition(new_item, instance)
             except ItemAlreadyAssignedError as e:
-                setattr(instance, direct_attr_name, old_item)
+                setattr(instance, attr_name, old_item)
                 if old_item is not None:
                     self._handle_item_addition(old_item, instance)
                 raise ValueError(*e.args) from e

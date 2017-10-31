@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute, Effect, EffectCategory
+from eos.const.eve import AttributeId, EffectId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -28,13 +28,13 @@ class TestSubsystem(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=Attribute.max_subsystems)
+        self.ch.attr(attribute_id=AttributeId.max_subsystems)
         self.effect = self.ch.effect(
-            effect_id=Effect.subsystem, category=EffectCategory.passive)
+            effect_id=EffectId.subsystem, category_id=EffectCategoryId.passive)
 
     def test_output(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.max_subsystems: 3}).id)
+            attributes={AttributeId.max_subsystems: 3}).id)
         # Verification
         self.assertEqual(self.fit.stats.subsystem_slots.total, 3)
         # Cleanup
@@ -79,7 +79,7 @@ class TestSubsystem(StatTestCase):
     def test_use_disabled_effect(self):
         item1 = Subsystem(self.ch.type(effects=[self.effect]).id)
         item2 = Subsystem(self.ch.type(effects=[self.effect]).id)
-        item2.set_effect_run_mode(self.effect.id, EffectRunMode.force_stop)
+        item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.subsystems.add(item1)
         self.fit.subsystems.add(item2)
         # Verification
@@ -99,7 +99,7 @@ class TestSubsystem(StatTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.max_subsystems: 3}).id)
+            attributes={AttributeId.max_subsystems: 3}).id)
         self.fit.subsystems.add(
             Subsystem(self.ch.type(effects=[self.effect]).id))
         self.fit.subsystems.add(

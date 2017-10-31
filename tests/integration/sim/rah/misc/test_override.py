@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.sim.rah.rah_testcase import RahSimTestCase
 
 
@@ -34,14 +34,14 @@ class TestRahSimAttributeOverride(RahSimTestCase):
             self.mod(
                 tgt_filter=ModifierTargetFilter.domain,
                 tgt_domain=ModifierDomain.ship,
-                tgt_attr=attr,
+                tgt_attr_id=attr,
                 operator=ModifierOperator.post_mul,
-                src_attr=skill_attr.id)
+                src_attr_id=skill_attr.id)
             for attr in (
                 self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
                 self.armor_exp.id))
         skill_effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=skill_modifiers)
+            category_id=EffectCategoryId.passive, modifiers=skill_modifiers)
         skill_eve_type = self.ch.type(
             attributes={skill_attr.id: 0.5}, effects=[skill_effect])
         ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)

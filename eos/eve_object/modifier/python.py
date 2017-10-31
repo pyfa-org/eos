@@ -34,10 +34,10 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
 
     def __init__(
             self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
-            tgt_attr=None):
+            tgt_attr_id=None):
         BaseModifier.__init__(
             self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
-            tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr=tgt_attr)
+            tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr_id=tgt_attr_id)
 
     @property
     @abstractmethod

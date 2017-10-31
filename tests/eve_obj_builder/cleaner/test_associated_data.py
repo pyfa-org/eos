@@ -22,7 +22,7 @@
 import logging
 from unittest.mock import patch
 
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
@@ -36,7 +36,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeattribs'].append(
-            {'typeID': 1, 'attributeID': Attribute.ammo_loaded, 'value': 4.0})
+            {'typeID': 1, 'attributeID': AttributeId.ammo_loaded, 'value': 4.0})
         self.dh.data['dgmtypeeffects'].append(
             {'typeID': 1, 'effectID': 200, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append(
@@ -128,13 +128,13 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 4)
         self.assertIn(1, self.types)
-        self.assertEqual(self.types[1].category, 16)
+        self.assertEqual(self.types[1].category_id, 16)
         self.assertIn(2, self.types)
-        self.assertEqual(self.types[2].category, 50)
+        self.assertEqual(self.types[2].category_id, 50)
         self.assertIn(3, self.types)
-        self.assertEqual(self.types[3].category, 51)
+        self.assertEqual(self.types[3].category_id, 51)
         self.assertIn(4, self.types)
-        self.assertEqual(self.types[4].category, 52)
+        self.assertEqual(self.types[4].category_id, 52)
         self.assertEqual(len(self.attributes), 11)
         self.assertIn(5, self.attributes)
         self.assertIn(1000, self.attributes)

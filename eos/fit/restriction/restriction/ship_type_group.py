@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed, Ship
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from .base import BaseRestrictionRegister
@@ -31,39 +31,39 @@ from ..exception import RestrictionValidationError
 
 TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 # Containers for attribute IDs which are used to restrict fitting
-TYPE_RESTRICTION_ATTRS = (
-    Attribute.can_fit_ship_type_1,
-    Attribute.can_fit_ship_type_2,
-    Attribute.can_fit_ship_type_3,
-    Attribute.can_fit_ship_type_4,
-    Attribute.can_fit_ship_type_5,
-    Attribute.can_fit_ship_type_6,
-    Attribute.can_fit_ship_type_7,
-    Attribute.can_fit_ship_type_8,
-    Attribute.can_fit_ship_type_9,
-    Attribute.can_fit_ship_type_10,
-    Attribute.fits_to_shiptype)
-GROUP_RESTRICTION_ATTRS = (
-    Attribute.can_fit_ship_group_1,
-    Attribute.can_fit_ship_group_2,
-    Attribute.can_fit_ship_group_3,
-    Attribute.can_fit_ship_group_4,
-    Attribute.can_fit_ship_group_5,
-    Attribute.can_fit_ship_group_6,
-    Attribute.can_fit_ship_group_7,
-    Attribute.can_fit_ship_group_8,
-    Attribute.can_fit_ship_group_9,
-    Attribute.can_fit_ship_group_10,
-    Attribute.can_fit_ship_group_11,
-    Attribute.can_fit_ship_group_12,
-    Attribute.can_fit_ship_group_13,
-    Attribute.can_fit_ship_group_14,
-    Attribute.can_fit_ship_group_15,
-    Attribute.can_fit_ship_group_16,
-    Attribute.can_fit_ship_group_17,
-    Attribute.can_fit_ship_group_18,
-    Attribute.can_fit_ship_group_19,
-    Attribute.can_fit_ship_group_20)
+ALLOWED_TYPE_ATTR_IDS = (
+    AttributeId.can_fit_ship_type_1,
+    AttributeId.can_fit_ship_type_2,
+    AttributeId.can_fit_ship_type_3,
+    AttributeId.can_fit_ship_type_4,
+    AttributeId.can_fit_ship_type_5,
+    AttributeId.can_fit_ship_type_6,
+    AttributeId.can_fit_ship_type_7,
+    AttributeId.can_fit_ship_type_8,
+    AttributeId.can_fit_ship_type_9,
+    AttributeId.can_fit_ship_type_10,
+    AttributeId.fits_to_shiptype)
+ALLOWED_GROUP_ATTR_IDS = (
+    AttributeId.can_fit_ship_group_1,
+    AttributeId.can_fit_ship_group_2,
+    AttributeId.can_fit_ship_group_3,
+    AttributeId.can_fit_ship_group_4,
+    AttributeId.can_fit_ship_group_5,
+    AttributeId.can_fit_ship_group_6,
+    AttributeId.can_fit_ship_group_7,
+    AttributeId.can_fit_ship_group_8,
+    AttributeId.can_fit_ship_group_9,
+    AttributeId.can_fit_ship_group_10,
+    AttributeId.can_fit_ship_group_11,
+    AttributeId.can_fit_ship_group_12,
+    AttributeId.can_fit_ship_group_13,
+    AttributeId.can_fit_ship_group_14,
+    AttributeId.can_fit_ship_group_15,
+    AttributeId.can_fit_ship_group_16,
+    AttributeId.can_fit_ship_group_17,
+    AttributeId.can_fit_ship_group_18,
+    AttributeId.can_fit_ship_group_19,
+    AttributeId.can_fit_ship_group_20)
 
 
 ShipTypeGroupErrorData = namedtuple(
@@ -72,7 +72,7 @@ ShipTypeGroupErrorData = namedtuple(
 
 
 # Helper class-container for metadata regarding allowed types and groups
-AllowedData = namedtuple('AllowedData', ('types', 'groups'))
+AllowedData = namedtuple('AllowedData', ('type_ids', 'group_ids'))
 
 
 class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
@@ -105,28 +105,28 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             return
         # Containers for type IDs and group IDs of ships, to which item is
         # allowed to fit
-        allowed_types = set()
-        allowed_groups = set()
-        for allowed_container, restriction_attrs in (
-            (allowed_types, TYPE_RESTRICTION_ATTRS),
-            (allowed_groups, GROUP_RESTRICTION_ATTRS)
+        allowed_type_ids = set()
+        allowed_group_ids = set()
+        for allowed_container, allowed_attr_ids in (
+            (allowed_type_ids, ALLOWED_TYPE_ATTR_IDS),
+            (allowed_group_ids, ALLOWED_GROUP_ATTR_IDS)
         ):
             # Cycle through IDs of known restriction attributes
-            for restriction_attr in restriction_attrs:
+            for allowed_attr_id in allowed_attr_ids:
                 try:
-                    restriction_value = (
-                        message.item._eve_type_attributes[restriction_attr])
+                    allowed_value = (
+                        message.item._eve_type_attributes[allowed_attr_id])
                 except KeyError:
                     continue
                 else:
-                    allowed_container.add(restriction_value)
+                    allowed_container.add(allowed_value)
         # Ignore non-restricted items
-        if not allowed_types and not allowed_groups:
+        if not allowed_type_ids and not allowed_group_ids:
             return
         # Finally, register items which made it into here
         self.__restricted_items[message.item] = AllowedData(
-            types=tuple(allowed_types),
-            groups=tuple(allowed_groups))
+            type_ids=tuple(allowed_type_ids),
+            group_ids=tuple(allowed_group_ids))
 
     def _handle_item_removal(self, message):
         if message.item is self.__current_ship:
@@ -144,10 +144,10 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # with restricted items can't contain None in its values anyway
         try:
             ship_type_id = self.__current_ship._eve_type_id
-            ship_group = self.__current_ship._eve_type.group
+            ship_group_id = self.__current_ship._eve_type.group_id
         except AttributeError:
             ship_type_id = None
-            ship_group = None
+            ship_group_id = None
         # Container for tainted items
         tainted_items = {}
         # Go through all known restricted items
@@ -156,14 +156,14 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             # If ship's type isn't in allowed types and ship's group isn't in
             # allowed groups, item is tainted
             if (
-                ship_type_id not in allowed_data.types and
-                ship_group not in allowed_data.groups
+                ship_type_id not in allowed_data.type_ids and
+                ship_group_id not in allowed_data.group_ids
             ):
                 tainted_items[item] = ShipTypeGroupErrorData(
                     ship_type=ship_type_id,
-                    ship_group=ship_group,
-                    allowed_types=allowed_data.types,
-                    allowed_groups=allowed_data.groups)
+                    ship_group=ship_group_id,
+                    allowed_types=allowed_data.type_ids,
+                    allowed_groups=allowed_data.group_ids)
         # Raise error if there're any tainted items
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

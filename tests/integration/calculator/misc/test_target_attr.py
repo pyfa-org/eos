@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -35,17 +35,18 @@ class TestTargetAttribute(CalculatorTestCase):
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr1.id,
+            tgt_attr_id=tgt_attr1.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr2.id,
+            tgt_attr_id=tgt_attr2.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=(modifier1, modifier2))
+            category_id=EffectCategoryId.passive,
+            modifiers=(modifier1, modifier2))
         item = Rig(self.ch.type(
             attributes={
                 tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100,

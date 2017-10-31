@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -29,9 +29,10 @@ class TestChargeVolume(RestrictionTestCase):
     """Check functionality of charge volume restriction."""
 
     def test_fail_greater(self):
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2}).id)
         container_item = ModuleHigh(
-            self.ch.type(attributes={Attribute.capacity: 1}).id,
+            self.ch.type(attributes={AttributeId.capacity: 1}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -52,7 +53,8 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_capacity(self):
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2}).id)
         container_item = ModuleHigh(self.ch.type().id, state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -75,7 +77,7 @@ class TestChargeVolume(RestrictionTestCase):
     def test_pass_no_volume(self):
         charge_item = Charge(self.ch.type().id)
         container_item = ModuleHigh(
-            self.ch.type(attributes={Attribute.volume: 3}).id,
+            self.ch.type(attributes={AttributeId.volume: 3}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -94,9 +96,10 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2}).id)
         container_item = ModuleHigh(
-            self.ch.type(attributes={Attribute.capacity: 2}).id,
+            self.ch.type(attributes={AttributeId.capacity: 2}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -115,9 +118,10 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_lesser(self):
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2}).id)
         container_item = ModuleHigh(
-            self.ch.type(attributes={Attribute.capacity: 3}).id,
+            self.ch.type(attributes={AttributeId.capacity: 3}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)
@@ -136,9 +140,10 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        charge_item = Charge(self.ch.type(attributes={Attribute.volume: 2}).id)
+        charge_item = Charge(self.ch.type(
+            attributes={AttributeId.volume: 2}).id)
         container_item = ModuleHigh(
-            self.ch.type(attributes={Attribute.capacity: 1}).id,
+            self.ch.type(attributes={AttributeId.capacity: 1}).id,
             state=State.offline)
         container_item.charge = charge_item
         self.fit.modules.high.append(container_item)

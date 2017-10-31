@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.data.cachable import BaseCachable
 from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT
@@ -41,10 +41,10 @@ class Type(BaseCachable):
 
     Attributes:
         id: Identifier of the eve type.
-        group: Group ID of the eve type.
-        category: Category ID of the eve type. Normally it's attribute of group,
-            but as we do not need groups as separate objects, categories were
-            'demoted' into type attribute.
+        group_id: Group ID of the eve type.
+        category_id: Category ID of the eve type. Normally it's attribute of
+            group, but as we do not need groups as separate objects, categories
+            were 'demoted' into type attribute.
         attributes: Map with base attribute values for this type in {attribute
             ID: attribute value} format.
         effects: Map with effects this type has in {effect ID: effect} format.
@@ -55,12 +55,12 @@ class Type(BaseCachable):
     """
 
     def __init__(
-            self, type_id, group=None, category=None, attributes=DEFAULT,
+            self, type_id, group_id=None, category_id=None, attributes=DEFAULT,
             effects=(), default_effect=None, fighter_abilities=DEFAULT,
             customize=True):
         self.id = type_id
-        self.group = group
-        self.category = category
+        self.group_id = group_id
+        self.category_id = category_id
         if attributes is DEFAULT:
             self.attributes = {}
         else:
@@ -77,12 +77,12 @@ class Type(BaseCachable):
     # Define attributes which describe eve type skill requirement details
     # Format: {skill eve type attribute ID: skill level attribute ID}
     __skillrq_attrs = {
-        Attribute.required_skill_1: Attribute.required_skill_1_level,
-        Attribute.required_skill_2: Attribute.required_skill_2_level,
-        Attribute.required_skill_3: Attribute.required_skill_3_level,
-        Attribute.required_skill_4: Attribute.required_skill_4_level,
-        Attribute.required_skill_5: Attribute.required_skill_5_level,
-        Attribute.required_skill_6: Attribute.required_skill_6_level}
+        AttributeId.required_skill_1: AttributeId.required_skill_1_level,
+        AttributeId.required_skill_2: AttributeId.required_skill_2_level,
+        AttributeId.required_skill_3: AttributeId.required_skill_3_level,
+        AttributeId.required_skill_4: AttributeId.required_skill_4_level,
+        AttributeId.required_skill_5: AttributeId.required_skill_5_level,
+        AttributeId.required_skill_6: AttributeId.required_skill_6_level}
 
     @cached_property
     def required_skills(self):
@@ -93,18 +93,18 @@ class Type(BaseCachable):
             are required to use type.
         """
         required_skills = {}
-        for srq_attr in self.__skillrq_attrs:
+        for skill_attr_id in self.__skillrq_attrs:
             # Skip skill requirement attribute pair if any of them is not
             # available
             try:
-                srq = self.attributes[srq_attr]
+                skill_type_id = self.attributes[skill_attr_id]
             except KeyError:
                 continue
             try:
-                srq_lvl = self.attributes[self.__skillrq_attrs[srq_attr]]
+                skill_lvl = self.attributes[self.__skillrq_attrs[skill_attr_id]]
             except KeyError:
                 continue
-            required_skills[int(srq)] = int(srq_lvl)
+            required_skills[int(skill_type_id)] = int(skill_lvl)
         return required_skills
 
     @cached_property
@@ -124,8 +124,8 @@ class Type(BaseCachable):
     def compress(self):
         return (
             self.id,
-            self.group,
-            self.category,
+            self.group_id,
+            self.category_id,
             tuple(self.attributes.items()),
             tuple(self.effects.keys()),
             None if self.default_effect is None else self.default_effect.id,
@@ -140,8 +140,8 @@ class Type(BaseCachable):
             default_effect = cache_handler.get_effect(defeff_id)
         return cls(
             type_id=compressed[0],
-            group=compressed[1],
-            category=compressed[2],
+            group_id=compressed[1],
+            category_id=compressed[2],
             attributes={k: v for k, v in compressed[3]},
             effects=tuple(
                 cache_handler.get_effect(eid)

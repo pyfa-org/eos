@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import Attribute, EffectCategory
+from eos.const.eve import AttributeId, EffectCategoryId
 from tests.integration.stats.stat_testcase import StatTestCase
 
 
@@ -29,8 +29,8 @@ class TestDroneBayVolume(StatTestCase):
 
     def setUp(self):
         super().setUp()
-        self.ch.attr(attribute_id=Attribute.drone_capacity)
-        self.ch.attr(attribute_id=Attribute.volume)
+        self.ch.attr(attribute_id=AttributeId.drone_capacity)
+        self.ch.attr(attribute_id=AttributeId.volume)
 
     def test_output(self):
         # Check that modified attribute of ship is used
@@ -38,13 +38,13 @@ class TestDroneBayVolume(StatTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=Attribute.drone_capacity,
+            tgt_attr_id=AttributeId.drone_capacity,
             operator=ModifierOperator.post_mul,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
         mod_effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier])
+            category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.drone_capacity: 200, src_attr.id: 2},
+            attributes={AttributeId.drone_capacity: 200, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.output, 400)
@@ -71,7 +71,7 @@ class TestDroneBayVolume(StatTestCase):
 
     def test_use_single_no_rounding(self):
         self.fit.drones.add(Drone(self.ch.type(
-            attributes={Attribute.volume: 55.5555555555}).id))
+            attributes={AttributeId.volume: 55.5555555555}).id))
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 55.5555555555)
         # Cleanup
@@ -80,9 +80,9 @@ class TestDroneBayVolume(StatTestCase):
 
     def test_use_multiple(self):
         self.fit.drones.add(Drone(self.ch.type(
-            attributes={Attribute.volume: 50}).id))
+            attributes={AttributeId.volume: 50}).id))
         self.fit.drones.add(Drone(self.ch.type(
-            attributes={Attribute.volume: 30}).id))
+            attributes={AttributeId.volume: 30}).id))
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 80)
         # Cleanup
@@ -98,11 +98,11 @@ class TestDroneBayVolume(StatTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={Attribute.drone_capacity: 200}).id)
+            attributes={AttributeId.drone_capacity: 200}).id)
         self.fit.drones.add(Drone(self.ch.type(
-            attributes={Attribute.volume: 50}).id))
+            attributes={AttributeId.volume: 50}).id))
         self.fit.drones.add(Drone(self.ch.type(
-            attributes={Attribute.volume: 30}).id))
+            attributes={AttributeId.volume: 30}).id))
         self.fit.source = None
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 0)

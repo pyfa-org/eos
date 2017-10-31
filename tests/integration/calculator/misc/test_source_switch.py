@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -43,15 +43,15 @@ class TestSourceSwitch(CalculatorTestCase):
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=tgt_attr_id,
+            tgt_attr_id=tgt_attr_id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr_id)
+            src_attr_id=src_attr_id)
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
         effect_src1 = self.ch.effect(
-            effect_id=effect_id, category=EffectCategory.passive,
+            effect_id=effect_id, category_id=EffectCategoryId.passive,
             modifiers=[modifier])
         effect_src2 = self.ch2.effect(
-            effect_id=effect_id, category=EffectCategory.passive,
+            effect_id=effect_id, category_id=EffectCategoryId.passive,
             modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         ship1 = Ship(self.ch.type(
@@ -89,22 +89,22 @@ class TestSourceSwitch(CalculatorTestCase):
         self.ch2.attr(attribute_id=src_attr_id)
         tgt_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
         max_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attr(attribute_id=tgt_attr_id, max_attribute=max_attr_id)
-        self.ch2.attr(attribute_id=tgt_attr_id, max_attribute=max_attr_id)
+        self.ch.attr(attribute_id=tgt_attr_id, max_attribute_id=max_attr_id)
+        self.ch2.attr(attribute_id=tgt_attr_id, max_attribute_id=max_attr_id)
         self.ch.attr(attribute_id=max_attr_id, default_value=54.5)
         self.ch2.attr(attribute_id=max_attr_id, default_value=88)
         modifier = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=tgt_attr_id,
+            tgt_attr_id=tgt_attr_id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr_id)
+            src_attr_id=src_attr_id)
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
         effect_src1 = self.ch.effect(
-            effect_id=effect_id, category=EffectCategory.passive,
+            effect_id=effect_id, category_id=EffectCategoryId.passive,
             modifiers=[modifier])
         effect_src2 = self.ch2.effect(
-            effect_id=effect_id, category=EffectCategory.passive,
+            effect_id=effect_id, category_id=EffectCategoryId.passive,
             modifiers=[modifier])
         ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(

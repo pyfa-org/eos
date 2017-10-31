@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,7 +30,7 @@ class TestImplantIndex(RestrictionTestCase):
 
     def setUp(self):
         super().setUp()
-        self.index_attr = self.ch.attr(attribute_id=Attribute.implantness)
+        self.index_attr = self.ch.attr(attribute_id=AttributeId.implantness)
 
     def test_fail(self):
         # Check that if 2 or more items are put into single slot index, error is

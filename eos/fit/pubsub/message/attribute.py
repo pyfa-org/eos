@@ -25,21 +25,21 @@ from .base import BaseInstructionMessage
 
 class InstrAttrValueChanged(BaseInstructionMessage):
 
-    def __init__(self, item, attr):
+    def __init__(self, item, attr_id):
         self.item = item
-        self.attr = attr
+        self.attr_id = attr_id
 
     def __repr__(self):
-        spec = ['item', 'attr']
+        spec = ['item', 'attr_id']
         return make_repr_str(self, spec)
 
 
 class InstrAttrValueChangedMasked(BaseInstructionMessage):
 
-    def __init__(self, item, attr):
+    def __init__(self, item, attr_id):
         self.item = item
-        self.attr = attr
+        self.attr_id = attr_id
 
     def __repr__(self):
-        spec = ['item', 'attr']
+        spec = ['item', 'attr_id']
         return make_repr_str(self, spec)

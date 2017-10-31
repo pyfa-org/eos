@@ -90,18 +90,18 @@ class ModifierInfoConverter:
         return DogmaModifier(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=cls._get_domain(mod_info),
-            tgt_attr=int(mod_info['modifiedAttributeID']),
+            tgt_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID']))
+            src_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_modifier(cls, mod_info):
         return DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=cls._get_domain(mod_info),
-            tgt_attr=int(mod_info['modifiedAttributeID']),
+            tgt_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID']))
+            src_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_group_modifier(cls, mod_info):
@@ -109,9 +109,9 @@ class ModifierInfoConverter:
             tgt_filter=ModifierTargetFilter.domain_group,
             tgt_domain=cls._get_domain(mod_info),
             tgt_filter_extra_arg=int(mod_info['groupID']),
-            tgt_attr=int(mod_info['modifiedAttributeID']),
+            tgt_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID']))
+            src_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_skillrq_modifer(cls, mod_info):
@@ -119,9 +119,9 @@ class ModifierInfoConverter:
             tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=cls._get_domain(mod_info),
             tgt_filter_extra_arg=int(mod_info['skillTypeID']),
-            tgt_attr=int(mod_info['modifiedAttributeID']),
+            tgt_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID']))
+            src_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_owner_skillrq_modifer(cls, mod_info):
@@ -129,9 +129,9 @@ class ModifierInfoConverter:
             tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=cls._get_domain(mod_info),
             tgt_filter_extra_arg=int(mod_info['skillTypeID']),
-            tgt_attr=int(mod_info['modifiedAttributeID']),
+            tgt_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr=int(mod_info['modifyingAttributeID']))
+            src_attr_id=int(mod_info['modifyingAttributeID']))
 
     @staticmethod
     def _get_domain(mod_info):

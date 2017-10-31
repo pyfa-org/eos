@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
     InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
@@ -30,11 +30,11 @@ from .base import BaseSlotStatRegister
 class OrderedShipSlotStatRegister(
         BaseSlotStatRegister, InheritableVolatileMixin):
 
-    def __init__(self, msg_broker, slot_effect, slot_attr):
+    def __init__(self, msg_broker, slot_effect_id, slot_attr_id):
         BaseSlotStatRegister.__init__(self)
         InheritableVolatileMixin.__init__(self)
-        self.__slot_effect = slot_effect
-        self.__slot_attr = slot_attr
+        self.__slot_effect_id = slot_effect_id
+        self.__slot_attr_id = slot_attr_id
         self.__current_ship = None
         self.__slot_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
@@ -49,7 +49,7 @@ class OrderedShipSlotStatRegister(
     @volatile_property
     def total(self):
         try:
-            return int(self.__current_ship.attributes[self.__slot_attr])
+            return int(self.__current_ship.attributes[self.__slot_attr_id])
         except (AttributeError, KeyError):
             return None
 
@@ -66,11 +66,11 @@ class OrderedShipSlotStatRegister(
             self.__current_ship = None
 
     def _handle_item_effects_activation(self, message):
-        if self.__slot_effect in message.effects:
+        if self.__slot_effect_id in message.effect_ids:
             self.__slot_users.add(message.item)
 
     def _handle_item_effects_deactivation(self, message):
-        if self.__slot_effect in message.effects:
+        if self.__slot_effect_id in message.effect_ids:
             self.__slot_users.discard(message.item)
 
     _handler_map = {
@@ -84,18 +84,18 @@ class HighSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, Effect.hi_power, Attribute.hi_slots)
+            self, msg_broker, EffectId.hi_power, AttributeId.hi_slots)
 
 
 class MediumSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, Effect.med_power, Attribute.med_slots)
+            self, msg_broker, EffectId.med_power, AttributeId.med_slots)
 
 
 class LowSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, Effect.lo_power, Attribute.low_slots)
+            self, msg_broker, EffectId.lo_power, AttributeId.low_slots)

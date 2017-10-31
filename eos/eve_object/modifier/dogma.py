@@ -39,17 +39,17 @@ class DogmaModifier(BaseModifier, BaseCachable):
 
     def __init__(
             self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
-            tgt_attr=None, operator=None, src_attr=None):
+            tgt_attr_id=None, operator=None, src_attr_id=None):
         BaseModifier.__init__(
             self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
-            tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr=tgt_attr)
+            tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr_id=tgt_attr_id)
         # Dogma modifier-specific attributes
         self.operator = operator
-        self.src_attr = src_attr
+        self.src_attr_id = src_attr_id
 
     def get_modification(self, carrier_item, _):
         try:
-            mod_value = carrier_item.attributes[self.src_attr]
+            mod_value = carrier_item.attributes[self.src_attr_id]
         # In case attribute value cannot be fetched, just raise error,
         # all error logging is handled in attribute container
         except KeyError as e:
@@ -63,7 +63,7 @@ class DogmaModifier(BaseModifier, BaseCachable):
         return all((
             self._validate_base(),
             self.operator in ModifierOperator.__members__.values(),
-            isinstance(self.src_attr, Integral)))
+            isinstance(self.src_attr_id, Integral)))
 
     # Cache-related methods
     def compress(self):
@@ -71,9 +71,9 @@ class DogmaModifier(BaseModifier, BaseCachable):
             self.tgt_filter,
             self.tgt_domain,
             self.tgt_filter_extra_arg,
-            self.tgt_attr,
+            self.tgt_attr_id,
             self.operator,
-            self.src_attr)
+            self.src_attr_id)
 
     @classmethod
     def decompress(cls, cache_handler, compressed):
@@ -81,9 +81,9 @@ class DogmaModifier(BaseModifier, BaseCachable):
             tgt_filter=compressed[0],
             tgt_domain=compressed[1],
             tgt_filter_extra_arg=compressed[2],
-            tgt_attr=compressed[3],
+            tgt_attr_id=compressed[3],
             operator=compressed[4],
-            src_attr=compressed[5])
+            src_attr_id=compressed[5])
 
     # Auxiliary methods
     def __repr__(self):

@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -36,27 +36,27 @@ class TestCalculationChain(CalculatorTestCase):
         modifier1 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=attr2.id,
+            tgt_attr_id=attr2.id,
             operator=ModifierOperator.post_mul,
-            src_attr=attr1.id)
+            src_attr_id=attr1.id)
         effect1 = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier1])
+            category_id=EffectCategoryId.passive, modifiers=[modifier1])
         modifier2 = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=attr3.id,
+            tgt_attr_id=attr3.id,
             operator=ModifierOperator.post_percent,
-            src_attr=attr2.id)
+            src_attr_id=attr2.id)
         effect2 = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier2])
+            category_id=EffectCategoryId.passive, modifiers=[modifier2])
         modifier3 = self.mod(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=ModifierDomain.ship,
-            tgt_attr=attr4.id,
+            tgt_attr_id=attr4.id,
             operator=ModifierOperator.post_percent,
-            src_attr=attr3.id)
+            src_attr_id=attr3.id)
         effect3 = self.ch.effect(
-            category=EffectCategory.passive, modifiers=[modifier3])
+            category_id=EffectCategoryId.passive, modifiers=[modifier3])
         implant_item = Implant(self.ch.type(
             attributes={attr1.id: 5, attr2.id: 20},
             effects=(effect1, effect2)).id)

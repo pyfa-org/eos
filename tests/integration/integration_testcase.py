@@ -21,7 +21,7 @@
 
 from copy import copy
 
-from eos.const.eve import Group, Type
+from eos.const.eve import TypeGroupId, TypeId
 from eos.data.source import Source, SourceManager
 from eos.eve_object.modifier import DogmaModifier
 from tests.eos_testcase import EosTestCase
@@ -63,7 +63,8 @@ class IntegrationTestCase(EosTestCase):
         if make_default is True:
             SourceManager.default = source
         # Instantiate character type, as it's used in every test
-        cache_handler.type(type_id=Type.character_static, group=Group.character)
+        cache_handler.type(
+            type_id=TypeId.character_static, group_id=TypeGroupId.character)
         return source
 
     def mod(self, *args, **kwargs):

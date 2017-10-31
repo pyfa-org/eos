@@ -22,7 +22,7 @@
 from logging import getLogger
 from numbers import Real
 
-from eos.const.eve import Effect
+from eos.const.eve import EffectId
 from eos.util.frozen_dict import FrozenDict
 
 
@@ -72,7 +72,7 @@ class ValidatorPreConv:
             dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
         # Set with IDs of eve types, which have default effect
-        defeff = set()
+        defeff_type_ids = set()
         invalid_rows = set()
         for row in sorted(dte_rows, key=lambda r: r['table_pos']):
             is_default = row.get('isDefault')
@@ -82,10 +82,10 @@ class ValidatorPreConv:
             type_id = row['typeID']
             # If we already saw default effect for given type ID, invalidate
             # current row
-            if type_id in defeff:
+            if type_id in defeff_type_ids:
                 invalid_rows.add(row)
             else:
-                defeff.add(type_id)
+                defeff_type_ids.add(type_id)
         if invalid_rows:
             msg = (
                 'data contains {} excessive default effects, '
@@ -114,20 +114,20 @@ class ValidatorPreConv:
         Args:
             dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
-        rack_effects = (Effect.hi_power, Effect.med_power, Effect.lo_power)
-        racked_items = set()
+        rack_effect_ids = (
+            EffectId.hi_power, EffectId.med_power, EffectId.lo_power)
+        racked_type_ids = set()
         invalid_rows = set()
         for row in sorted(dte_rows, key=lambda r: r['table_pos']):
             effect_id = row['effectID']
-            # We're not interested in anything besides
-            # rack effects
-            if effect_id not in rack_effects:
+            # We're not interested in anything besides rack effects
+            if effect_id not in rack_effect_ids:
                 continue
-            eve_type_id = row['typeID']
-            if eve_type_id in racked_items:
+            type_id = row['typeID']
+            if type_id in racked_type_ids:
                 invalid_rows.add(row)
             else:
-                racked_items.add(eve_type_id)
+                racked_type_ids.add(type_id)
         if invalid_rows:
             msg = (
                 '{} rows contain colliding module racks, removing them'

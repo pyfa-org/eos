@@ -39,7 +39,7 @@ class TestConversionAttribute(EveObjBuilderTestCase):
         self.assertIn(111, self.attributes)
         attribute = self.attributes[111]
         self.assertEqual(attribute.id, 111)
-        self.assertEqual(attribute.max_attribute, 84)
+        self.assertEqual(attribute.max_attribute_id, 84)
         self.assertEqual(attribute.default_value, 0.0)
         self.assertIs(attribute.high_is_good, False)
         self.assertIs(attribute.stackable, True)

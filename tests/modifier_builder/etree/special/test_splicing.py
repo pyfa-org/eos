@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import EffectBuildStatus
-from eos.const.eve import Operand
+from eos.const.eve import OperandId
 from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 
 
@@ -28,73 +28,73 @@ class TestBuilderEtreeSplicing(ModBuilderTestCase):
 
     def test_build_success(self):
         e_tgt_dom = self.ef.make(
-            1, operandID=Operand.def_dom, expressionValue='Target')
+            1, operandID=OperandId.def_dom, expressionValue='Target')
         e_tgt_srq = self.ef.make(
-            2, operandID=Operand.def_type, expressionTypeID=3300)
+            2, operandID=OperandId.def_type, expressionTypeID=3300)
         e_tgt_attr1 = self.ef.make(
-            3, operandID=Operand.def_attr, expressionAttributeID=54)
+            3, operandID=OperandId.def_attr, expressionAttributeID=54)
         e_tgt_attr2 = self.ef.make(
-            4, operandID=Operand.def_attr, expressionAttributeID=158)
+            4, operandID=OperandId.def_attr, expressionAttributeID=158)
         e_tgt_attr3 = self.ef.make(
-            5, operandID=Operand.def_attr, expressionAttributeID=160)
+            5, operandID=OperandId.def_attr, expressionAttributeID=160)
         e_optr = self.ef.make(
-            6, operandID=Operand.def_optr, expressionValue='PostPercent')
+            6, operandID=OperandId.def_optr, expressionValue='PostPercent')
         e_src_attr1 = self.ef.make(
-            7, operandID=Operand.def_attr, expressionAttributeID=351)
+            7, operandID=OperandId.def_attr, expressionAttributeID=351)
         e_src_attr2 = self.ef.make(
-            8, operandID=Operand.def_attr, expressionAttributeID=349)
+            8, operandID=OperandId.def_attr, expressionAttributeID=349)
         e_src_attr3 = self.ef.make(
-            9, operandID=Operand.def_attr, expressionAttributeID=767)
+            9, operandID=OperandId.def_attr, expressionAttributeID=767)
         e_tgt_itms = self.ef.make(
-            10, operandID=Operand.dom_srq, arg1=e_tgt_dom['expressionID'],
+            10, operandID=OperandId.dom_srq, arg1=e_tgt_dom['expressionID'],
             arg2=e_tgt_srq['expressionID'])
         e_tgt_spec1 = self.ef.make(
-            11, operandID=Operand.itm_attr, arg1=e_tgt_itms['expressionID'],
+            11, operandID=OperandId.itm_attr, arg1=e_tgt_itms['expressionID'],
             arg2=e_tgt_attr1['expressionID'])
         e_tgt_spec2 = self.ef.make(
-            12, operandID=Operand.itm_attr, arg1=e_tgt_itms['expressionID'],
+            12, operandID=OperandId.itm_attr, arg1=e_tgt_itms['expressionID'],
             arg2=e_tgt_attr2['expressionID'])
         e_tgt_spec3 = self.ef.make(
-            13, operandID=Operand.itm_attr, arg1=e_tgt_itms['expressionID'],
+            13, operandID=OperandId.itm_attr, arg1=e_tgt_itms['expressionID'],
             arg2=e_tgt_attr3['expressionID'])
         e_optr_tgt1 = self.ef.make(
-            14, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
+            14, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
             arg2=e_tgt_spec1['expressionID'])
         e_optr_tgt2 = self.ef.make(
-            15, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
+            15, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
             arg2=e_tgt_spec2['expressionID'])
         e_optr_tgt3 = self.ef.make(
-            16, operandID=Operand.optr_tgt, arg1=e_optr['expressionID'],
+            16, operandID=OperandId.optr_tgt, arg1=e_optr['expressionID'],
             arg2=e_tgt_spec3['expressionID'])
         e_add_mod1 = self.ef.make(
-            17, operandID=Operand.add_dom_srq_mod,
+            17, operandID=OperandId.add_dom_srq_mod,
             arg1=e_optr_tgt1['expressionID'], arg2=e_src_attr1['expressionID'])
         e_add_mod2 = self.ef.make(
-            18, operandID=Operand.add_dom_srq_mod,
+            18, operandID=OperandId.add_dom_srq_mod,
             arg1=e_optr_tgt2['expressionID'], arg2=e_src_attr2['expressionID'])
         e_add_mod3 = self.ef.make(
-            19, operandID=Operand.add_dom_srq_mod,
+            19, operandID=OperandId.add_dom_srq_mod,
             arg1=e_optr_tgt3['expressionID'], arg2=e_src_attr3['expressionID'])
         e_rm_mod1 = self.ef.make(
-            20, operandID=Operand.rm_dom_srq_mod,
+            20, operandID=OperandId.rm_dom_srq_mod,
             arg1=e_optr_tgt1['expressionID'], arg2=e_src_attr1['expressionID'])
         e_rm_mod2 = self.ef.make(
-            21, operandID=Operand.rm_dom_srq_mod,
+            21, operandID=OperandId.rm_dom_srq_mod,
             arg1=e_optr_tgt2['expressionID'], arg2=e_src_attr2['expressionID'])
         e_rm_mod3 = self.ef.make(
-            22, operandID=Operand.rm_dom_srq_mod,
+            22, operandID=OperandId.rm_dom_srq_mod,
             arg1=e_optr_tgt3['expressionID'], arg2=e_src_attr3['expressionID'])
         e_add_splice1 = self.ef.make(
-            23, operandID=Operand.splice, arg1=e_add_mod1['expressionID'],
+            23, operandID=OperandId.splice, arg1=e_add_mod1['expressionID'],
             arg2=e_add_mod3['expressionID'])
         e_add_splice2 = self.ef.make(
-            24, operandID=Operand.splice, arg1=e_add_mod2['expressionID'],
+            24, operandID=OperandId.splice, arg1=e_add_mod2['expressionID'],
             arg2=e_add_splice1['expressionID'])
         e_rm_splice1 = self.ef.make(
-            25, operandID=Operand.splice, arg1=e_rm_mod1['expressionID'],
+            25, operandID=OperandId.splice, arg1=e_rm_mod1['expressionID'],
             arg2=e_rm_mod3['expressionID'])
         e_rm_splice2 = self.ef.make(
-            26, operandID=Operand.splice, arg1=e_rm_mod2['expressionID'],
+            26, operandID=OperandId.splice, arg1=e_rm_mod2['expressionID'],
             arg2=e_rm_splice1['expressionID'])
         effect_row = {
             'preExpression': e_add_splice2['expressionID'],

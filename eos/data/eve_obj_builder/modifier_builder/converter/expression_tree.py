@@ -20,8 +20,8 @@
 
 
 from eos.const.eos import (
-    EosType, ModifierDomain, ModifierOperator, ModifierTargetFilter)
-from eos.const.eve import Operand
+    EosTypeId, ModifierDomain, ModifierOperator, ModifierTargetFilter)
+from eos.const.eve import OperandId
 from eos.eve_object.modifier import DogmaModifier
 from eos.util.attribute_dict import AttributeDict
 from ..exception import UnknownEtreeRootOperandError
@@ -66,12 +66,12 @@ class ExpressionTreeConverter:
     def _parse(self, exp_row, root=False):
         operand_id = exp_row.get('operandID')
         handler_map = {
-            Operand.splice: self._handle_splice,
-            Operand.add_itm_mod: self._handle_item_modifier,
-            Operand.add_dom_mod: self._handle_domain_modifier,
-            Operand.add_dom_grp_mod: self._handle_domain_group_modifier,
-            Operand.add_dom_srq_mod: self._handle_domain_skillrq_modifer,
-            Operand.add_own_srq_mod: self._handle_owner_skillrq_modifer}
+            OperandId.splice: self._handle_splice,
+            OperandId.add_itm_mod: self._handle_item_modifier,
+            OperandId.add_dom_mod: self._handle_domain_modifier,
+            OperandId.add_dom_grp_mod: self._handle_domain_group_modifier,
+            OperandId.add_dom_srq_mod: self._handle_domain_skillrq_modifer,
+            OperandId.add_own_srq_mod: self._handle_owner_skillrq_modifer}
         try:
             handler = handler_map[operand_id]
         except KeyError as e:
@@ -102,48 +102,49 @@ class ExpressionTreeConverter:
         self._mods.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=self._get_domain(exp_row.arg1.arg2.arg1),
-            tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
+            tgt_attr_id=self._get_attribute_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)))
+            src_attr_id=self._get_attribute_id(exp_row.arg2)))
 
     def _handle_domain_modifier(self, exp_row):
         self._mods.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain,
             tgt_domain=self._get_domain(exp_row.arg1.arg2.arg1),
-            tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
+            tgt_attr_id=self._get_attribute_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)))
+            src_attr_id=self._get_attribute_id(exp_row.arg2)))
 
     def _handle_domain_group_modifier(self, exp_row):
         self._mods.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain_group,
             tgt_domain=self._get_domain(exp_row.arg1.arg2.arg1.arg1),
-            tgt_filter_extra_arg=self._get_group(exp_row.arg1.arg2.arg1.arg2),
-            tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
+            tgt_filter_extra_arg=self._get_group_id(
+                exp_row.arg1.arg2.arg1.arg2),
+            tgt_attr_id=self._get_attribute_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)))
+            src_attr_id=self._get_attribute_id(exp_row.arg2)))
 
     def _handle_domain_skillrq_modifer(self, exp_row):
         self._mods.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.domain_skillrq,
             tgt_domain=self._get_domain(exp_row.arg1.arg2.arg1.arg1),
-            tgt_filter_extra_arg=self._get_type(exp_row.arg1.arg2.arg1.arg2),
-            tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
+            tgt_filter_extra_arg=self._get_type_id(exp_row.arg1.arg2.arg1.arg2),
+            tgt_attr_id=self._get_attribute_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)))
+            src_attr_id=self._get_attribute_id(exp_row.arg2)))
 
     def _handle_owner_skillrq_modifer(self, exp_row):
         self._mods.append(DogmaModifier(
             tgt_filter=ModifierTargetFilter.owner_skillrq,
             tgt_domain=self._get_domain(exp_row.arg1.arg2.arg1.arg1),
-            tgt_filter_extra_arg=self._get_type(exp_row.arg1.arg2.arg1.arg2),
-            tgt_attr=self._get_attribute(exp_row.arg1.arg2.arg2),
+            tgt_filter_extra_arg=self._get_type_id(exp_row.arg1.arg2.arg1.arg2),
+            tgt_attr_id=self._get_attribute_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
-            src_attr=self._get_attribute(exp_row.arg2)))
+            src_attr_id=self._get_attribute_id(exp_row.arg2)))
 
     @staticmethod
     def _get_domain(exp_row):
-        if exp_row['operandID'] != Operand.def_dom:
+        if exp_row['operandID'] != OperandId.def_dom:
             return None
         conversion_map = {
             'Self': ModifierDomain.self,
@@ -155,7 +156,7 @@ class ExpressionTreeConverter:
 
     @staticmethod
     def _get_operator(exp_row):
-        if exp_row['operandID'] != Operand.def_optr:
+        if exp_row['operandID'] != OperandId.def_optr:
             return None
         conversion_map = {
             'PreAssignment': ModifierOperator.pre_assign,
@@ -170,29 +171,28 @@ class ExpressionTreeConverter:
         return conversion_map[exp_row['expressionValue']]
 
     @staticmethod
-    def _get_attribute(exp_row):
-        if exp_row['operandID'] != Operand.def_attr:
+    def _get_attribute_id(exp_row):
+        if exp_row['operandID'] != OperandId.def_attr:
             return None
         return int(exp_row['expressionAttributeID'])
 
     @staticmethod
-    def _get_type(exp_row):
+    def _get_type_id(exp_row):
         operand_id = exp_row['operandID']
-        if operand_id == Operand.def_type:
+        if operand_id == OperandId.def_type:
             return int(exp_row['expressionTypeID'])
         # Operand get_type specifies domain in its arg1; typeID of this domain
         # should be taken when needed
-        elif operand_id == Operand.get_type:
-            conversion_map = {
-                ModifierDomain.self: EosType.current_self}
+        elif operand_id == OperandId.get_type:
+            conversion_map = {ModifierDomain.self: EosTypeId.current_self}
             domain = ExpressionTreeConverter._get_domain(exp_row.arg1)
             return conversion_map[domain]
         else:
             return None
 
     @staticmethod
-    def _get_group(exp_row):
-        if exp_row['operandID'] != Operand.def_grp:
+    def _get_group_id(exp_row):
+        if exp_row['operandID'] != OperandId.def_grp:
             return None
         return int(exp_row['expressionGroupID'])
 

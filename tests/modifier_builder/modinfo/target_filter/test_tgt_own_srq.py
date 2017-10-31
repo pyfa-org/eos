@@ -57,9 +57,9 @@ class TestBuilderModinfoTgtOwnSrq(ModBuilderTestCase):
             modifier.tgt_filter, ModifierTargetFilter.owner_skillrq)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
-        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.tgt_attr_id, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.src_attr_id, 11)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_domain_ship(self):

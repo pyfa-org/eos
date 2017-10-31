@@ -164,9 +164,9 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.character)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr, 33)
+        self.assertEqual(modifier.tgt_attr_id, 33)
         self.assertEqual(modifier.operator, ModifierOperator.post_assign)
-        self.assertEqual(modifier.src_attr, 44)
+        self.assertEqual(modifier.src_attr_id, 44)
         # Unknown function error, tested separately
         self.assertEqual(len(self.get_log()), 1)
 
@@ -187,8 +187,8 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_filter, ModifierTargetFilter.item)
         self.assertEqual(modifier.tgt_domain, ModifierDomain.ship)
         self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr, 22)
+        self.assertEqual(modifier.tgt_attr_id, 22)
         self.assertEqual(modifier.operator, ModifierOperator.post_percent)
-        self.assertEqual(modifier.src_attr, 11)
+        self.assertEqual(modifier.src_attr_id, 11)
         # Unknown function error, tested separately
         self.assertEqual(len(self.get_log()), 1)

@@ -53,12 +53,12 @@ class ModifierBuilder:
             Tuple with with iterable which contains modifiers and effect's
             modifier build status.
         """
-        modinfo = effect_row.get('modifierInfo')
-        pre_exp = effect_row.get('preExpression')
-        # modifierInfo takes a priority
-        if modinfo:
+        mod_info = effect_row.get('modifierInfo')
+        pre_exp_id = effect_row.get('preExpression')
+        # Modifier info has priority
+        if mod_info:
             try:
-                mods, fails = ModifierInfoConverter.convert(modinfo)
+                mods, fails = ModifierInfoConverter.convert(mod_info)
             except YamlParsingError as e:
                 effect_id = effect_row['effectID']
                 msg = 'failed to build modifiers for effect {}: {}'.format(
@@ -66,9 +66,9 @@ class ModifierBuilder:
                 logger.error(msg)
                 return (), EffectBuildStatus.error
         # When no modifierInfo specified, use expression trees
-        elif pre_exp:
+        elif pre_exp_id:
             try:
-                mods, fails = self._tree.convert(pre_exp)
+                mods, fails = self._tree.convert(pre_exp_id)
             # There're quite many root-level operands we do not handle and do
             # not want to handle. Special effects, non-modifier definitions.
             # Handle these somewhat gracefully and mark such effects as skipped

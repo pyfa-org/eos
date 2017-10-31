@@ -21,7 +21,7 @@
 
 from enum import IntEnum, unique
 
-from eos.const.eve import Attribute, Effect
+from eos.const.eve import AttributeId, EffectId
 from eos.fit.helper import DamageTypesTotal
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
 from .base import BaseItemMixin
@@ -47,22 +47,22 @@ class WeaponType(IntEnum):
 
 # Format: {module effect ID: weapon type}
 BASIC_MAP = {
-    Effect.target_attack: WeaponType.turret,
-    Effect.projectile_fired: WeaponType.turret,
-    Effect.emp_wave: WeaponType.untargeted_aoe,
+    EffectId.target_attack: WeaponType.turret,
+    EffectId.projectile_fired: WeaponType.turret,
+    EffectId.emp_wave: WeaponType.untargeted_aoe,
     # TODO: instant missile was assigned just to fighter bombers
-    Effect.fighter_missile: WeaponType.instant_missile,
-    Effect.super_weapon_amarr: WeaponType.direct,
-    Effect.super_weapon_caldari: WeaponType.direct,
-    Effect.super_weapon_gallente: WeaponType.direct,
-    Effect.super_weapon_minmatar: WeaponType.direct}
+    EffectId.fighter_missile: WeaponType.instant_missile,
+    EffectId.super_weapon_amarr: WeaponType.direct,
+    EffectId.super_weapon_caldari: WeaponType.direct,
+    EffectId.super_weapon_gallente: WeaponType.direct,
+    EffectId.super_weapon_minmatar: WeaponType.direct}
 
 # Format: {module effect ID: {charge effect ID: weapon type}}
 CHARGE_MAP = {
-    Effect.use_missiles: {
-        Effect.missile_launching: WeaponType.guided_missile,
-        Effect.fof_missile_launching: WeaponType.guided_missile,
-        Effect.bomb_launching: WeaponType.bomb}}
+    EffectId.use_missiles: {
+        EffectId.missile_launching: WeaponType.guided_missile,
+        EffectId.fof_missile_launching: WeaponType.guided_missile,
+        EffectId.bomb_launching: WeaponType.bomb}}
 
 
 class DamageDealerMixin(
@@ -83,22 +83,23 @@ class DamageDealerMixin(
         # cycle itself, do not consider such item as weapon
         if getattr(self, 'charged_cycles', None) == 0:
             return weapon_types
-        for eff_id in self._running_effects:
+        for effect_id in self._running_effect_ids:
             # Weapon properties are defined by item effects
-            if eff_id in BASIC_MAP:
-                weapon_types[eff_id] = BASIC_MAP[eff_id]
+            if effect_id in BASIC_MAP:
+                weapon_types[effect_id] = BASIC_MAP[effect_id]
             # For missiles and bombs, we need to use charge default effect as
             # well as it defines property of 'projectile' which massively
             # influence type of weapon
-            elif eff_id in CHARGE_MAP:
+            elif effect_id in CHARGE_MAP:
                 charge = getattr(self, 'charge', None)
                 if charge is None:
                     continue
                 charge_defeff_id = charge._eve_type_default_effect_id
-                if charge_defeff_id not in charge._running_effects:
+                if charge_defeff_id not in charge._running_effect_ids:
                     continue
                 try:
-                    weapon_types[eff_id] = CHARGE_MAP[eff_id][charge_defeff_id]
+                    weapon_types[effect_id] = (
+                        CHARGE_MAP[effect_id][charge_defeff_id])
                 except KeyError:
                     continue
         return weapon_types
@@ -124,10 +125,10 @@ class DamageDealerMixin(
 
     def __get_volley_item(self, item):
         """Get damage per type as tuple for passed item."""
-        em = item.attributes.get(Attribute.em_damage)
-        therm = item.attributes.get(Attribute.thermal_damage)
-        kin = item.attributes.get(Attribute.kinetic_damage)
-        expl = item.attributes.get(Attribute.explosive_damage)
+        em = item.attributes.get(AttributeId.em_damage)
+        therm = item.attributes.get(AttributeId.thermal_damage)
+        kin = item.attributes.get(AttributeId.kinetic_damage)
+        expl = item.attributes.get(AttributeId.explosive_damage)
         return em, therm, kin, expl
 
     # Format: {weapon type: (function which fetches base damage, damage
@@ -153,7 +154,7 @@ class DamageDealerMixin(
             em, therm, kin, expl = volley_fetcher(self)
             if multiply:
                 try:
-                    multiplier = self.attributes[Attribute.damage_multiplier]
+                    multiplier = self.attributes[AttributeId.damage_multiplier]
                 except KeyError:
                     pass
                 else:

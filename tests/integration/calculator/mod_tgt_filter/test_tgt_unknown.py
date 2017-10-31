@@ -23,7 +23,7 @@ import logging
 
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import EffectCategory
+from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -36,13 +36,14 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         self.invalid_modifier = self.mod(
             tgt_filter=26500,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=tgt_attr.id,
+            tgt_attr_id=tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=src_attr.id)
+            src_attr_id=src_attr.id)
 
     def test_log(self):
         effect = self.ch.effect(
-            category=EffectCategory.passive, modifiers=(self.invalid_modifier,))
+            category_id=EffectCategoryId.passive,
+            modifiers=(self.invalid_modifier,))
         item_eve_type = self.ch.type(
             attributes={self.src_attr.id: 20, self.tgt_attr: 100},
             effects=[effect])
@@ -66,11 +67,11 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         valid_modifier = self.mod(
             tgt_filter=ModifierTargetFilter.item,
             tgt_domain=ModifierDomain.self,
-            tgt_attr=self.tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.post_percent,
-            src_attr=self.src_attr.id)
+            src_attr_id=self.src_attr.id)
         effect = self.ch.effect(
-            category=EffectCategory.passive,
+            category_id=EffectCategoryId.passive,
             modifiers=(self.invalid_modifier, valid_modifier))
         item = Rig(self.ch.type(
             attributes={self.src_attr.id: 20, self.tgt_attr.id: 100},

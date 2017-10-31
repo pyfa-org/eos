@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
 from eos.fit.pubsub.message import (
     InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate)
@@ -41,56 +41,54 @@ MaxGroupErrorData = namedtuple(
 class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     """Base class for all max modules per group restrictions."""
 
-    def __init__(self, max_group_attr):
+    def __init__(self, max_group_attr_id):
         # Attribute ID whose value contains group restriction of item
-        self.__max_group_attr = max_group_attr
+        self.__max_group_attr_id = max_group_attr_id
         # Container for all tracked items, keyed by their group ID
         # Format: {group ID: {items}}
-        self.__group_all = KeyedStorage()
+        self.__group_item_map = KeyedStorage()
         # Container for items, which have max group restriction to become
         # operational
         # Format: {items}
-        self.__group_restricted = set()
+        self.__restricted_items = set()
 
     def _register_item(self, item):
         if not isinstance(item, TRACKED_ITEM_CLASSES):
             return
-        group = item._eve_type.group
+        group_id = item._eve_type.group_id
         # Ignore items, whose eve type isn't assigned to any group
-        if group is None:
+        if group_id is None:
             return
         # Having group ID is sufficient condition to enter container of all
         # fitted items
-        self.__group_all.add_data_entry(group, item)
+        self.__group_item_map.add_data_entry(group_id, item)
         # To enter restriction container, eve type must have restriction
         # attribute
-        if self.__max_group_attr not in item._eve_type_attributes:
+        if self.__max_group_attr_id not in item._eve_type_attributes:
             return
-        self.__group_restricted.add(item)
+        self.__restricted_items.add(item)
 
     def _unregister_item(self, item):
         # Just clear data containers
-        group = item._eve_type.group
-        self.__group_all.rm_data_entry(group, item)
-        self.__group_restricted.discard(item)
+        group_id = item._eve_type.group_id
+        self.__group_item_map.rm_data_entry(group_id, item)
+        self.__restricted_items.discard(item)
 
     def validate(self):
         # Container for tainted items
         tainted_items = {}
         # Go through all restricted items
-        for item in self.__group_restricted:
+        for item in self.__restricted_items:
             # Get number of registered items, assigned to group of current
             # restricted item, and item's restriction value
-            group = item._eve_type.group
-            group_items = len(self.__group_all.get(group, ()))
-            max_group_restriction = (
-                item._eve_type_attributes[self.__max_group_attr])
-            # If number of registered items from this group is bigger, then
-            # current item is tainted
-            if group_items > max_group_restriction:
+            group_id = item._eve_type.group_id
+            group_items = len(self.__group_item_map.get(group_id, ()))
+            group_items_allowed = (
+                item._eve_type_attributes[self.__max_group_attr_id])
+            if group_items > group_items_allowed:
                 tainted_items[item] = MaxGroupErrorData(
-                    item_group=group,
-                    max_group=max_group_restriction,
+                    item_group=group_id,
+                    max_group=group_items_allowed,
                     group_items=group_items)
         # Raise error if we detected any tainted items
         if tainted_items:
@@ -106,7 +104,7 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_fitted)
+        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_fitted)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
@@ -133,7 +131,7 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_online)
+        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_online)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_states_activation(self, message):
@@ -162,7 +160,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, Attribute.max_group_active)
+        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_active)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_states_activation(self, message):

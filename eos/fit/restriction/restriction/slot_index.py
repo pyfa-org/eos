@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import Attribute
+from eos.const.eve import AttributeId
 from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
@@ -38,28 +38,28 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
     It doesn't allow multiple items to take the same numbered slot.
     """
 
-    def __init__(self, msg_broker, slot_index_attr):
+    def __init__(self, msg_broker, slot_index_attr_id):
         # This attribute's value on item represents their index of slot
-        self.__slot_index_attr = slot_index_attr
+        self.__slot_index_attr_id = slot_index_attr_id
         # All items which possess index of slot are stored in this container
         # Format: {slot index: {items}}
-        self.__slotted_items = KeyedStorage()
+        self.__index_item_map = KeyedStorage()
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_addition(self, message):
         # Skip items which don't have index specified
         slot_index = message.item._eve_type_attributes.get(
-            self.__slot_index_attr)
+            self.__slot_index_attr_id)
         if slot_index is None:
             return
-        self.__slotted_items.add_data_entry(slot_index, message.item)
+        self.__index_item_map.add_data_entry(slot_index, message.item)
 
     def _handle_item_removal(self, message):
         slot_index = message.item._eve_type_attributes.get(
-            self.__slot_index_attr)
+            self.__slot_index_attr_id)
         if slot_index is None:
             return
-        self.__slotted_items.rm_data_entry(slot_index, message.item)
+        self.__index_item_map.rm_data_entry(slot_index, message.item)
 
     _handler_map = {
         InstrItemAdd: _handle_item_addition,
@@ -67,8 +67,8 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
 
     def validate(self):
         tainted_items = {}
-        for slot_index in self.__slotted_items:
-            slot_index_items = self.__slotted_items[slot_index]
+        for slot_index in self.__index_item_map:
+            slot_index_items = self.__index_item_map[slot_index]
             # If more than one item occupies the same slot, all items in this
             # slot are tainted
             if len(slot_index_items) > 1:
@@ -88,7 +88,7 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, Attribute.subsystem_slot)
+            self, msg_broker, AttributeId.subsystem_slot)
 
     @property
     def type(self):
@@ -104,7 +104,7 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, Attribute.implantness)
+            self, msg_broker, AttributeId.implantness)
 
     @property
     def type(self):
@@ -120,7 +120,7 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, Attribute.boosterness)
+            self, msg_broker, AttributeId.boosterness)
 
     @property
     def type(self):

@@ -20,7 +20,7 @@
 
 
 __all__ = [
-    'EffectRunMode', 'Restriction', 'State',
+    'EffectMode', 'Restriction', 'State',
     'TypeFetchError',
     'SourceManager',
     'SlotTakenError',
@@ -36,7 +36,7 @@ __all__ = [
 __version__ = '0.0.0.dev10'
 
 
-from .const.eos import EffectRunMode, Restriction, State
+from .const.eos import EffectMode, Restriction, State
 from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
 from .fit.container.exception import SlotTakenError

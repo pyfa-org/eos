@@ -41,10 +41,10 @@ class InputSourceChanged(BaseInputMessage):
             for item in self.items:
                 states = {s for s in State if s <= item.state}
                 # Handle effect deactivation
-                running_copy = set(item._running_effects)
+                running_copy = set(item._running_effect_ids)
                 if running_copy:
                     instructions.append(InstrEffectsStop(item, running_copy))
-                    item._running_effects.clear()
+                    item._running_effect_ids.clear()
                 # Handle state deactivation
                 instructions.append(InstrStatesDeactivate(item, states))
                 # Handle item removal
@@ -60,13 +60,13 @@ class InputSourceChanged(BaseInputMessage):
                 states = {s for s in State if s <= item.state}
                 instructions.append(InstrStatesActivate(item, states))
                 # Handle effect activation
-                to_start, to_stop = item._get_wanted_effect_run_status_changes()
+                to_start, to_stop = item._get_wanted_effect_status_changes()
                 if to_start:
-                    item._running_effects.update(to_start)
+                    item._running_effect_ids.update(to_start)
                     instructions.append(InstrEffectsStart(item, to_start))
                 if to_stop:
                     instructions.append(InstrEffectsStop(item, to_stop))
-                    item._running_effects.difference_update(to_stop)
+                    item._running_effect_ids.difference_update(to_stop)
         return instructions
 
     def __repr__(self):

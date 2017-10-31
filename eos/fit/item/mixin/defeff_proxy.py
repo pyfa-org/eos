@@ -42,7 +42,7 @@ class DefaultEffectProxyMixin(BaseItemMixin):
         return self.__safe_get_from_defeff('get_tracking_speed')
 
     def __safe_get_from_defeff(self, method):
-        default_effect = getattr(self._eve_type, 'default_effect', None)
+        default_effect = self._eve_type_default_effect
         if default_effect is None:
             return None
         return getattr(default_effect, method)(self)

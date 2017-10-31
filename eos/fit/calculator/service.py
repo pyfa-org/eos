@@ -50,12 +50,12 @@ class CalculationService(BaseSubscriber):
         self.__msg_broker = msg_broker
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def get_modifications(self, target_item, target_attr):
+    def get_modifications(self, tgt_item, tgt_attr_id):
         """Get modifications of target attr on target item.
 
         Args:
-            target_item: Item, for which we're getting modifications.
-            target_attr: Target attribute ID; only modifications which influence
+            tgt_item: Item, for which we're getting modifications.
+            tgt_attr_id: Target attribute ID; only modifications which influence
                 attribute with this ID will be returned.
 
         Returns:
@@ -63,17 +63,17 @@ class CalculationService(BaseSubscriber):
             format.
         """
         modifications = set()
-        for affector in self.__affections.get_affectors(target_item):
+        for affector in self.__affections.get_affectors(tgt_item):
             modifier, carrier_item = affector
-            if modifier.tgt_attr == target_attr:
+            if modifier.tgt_attr_id == tgt_attr_id:
                 try:
-                    mod_oper, mod_value = modifier.get_modification(
+                    mod_op, mod_value = modifier.get_modification(
                         carrier_item, self._current_ship)
                 # Do nothing here - errors should be logged in modification
                 # getter or even earlier
                 except ModificationCalculationError:
                     continue
-                modifications.add((mod_oper, mod_value, carrier_item))
+                modifications.add((mod_op, mod_value, carrier_item))
         return modifications
 
     # Handle item changes which are significant for calculator
@@ -92,23 +92,23 @@ class CalculationService(BaseSubscriber):
         self.__affections.unregister_affectee(message.item)
 
     def _handle_item_effects_activation(self, message):
-        affectors = self.__generate_affectors(message.item, message.effects)
+        affectors = self.__generate_affectors(message.item, message.effect_ids)
         for affector in affectors:
             self.__subscribe_affector(affector)
             self.__affections.register_affector(affector)
             for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr]
+                del target_item.attributes[affector.modifier.tgt_attr_id]
 
     def _handle_item_effects_deactivation(self, message):
-        affectors = self.__generate_affectors(message.item, message.effects)
+        affectors = self.__generate_affectors(message.item, message.effect_ids)
         for affector in affectors:
             for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr]
+                del target_item.attributes[affector.modifier.tgt_attr_id]
             self.__affections.unregister_affector(affector)
             self.__unsubscribe_affector(affector)
 
     # Methods to clear calculated child nodes when parent nodes change
-    def _revise_regular_attrib_dependents(self, message):
+    def _revise_regular_attr_dependents(self, message):
         """Remove calculated attribute values which rely on passed attribute.
 
         Removing them allows to recalculate updated value. Here we process all
@@ -118,24 +118,25 @@ class CalculationService(BaseSubscriber):
         """
         # Remove values of target attributes capped by changing attribute
         item = message.item
-        attr = message.attr
-        for capped_attr in item.attributes._cap_map.get(attr, ()):
-            del item.attributes[capped_attr]
+        attr_id = message.attr_id
+        for capped_attr_id in item.attributes._cap_map.get(attr_id, ()):
+            del item.attributes[capped_attr_id]
         # Remove values of target attributes which are using changing attribute
         # as modification source
-        for affector in self.__generate_affectors(item, item._running_effects):
+        for affector in self.__generate_affectors(
+                item, item._running_effect_ids):
             modifier = affector.modifier
             # Only dogma modifiers have source attribute specified, python
             # modifiers are processed separately
             if (
                 not isinstance(modifier, DogmaModifier) or
-                modifier.src_attr != attr
+                modifier.src_attr_id != attr_id
             ):
                 continue
             for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[modifier.tgt_attr]
+                del target_item.attributes[modifier.tgt_attr_id]
 
-    def _revise_python_attrib_dependents(self, message):
+    def _revise_python_attr_dependents(self, message):
         """Remove calculated attribute values when necessary.
 
         Here we go through python modifiers, deliver to them message, and if,
@@ -154,7 +155,7 @@ class CalculationService(BaseSubscriber):
                     message, affector.carrier_item, self._current_ship):
                 continue
             for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr]
+                del target_item.attributes[affector.modifier.tgt_attr_id]
 
     # Message routing
     _handler_map = {
@@ -162,13 +163,13 @@ class CalculationService(BaseSubscriber):
         InstrItemRemove: _handle_item_removal,
         InstrEffectsStart: _handle_item_effects_activation,
         InstrEffectsStop: _handle_item_effects_deactivation,
-        InstrAttrValueChanged: _revise_regular_attrib_dependents}
+        InstrAttrValueChanged: _revise_regular_attr_dependents}
 
     def _notify(self, message):
         BaseSubscriber._notify(self, message)
         # Relay all messages to python modifiers, as in case of python modifiers
-        # any message may result in deleting dependent attrs
-        self._revise_python_attrib_dependents(message)
+        # any message may result in deleting dependent attributes
+        self._revise_python_attr_dependents(message)
 
     # Do not process here just target domain
     _supported_domains = set(
