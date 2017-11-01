@@ -48,14 +48,14 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
 
     def _handle_item_addition(self, message):
         # Skip items which don't have index specified
-        slot_index = message.item._eve_type_attributes.get(
+        slot_index = message.item._type_attributes.get(
             self.__slot_index_attr_id)
         if slot_index is None:
             return
         self.__index_item_map.add_data_entry(slot_index, message.item)
 
     def _handle_item_removal(self, message):
-        slot_index = message.item._eve_type_attributes.get(
+        slot_index = message.item._type_attributes.get(
             self.__slot_index_attr_id)
         if slot_index is None:
             return
@@ -83,7 +83,7 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """Multiple subsystems can't be added into the same subsystem slot.
 
     Details:
-        Slot to occupy is determined by eve type attributes.
+        Slot to occupy is determined by item type attributes.
     """
 
     def __init__(self, msg_broker):
@@ -99,7 +99,7 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """Multiple implants can't be added into the same implant slot.
 
     Details:
-        Slot to occupy is determined by eve type attributes.
+        Slot to occupy is determined by item type attributes.
     """
 
     def __init__(self, msg_broker):
@@ -115,7 +115,7 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """Multiple boosters can't be added into the same booster slot.
 
     Details:
-        Slot to occupy is determined by eve type attributes.
+        Slot to occupy is determined by item type attributes.
     """
 
     def __init__(self, msg_broker):

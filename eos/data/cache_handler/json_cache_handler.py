@@ -63,10 +63,10 @@ class JsonCacheHandler(BaseCacheHandler):
         except TypeError as e:
             raise TypeFetchError(type_id) from e
         try:
-            eve_type = self.__type_storage[type_id]
+            item_type = self.__type_storage[type_id]
         except KeyError as e:
             raise TypeFetchError(type_id) from e
-        return eve_type
+        return item_type
 
     def get_attribute(self, attr_id):
         try:
@@ -115,7 +115,7 @@ class JsonCacheHandler(BaseCacheHandler):
     def update_cache(self, eve_objects, fingerprint):
         types, attributes, effects = eve_objects
         cache_data = {
-            'types': [eve_type.compress() for eve_type in types],
+            'types': [item_type.compress() for item_type in types],
             'attributes': [attr.compress() for attr in attributes],
             'effects': [effect.compress() for effect in effects],
             'fingerprint': fingerprint}
@@ -137,13 +137,13 @@ class JsonCacheHandler(BaseCacheHandler):
         self.__type_storage.clear()
         self.__attribute_storage.clear()
         self.__effect_storage.clear()
-        # Process effects first, as eve types rely on effects being available
+        # Process effects first, as item types rely on effects being available
         for effect_data in cache_data['effects']:
             effect = Effect.decompress(self, effect_data)
             self.__effect_storage[effect.id] = effect
         for type_data in cache_data['types']:
-            eve_type = Type.decompress(self, type_data)
-            self.__type_storage[eve_type.id] = eve_type
+            item_type = Type.decompress(self, type_data)
+            self.__type_storage[item_type.id] = item_type
         for attribute_data in cache_data['attributes']:
             attribute = Attribute.decompress(self, attribute_data)
             self.__attribute_storage[attribute.id] = attribute

@@ -67,8 +67,7 @@ class DroneBandwidthStatRegister(
         if (
             isinstance(message.item, Drone) and
             State.online in message.states and
-            AttributeId.drone_bandwidth_used in
-                message.item._eve_type_attributes
+            AttributeId.drone_bandwidth_used in message.item._type_attributes
         ):
             self.__resource_users.add(message.item)
 

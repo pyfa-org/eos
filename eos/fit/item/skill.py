@@ -30,7 +30,7 @@ class Skill(ImmutableStateMixin):
     """Represents a skill.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             skill.
         level (optional): Sets level of skill at initialization, default is 0.
     """
@@ -63,5 +63,5 @@ class Skill(ImmutableStateMixin):
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id'], 'level']
+        spec = [['type_id', '_type_id'], 'level']
         return make_repr_str(self, spec)

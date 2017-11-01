@@ -38,15 +38,15 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_add_item(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item = Skill(item_type.id)
         # Action
         fit.skills.add(item)
         # Verification
         self.assertEqual(len(fit.skills), 1)
-        self.assertIs(fit.skills[item_eve_type.id], item)
+        self.assertIs(fit.skills[item_type.id], item)
         self.assertIn(item, fit.skills)
-        self.assertIn(item_eve_type.id, fit.skills)
+        self.assertIn(item_type.id, fit.skills)
         # Cleanup
         fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
@@ -54,15 +54,15 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_add_item_type_failure(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item = Implant(item_eve_type.id)
+        item_type = self.ch.type()
+        item = Implant(item_type.id)
         # Action
         with self.assertRaises(TypeError):
             fit.skills.add(item)
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertNotIn(item, fit.skills)
-        self.assertNotIn(item_eve_type.id, fit.skills)
+        self.assertNotIn(item_type.id, fit.skills)
         fit.implants.add(item)
         # Cleanup
         fit.implants.remove(item)
@@ -72,8 +72,8 @@ class TestContainerKeyedSet(ContainerTestCase):
     def test_add_item_value_failure_has_fit(self):
         fit = Fit()
         fit_other = Fit()
-        item_eve_type = self.ch.type()
-        item = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item = Skill(item_type.id)
         fit_other.skills.add(item)
         # Action
         with self.assertRaises(ValueError):
@@ -81,7 +81,7 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertEqual(len(fit_other.skills), 1)
-        self.assertIs(fit_other.skills[item_eve_type.id], item)
+        self.assertIs(fit_other.skills[item_type.id], item)
         self.assertIn(item, fit_other.skills)
         # Cleanup
         fit_other.skills.remove(item)
@@ -91,18 +91,18 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_add_item_value_failure_existing_type_id(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item1 = Skill(item_eve_type.id)
-        item2 = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item1 = Skill(item_type.id)
+        item2 = Skill(item_type.id)
         fit.skills.add(item1)
         # Action
         with self.assertRaises(ValueError):
             fit.skills.add(item2)
         # Verification
         self.assertEqual(len(fit.skills), 1)
-        self.assertIs(fit.skills[item_eve_type.id], item1)
+        self.assertIs(fit.skills[item_type.id], item1)
         self.assertIn(item1, fit.skills)
-        self.assertIn(item_eve_type.id, fit.skills)
+        self.assertIn(item_type.id, fit.skills)
         fit.skills.remove(item1)
         fit.skills.add(item2)
         # Cleanup
@@ -112,30 +112,30 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_remove_item(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item = Skill(item_type.id)
         fit.skills.add(item)
         # Action
         fit.skills.remove(item)
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertNotIn(item, fit.skills)
-        self.assertNotIn(item_eve_type.id, fit.skills)
+        self.assertNotIn(item_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_remove_item_failure(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item = Skill(item_type.id)
         # Action
         with self.assertRaises(KeyError):
             fit.skills.remove(item)
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertNotIn(item, fit.skills)
-        self.assertNotIn(item_eve_type.id, fit.skills)
+        self.assertNotIn(item_type.id, fit.skills)
         fit.skills.add(item)
         # Cleanup
         fit.skills.remove(item)
@@ -144,31 +144,31 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_delitem_item(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item = Skill(item_type.id)
         fit.skills.add(item)
         # Action
-        del fit.skills[item_eve_type.id]
+        del fit.skills[item_type.id]
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertNotIn(item, fit.skills)
-        self.assertNotIn(item_eve_type.id, fit.skills)
+        self.assertNotIn(item_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_delitem_item_failure(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item = Skill(item_type.id)
         fit.skills.add(item)
         # Action
         with self.assertRaises(KeyError):
-            del fit.skills[item_eve_type.id + 1]
+            del fit.skills[item_type.id + 1]
         # Verification
         self.assertEqual(len(fit.skills), 1)
         self.assertIn(item, fit.skills)
-        self.assertIn(item_eve_type.id, fit.skills)
+        self.assertIn(item_type.id, fit.skills)
         # Cleanup
         fit.skills.remove(item)
         self.assert_fit_buffers_empty(fit)
@@ -176,14 +176,14 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_key_integrity(self):
         fit = Fit()
-        item_eve_type = self.ch.type()
-        item1 = Skill(item_eve_type.id)
-        item2 = Skill(item_eve_type.id)
+        item_type = self.ch.type()
+        item1 = Skill(item_type.id)
+        item2 = Skill(item_type.id)
         fit.skills.add(item1)
         with self.assertRaises(KeyError):
             fit.skills.remove(item2)
         # Verification
-        self.assertIs(fit.skills[item_eve_type.id], item1)
+        self.assertIs(fit.skills[item_type.id], item1)
         # Cleanup
         fit.skills.remove(item1)
         self.assert_fit_buffers_empty(fit)
@@ -191,10 +191,10 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_clear(self):
         fit = Fit()
-        item1_eve_type = self.ch.type()
-        item1 = Skill(item1_eve_type.id)
-        item2_eve_type = self.ch.type()
-        item2 = Skill(item2_eve_type.id)
+        item1_type = self.ch.type()
+        item1 = Skill(item1_type.id)
+        item2_type = self.ch.type()
+        item2 = Skill(item2_type.id)
         fit.skills.add(item1)
         fit.skills.add(item2)
         # Action
@@ -202,9 +202,9 @@ class TestContainerKeyedSet(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.skills), 0)
         self.assertNotIn(item1, fit.skills)
-        self.assertNotIn(item1_eve_type.id, fit.skills)
+        self.assertNotIn(item1_type.id, fit.skills)
         self.assertNotIn(item2, fit.skills)
-        self.assertNotIn(item2_eve_type.id, fit.skills)
+        self.assertNotIn(item2_type.id, fit.skills)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

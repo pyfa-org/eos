@@ -29,20 +29,20 @@ class TestChargeGroup(RestrictionTestCase):
     """Check functionality of charge group restriction."""
 
     def test_fail_group1(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
@@ -53,20 +53,20 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group2(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_2: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
@@ -77,20 +77,20 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group3(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_3: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
@@ -101,20 +101,20 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group4(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_4: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
@@ -125,20 +125,20 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group5(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_5: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
@@ -149,20 +149,20 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_charge_none(self):
-        charge_item = Charge(self.ch.type(group_id=None).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=None).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
@@ -173,22 +173,22 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple_same(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={
                 AttributeId.charge_group_3: 3,
                 AttributeId.charge_group_5: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 1)
@@ -199,22 +199,22 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple_different(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={
                 AttributeId.charge_group_3: 5,
                 AttributeId.charge_group_5: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(len(restriction_error2.allowed_groups), 2)
@@ -226,20 +226,20 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_match(self):
-        charge_item = Charge(self.ch.type(group_id=3).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=3).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
@@ -247,22 +247,22 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_multiple(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={
                 AttributeId.charge_group_3: 56,
                 AttributeId.charge_group_5: 1008}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
@@ -270,18 +270,18 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_attr(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(self.ch.type().id, state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(self.ch.type().id, state=State.offline)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
@@ -289,21 +289,21 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        charge_item = Charge(self.ch.type(group_id=1008).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(group_id=1008).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         self.fit.source = None
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_group)
+            container, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_group)
+            charge, Restriction.charge_group)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup

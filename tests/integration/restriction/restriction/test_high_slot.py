@@ -73,9 +73,9 @@ class TestHighSlot(RestrictionTestCase):
         # which lie out of bounds
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.hi_slots: 1}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = ModuleHigh(eve_type.id)
-        item2 = ModuleHigh(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
@@ -98,10 +98,10 @@ class TestHighSlot(RestrictionTestCase):
         # Make sure Nones are processed properly
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.hi_slots: 3}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = ModuleHigh(eve_type.id)
-        item2 = ModuleHigh(eve_type.id)
-        item3 = ModuleHigh(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
+        item3 = ModuleHigh(item_type.id)
         self.fit.modules.high.place(1, item1)
         self.fit.modules.high.place(4, item2)
         self.fit.modules.high.place(6, item3)
@@ -131,9 +131,9 @@ class TestHighSlot(RestrictionTestCase):
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.hi_slots: 2}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = ModuleHigh(eve_type.id)
-        item2 = ModuleHigh(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
@@ -153,9 +153,9 @@ class TestHighSlot(RestrictionTestCase):
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.hi_slots: 5}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = ModuleHigh(eve_type.id)
-        item2 = ModuleHigh(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action

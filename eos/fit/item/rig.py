@@ -28,7 +28,8 @@ class Rig(ImmutableStateMixin):
     """Represents a rig.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this rig.
+        type_id: Identifier of item type which should serve as base for this
+            rig.
     """
 
     def __init__(self, type_id):
@@ -40,5 +41,5 @@ class Rig(ImmutableStateMixin):
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id']]
+        spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

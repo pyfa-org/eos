@@ -72,9 +72,9 @@ class TestSubsystemSlot(RestrictionTestCase):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.max_subsystems: 1}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = Subsystem(eve_type.id)
-        item2 = Subsystem(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = Subsystem(item_type.id)
+        item2 = Subsystem(item_type.id)
         self.fit.subsystems.add(item1)
         self.fit.subsystems.add(item2)
         # Action
@@ -98,9 +98,9 @@ class TestSubsystemSlot(RestrictionTestCase):
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.max_subsystems: 2}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = Subsystem(eve_type.id)
-        item2 = Subsystem(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = Subsystem(item_type.id)
+        item2 = Subsystem(item_type.id)
         self.fit.subsystems.add(item1)
         self.fit.subsystems.add(item2)
         # Action
@@ -120,9 +120,9 @@ class TestSubsystemSlot(RestrictionTestCase):
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.max_subsystems: 5}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = Subsystem(eve_type.id)
-        item2 = Subsystem(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = Subsystem(item_type.id)
+        item2 = Subsystem(item_type.id)
         self.fit.subsystems.add(item1)
         self.fit.subsystems.add(item2)
         # Action

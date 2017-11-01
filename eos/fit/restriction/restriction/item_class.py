@@ -34,57 +34,56 @@ ItemClassErrorData = namedtuple(
 
 
 CLASS_VALIDATORS = {
-    Booster: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.implant and
-        AttributeId.boosterness in eve_type.attributes,
-    Character: lambda eve_type:
-        eve_type.group_id == TypeGroupId.character,
-    Charge: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.charge,
-    Drone: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.drone,
-    EffectBeacon: lambda eve_type:
-        eve_type.group_id == TypeGroupId.effect_beacon,
-    FighterSquad: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.fighter and (
-            AttributeId.fighter_squadron_is_heavy in eve_type.attributes or
-            AttributeId.fighter_squadron_is_light in eve_type.attributes or
-            AttributeId.fighter_squadron_is_support in eve_type.attributes),
-    Implant: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.implant and
-        AttributeId.implantness in eve_type.attributes,
-    ModuleHigh: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.module and
-        EffectId.hi_power in eve_type.effects,
-    ModuleMed: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.module and
-        EffectId.med_power in eve_type.effects,
-    ModuleLow: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.module and
-        EffectId.lo_power in eve_type.effects,
-    Rig: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.module and
-        EffectId.rig_slot in eve_type.effects,
-    Ship: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.ship,
-    Skill: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.skill,
-    Stance: lambda eve_type:
-        eve_type.group_id == TypeGroupId.ship_modifier,
-    Subsystem: lambda eve_type:
-        eve_type.category_id == TypeCategoryId.subsystem and
-        EffectId.subsystem in eve_type.effects}
+    Booster: lambda item_type:
+        item_type.category_id == TypeCategoryId.implant and
+        AttributeId.boosterness in item_type.attributes,
+    Character: lambda item_type:
+        item_type.group_id == TypeGroupId.character,
+    Charge: lambda item_type:
+        item_type.category_id == TypeCategoryId.charge,
+    Drone: lambda item_type:
+        item_type.category_id == TypeCategoryId.drone,
+    EffectBeacon: lambda item_type:
+        item_type.group_id == TypeGroupId.effect_beacon,
+    FighterSquad: lambda item_type:
+        item_type.category_id == TypeCategoryId.fighter and (
+            AttributeId.fighter_squadron_is_heavy in item_type.attributes or
+            AttributeId.fighter_squadron_is_light in item_type.attributes or
+            AttributeId.fighter_squadron_is_support in item_type.attributes),
+    Implant: lambda item_type:
+        item_type.category_id == TypeCategoryId.implant and
+        AttributeId.implantness in item_type.attributes,
+    ModuleHigh: lambda item_type:
+        item_type.category_id == TypeCategoryId.module and
+        EffectId.hi_power in item_type.effects,
+    ModuleMed: lambda item_type:
+        item_type.category_id == TypeCategoryId.module and
+        EffectId.med_power in item_type.effects,
+    ModuleLow: lambda item_type:
+        item_type.category_id == TypeCategoryId.module and
+        EffectId.lo_power in item_type.effects,
+    Rig: lambda item_type:
+        item_type.category_id == TypeCategoryId.module and
+        EffectId.rig_slot in item_type.effects,
+    Ship: lambda item_type:
+        item_type.category_id == TypeCategoryId.ship,
+    Skill: lambda item_type:
+        item_type.category_id == TypeCategoryId.skill,
+    Stance: lambda item_type:
+        item_type.group_id == TypeGroupId.ship_modifier,
+    Subsystem: lambda item_type:
+        item_type.category_id == TypeCategoryId.subsystem and
+        EffectId.subsystem in item_type.effects}
 
 
 class ItemClassRestrictionRegister(BaseRestrictionRegister):
-    """Check that eve type is wrapped by corresponding item class instance.
-
+    """Check that item type is wrapped by corresponding item class instance.
 
     For example, cybernetic subprocessor should be represented by Implant class
     instance.
 
     Details:
-        To determine item class matching to eve type, only eve type attributes
+        To determine item class matching to item type, only item type attributes
             are used.
     """
 
@@ -106,13 +105,13 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
         tainted_items = {}
         for item in self.__items:
             # Get validator function for class of passed item. If it is not
-            # found or fails, seek for 'right' item class for the eve type
+            # found or fails, seek for 'right' item class for the item type
             try:
                 validator_func = CLASS_VALIDATORS[type(item)]
             except KeyError:
                 tainted_items[item] = self.__get_error_data(item)
             else:
-                if validator_func(item._eve_type) is not True:
+                if validator_func(item._type) is not True:
                     tainted_items[item] = self.__get_error_data(item)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
@@ -120,9 +119,9 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
     def __get_error_data(self, item):
         expected_classes = []
         # Cycle through our class validator dictionary and seek for acceptable
-        # classes for this eve type
+        # classes for this item type
         for item_class, validator_func in CLASS_VALIDATORS.items():
-            if validator_func(item._eve_type) is True:
+            if validator_func(item._type) is True:
                 expected_classes.append(item_class)
         error_data = ItemClassErrorData(
             item_class=type(item),

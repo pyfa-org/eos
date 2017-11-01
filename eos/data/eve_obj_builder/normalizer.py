@@ -48,7 +48,7 @@ class Normalizer:
     def _move_attribs(data):
         """Normalize attribute value definitions.
 
-        Some of eve type attributes are defined in evetypes table. We do not
+        Some of item type attributes are defined in evetypes table. We do not
         need them there, for data consistency it's worth to move them to
         dgmtypeattribs table, where the rest of attributes are defined.
 
@@ -71,8 +71,6 @@ class Normalizer:
             defined_pairs.add((row['typeID'], row['attributeID']))
         attrs_skipped = 0
         new_evetypes = set()
-        # Cycle through all evetypes, for each row moving each its field either
-        # to different table or container for updated rows
         for row in data['evetypes']:
             type_id = row['typeID']
             new_row = {}

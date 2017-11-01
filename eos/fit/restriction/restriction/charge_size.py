@@ -40,7 +40,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         If container specifies size and item doesn't specify it, charge is not
             allowed to be loaded.
         If container does not specify size, charge of any size can be loaded.
-        To determine allowed size and charge size, eve type attributes are used.
+        To determine allowed size and charge size, item type attributes are
+            used.
     """
 
     def __init__(self, msg_broker):
@@ -52,7 +53,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         if not hasattr(message.item, 'charge'):
             return
         # And without size specification
-        if AttributeId.charge_size not in message.item._eve_type_attributes:
+        if AttributeId.charge_size not in message.item._type_attributes:
             return
         self.__restricted_containers.add(message.item)
 
@@ -71,10 +72,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            container_size = (
-                container._eve_type_attributes[AttributeId.charge_size])
-            charge_size = (
-                charge._eve_type_attributes.get(AttributeId.charge_size))
+            container_size = container._type_attributes[AttributeId.charge_size]
+            charge_size = charge._type_attributes.get(AttributeId.charge_size)
             if container_size != charge_size:
                 tainted_items[charge] = ChargeSizeErrorData(
                     item_size=charge_size,

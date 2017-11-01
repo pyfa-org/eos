@@ -43,7 +43,7 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
 
     Details:
         Only items of Drone class are tracked.
-        For validation, allowedDroneGroupX attribute values of eve type are
+        For validation, allowedDroneGroupX attribute values of item type are
             taken.
         If ship specifies no drone group preference, validation always passes.
     """
@@ -77,8 +77,7 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         # Find out if we have restriction, and which drone groups it allows
         for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
-                allowed_group_id = (
-                    ship._eve_type_attributes[allowed_group_attr_id])
+                allowed_group_id = ship._type_attributes[allowed_group_attr_id]
             except KeyError:
                 continue
             else:
@@ -92,7 +91,7 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         allowed_group_ids = tuple(allowed_group_ids)
         for drone in self.__drones:
             # Taint items, whose group is not allowed
-            drone_group_id = drone._eve_type.group_id
+            drone_group_id = drone._type.group_id
             if drone_group_id not in allowed_group_ids:
                 tainted_items[drone] = DroneGroupErrorData(
                     drone_group=drone_group_id,

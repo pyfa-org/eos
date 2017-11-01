@@ -481,7 +481,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def __get_rah_effect(self, item):
         """Get RAH effect object for passed i."""
         try:
-            return item._eve_type_effects[EffectId.adaptive_armor_hardener]
+            return item._type_effects[EffectId.adaptive_armor_hardener]
         except KeyError:
             return None
 

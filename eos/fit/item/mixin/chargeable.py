@@ -79,14 +79,14 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         container, are ignored (possible with ancillary armor repairers). None
         is returned if container can cycle without ammo consumption.
         """
-        # Various eve types consume charges during cycle, detect them based on
-        # presence of charge_rate attribute in eve type (modified attribute
+        # Various item types consume charges during cycle, detect them based on
+        # presence of charge_rate attribute in item type (modified attribute
         # value is always possible to fetch, as it has base value, so it's not
         # reliable way to detect it)
-        if AttributeId.charge_rate in self._eve_type_attributes:
+        if AttributeId.charge_rate in self._type_attributes:
             return self.__get_ammo_cycles()
-        # Detect crystal-based eve types using effects
-        if self._eve_type_default_effect_id in (
+        # Detect crystal-based item types using effects
+        if self._type_default_effect_id in (
             EffectId.target_attack,
             EffectId.mining_laser
         ):
@@ -120,9 +120,9 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
     @volatile_property
     def reload_time(self):
         """Returns item reload time in seconds."""
-        # Return hardcoded 1.0 if item's eve type has target_attack effect
-        # (various lasers), else fetch reload time attribute from item
-        if self._eve_type_default_effect_id in (
+        # Return hardcoded 1.0 if item type has target_attack effect (various
+        # lasers), else fetch reload time attribute from item
+        if self._type_default_effect_id in (
             EffectId.target_attack,
             EffectId.mining_laser
         ):

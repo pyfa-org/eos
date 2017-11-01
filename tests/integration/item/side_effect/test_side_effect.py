@@ -106,7 +106,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_persistence(self):
-        # Here we check that when item._eve_type doesn't have effect which was
+        # Here we check that when item type doesn't have effect which was
         # disabled anymore, everything runs as expected, and when this effect
         # appears again - it's disabled
         # Setup
@@ -137,17 +137,17 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         effect3_src1 = self.ch.effect(
             effect_id=effect3_id, category_id=EffectCategoryId.passive,
             fitting_usage_chance_attribute_id=chance_attr3.id)
-        eve_type_id = self.allocate_type_id(self.ch, self.ch2)
+        item_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(
-            type_id=eve_type_id, attributes={
+            type_id=item_type_id, attributes={
                 chance_attr1_id: 0.2, chance_attr2.id: 0.3,
                 chance_attr3.id: 0.4},
             effects=(effect1_src1, effect2_src1, effect3_src1))
         self.ch2.type(
-            type_id=eve_type_id, attributes={chance_attr1_id: 0.7},
+            type_id=item_type_id, attributes={chance_attr1_id: 0.7},
             effects=(effect1_src2, effect2_src2))
         fit = Fit()
-        item = Booster(eve_type_id)
+        item = Booster(item_type_id)
         fit.boosters.add(item)
         item.set_side_effect_status(effect1_id, True)
         item.set_side_effect_status(effect2_id, True)

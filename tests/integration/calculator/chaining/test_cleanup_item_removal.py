@@ -49,21 +49,21 @@ class TestCleanupChainRemoval(CalculatorTestCase):
             src_attr_id=attr2.id)
         effect2 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier2])
-        implant_item = Implant(self.ch.type(
+        implant = Implant(self.ch.type(
             attributes={attr1.id: 5}, effects=[effect1]).id)
-        ship_item = Ship(self.ch.type(
+        ship = Ship(self.ch.type(
             attributes={attr2.id: 7.5}, effects=[effect2]).id)
-        rig_item = Rig(self.ch.type(attributes={attr3.id: 0.5}).id)
-        self.fit.implants.add(implant_item)
-        self.fit.ship = ship_item
-        self.fit.rigs.add(rig_item)
-        self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.6875)
+        rig = Rig(self.ch.type(attributes={attr3.id: 0.5}).id)
+        self.fit.implants.add(implant)
+        self.fit.ship = ship
+        self.fit.rigs.add(rig)
+        self.assertAlmostEqual(rig.attributes[attr3.id], 0.6875)
         # Action
-        self.fit.implants.remove(implant_item)
+        self.fit.implants.remove(implant)
         # Verification
         # When item1 is removed, attr2 of item2 and attr3 of item3 must be
         # cleaned to allow recalculation of attr3 based on new data
-        self.assertAlmostEqual(rig_item.attributes[attr3.id], 0.5375)
+        self.assertAlmostEqual(rig.attributes[attr3.id], 0.5375)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

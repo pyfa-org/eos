@@ -30,7 +30,7 @@ class Booster(ImmutableStateMixin, SideEffectMixin):
     """Represents a booster.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             booster.
     """
 
@@ -40,7 +40,7 @@ class Booster(ImmutableStateMixin, SideEffectMixin):
     @property
     def slot(self):
         """Return slot this booster takes."""
-        return self._eve_type_attributes.get(AttributeId.boosterness)
+        return self._type_attributes.get(AttributeId.boosterness)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character
@@ -48,5 +48,5 @@ class Booster(ImmutableStateMixin, SideEffectMixin):
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id']]
+        spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

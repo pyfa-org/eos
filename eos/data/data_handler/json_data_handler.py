@@ -63,10 +63,10 @@ class JsonDataHandler(BaseDataHandler):
     def get_typefighterabils(self):
         rows = []
         fighter_abils = self.__fetch_file('fighterabilitiesbytype')
-        for eve_type_id, type_abilities in fighter_abils.items():
-            eve_type_id = int(eve_type_id)
+        for type_id, type_abilities in fighter_abils.items():
+            type_id = int(type_id)
             for ability_data in type_abilities.values():
-                ability_row = {'typeID': eve_type_id}
+                ability_row = {'typeID': type_id}
                 self.__collapse_dict(ability_data, ability_row)
                 rows.append(ability_row)
         return rows

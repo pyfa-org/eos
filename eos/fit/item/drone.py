@@ -36,7 +36,7 @@ class Drone(
     built on top of it.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             drone.
         state (optional): Initial state this drone takes, default is offline
             (drone in drone bay).
@@ -51,5 +51,5 @@ class Drone(
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id'], 'state']
+        spec = [['type_id', '_type_id'], 'state']
         return make_repr_str(self, spec)

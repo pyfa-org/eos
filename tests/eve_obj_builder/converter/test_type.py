@@ -23,7 +23,7 @@ from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
 class TestConversionType(EveObjBuilderTestCase):
-    """Data should be saved into appropriate fields of an eve type."""
+    """Data should be saved into appropriate fields of an item type."""
 
     logger_name = 'eos.data.eve_obj_builder.converter'
 
@@ -56,20 +56,20 @@ class TestConversionType(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
-        evetype = self.types[1]
-        self.assertEqual(evetype.group_id, 6)
-        self.assertEqual(evetype.category_id, 16)
-        type_attributes = evetype.attributes
+        item_type = self.types[1]
+        self.assertEqual(item_type.group_id, 6)
+        self.assertEqual(item_type.category_id, 16)
+        type_attributes = item_type.attributes
         self.assertEqual(len(type_attributes), 2)
         self.assertEqual(type_attributes[5], 10.0)
         self.assertEqual(type_attributes[80], 180.0)
-        type_effects = evetype.effects
+        type_effects = item_type.effects
         self.assertEqual(len(type_effects), 2)
         self.assertIn(111, type_effects)
         self.assertIn(1111, type_effects)
-        type_defeff = evetype.default_effect
+        type_defeff = item_type.default_effect
         self.assertEqual(type_defeff.id, 111)
-        type_fighterabils = evetype.fighter_abilities
+        type_fighterabils = item_type.fighter_abilities
         self.assertEqual(len(type_fighterabils), 3)
         self.assertCountEqual(type_fighterabils, {5, 6, 50})
         self.assertDictEqual(type_fighterabils[5], {

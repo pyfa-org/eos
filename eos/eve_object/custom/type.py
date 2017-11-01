@@ -28,6 +28,6 @@ _group_id_map = {
     TypeGroupId.character: add_character_missile_damage_multiplier}
 
 
-def customize_type(eve_type):
-    if eve_type.group_id in _group_id_map:
-        _group_id_map[eve_type.group_id](eve_type)
+def customize_type(item_type):
+    if item_type.group_id in _group_id_map:
+        _group_id_map[item_type.group_id](item_type)

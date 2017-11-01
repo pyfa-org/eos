@@ -31,8 +31,8 @@ class TestDefaultEffects(EveObjBuilderTestCase):
 
     def setUp(self):
         super().setUp()
-        self.eve_type = {'typeID': 1, 'groupID': 1}
-        self.dh.data['evetypes'].append(self.eve_type)
+        self.type = {'typeID': 1, 'groupID': 1}
+        self.dh.data['evetypes'].append(self.type)
         self.eff_link1 = {'typeID': 1, 'effectID': 1}
         self.eff_link2 = {'typeID': 1, 'effectID': 2}
         self.dh.data['dgmtypeeffects'].append(self.eff_link1)
@@ -73,7 +73,7 @@ class TestDefaultEffects(EveObjBuilderTestCase):
             'marking them as non-default')
 
     def test_cleanup(self):
-        del self.eve_type['groupID']
+        del self.type['groupID']
         self.eff_link1['isDefault'] = True
         self.eff_link2['isDefault'] = True
         self.run_builder()

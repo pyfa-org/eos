@@ -94,7 +94,7 @@ class DamageDealerMixin(
                 charge = getattr(self, 'charge', None)
                 if charge is None:
                     continue
-                charge_defeff_id = charge._eve_type_default_effect_id
+                charge_defeff_id = charge._type_default_effect_id
                 if charge_defeff_id not in charge._running_effect_ids:
                     continue
                 try:

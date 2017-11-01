@@ -48,9 +48,9 @@ class TestCharge(ContainerTestCase):
 
     def test_detached_module_charge_to_free_charge(self):
         module = ModuleHigh(self.ch.type().id, state=State.active, charge=None)
-        charge_eve_type = self.ch.type()
-        charge1 = Charge(charge_eve_type.id)
-        charge2 = Charge(charge_eve_type.id)
+        charge_type = self.ch.type()
+        charge1 = Charge(charge_type.id)
+        charge2 = Charge(charge_type.id)
         module.charge = charge1
         # Action
         module.charge = charge2
@@ -98,10 +98,10 @@ class TestCharge(ContainerTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_detached_module_none_to_partially_bound_charge(self):
-        module_eve_type = self.ch.type()
-        module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_type = self.ch.type()
+        module = ModuleHigh(module_type.id, state=State.active, charge=None)
         module_other = ModuleHigh(
-            module_eve_type.id, state=State.active, charge=None)
+            module_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         # Action
@@ -115,10 +115,10 @@ class TestCharge(ContainerTestCase):
 
     def test_detached_module_none_to_fully_bound_charge(self):
         fit_other = Fit()
-        module_eve_type = self.ch.type()
-        module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_type = self.ch.type()
+        module = ModuleHigh(module_type.id, state=State.active, charge=None)
         module_other = ModuleHigh(
-            module_eve_type.id, state=State.active, charge=None)
+            module_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         fit_other.modules.high.append(module_other)
@@ -256,10 +256,10 @@ class TestCharge(ContainerTestCase):
 
     def test_fit_none_to_partially_bound_charge(self):
         fit = Fit()
-        module_eve_type = self.ch.type()
-        module = ModuleHigh(module_eve_type.id, state=State.active, charge=None)
+        module_type = self.ch.type()
+        module = ModuleHigh(module_type.id, state=State.active, charge=None)
         module_other = ModuleHigh(
-            module_eve_type.id, state=State.active, charge=None)
+            module_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         fit.modules.high.append(module)
@@ -276,11 +276,10 @@ class TestCharge(ContainerTestCase):
     def test_fit_none_to_fully_bound_charge(self):
         fit = Fit()
         fit_other = Fit()
-        module_eve_type = self.ch.type()
-        module = ModuleHigh(
-            module_eve_type.id, state=State.active, charge=None)
+        module_type = self.ch.type()
+        module = ModuleHigh(module_type.id, state=State.active, charge=None)
         module_other = ModuleHigh(
-            module_eve_type.id, state=State.active, charge=None)
+            module_type.id, state=State.active, charge=None)
         charge_other = Charge(self.ch.type().id)
         module_other.charge = charge_other
         fit.modules.high.append(module)

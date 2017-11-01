@@ -27,7 +27,7 @@ from ...effect import Effect
 from ...modifier import DogmaModifier
 
 
-def add_character_missile_damage_multiplier(eve_type):
+def add_character_missile_damage_multiplier(item_type):
     """Apply message damage multiplier to missiles.
 
     Some modules, like ballistic control systems, do not affect missile
@@ -57,4 +57,4 @@ def add_character_missile_damage_multiplier(eve_type):
         is_assistance=False,
         build_status=EffectBuildStatus.custom,
         modifiers=tuple(modifiers))
-    eve_type.effects[effect.id] = effect
+    item_type.effects[effect.id] = effect

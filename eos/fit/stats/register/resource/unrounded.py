@@ -68,7 +68,7 @@ class UnroundedResourceStatRegister(
     def _handle_item_effects_activation(self, message):
         if (
             self.__use_effect_id in message.effect_ids and
-            self.__use_attr_id in message.item._eve_type_attributes
+            self.__use_attr_id in message.item._type_attributes
         ):
             self.__resource_users.add(message.item)
 

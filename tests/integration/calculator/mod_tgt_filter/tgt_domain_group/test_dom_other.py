@@ -41,9 +41,9 @@ class TestTgtDomainGroupDomainOther(CalculatorTestCase):
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
-        src_eve_type = self.ch.type(
+        influence_src_type = self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect])
-        influence_src = Rig(src_eve_type.id)
+        influence_src = Rig(influence_src_type.id)
         # Action
         # Charge's container or module's charge can't be 'owner'of other items,
         # thus such modification type is unsupported
@@ -56,7 +56,7 @@ class TestTgtDomainGroupDomainOther(CalculatorTestCase):
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,
-                'malformed modifier on eve type {}: unsupported target '
-                'domain {}'.format(src_eve_type.id, ModifierDomain.other))
+                'malformed modifier on item type {}: unsupported target '
+                'domain {}'.format(influence_src_type.id, ModifierDomain.other))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

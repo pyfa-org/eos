@@ -56,9 +56,9 @@ class StateRestrictionRegister(BaseRestrictionRegister):
     def validate(self):
         tainted_items = {}
         for item in self.__restricted_items:
-            if item.state > item._eve_type.max_state:
+            if item.state > item._type.max_state:
                 allowed_states = tuple(
-                    s for s in State if s <= item._eve_type.max_state)
+                    s for s in State if s <= item._type.max_state)
                 tainted_items[item] = StateErrorData(
                     current_state=item.state,
                     allowed_states=allowed_states)

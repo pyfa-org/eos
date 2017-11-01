@@ -170,7 +170,7 @@ class TestStatsDamageVolley(StatTestCase):
         self.fit.modules.high.append(item2)
         # Action
         stats_volley = self.fit.stats.get_nominal_volley(
-            item_filter=lambda i: i._eve_type.group_id == 55)
+            item_filter=lambda i: i._type.group_id == 55)
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)

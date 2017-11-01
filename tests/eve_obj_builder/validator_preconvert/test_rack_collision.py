@@ -31,8 +31,8 @@ class TestRackCollision(EveObjBuilderTestCase):
 
     def setUp(self):
         super().setUp()
-        self.eve_type = {'typeID': 1, 'groupID': 1}
-        self.dh.data['evetypes'].append(self.eve_type)
+        self.type = {'typeID': 1, 'groupID': 1}
+        self.dh.data['evetypes'].append(self.type)
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 13})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 11})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 12})
@@ -57,7 +57,7 @@ class TestRackCollision(EveObjBuilderTestCase):
             '2 rows contain colliding module racks, removing them')
 
     def test_cleaned(self):
-        del self.eve_type['groupID']
+        del self.type['groupID']
         self.run_builder()
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)

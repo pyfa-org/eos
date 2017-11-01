@@ -38,7 +38,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
     """Allow fitting rigs only of matching size relative to ship size.
 
     Details:
-        For validation, rigSize attribute value of eve type is taken.
+        For validation, rigSize attribute value of item type is taken.
     """
 
     def __init__(self, msg_broker):
@@ -58,7 +58,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
     def _handle_item_effects_activation(self, message):
         if (
             EffectId.rig_slot in message.effect_ids and
-            AttributeId.rig_size in message.item._eve_type_attributes
+            AttributeId.rig_size in message.item._type_attributes
         ):
             self.__restricted_items.add(message.item)
 
@@ -77,12 +77,12 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         # doesn't have restriction attribute
         try:
             allowed_rig_size = (
-                self.__current_ship._eve_type.attributes[AttributeId.rig_size])
+                self.__current_ship._type_attributes[AttributeId.rig_size])
         except (AttributeError, KeyError):
             return
         tainted_items = {}
         for item in self.__restricted_items:
-            item_rig_size = item._eve_type_attributes[AttributeId.rig_size]
+            item_rig_size = item._type_attributes[AttributeId.rig_size]
             # If rig size specification on item and ship differs, then item is
             # tainted
             if item_rig_size != allowed_rig_size:

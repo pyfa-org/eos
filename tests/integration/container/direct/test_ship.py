@@ -82,9 +82,9 @@ class TestDirectItemShip(ContainerTestCase):
 
     def test_item_to_item(self):
         fit = Fit()
-        ship_eve_type = self.ch.type()
-        item1 = Ship(ship_eve_type.id)
-        item2 = Ship(ship_eve_type.id)
+        ship_type = self.ch.type()
+        item1 = Ship(ship_type.id)
+        item2 = Ship(ship_type.id)
         fit.ship = item1
         # Action
         fit.ship = item2
@@ -115,9 +115,9 @@ class TestDirectItemShip(ContainerTestCase):
     def test_item_to_item_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        ship_eve_type = self.ch.type()
-        item1 = Ship(ship_eve_type.id)
-        item2 = Ship(ship_eve_type.id)
+        ship_type = self.ch.type()
+        item1 = Ship(ship_type.id)
+        item2 = Ship(ship_type.id)
         fit.ship = item1
         fit_other.ship = item2
         # Action

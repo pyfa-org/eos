@@ -73,9 +73,9 @@ class TestLauncherSlot(RestrictionTestCase):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.launcher_slots_left: 1}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = ModuleHigh(eve_type.id)
-        item2 = ModuleHigh(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
@@ -99,9 +99,9 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.launcher_slots_left: 2}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = ModuleHigh(eve_type.id)
-        item2 = ModuleHigh(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
@@ -121,9 +121,9 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.launcher_slots_left: 5}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = ModuleHigh(eve_type.id)
-        item2 = ModuleHigh(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action

@@ -30,7 +30,7 @@ class Stance(ImmutableStateMixin):
     Stance is internal name for tech 3 destroyer tactical modes.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             stance.
     """
 
@@ -43,5 +43,5 @@ class Stance(ImmutableStateMixin):
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id']]
+        spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

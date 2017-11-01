@@ -35,9 +35,9 @@ class TestBoosterIndex(RestrictionTestCase):
     def test_fail(self):
         # Check that if 2 or more items are put into single slot index, error is
         # raised
-        item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
-        item1 = Booster(item_eve_type.id)
-        item2 = Booster(item_eve_type.id)
+        item_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item1 = Booster(item_type.id)
+        item2 = Booster(item_type.id)
         self.fit.boosters.add(item1)
         self.fit.boosters.add(item2)
         # Action
@@ -56,9 +56,9 @@ class TestBoosterIndex(RestrictionTestCase):
 
     def test_fail_other_item_class(self):
         # Make sure items of all classes are affected
-        item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
-        item1 = ModuleHigh(item_eve_type.id)
-        item2 = ModuleHigh(item_eve_type.id)
+        item_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
@@ -111,9 +111,9 @@ class TestBoosterIndex(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        item_eve_type = self.ch.type(attributes={self.index_attr.id: 120})
-        item1 = Booster(item_eve_type.id)
-        item2 = Booster(item_eve_type.id)
+        item_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item1 = Booster(item_type.id)
+        item2 = Booster(item_type.id)
         self.fit.boosters.add(item1)
         self.fit.boosters.add(item2)
         self.fit.source = None

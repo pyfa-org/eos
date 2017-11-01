@@ -41,11 +41,11 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.src_eve_type = self.ch.type(
+        self.influence_src_type = self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect])
 
     def test_ship(self):
-        influence_src = Ship(self.src_eve_type.id)
+        influence_src = Ship(self.influence_src_type.id)
         influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
@@ -61,7 +61,7 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_character(self):
-        influence_src = Character(self.src_eve_type.id)
+        influence_src = Character(self.influence_src_type.id)
         influence_tgt = Implant(self.ch.type(
             attributes={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(influence_tgt)
@@ -78,7 +78,7 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_unpositioned_error(self):
-        influence_src = Implant(self.src_eve_type.id)
+        influence_src = Implant(self.influence_src_type.id)
         # Action
         # Here we do not position item in fit, this way attribute calculator
         # won't know that source is 'owner' of some domain and will log
@@ -92,7 +92,7 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,
-                'malformed modifier on eve type {}: unsupported target '
-                'domain 1'.format(self.src_eve_type.id))
+                'malformed modifier on item type {}: unsupported target '
+                'domain 1'.format(self.influence_src_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

@@ -29,7 +29,7 @@ class Implant(ImmutableStateMixin):
     """Represents an implant.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             implant.
     """
 
@@ -39,7 +39,7 @@ class Implant(ImmutableStateMixin):
     @property
     def slot(self):
         """Return slot this implant takes."""
-        return self._eve_type_attributes.get(AttributeId.implantness)
+        return self._type_attributes.get(AttributeId.implantness)
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character
@@ -47,5 +47,5 @@ class Implant(ImmutableStateMixin):
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id']]
+        spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)

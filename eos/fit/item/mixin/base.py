@@ -41,7 +41,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     concrete functionality over it).
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             item.
 
     Cooperative methods:
@@ -49,7 +49,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     """
 
     def __init__(self, type_id, **kwargs):
-        self._eve_type_id = type_id
+        self._type_id = type_id
         self.__container = None
         # Special dictionary subclass that holds modified attributes and data
         # related to their calculation
@@ -59,9 +59,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         # Effect run modes, if they are any different from default
         # Format: {effect ID: effect run mode}
         self.__effect_mode_overrides = None
-        # Which eve type this item wraps. Use null source item by default, as
-        # item doesn't have fit with source yet
-        self._eve_type = None
+        # Which item type this item based on
+        self._type = None
         super().__init__(**kwargs)
 
     @property
@@ -124,32 +123,32 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
     def state(self):
         ...
 
-    # Properties which expose various eve type properties with safe fallback
+    # Properties which expose various item type properties with safe fallback
     @property
-    def _eve_type_attributes(self):
+    def _type_attributes(self):
         try:
-            return self._eve_type.attributes
+            return self._type.attributes
         except AttributeError:
             return {}
 
     @property
-    def _eve_type_effects(self):
+    def _type_effects(self):
         try:
-            return self._eve_type.effects
+            return self._type.effects
         except AttributeError:
             return {}
 
     @property
-    def _eve_type_default_effect(self):
+    def _type_default_effect(self):
         try:
-            return self._eve_type.default_effect
+            return self._type.default_effect
         except AttributeError:
             return None
 
     @property
-    def _eve_type_default_effect_id(self):
+    def _type_default_effect_id(self):
         try:
-            return self._eve_type.default_effect.id
+            return self._type.default_effect.id
         except AttributeError:
             return None
 
@@ -180,7 +179,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         started and second with effect IDss which should be stopped to achieve
         proper state.
         """
-        effects = self._eve_type_effects
+        effects = self._type_effects
         # Set of effects which should be running according to new conditions
         new_running_effect_ids = set()
         # Process 'online' effect separately, as it's needed for all other
@@ -235,7 +234,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                     return online_running
             # Only default active effect is run in full compliance
             elif effect_state == State.active:
-                return self._eve_type_default_effect is effect
+                return self._type_default_effect is effect
             # No additional restrictions for overload effects
             elif effect_state == State.overload:
                 return True
@@ -319,6 +318,6 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         try:
             type_getter = self._fit.source.cache_handler.get_type
         except AttributeError:
-            self._eve_type = None
+            self._type = None
         else:
-            self._eve_type = type_getter(self._eve_type_id)
+            self._type = type_getter(self._type_id)

@@ -55,22 +55,22 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
     def _register_item(self, item):
         if not isinstance(item, TRACKED_ITEM_CLASSES):
             return
-        group_id = item._eve_type.group_id
-        # Ignore items, whose eve type isn't assigned to any group
+        group_id = item._type.group_id
+        # Ignore items, whose type isn't assigned to any group
         if group_id is None:
             return
         # Having group ID is sufficient condition to enter container of all
         # fitted items
         self.__group_item_map.add_data_entry(group_id, item)
-        # To enter restriction container, eve type must have restriction
+        # To enter restriction container, item's type must have restriction
         # attribute
-        if self.__max_group_attr_id not in item._eve_type_attributes:
+        if self.__max_group_attr_id not in item._type_attributes:
             return
         self.__restricted_items.add(item)
 
     def _unregister_item(self, item):
         # Just clear data containers
-        group_id = item._eve_type.group_id
+        group_id = item._type.group_id
         self.__group_item_map.rm_data_entry(group_id, item)
         self.__restricted_items.discard(item)
 
@@ -81,10 +81,10 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         for item in self.__restricted_items:
             # Get number of registered items, assigned to group of current
             # restricted item, and item's restriction value
-            group_id = item._eve_type.group_id
+            group_id = item._type.group_id
             group_items = len(self.__group_item_map.get(group_id, ()))
             group_items_allowed = (
-                item._eve_type_attributes[self.__max_group_attr_id])
+                item._type_attributes[self.__max_group_attr_id])
             if group_items > group_items_allowed:
                 tainted_items[item] = MaxGroupErrorData(
                     item_group=group_id,

@@ -27,30 +27,30 @@ class TestRahSimSource(RahSimTestCase):
 
     def test_no_source(self):
         # Setup
-        ship_item = Ship(self.make_ship_eve_type((0.5, 0.65, 0.75, 0.9)).id)
-        self.fit.ship = ship_item
-        rah_item = ModuleLow(
-            self.make_rah_eve_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+        ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship
+        rah = ModuleLow(
+            self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
             state=State.active)
-        self.fit.modules.low.equip(rah_item)
+        self.fit.modules.low.equip(rah)
         self.fit.source = None
         # Verification
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_em.id]
+            rah.attributes[self.armor_em.id]
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_therm.id]
+            rah.attributes[self.armor_therm.id]
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_kin.id]
+            rah.attributes[self.armor_kin.id]
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_exp.id]
+            rah.attributes[self.armor_exp.id]
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_em.id]
+            rah.attributes[self.armor_em.id]
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_therm.id]
+            rah.attributes[self.armor_therm.id]
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_kin.id]
+            rah.attributes[self.armor_kin.id]
         with self.assertRaises(KeyError):
-            rah_item.attributes[self.armor_exp.id]
+            rah.attributes[self.armor_exp.id]
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

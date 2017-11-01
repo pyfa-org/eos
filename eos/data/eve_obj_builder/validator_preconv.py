@@ -71,7 +71,7 @@ class ValidatorPreConv:
         Args:
             dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
-        # Set with IDs of eve types, which have default effect
+        # Set with IDs of item types, which have default effect
         defeff_type_ids = set()
         invalid_rows = set()
         for row in sorted(dte_rows, key=lambda r: r['table_pos']):

@@ -46,8 +46,8 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
     Details:
         If container specifies no charge group preference, validation always
             passes.
-        For validation, allowed charge group attribute values of eve type are
-            taken.
+        For validation, allowed charge group attribute values of container item
+            type are taken.
     """
 
     def __init__(self, msg_broker):
@@ -65,7 +65,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
                 allowed_group_id = (
-                    message.item._eve_type_attributes[allowed_group_attr_id])
+                    message.item._type_attributes[allowed_group_attr_id])
             except KeyError:
                 continue
             else:
@@ -93,9 +93,9 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            if charge._eve_type.group_id not in allowed_group_ids:
+            if charge._type.group_id not in allowed_group_ids:
                 tainted_items[charge] = ChargeGroupErrorData(
-                    charge_group=charge._eve_type.group_id,
+                    charge_group=charge._type.group_id,
                     allowed_groups=allowed_group_ids)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

@@ -57,7 +57,7 @@ def sentry_drone_filter(item):
     if not drone_filter(item):
         return False
     try:
-        skillrqs = item._eve_type.required_skills
+        skillrqs = item._type.required_skills
     except AttributeError:
         return False
     if TypeId.sentry_drone_interfacing in skillrqs:

@@ -41,7 +41,7 @@ class EveObjBuilderTestCase(EosTestCase):
 
         Default data handler is passed to builder as data source, and results
         are and stored on test instance as following attributes:
-            types: Map in {eve type ID: eve type} format.
+            types: Map in {type ID: type} format.
             attributes: Map in {attribute ID: attribute} format.
             effects: Map in {effect ID: effect} format.
         """

@@ -167,7 +167,7 @@ class AttributeId(IntEnum):
 
 @unique
 class TypeId(IntEnum):
-    """Contains necessary eve type IDs."""
+    """Contains necessary item type IDs."""
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
     nanite_repair_paste = 28668

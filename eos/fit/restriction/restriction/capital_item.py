@@ -42,9 +42,9 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     """Do not let to fit capital modules to subcapitals.
 
     Details:
-        Only modules with eve type volume greater than 3500 are restricted.
-        Capital ships are ships whose eve type has non-zero isCapitalSize
-            attribute value.
+        Only modules with type volume greater than 3500 are restricted.
+        Capital ships are ships whose type has non-zero isCapitalSize attribute
+            value.
     """
 
     def __init__(self, msg_broker):
@@ -60,7 +60,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # Ignore items with no volume attribute and items with volume which
         # satisfies us regardless of ship type
         try:
-            item_volume = message.item._eve_type_attributes[AttributeId.volume]
+            item_volume = message.item._type_attributes[AttributeId.volume]
         except KeyError:
             return
         if item_volume <= MAX_SUBCAP_VOLUME:
@@ -82,7 +82,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         ship = self.__current_ship
         if (
             ship is not None and
-            ship._eve_type_attributes.get(AttributeId.is_capital_size)
+            ship._type_attributes.get(AttributeId.is_capital_size)
         ):
             return
         # If we got here, then we're dealing with non-capital ship, and all
@@ -90,9 +90,9 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         if self.__capital_items:
             tainted_items = {}
             for item in self.__capital_items:
-                eve_type_volume = item._eve_type_attributes[AttributeId.volume]
+                item_type_volume = item._type_attributes[AttributeId.volume]
                 tainted_items[item] = CapitalItemErrorData(
-                    item_volume=eve_type_volume,
+                    item_volume=item_type_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME)
             raise RestrictionValidationError(tainted_items)
 

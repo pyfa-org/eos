@@ -53,17 +53,17 @@ class TestSourceSwitch(CalculatorTestCase):
         effect_src2 = self.ch2.effect(
             effect_id=effect_id, category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
+        ship_type_id = self.allocate_type_id(self.ch, self.ch2)
         ship1 = Ship(self.ch.type(
-            type_id=ship_eve_type_id, attributes={src_attr_id: 10},
+            type_id=ship_type_id, attributes={src_attr_id: 10},
             effects=[effect_src1]).id)
         ship2 = Ship(self.ch2.type(
-            type_id=ship_eve_type_id, attributes={src_attr_id: 20},
+            type_id=ship_type_id, attributes={src_attr_id: 20},
             effects=[effect_src2]).id)
-        item_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
-        self.ch2.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
-        item = Rig(item_eve_type_id)
+        item_type_id = self.allocate_type_id(self.ch, self.ch2)
+        self.ch.type(type_id=item_type_id, attributes={tgt_attr_id: 50})
+        self.ch2.type(type_id=item_type_id, attributes={tgt_attr_id: 50})
+        item = Rig(item_type_id)
         fit1 = Fit('src1')
         fit1.ship = ship1
         fit2 = Fit('src2')
@@ -106,19 +106,19 @@ class TestSourceSwitch(CalculatorTestCase):
         effect_src2 = self.ch2.effect(
             effect_id=effect_id, category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        ship_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
+        ship_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(
-            type_id=ship_eve_type_id, attributes={src_attr_id: 10},
+            type_id=ship_type_id, attributes={src_attr_id: 10},
             effects=[effect_src1])
         self.ch2.type(
-            type_id=ship_eve_type_id, attributes={src_attr_id: 20},
+            type_id=ship_type_id, attributes={src_attr_id: 20},
             effects=[effect_src2])
-        item_eve_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 50})
-        self.ch2.type(type_id=item_eve_type_id, attributes={tgt_attr_id: 75})
+        item_type_id = self.allocate_type_id(self.ch, self.ch2)
+        self.ch.type(type_id=item_type_id, attributes={tgt_attr_id: 50})
+        self.ch2.type(type_id=item_type_id, attributes={tgt_attr_id: 75})
         fit = Fit()
-        ship = Ship(ship_eve_type_id)
-        item = Rig(item_eve_type_id)
+        ship = Ship(ship_type_id)
+        item = Rig(item_type_id)
         fit.ship = ship
         fit.rigs.add(item)
         # 50 * 1.1, but capped at 54.5

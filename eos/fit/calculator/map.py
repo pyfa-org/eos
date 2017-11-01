@@ -197,7 +197,7 @@ class MutableAttributeMap:
     def keys(self):
         # Return union of attributes from base, modified and override dictionary
         return set(chain(
-            self.__item._eve_type_attributes, self.__modified_attributes,
+            self.__item._type_attributes, self.__modified_attributes,
             self.__override_callbacks or {}))
 
     def items(self):
@@ -232,22 +232,22 @@ class MutableAttributeMap:
         except (AttributeError, AttributeFetchError) as e:
             msg = (
                 'unable to fetch metadata for attribute {}, '
-                'requested for eve type {}'
-            ).format(attr_id, item._eve_type_id)
+                'requested for item type {}'
+            ).format(attr_id, item._type_id)
             logger.warning(msg)
             raise AttributeMetadataError(attr_id) from e
         # Base attribute value which we'll use for modification
         try:
-            result = item._eve_type_attributes[attr_id]
-        # If attribute isn't available on eve type, base off its default value
+            result = item._type_attributes[attr_id]
+        # If attribute isn't available on item type, base off its default value
         except KeyError:
             result = attr.default_value
-            # If eve type attribute is not specified and default value isn't
+            # If item type attribute is not specified and default value isn't
             # available, raise error - without valid base we can't keep going
             if result is None:
                 msg = (
-                    'unable to find base value for attribute {} on eve type {}'
-                ).format(attr_id, item._eve_type_id)
+                    'unable to find base value for attribute {} on item type {}'
+                ).format(attr_id, item._type_id)
                 logger.info(msg)
                 raise BaseValueError(attr_id)
         # Container for non-penalized modifications
@@ -260,10 +260,10 @@ class MutableAttributeMap:
         for mod_data in item._fit._calculator.get_modifications(item, attr_id):
             operator, mod_value, carrier_item = mod_data
             # Decide if it should be stacking penalized or not, based on
-            # stackable property, carrier item eve type category and operator
+            # stackable property, carrier item type category and operator
             penalize = (
                 not attr.stackable and
-                carrier_item._eve_type.category_id not in
+                carrier_item._type.category_id not in
                 PENALTY_IMMUNE_CATEGORY_IDS and
                 operator in PENALIZABLE_OPERATORS)
             # Normalize operations to just three types: assignments, additions,
@@ -273,8 +273,8 @@ class MutableAttributeMap:
             # Log error on any unknown operator types
             except KeyError:
                 msg = (
-                    'malformed modifier on eve type {}: unknown operator {}'
-                ).format(carrier_item._eve_type_id, operator)
+                    'malformed modifier on item type {}: unknown operator {}'
+                ).format(carrier_item._type_id, operator)
                 logger.warning(msg)
                 continue
             mod_value = normalization_func(mod_value)

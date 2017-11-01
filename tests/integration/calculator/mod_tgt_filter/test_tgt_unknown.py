@@ -44,10 +44,10 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
             modifiers=(self.invalid_modifier,))
-        item_eve_type = self.ch.type(
+        item_type = self.ch.type(
             attributes={self.src_attr.id: 20, self.tgt_attr: 100},
             effects=[effect])
-        item = Rig(item_eve_type.id)
+        item = Rig(item_type.id)
         # Action
         self.fit.rigs.add(item)
         # Verification
@@ -58,8 +58,8 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,
-                'malformed modifier on eve type {}: '
-                'invalid target filter 26500'.format(item_eve_type.id))
+                'malformed modifier on item type {}: '
+                'invalid target filter 26500'.format(item_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 

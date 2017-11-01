@@ -88,7 +88,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         If item has at least one restriction attribute, it is enabled for
             tracking by this register.
         For validation, canFitShipTypeX and canFitShipGroupX attribute values of
-            eve type are taken.
+            item type are taken.
     """
 
     def __init__(self, msg_broker):
@@ -115,7 +115,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             for allowed_attr_id in allowed_attr_ids:
                 try:
                     allowed_value = (
-                        message.item._eve_type_attributes[allowed_attr_id])
+                        message.item._type_attributes[allowed_attr_id])
                 except KeyError:
                     continue
                 else:
@@ -143,8 +143,8 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # None; it's safe to set them to None because our primary data container
         # with restricted items can't contain None in its values anyway
         try:
-            ship_type_id = self.__current_ship._eve_type_id
-            ship_group_id = self.__current_ship._eve_type.group_id
+            ship_type_id = self.__current_ship._type_id
+            ship_group_id = self.__current_ship._type.group_id
         except AttributeError:
             ship_type_id = None
             ship_group_id = None

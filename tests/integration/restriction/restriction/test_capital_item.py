@@ -99,7 +99,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_subcap_volume_not_specified(self):
-        # Check that items with no volume attribute on eve type are not
+        # Check that items with no volume attribute on item type are not
         # restricted
         item = ModuleHigh(self.ch.type().id, state=State.offline)
         self.fit.modules.high.append(item)

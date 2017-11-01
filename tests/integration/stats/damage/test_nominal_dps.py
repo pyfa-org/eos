@@ -217,7 +217,7 @@ class TestStatsDamageDps(StatTestCase):
         self.fit.modules.high.append(item2)
         # Action
         stats_dps = self.fit.stats.get_nominal_dps(
-            item_filter=lambda i: i._eve_type.group_id == 55)
+            item_filter=lambda i: i._type.group_id == 55)
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)

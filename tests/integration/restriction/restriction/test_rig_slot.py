@@ -72,9 +72,9 @@ class TestRigSlot(RestrictionTestCase):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.rig_slots: 1}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = Rig(eve_type.id)
-        item2 = Rig(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = Rig(item_type.id)
+        item2 = Rig(item_type.id)
         self.fit.rigs.add(item1)
         self.fit.rigs.add(item2)
         # Action
@@ -98,9 +98,9 @@ class TestRigSlot(RestrictionTestCase):
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.rig_slots: 2}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = Rig(eve_type.id)
-        item2 = Rig(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = Rig(item_type.id)
+        item2 = Rig(item_type.id)
         self.fit.rigs.add(item1)
         self.fit.rigs.add(item2)
         # Action
@@ -120,9 +120,9 @@ class TestRigSlot(RestrictionTestCase):
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.rig_slots: 5}).id)
-        eve_type = self.ch.type(effects=[self.effect])
-        item1 = Rig(eve_type.id)
-        item2 = Rig(eve_type.id)
+        item_type = self.ch.type(effects=[self.effect])
+        item1 = Rig(item_type.id)
+        item2 = Rig(item_type.id)
         self.fit.rigs.add(item1)
         self.fit.rigs.add(item2)
         # Action

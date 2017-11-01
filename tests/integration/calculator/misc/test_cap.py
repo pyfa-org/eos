@@ -57,7 +57,7 @@ class TestCap(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_cap_attr_eve_type(self):
+    def test_cap_attr_unmodified(self):
         # Make sure that item's own specified attribute value is taken as cap
         item = Implant(self.ch.type(
             attributes={

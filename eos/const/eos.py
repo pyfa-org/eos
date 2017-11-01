@@ -165,9 +165,9 @@ class Restriction(IntEnum):
 
 @unique
 class EosTypeId(IntEnum):
-    """Contains Eos-specific eve type IDs.
+    """Contains Eos-specific item type IDs.
 
-    Any values defined here must not overlap with regular eve type IDs.
+    Any values defined here must not overlap with regular item type IDs.
     """
     current_self = -1
 

@@ -88,10 +88,10 @@ class TestSkillRequirement(RestrictionTestCase):
             AttributeId.required_skill_1: 50,
             AttributeId.required_skill_1_level: 3}).id)
         self.fit.modules.high.append(item)
-        skill_eve_type = self.ch.type(type_id=50)
-        self.fit.skills.add(Skill(skill_eve_type.id, level=1))
+        skill_type = self.ch.type(type_id=50)
+        self.fit.skills.add(Skill(skill_type.id, level=1))
         with self.assertRaises(ValueError):
-            self.fit.skills.add(Skill(skill_eve_type.id, level=5))
+            self.fit.skills.add(Skill(skill_type.id, level=5))
         # Action
         restriction_error = self.get_restriction_error(
             item, Restriction.skill_requirement)

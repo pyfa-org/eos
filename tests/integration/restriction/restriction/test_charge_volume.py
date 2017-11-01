@@ -29,21 +29,20 @@ class TestChargeVolume(RestrictionTestCase):
     """Check functionality of charge volume restriction."""
 
     def test_fail_greater(self):
-        charge_item = Charge(self.ch.type(
-            attributes={AttributeId.volume: 2}).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.capacity: 1}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_volume)
+            container, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_volume)
+            charge, Restriction.charge_volume)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.max_allowed_volume, 1)
@@ -53,19 +52,18 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_capacity(self):
-        charge_item = Charge(self.ch.type(
-            attributes={AttributeId.volume: 2}).id)
-        container_item = ModuleHigh(self.ch.type().id, state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        charge = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container = ModuleHigh(self.ch.type().id, state=State.offline)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_volume)
+            container, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_volume)
+            charge, Restriction.charge_volume)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.max_allowed_volume, 0)
@@ -75,20 +73,20 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_volume(self):
-        charge_item = Charge(self.ch.type().id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type().id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.volume: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_volume)
+            container, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_volume)
+            charge, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
@@ -96,21 +94,20 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
-        charge_item = Charge(self.ch.type(
-            attributes={AttributeId.volume: 2}).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.capacity: 2}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_volume)
+            container, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_volume)
+            charge, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
@@ -118,21 +115,20 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_lesser(self):
-        charge_item = Charge(self.ch.type(
-            attributes={AttributeId.volume: 2}).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.capacity: 3}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_volume)
+            container, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_volume)
+            charge, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup
@@ -140,22 +136,21 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        charge_item = Charge(self.ch.type(
-            attributes={AttributeId.volume: 2}).id)
-        container_item = ModuleHigh(
+        charge = Charge(self.ch.type(attributes={AttributeId.volume: 2}).id)
+        container = ModuleHigh(
             self.ch.type(attributes={AttributeId.capacity: 1}).id,
             state=State.offline)
-        container_item.charge = charge_item
-        self.fit.modules.high.append(container_item)
+        container.charge = charge
+        self.fit.modules.high.append(container)
         self.fit.source = None
         # Action
         restriction_error1 = self.get_restriction_error(
-            container_item, Restriction.charge_volume)
+            container, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error1)
         # Action
         restriction_error2 = self.get_restriction_error(
-            charge_item, Restriction.charge_volume)
+            charge, Restriction.charge_volume)
         # Verification
         self.assertIsNone(restriction_error2)
         # Cleanup

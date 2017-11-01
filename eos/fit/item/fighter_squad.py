@@ -35,7 +35,7 @@ class FighterSquad(
     Unlike drones, fighter squad is single entity.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             fighter squad.
         state (optional): Initial state fighter squad takes, default is offline
             (squad is in fighter tube).
@@ -50,5 +50,5 @@ class FighterSquad(
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id'], 'state']
+        spec = [['type_id', '_type_id'], 'state']
         return make_repr_str(self, spec)

@@ -57,16 +57,16 @@ class TestCalculationChain(CalculatorTestCase):
             src_attr_id=attr3.id)
         effect3 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier3])
-        implant_item = Implant(self.ch.type(
+        implant = Implant(self.ch.type(
             attributes={attr1.id: 5, attr2.id: 20},
             effects=(effect1, effect2)).id)
-        ship_item = Ship(self.ch.type(
+        ship = Ship(self.ch.type(
             attributes={attr3.id: 150}, effects=[effect3]).id)
-        rig_item = Rig(self.ch.type(attributes={attr4.id: 12.5}).id)
-        self.fit.implants.add(implant_item)
-        self.fit.ship = ship_item
+        rig = Rig(self.ch.type(attributes={attr4.id: 12.5}).id)
+        self.fit.implants.add(implant)
+        self.fit.ship = ship
         # Action
-        self.fit.rigs.add(rig_item)
+        self.fit.rigs.add(rig)
         # Verification
         # If everything is processed properly, item1 will multiply attr2 by
         # attr1 on self, resulting in 20 * 5 = 100, then apply it as percentage
@@ -74,7 +74,7 @@ class TestCalculationChain(CalculatorTestCase):
         # it is applied to all entities assigned to ship, including item3, to
         # theirs attr4 as percentage modifier again - so final result is 12.5 +
         # 300% = 50
-        self.assertAlmostEqual(rig_item.attributes[attr4.id], 50)
+        self.assertAlmostEqual(rig.attributes[attr4.id], 50)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

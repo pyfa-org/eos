@@ -49,7 +49,7 @@ class SideEffectMixin(BaseItemMixin):
         setting in, enabled=side-effect status)} format.
         """
         side_effects = {}
-        for effect_id, effect in self._eve_type_effects.items():
+        for effect_id, effect in self._type_effects.items():
             # Effect must be from offline category
             if effect._state != State.offline:
                 continue

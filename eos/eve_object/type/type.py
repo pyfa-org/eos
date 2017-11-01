@@ -35,14 +35,15 @@ FighterAbility = namedtuple(
 
 
 class Type(BaseCachable):
-    """Represents eve type with all its metadata.
+    """Represents item type with all its metadata.
 
-    All characters, ships, incursion system-wide effects are based on eve types.
+    All characters, ships, incursion system-wide effects are based on item
+    types.
 
     Attributes:
-        id: Identifier of the eve type.
-        group_id: Group ID of the eve type.
-        category_id: Category ID of the eve type. Normally it's attribute of
+        id: Identifier of the item type.
+        group_id: Group ID of the item type.
+        category_id: Category ID of the item type. Normally it's attribute of
             group, but as we do not need groups as separate objects, categories
             were 'demoted' into type attribute.
         attributes: Map with base attribute values for this type in {attribute
@@ -74,8 +75,8 @@ class Type(BaseCachable):
         if customize:
             customize_type(self)
 
-    # Define attributes which describe eve type skill requirement details
-    # Format: {skill eve type attribute ID: skill level attribute ID}
+    # Define attributes which describe item type skill requirement details
+    # Format: {skill type attribute ID: skill level attribute ID}
     __skillrq_attrs = {
         AttributeId.required_skill_1: AttributeId.required_skill_1_level,
         AttributeId.required_skill_2: AttributeId.required_skill_2_level,
@@ -89,8 +90,8 @@ class Type(BaseCachable):
         """Get skill requirements.
 
         Returns:
-            Map between skill eve type IDs and corresponding skill levels, which
-            are required to use type.
+            Map between skill type IDs and corresponding skill levels, which are
+            required to use this item type.
         """
         required_skills = {}
         for skill_attr_id in self.__skillrq_attrs:

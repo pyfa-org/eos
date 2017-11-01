@@ -41,7 +41,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         charge = getattr(carrier_item, 'charge', None)
         if (
             charge is not None and
-            charge._eve_type_id == TypeId.nanite_repair_paste
+            charge._type_id == TypeId.nanite_repair_paste
         ):
             try:
                 multiplier = (
@@ -58,7 +58,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         # paste, then modification value changes
         if (
             getattr(carrier_item, 'charge', None) is message.item and
-            message.item._eve_type_id == TypeId.nanite_repair_paste
+            message.item._type_id == TypeId.nanite_repair_paste
         ):
             return True
         return False

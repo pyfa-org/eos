@@ -47,7 +47,7 @@ class Module(
 
     # Auxiliary methods
     def __repr__(self):
-        spec = [['type_id', '_eve_type_id'], 'state', 'charge']
+        spec = [['type_id', '_type_id'], 'state', 'charge']
         return make_repr_str(self, spec)
 
 
@@ -55,7 +55,7 @@ class ModuleHigh(Module):
     """Represents a high-slot module.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             module.
         state (optional): Initial state this module takes, default is offline.
         charge (optional): Charge object to load into module, default is None.
@@ -67,7 +67,7 @@ class ModuleMed(Module):
     """Represents a med-slot module.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             module.
         state (optional): Initial state this module takes, default is offline.
         charge (optional): Charge object to load into module, default is None.
@@ -79,7 +79,7 @@ class ModuleLow(Module):
     """Represents a low-slot module.
 
     Args:
-        type_id: Identifier of eve type which should serve as base for this
+        type_id: Identifier of item type which should serve as base for this
             module.
         state (optional): Initial state this module takes, default is offline.
         charge (optional): Charge object to load into module, default is None.

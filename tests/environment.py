@@ -46,9 +46,9 @@ class CacheHandler:
         if type_id in self.__type_data:
             raise KeyError(type_id)
         # Create, store and return type
-        eve_type = Type(type_id=type_id, customize=customize, **kwargs)
-        self.__type_data[eve_type.id] = eve_type
-        return eve_type
+        item_type = Type(type_id=type_id, customize=customize, **kwargs)
+        self.__type_data[item_type.id] = item_type
+        return item_type
 
     def attr(self, attribute_id=None, **kwargs):
         # Allocate & verify ID

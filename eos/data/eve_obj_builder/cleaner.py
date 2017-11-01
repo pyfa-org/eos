@@ -57,8 +57,8 @@ class Cleaner:
         self._report_results()
 
     def _pump_evetypes(self):
-        """Mark some hardcoded eve types as strong."""
-        # Tuple with category IDs of eve types we want to keep
+        """Mark some hardcoded item types as strong."""
+        # Tuple with category IDs of item types we want to keep
         strong_category_ids = (
             TypeCategoryId.charge,
             TypeCategoryId.drone,
@@ -68,7 +68,7 @@ class Cleaner:
             TypeCategoryId.ship,
             TypeCategoryId.skill,
             TypeCategoryId.subsystem)
-        # Set with group IDs of eve types we want to keep
+        # Set with group IDs of item types we want to keep
         # It is set because we will need to modify it
         strong_group_ids = {TypeGroupId.character, TypeGroupId.effect_beacon}
         # Go through table data, filling valid groups set according to valid
@@ -86,9 +86,9 @@ class Cleaner:
         """Run auto-cleanup"""
         self._kill_weak()
         self._changed = True
-        # Cycle as long as we have changes during previous iteration.
-        # We need this because contents of even evetypes may change, which,
-        # in turn, will need to pull additional data into other tables
+        # Cycle as long as we have changes during previous iteration. We need
+        # this because contents of even evetypes may change, which, in turn,
+        # will need to pull additional data into other tables
         while self._changed is True:
             self._changed = False
             self._reanimate_auxiliary_friends()
@@ -291,8 +291,8 @@ class Cleaner:
     def _get_targets_default_ammo(self, tgt_data):
         """Find out which types are referred via 'ammo loaded' attribute.
 
-        Some items specify which ammo is loaded into them by default, and here
-        we ensure these eve types are kept.
+        Some item types specify which ammo is loaded into them by default, and
+        here we ensure these ammo types are kept.
 
         Args:
             tgt_data: Dictionary which will be filled during the process. Its

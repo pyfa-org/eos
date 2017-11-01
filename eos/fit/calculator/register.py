@@ -141,13 +141,13 @@ class AffectionRegister:
         domain = self.__contextize_tgt_filter_domain(affector)
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._eve_type_id
+            skill_type_id = affector.carrier_item._type_id
         return self.__affectee_domain_skillrq.get((domain, skill_type_id), ())
 
     def __affectee_getter_owner_skillrq(self, affector):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._eve_type_id
+            skill_type_id = affector.carrier_item._type_id
         return self.__affectee_owner_skillrq.get(skill_type_id, ())
 
     __affectee_getters = {
@@ -208,17 +208,17 @@ class AffectionRegister:
         if domain is not None:
             # Domain
             affectee_maps.append((domain, self.__affectee_domain))
-            group_id = target_item._eve_type.group_id
+            group_id = target_item._type.group_id
             if group_id is not None:
                 # Domain and group
                 affectee_maps.append(
                     ((domain, group_id), self.__affectee_domain_group))
-            for skill_type_id in target_item._eve_type.required_skills:
+            for skill_type_id in target_item._type.required_skills:
                 # Domain and skill requirement
                 affectee_maps.append(
                     ((domain, skill_type_id), self.__affectee_domain_skillrq))
         if target_item._owner_modifiable is True:
-            for skill_type_id in target_item._eve_type.required_skills:
+            for skill_type_id in target_item._type.required_skills:
                 # Owner-modifiable and skill requirement
                 affectee_maps.append(
                     (skill_type_id, self.__affectee_owner_skillrq))
@@ -317,13 +317,13 @@ class AffectionRegister:
             affectors.update(self.__affector_domain.get(domain, ()))
             # Domain and group
             affectors.update(self.__affector_domain_group.get(
-                (domain, target_item._eve_type.group_id), ()))
-            for skill_type_id in target_item._eve_type.required_skills:
+                (domain, target_item._type.group_id), ()))
+            for skill_type_id in target_item._type.required_skills:
                 # Domain and skill requirement
                 affectors.update(self.__affector_domain_skillrq.get(
                     (domain, skill_type_id), ()))
         if target_item._owner_modifiable is True:
-            for skill_type_id in target_item._eve_type.required_skills:
+            for skill_type_id in target_item._type.required_skills:
                 # Owner-modifiable and skill requirement
                 affectors.update(self.__affector_owner_skillrq.get(
                     skill_type_id, ()))
@@ -405,13 +405,13 @@ class AffectionRegister:
         domain = self.__contextize_tgt_filter_domain(affector)
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._eve_type_id
+            skill_type_id = affector.carrier_item._type_id
         return (domain, skill_type_id), self.__affector_domain_skillrq
 
     def __affector_map_getter_owner_skillrq(self, affector):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._eve_type_id
+            skill_type_id = affector.carrier_item._type_id
         return skill_type_id, self.__affector_owner_skillrq
 
     __affector_map_getters = {
@@ -490,14 +490,14 @@ class AffectionRegister:
         """
         if isinstance(error, UnexpectedDomainError):
             msg = (
-                'malformed modifier on eve type {}: '
+                'malformed modifier on item type {}: '
                 'unsupported target domain {}'
-            ).format(affector.carrier_item._eve_type_id, error.args[0])
+            ).format(affector.carrier_item._type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, UnknownTargetFilterError):
             msg = (
-                'malformed modifier on eve type {}: invalid target filter {}'
-            ).format(affector.carrier_item._eve_type_id, error.args[0])
+                'malformed modifier on item type {}: invalid target filter {}'
+            ).format(affector.carrier_item._type_id, error.args[0])
             logger.warning(msg)
         else:
             raise error

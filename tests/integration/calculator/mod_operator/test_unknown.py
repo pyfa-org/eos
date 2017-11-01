@@ -41,9 +41,9 @@ class TestOperatorUnknown(CalculatorTestCase):
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[invalid_modifier])
-        item_eve_type = self.ch.type(
+        item_type = self.ch.type(
             attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
-        item = Rig(item_eve_type.id)
+        item = Rig(item_type.id)
         # Action
         self.fit.rigs.add(item)
         # Verification
@@ -55,8 +55,8 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            'malformed modifier on eve type {}: '
-            'unknown operator 1008'.format(item_eve_type.id))
+            'malformed modifier on item type {}: '
+            'unknown operator 1008'.format(item_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 
@@ -80,9 +80,9 @@ class TestOperatorUnknown(CalculatorTestCase):
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
-        item_eve_type = self.ch.type(
+        item_type = self.ch.type(
             attributes={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
-        item = Rig(item_eve_type.id)
+        item = Rig(item_type.id)
         # Action
         self.fit.rigs.add(item)
         # Verification
@@ -94,8 +94,8 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            'malformed modifier on eve type {}: '
-            'unknown operator None'.format(item_eve_type.id))
+            'malformed modifier on item type {}: '
+            'unknown operator None'.format(item_type.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
 

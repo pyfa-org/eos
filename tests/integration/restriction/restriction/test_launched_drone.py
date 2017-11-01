@@ -71,9 +71,9 @@ class TestLaunchedDrone(RestrictionTestCase):
         # Check that error works for multiple items
         self.fit.character = Character(self.ch.type(
             attributes={AttributeId.max_active_drones: 1}).id)
-        eve_type = self.ch.type()
-        item1 = Drone(eve_type.id, state=State.online)
-        item2 = Drone(eve_type.id, state=State.online)
+        item_type = self.ch.type()
+        item1 = Drone(item_type.id, state=State.online)
+        item2 = Drone(item_type.id, state=State.online)
         self.fit.drones.add(item1)
         self.fit.drones.add(item2)
         # Action
@@ -97,9 +97,9 @@ class TestLaunchedDrone(RestrictionTestCase):
     def test_pass_equal(self):
         self.fit.character = Character(self.ch.type(
             attributes={AttributeId.max_active_drones: 2}).id)
-        eve_type = self.ch.type()
-        item1 = Drone(eve_type.id, state=State.online)
-        item2 = Drone(eve_type.id, state=State.online)
+        item_type = self.ch.type()
+        item1 = Drone(item_type.id, state=State.online)
+        item2 = Drone(item_type.id, state=State.online)
         self.fit.drones.add(item1)
         self.fit.drones.add(item2)
         # Action
@@ -119,9 +119,9 @@ class TestLaunchedDrone(RestrictionTestCase):
     def test_pass_greater(self):
         self.fit.character = Character(self.ch.type(
             attributes={AttributeId.max_active_drones: 5}).id)
-        eve_type = self.ch.type()
-        item1 = Drone(eve_type.id, state=State.online)
-        item2 = Drone(eve_type.id, state=State.online)
+        item_type = self.ch.type()
+        item1 = Drone(item_type.id, state=State.online)
+        item2 = Drone(item_type.id, state=State.online)
         self.fit.drones.add(item1)
         self.fit.drones.add(item2)
         # Action

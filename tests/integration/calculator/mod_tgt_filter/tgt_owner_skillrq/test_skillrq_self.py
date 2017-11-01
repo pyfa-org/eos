@@ -41,14 +41,14 @@ class TestTgtOwnerSkillrqSkillrqSelf(CalculatorTestCase):
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.src_eve_type = self.ch.type(
+        self.influence_src_type = self.ch.type(
             attributes={src_attr.id: 20}, effects=[effect])
-        self.influence_src = Implant(self.src_eve_type.id)
+        self.influence_src = Implant(self.influence_src_type.id)
 
     def test_match(self):
         influence_tgt = Drone(self.ch.type(attributes={
             self.tgt_attr.id: 100,
-            AttributeId.required_skill_1: self.src_eve_type.id,
+            AttributeId.required_skill_1: self.influence_src_type.id,
             AttributeId.required_skill_1_level: 1}).id)
         self.fit.drones.add(influence_tgt)
         # Action

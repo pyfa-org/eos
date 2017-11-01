@@ -25,8 +25,8 @@ from .set import ItemSet
 class ItemKeyedSet(ItemSet):
     """Unordered container for items with few dict-like modifications.
 
-    This container can't hold two items with the same eve type ID, and provides
-    access to items via their eve type IDs.
+    This container can't hold two items with the same type ID, and provides
+    access to items via their type IDs.
 
     Args:
         fit: Fit, to which container is attached.
@@ -35,7 +35,7 @@ class ItemKeyedSet(ItemSet):
 
     def __init__(self, fit, item_class):
         ItemSet.__init__(self, fit, item_class)
-        self.__eve_type_id_map = {}
+        self.__type_id_map = {}
 
     def add(self, item):
         """Add item to the container.
@@ -50,17 +50,17 @@ class ItemKeyedSet(ItemSet):
                 the container).
         """
         self._check_class(item)
-        eve_type_id = item._eve_type_id
-        if eve_type_id in self.__eve_type_id_map:
+        type_id = item._type_id
+        if type_id in self.__type_id_map:
             msg = (
                 'item with type ID {} already exists in this set'
-            ).format(eve_type_id)
+            ).format(type_id)
             raise ValueError(msg)
-        self.__eve_type_id_map[eve_type_id] = item
+        self.__type_id_map[type_id] = item
         try:
             ItemSet.add(self, item)
         except (TypeError, ValueError):
-            del self.__eve_type_id_map[eve_type_id]
+            del self.__type_id_map[type_id]
             raise
 
     def remove(self, item):
@@ -74,27 +74,27 @@ class ItemKeyedSet(ItemSet):
                 doesn't belong to it).
         """
         ItemSet.remove(self, item)
-        del self.__eve_type_id_map[item._eve_type_id]
+        del self.__type_id_map[item._type_id]
 
     def clear(self):
         """Remove everything from the container."""
         ItemSet.clear(self)
-        self.__eve_type_id_map.clear()
+        self.__type_id_map.clear()
 
-    def __getitem__(self, eve_type_id):
+    def __getitem__(self, type_id):
         """Get item by type ID."""
-        return self.__eve_type_id_map[eve_type_id]
+        return self.__type_id_map[type_id]
 
-    def __delitem__(self, eve_type_id):
+    def __delitem__(self, type_id):
         """Remove item by type ID."""
-        item = self.__eve_type_id_map[eve_type_id]
+        item = self.__type_id_map[type_id]
         self.remove(item)
 
     def __contains__(self, value):
-        """Check if eve type ID or item are present in set."""
+        """Check if type ID or item are present in set."""
         return (
-            self.__eve_type_id_map.__contains__(value) or
+            self.__type_id_map.__contains__(value) or
             ItemSet.__contains__(self, value))
 
     def __repr__(self):
-        return repr(self.__eve_type_id_map)
+        return repr(self.__type_id_map)

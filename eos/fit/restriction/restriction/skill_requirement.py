@@ -39,7 +39,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
 
     Details:
         Only Skill items are able to satisfy skill requirements.
-        Eve type attributes are taken to determine skill and skill level
+        Item_item type attributes are taken to determine skill and skill level
             requirements.
         If corresponding skill is found, but its skill level is None, check for
             item is failed.
@@ -56,11 +56,11 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
     def _handle_item_addition(self, message):
         # Handle skill addition
         if isinstance(message.item, Skill):
-            self.__skills[message.item._eve_type_id] = message.item
+            self.__skills[message.item._type_id] = message.item
         # Items which are not exceptions and which have any skill requirement
         # are tracked
         if (
-            message.item._eve_type.required_skills and
+            message.item._type.required_skills and
             not isinstance(message.item, EXCEPTIONS)
         ):
             self.__restricted_items.add(message.item)
@@ -68,7 +68,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
     def _handle_item_removal(self, message):
         # Handle skill removal
         if isinstance(message.item, Skill):
-            del self.__skills[message.item._eve_type_id]
+            del self.__skills[message.item._type_id]
         # Handle restricted item removal
         self.__restricted_items.discard(message.item)
 
@@ -84,7 +84,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
             skillrq_errors = []
             # Check each skill requirement
             for skillrq_type_id, skillrq_level in (
-                item._eve_type.required_skills.items()
+                item._type.required_skills.items()
             ):
                 # Get skill level with None as fallback value for case when we
                 # don't have such skill
