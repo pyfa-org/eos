@@ -42,17 +42,17 @@ class TestMaxGroupOnline(RestrictionTestCase):
             item1, Restriction.max_group_online)
         # Verification
         self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.max_group, 1)
-        self.assertEqual(restriction_error1.item_group, 6)
+        self.assertEqual(restriction_error1.group_id, 6)
         self.assertEqual(restriction_error1.group_items, 2)
+        self.assertEqual(restriction_error1.max_group_items, 1)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.max_group_online)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.max_group, 1)
-        self.assertEqual(restriction_error2.item_group, 6)
+        self.assertEqual(restriction_error2.group_id, 6)
         self.assertEqual(restriction_error2.group_items, 2)
+        self.assertEqual(restriction_error2.max_group_items, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -75,9 +75,9 @@ class TestMaxGroupOnline(RestrictionTestCase):
             item1, Restriction.max_group_online)
         # Verification
         self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.max_group, 1)
-        self.assertEqual(restriction_error1.item_group, 92)
+        self.assertEqual(restriction_error1.group_id, 92)
         self.assertEqual(restriction_error1.group_items, 2)
+        self.assertEqual(restriction_error1.max_group_items, 1)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.max_group_online)

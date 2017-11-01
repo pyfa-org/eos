@@ -29,7 +29,7 @@ from ..exception import RestrictionValidationError
 
 
 ChargeVolumeErrorData = namedtuple(
-    'ChargeVolumeErrorData', ('item_volume', 'max_allowed_volume'))
+    'ChargeVolumeErrorData', ('volume', 'max_allowed_volume'))
 
 
 class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
@@ -71,7 +71,7 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
                 container._type_attributes.get(AttributeId.capacity, 0))
             if charge_volume > container_capacity:
                 tainted_items[charge] = ChargeVolumeErrorData(
-                    item_volume=charge_volume,
+                    volume=charge_volume,
                     max_allowed_volume=container_capacity)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

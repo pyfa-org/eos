@@ -37,7 +37,7 @@ ALLOWED_GROUP_ATTR_IDS = (
 
 
 ChargeGroupErrorData = namedtuple(
-    'ChargeGroupErrorData', ('charge_group', 'allowed_groups'))
+    'ChargeGroupErrorData', ('group_id', 'allowed_group_ids'))
 
 
 class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
@@ -93,10 +93,11 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            if charge._type.group_id not in allowed_group_ids:
+            group_id = charge._type.group_id
+            if group_id not in allowed_group_ids:
                 tainted_items[charge] = ChargeGroupErrorData(
-                    charge_group=charge._type.group_id,
-                    allowed_groups=allowed_group_ids)
+                    group_id=group_id,
+                    allowed_group_ids=allowed_group_ids)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

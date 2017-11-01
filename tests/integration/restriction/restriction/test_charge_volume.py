@@ -46,7 +46,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.max_allowed_volume, 1)
-        self.assertEqual(restriction_error2.item_volume, 2)
+        self.assertEqual(restriction_error2.volume, 2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -67,7 +67,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.max_allowed_volume, 0)
-        self.assertEqual(restriction_error2.item_volume, 2)
+        self.assertEqual(restriction_error2.volume, 2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

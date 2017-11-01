@@ -125,7 +125,7 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
                 expected_classes.append(item_class)
         error_data = ItemClassErrorData(
             item_class=type(item),
-            expected_classes=set(expected_classes))
+            expected_classes=tuple(expected_classes))
         return error_data
 
     @property

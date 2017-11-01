@@ -35,7 +35,7 @@ ALLOWED_GROUP_ATTR_IDS = (
 
 
 DroneGroupErrorData = namedtuple(
-    'DroneGroupErrorData', ('drone_group', 'allowed_groups'))
+    'DroneGroupErrorData', ('group_id', 'allowed_group_ids'))
 
 
 class DroneGroupRestrictionRegister(BaseRestrictionRegister):
@@ -91,11 +91,11 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         allowed_group_ids = tuple(allowed_group_ids)
         for drone in self.__drones:
             # Taint items, whose group is not allowed
-            drone_group_id = drone._type.group_id
-            if drone_group_id not in allowed_group_ids:
+            group_id = drone._type.group_id
+            if group_id not in allowed_group_ids:
                 tainted_items[drone] = DroneGroupErrorData(
-                    drone_group=drone_group_id,
-                    allowed_groups=allowed_group_ids)
+                    group_id=group_id,
+                    allowed_group_ids=allowed_group_ids)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

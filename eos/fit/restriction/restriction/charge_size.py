@@ -29,7 +29,7 @@ from ..exception import RestrictionValidationError
 
 
 ChargeSizeErrorData = namedtuple(
-    'ChargeSizeErrorData', ('item_size', 'allowed_size'))
+    'ChargeSizeErrorData', ('size', 'allowed_size'))
 
 
 class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
@@ -76,7 +76,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             charge_size = charge._type_attributes.get(AttributeId.charge_size)
             if container_size != charge_size:
                 tainted_items[charge] = ChargeSizeErrorData(
-                    item_size=charge_size,
+                    size=charge_size,
                     allowed_size=container_size)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
