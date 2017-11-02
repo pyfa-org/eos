@@ -124,7 +124,7 @@ class TestRahSimResult(RahSimTestCase):
 
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=75)
     def test_no_loop_ignore_initial_adaptation(self):
-        # Same as double unsynced, but with amount of ticks insufficient to
+        # Same as double unsynced, but with quantity of ticks insufficient to
         # detect loop
         # Setup
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)

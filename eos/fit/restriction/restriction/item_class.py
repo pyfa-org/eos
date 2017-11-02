@@ -30,7 +30,7 @@ from ..exception import RestrictionValidationError
 
 
 ItemClassErrorData = namedtuple(
-    'ItemClassErrorData', ('item_class', 'expected_classes'))
+    'ItemClassErrorData', ('item_class', 'allowed_classes'))
 
 
 CLASS_VALIDATORS = {
@@ -117,15 +117,15 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
             raise RestrictionValidationError(tainted_items)
 
     def __get_error_data(self, item):
-        expected_classes = []
+        allowed_classes = []
         # Cycle through our class validator dictionary and seek for acceptable
         # classes for this item type
         for item_class, validator_func in CLASS_VALIDATORS.items():
             if validator_func(item._type) is True:
-                expected_classes.append(item_class)
+                allowed_classes.append(item_class)
         error_data = ItemClassErrorData(
             item_class=type(item),
-            expected_classes=tuple(expected_classes))
+            allowed_classes=tuple(allowed_classes))
         return error_data
 
     @property

@@ -79,11 +79,11 @@ Fit validation method currently raises exception if any fit check fails, its arg
 
     {<Drone(type_id=2446, state=3)>: {
         <Restriction.drone_bandwidth: 5>: ResourceErrorData(total_use=150.0, output=125.0, holder_use=25.0),
-        <Restriction.launched_drone: 6>: SlotAmountErrorData(slots_used=6, slots_max_allowed=5)},
+        <Restriction.launched_drone: 6>: SlotQuantityErrorData(slots_used=6, slots_max_allowed=5)},
     ...
     }
 
-Keys of dictionary are problematic holders (in this case, all in-space drones of ship), values are dictionaries too, which list problems with given module. Keys of this dictionary are restriction IDs (eos.Restriction object), with 5 being drone bandwidth restriction, and 6 being amount of drones this fit can use; values contain detailed data about the problem.
+Keys of dictionary are problematic holders (in this case, all in-space drones of ship), values are dictionaries too, which list problems with given module. Keys of this dictionary are restriction IDs (eos.Restriction object), with 5 being drone bandwidth restriction, and 6 being quantity of drones this fit can use; values contain detailed data about the problem.
 
 Attributes of any item are accessible via dictionary-like objects like phoon.attributes, e.g.:
 

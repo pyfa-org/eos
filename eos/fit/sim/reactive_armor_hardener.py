@@ -222,7 +222,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             ticks_seen.add(tick_state)
             tick_history.append(tick_state)
 
-        # If we didn't find any RAH state loops during specified amount of sim
+        # If we didn't find any RAH state loops during specified quantity of sim
         # ticks, calculate average resonances based on whole history, excluding
         # initial adaptation period
         else:
@@ -252,7 +252,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         Ticks are points in time when cycle of any RAH is finished.
 
         Args:
-            max_ticks: Limit amount of ticks produced.
+            max_ticks: Limit quantity of ticks produced.
 
         Yields:
             Tick data in the form of tuple of (time passed since last tick, list
@@ -377,7 +377,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         """
         # Get max amount of time it takes to exhaust the highest resistance of
         # each RAH
-        # Format: {RAH item: amount of cycles}
+        # Format: {RAH item: quantity of cycles}
         exhaustion_cycles = {}
         for item in self.__data:
             # Calculate how many cycles it would take for highest resistance
@@ -391,7 +391,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         slowest_item = max(
             self.__data,
             key=lambda i: exhaustion_cycles[i] * self.__get_rah_duration(i))
-        # Multiply amount of resistance exhaustion cycles by 1.5, to give RAH
+        # Multiply quantity of resistance exhaustion cycles by 1.5, to give RAH
         # more time for 'finer' adjustments
         slowest_cycles = ceil(exhaustion_cycles[slowest_item] * 1.5)
         if slowest_cycles == 0:
@@ -400,12 +400,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # that cycle for the slowest RAH has just ended. It is zero for the very
         # first tick in the history too, thus we skip it, but take it into
         # initial tick count
-        ignored_tick_amt = 1
-        tick_count = ignored_tick_amt
+        ignored_tick_quantity = 1
+        tick_count = ignored_tick_quantity
         cycle_count = 0
-        for tick_state in tick_states[ignored_tick_amt:]:
-            # Once slowest RAH cycles desired amount of times, do not count this
-            # tick and break the loop
+        for tick_state in tick_states[ignored_tick_quantity:]:
+            # Once slowest RAH finished last cycle, do not count this tick and
+            # break the loop
             for item_state in tick_state:
                 if item_state.item is slowest_item:
                     if item_state.cycling == 0:
@@ -440,7 +440,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Ship resistances
         if item is self.__fit.ship and message.attr_id in res_attr_ids:
             self.__clear_results()
-        # RAH shift amount or cycle time
+        # RAH resistance shift or cycle time
         elif item in self.__data and (
             message.attr_id == AttributeId.resistance_shift_amount or
             # Cycle time change invalidates results only when there're more than

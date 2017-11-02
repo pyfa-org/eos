@@ -68,7 +68,7 @@ ALLOWED_GROUP_ATTR_IDS = (
 
 ShipTypeGroupErrorData = namedtuple(
     'ShipTypeGroupErrorData',
-    ('ship_type', 'ship_group', 'allowed_types', 'allowed_groups'))
+    ('ship_type_id', 'ship_group_id', 'allowed_type_ids', 'allowed_group_ids'))
 
 
 # Helper class-container for metadata regarding allowed types and groups
@@ -160,10 +160,10 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
                 ship_group_id not in allowed_data.group_ids
             ):
                 tainted_items[item] = ShipTypeGroupErrorData(
-                    ship_type=ship_type_id,
-                    ship_group=ship_group_id,
-                    allowed_types=allowed_data.type_ids,
-                    allowed_groups=allowed_data.group_ids)
+                    ship_type_id=ship_type_id,
+                    ship_group_id=ship_group_id,
+                    allowed_type_ids=allowed_data.type_ids,
+                    allowed_group_ids=allowed_data.group_ids)
         # Raise error if there're any tainted items
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

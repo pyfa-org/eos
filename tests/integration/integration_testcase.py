@@ -97,7 +97,7 @@ class IntegrationTestCase(EosTestCase):
         # make sure it's ignored for assertion purposes
         fit._volatile_mgr._FitVolatileManager__volatile_objects.remove(
             fit.stats)
-        entry_num += self._get_object_buffer_entry_amount(
+        entry_num += self._get_object_buffer_entry_quantity(
             fit,
             ignore_objects=[fit],
             ignore_attrs=(

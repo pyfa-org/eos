@@ -43,16 +43,16 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.group_id, 6)
-        self.assertEqual(restriction_error1.group_items, 2)
-        self.assertEqual(restriction_error1.max_group_items, 1)
+        self.assertEqual(restriction_error1.quantity, 2)
+        self.assertEqual(restriction_error1.max_allowed_quantity, 1)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.max_group_online)
         # Verification
         self.assertIsNotNone(restriction_error2)
         self.assertEqual(restriction_error2.group_id, 6)
-        self.assertEqual(restriction_error2.group_items, 2)
-        self.assertEqual(restriction_error2.max_group_items, 1)
+        self.assertEqual(restriction_error2.quantity, 2)
+        self.assertEqual(restriction_error2.max_allowed_quantity, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -76,8 +76,8 @@ class TestMaxGroupOnline(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error1)
         self.assertEqual(restriction_error1.group_id, 92)
-        self.assertEqual(restriction_error1.group_items, 2)
-        self.assertEqual(restriction_error1.max_group_items, 1)
+        self.assertEqual(restriction_error1.quantity, 2)
+        self.assertEqual(restriction_error1.max_allowed_quantity, 1)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.max_group_online)
@@ -88,7 +88,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
-        # Make sure no errors are raised when number of added items doesn't
+        # Make sure no errors are raised when quantity of added items doesn't
         # exceed any restrictions
         item_type = self.ch.type(
             group_id=860, attributes={AttributeId.max_group_online: 2})

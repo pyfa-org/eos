@@ -36,8 +36,8 @@ class ModifierInfoConverter:
             mod_infos_yaml: String with YAML modifier data.
 
         Returns:
-            Tuple with iterable which contains modifiers, and amount of modifier
-            build failures we recorded.
+            Tuple with iterable which contains modifiers, and quantity of
+            modifier build failures we recorded.
 
         Raises:
             YamlParsingError: If YAML parses fails.

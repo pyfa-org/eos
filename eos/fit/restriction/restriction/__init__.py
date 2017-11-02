@@ -70,7 +70,7 @@ from .skill_requirement import SkillRequirementRestrictionRegister
 from .slot_index import (
     BoosterIndexRestrictionRegister, ImplantIndexRestrictionRegister,
     SubsystemIndexRestrictionRegister)
-from .slot_amount import (
+from .slot_quantity import (
     HighSlotRestriction, LaunchedDroneRestriction, LauncherSlotRestriction,
     LowSlotRestriction, MediumSlotRestriction, RigSlotRestriction,
     SubsystemSlotRestriction, TurretSlotRestriction)

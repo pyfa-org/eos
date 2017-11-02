@@ -28,7 +28,7 @@ from ..exception import RestrictionValidationError
 
 
 StateErrorData = namedtuple(
-    'StateErrorData', ('current_state', 'allowed_states'))
+    'StateErrorData', ('state', 'allowed_states'))
 
 
 class StateRestrictionRegister(BaseRestrictionRegister):
@@ -60,7 +60,7 @@ class StateRestrictionRegister(BaseRestrictionRegister):
                 allowed_states = tuple(
                     s for s in State if s <= item._type.max_state)
                 tainted_items[item] = StateErrorData(
-                    current_state=item.state,
+                    state=item.state,
                     allowed_states=allowed_states)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

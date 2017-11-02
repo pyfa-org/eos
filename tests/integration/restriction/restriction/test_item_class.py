@@ -68,7 +68,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Booster)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -82,7 +82,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Booster)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -108,7 +108,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Character)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -138,7 +138,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Charge)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -164,7 +164,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Drone)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -190,7 +190,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, EffectBeacon)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -220,7 +220,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, FighterSquad)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -234,7 +234,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, FighterSquad)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -263,7 +263,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -277,7 +277,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -326,7 +326,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleHigh)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -342,7 +342,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleHigh)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -389,7 +389,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleMed)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -406,7 +406,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleMed)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -453,7 +453,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleLow)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -470,7 +470,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, ModuleLow)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -517,7 +517,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Rig)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -534,7 +534,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Rig)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -560,7 +560,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Ship)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -586,7 +586,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Skill)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -612,7 +612,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Stance)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -659,7 +659,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Subsystem)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -676,7 +676,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Subsystem)
-        self.assertEqual(len(restriction_error.expected_classes), 0)
+        self.assertCountEqual(restriction_error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -692,8 +692,7 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Implant)
-        self.assertEqual(len(restriction_error.expected_classes), 1)
-        self.assertIn(Booster, restriction_error.expected_classes)
+        self.assertCountEqual(restriction_error.allowed_classes, [Booster])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -711,9 +710,8 @@ class TestItemClass(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(restriction_error)
         self.assertEqual(restriction_error.item_class, Drone)
-        self.assertEqual(len(restriction_error.expected_classes), 2)
-        self.assertIn(Booster, restriction_error.expected_classes)
-        self.assertIn(Implant, restriction_error.expected_classes)
+        self.assertCountEqual(
+            restriction_error.allowed_classes, [Booster, Implant])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -52,7 +52,7 @@ class Type(BaseCachable):
         default_effect: Default effect of the type. When item is activated, it
             gets run.
         fighter_abilities: Map with fighter abilities in {ability ID: (cooldown
-            time, charge amount, rearm time) format.
+            time, charge quantity, rearm time) format.
     """
 
     def __init__(

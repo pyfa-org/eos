@@ -35,7 +35,7 @@ TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 
 
 MaxGroupErrorData = namedtuple(
-    'MaxGroupErrorData', ('group_id', 'max_group_items', 'group_items'))
+    'MaxGroupErrorData', ('group_id', 'quantity', 'max_allowed_quantity'))
 
 
 class MaxGroupRestrictionRegister(BaseRestrictionRegister):
@@ -79,17 +79,17 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         tainted_items = {}
         # Go through all restricted items
         for item in self.__restricted_items:
-            # Get number of registered items, assigned to group of current
+            # Get quantity of registered items, assigned to group of current
             # restricted item, and item's restriction value
             group_id = item._type.group_id
-            group_items = len(self.__group_item_map.get(group_id, ()))
-            max_group_items = (
+            quantity = len(self.__group_item_map.get(group_id, ()))
+            max_allowed_quantity = (
                 item._type_attributes[self.__max_group_attr_id])
-            if group_items > max_group_items:
+            if quantity > max_allowed_quantity:
                 tainted_items[item] = MaxGroupErrorData(
                     group_id=group_id,
-                    max_group_items=max_group_items,
-                    group_items=group_items)
+                    quantity=quantity,
+                    max_allowed_quantity=max_allowed_quantity)
         # Raise error if we detected any tainted items
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

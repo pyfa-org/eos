@@ -57,7 +57,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
         It depends on capacity of this item and volume of charge.
 
-        Returns: Amount of loadable charges as integer. If any of necessary
+        Returns: Quantity of loadable charges as integer. If any of necessary
         attribute values is not defined, or no charge is found in item, None is
         returned.
         """
@@ -72,10 +72,10 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     @volatile_property
     def charged_cycles(self):
-        """Amount of cycles this container can run until charges are depleted.
+        """Quantity of cycles this container can run until charges are depleted.
 
-        If amount of cycles can vary, mean value if taken (t2 laser ammo).
-        Cycles, when amount of charges consumed per cycle is more than left in
+        If quantity of cycles can vary, mean value if taken (t2 laser ammo).
+        Cycles, when quantity of charges consumed per cycle is more than left in
         container, are ignored (possible with ancillary armor repairers). None
         is returned if container can cycle without ammo consumption.
         """

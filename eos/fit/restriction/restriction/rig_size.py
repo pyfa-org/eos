@@ -31,7 +31,7 @@ from ..exception import RestrictionValidationError
 
 
 RigSizeErrorData = namedtuple(
-    'RigSizeErrorData', ('item_size', 'allowed_size'))
+    'RigSizeErrorData', ('size', 'allowed_size'))
 
 
 class RigSizeRestrictionRegister(BaseRestrictionRegister):
@@ -82,12 +82,12 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
             return
         tainted_items = {}
         for item in self.__restricted_items:
-            item_rig_size = item._type_attributes[AttributeId.rig_size]
+            rig_size = item._type_attributes[AttributeId.rig_size]
             # If rig size specification on item and ship differs, then item is
             # tainted
-            if item_rig_size != allowed_rig_size:
+            if rig_size != allowed_rig_size:
                 tainted_items[item] = RigSizeErrorData(
-                    item_size=item_rig_size,
+                    size=rig_size,
                     allowed_size=allowed_rig_size)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

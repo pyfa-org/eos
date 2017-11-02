@@ -40,8 +40,8 @@ class TestDroneGroup(RestrictionTestCase):
             item, Restriction.drone_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_group_ids, [4])
         self.assertEqual(restriction_error.group_id, 56)
+        self.assertCountEqual(restriction_error.allowed_group_ids, [4])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -58,8 +58,8 @@ class TestDroneGroup(RestrictionTestCase):
             item, Restriction.drone_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_group_ids, [69])
         self.assertEqual(restriction_error.group_id, 797)
+        self.assertCountEqual(restriction_error.allowed_group_ids, [69])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -77,8 +77,8 @@ class TestDroneGroup(RestrictionTestCase):
             item, Restriction.drone_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_group_ids, [48, 106])
         self.assertEqual(restriction_error.group_id, 803)
+        self.assertCountEqual(restriction_error.allowed_group_ids, [48, 106])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -94,8 +94,8 @@ class TestDroneGroup(RestrictionTestCase):
             item, Restriction.drone_group)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertCountEqual(restriction_error.allowed_group_ids, [1896])
         self.assertEqual(restriction_error.group_id, None)
+        self.assertCountEqual(restriction_error.allowed_group_ids, [1896])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

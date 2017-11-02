@@ -63,7 +63,7 @@ class Converter:
             type_abils = typeabils_reformat.setdefault(row['typeID'], {})
             type_abils[row['abilityID']] = {
                 'cooldown_time': row.get('cooldownSeconds'),
-                'charge_amount': row.get('chargeCount'),
+                'charge_quantity': row.get('chargeCount'),
                 'charge_rearm_time': row.get('rearmTimeSeconds')}
 
         # Convert attributes

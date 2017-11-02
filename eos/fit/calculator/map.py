@@ -87,7 +87,7 @@ MULTIPLICATION_OPERATORS = (
     ModifierOperator.post_div,
     ModifierOperator.post_percent)
 
-# Following attributes have limited precision - only to second number after
+# Following attributes have limited precision - only to second digit after
 # decimal separator
 LIMITED_PRECISION_ATTR_IDS = (
     AttributeId.cpu,

@@ -42,7 +42,7 @@ class TestRig(StatTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_ship(self):
-        # None for slot amount when no ship
+        # None for slot quantity when no ship
         # Verification
         self.assertIsNone(self.fit.stats.rig_slots.total)
         # Cleanup
@@ -50,7 +50,7 @@ class TestRig(StatTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_attr(self):
-        # None for slot amount when no attribute on ship
+        # None for slot quantity when no attribute on ship
         self.fit.ship = Ship(self.ch.type().id)
         # Verification
         self.assertIsNone(self.fit.stats.rig_slots.total)

@@ -123,7 +123,7 @@ class EosTestCase(TestCase):
             ignore_attrs: Iterable with attribute names which should be ignored
                 during check.
         """
-        entry_num = self._get_object_buffer_entry_amount(
+        entry_num = self._get_object_buffer_entry_quantity(
             object_, ignore_objects, ignore_attrs)
         # Raise error if we found any data in any attached storage
         if entry_num:
@@ -132,10 +132,10 @@ class EosTestCase(TestCase):
                 entry_num, plu)
             self.fail(msg=msg)
 
-    def _get_object_buffer_entry_amount(
+    def _get_object_buffer_entry_quantity(
             self, object_, ignore_objects=(), ignore_attrs=(),
             checked_objects=None):
-        entry_amt = 0
+        entry_quantity = 0
         # Initialize variables for initial call
         if checked_objects is None:
             checked_objects = set()
@@ -161,7 +161,7 @@ class EosTestCase(TestCase):
                     object_vars.append((None, remaining_value))
             # Do nothing if we have no idea what to do with object attribs
             else:
-                return entry_amt
+                return entry_quantity
         obj_classname = type(object_).__name__
         for attr_name, attr_val in object_vars:
             # Skip internal python attributes
@@ -192,7 +192,7 @@ class EosTestCase(TestCase):
             except TypeError:
                 pass
             else:
-                entry_amt += attr_len
+                entry_quantity += attr_len
             # Recursively check children if value we're checking is defined
             # within eos
             attr_val_module = type(attr_val).__module__
@@ -201,10 +201,10 @@ class EosTestCase(TestCase):
                 attr_val_module.startswith('eos.') or
                 isinstance(attr_val, Iterable)
             ):
-                entry_amt += self._get_object_buffer_entry_amount(
+                entry_quantity += self._get_object_buffer_entry_quantity(
                     attr_val, ignore_objects=ignore_objects,
                     ignore_attrs=ignore_attrs, checked_objects=checked_objects)
-        return entry_amt
+        return entry_quantity
 
     def _setup_args_capture(self, mock_obj, arg_list):
         """Capture all arguments passed to mock into list.

@@ -73,12 +73,12 @@ class TestConversionType(EveObjBuilderTestCase):
         self.assertEqual(len(type_fighterabils), 3)
         self.assertCountEqual(type_fighterabils, {5, 6, 50})
         self.assertDictEqual(type_fighterabils[5], {
-            'cooldown_time': None, 'charge_amount': None,
+            'cooldown_time': None, 'charge_quantity': None,
             'charge_rearm_time': None})
         self.assertDictEqual(type_fighterabils[6], {
-            'cooldown_time': 60, 'charge_amount': None,
+            'cooldown_time': 60, 'charge_quantity': None,
             'charge_rearm_time': None})
         self.assertDictEqual(type_fighterabils[50], {
-            'cooldown_time': None, 'charge_amount': 3,
+            'cooldown_time': None, 'charge_quantity': 3,
             'charge_rearm_time': 20})
         self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

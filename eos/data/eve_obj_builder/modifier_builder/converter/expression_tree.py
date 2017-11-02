@@ -50,8 +50,8 @@ class ExpressionTreeConverter:
                 where source data is not broken.
 
         Returns:
-            Tuple with iterable which contains modifiers, and amount of modifier
-            build failures we recorded.
+            Tuple with iterable which contains modifiers, and quantity of
+            modifier build failures we recorded.
 
         Raises:
             UnknownEtreeRootOperandError: If root expression row contains

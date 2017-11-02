@@ -26,7 +26,7 @@ from tests.integration.restriction.restriction_testcase import (
 
 
 class TestSubsystemSlot(RestrictionTestCase):
-    """Check functionality of subsystem slot amount restriction."""
+    """Check functionality of subsystem slot quantity restriction."""
 
     def setUp(self):
         super().setUp()
@@ -35,8 +35,8 @@ class TestSubsystemSlot(RestrictionTestCase):
             effect_id=EffectId.subsystem, category_id=EffectCategoryId.passive)
 
     def test_fail_excess_single(self):
-        # Check that error is raised when number of used slots exceeds slot
-        # amount provided by ship
+        # Check that error is raised when quantity of used slots exceeds slot
+        # quantity provided by ship
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.max_subsystems: 0}).id)
         item = Subsystem(self.ch.type(effects=[self.effect]).id)
@@ -46,14 +46,14 @@ class TestSubsystemSlot(RestrictionTestCase):
             item, Restriction.subsystem_slot)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
+        self.assertEqual(restriction_error.used, 1)
+        self.assertEqual(restriction_error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_single_no_ship(self):
-        # When stats module does not specify total slot amount, make sure it's
+        # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
         item = Subsystem(self.ch.type(effects=[self.effect]).id)
         self.fit.subsystems.add(item)
@@ -62,8 +62,8 @@ class TestSubsystemSlot(RestrictionTestCase):
             item, Restriction.subsystem_slot)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
+        self.assertEqual(restriction_error.used, 1)
+        self.assertEqual(restriction_error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -82,15 +82,15 @@ class TestSubsystemSlot(RestrictionTestCase):
             item1, Restriction.subsystem_slot)
         # Verification
         self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.slots_max_allowed, 1)
-        self.assertEqual(restriction_error1.slots_used, 2)
+        self.assertEqual(restriction_error1.used, 2)
+        self.assertEqual(restriction_error1.total, 1)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.subsystem_slot)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.slots_max_allowed, 1)
-        self.assertEqual(restriction_error2.slots_used, 2)
+        self.assertEqual(restriction_error2.used, 2)
+        self.assertEqual(restriction_error2.total, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

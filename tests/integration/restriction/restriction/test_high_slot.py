@@ -26,7 +26,7 @@ from tests.integration.restriction.restriction_testcase import (
 
 
 class TestHighSlot(RestrictionTestCase):
-    """Check functionality of high slot amount restriction."""
+    """Check functionality of high slot quantity restriction."""
 
     def setUp(self):
         super().setUp()
@@ -35,8 +35,8 @@ class TestHighSlot(RestrictionTestCase):
             effect_id=EffectId.hi_power, category_id=EffectCategoryId.passive)
 
     def test_fail_excess_single(self):
-        # Check that error is raised when number of used slots exceeds slot
-        # amount provided by ship
+        # Check that error is raised when quantity of used slots exceeds slot
+        # quantity provided by ship
         self.fit.ship = Ship(self.ch.type(
             attributes={AttributeId.hi_slots: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
@@ -46,14 +46,14 @@ class TestHighSlot(RestrictionTestCase):
             item, Restriction.high_slot)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
+        self.assertEqual(restriction_error.used, 1)
+        self.assertEqual(restriction_error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_single_no_ship(self):
-        # When stats module does not specify total slot amount, make sure it's
+        # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
@@ -62,8 +62,8 @@ class TestHighSlot(RestrictionTestCase):
             item, Restriction.high_slot)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
+        self.assertEqual(restriction_error.used, 1)
+        self.assertEqual(restriction_error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -88,8 +88,8 @@ class TestHighSlot(RestrictionTestCase):
             item2, Restriction.high_slot)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.slots_max_allowed, 1)
-        self.assertEqual(restriction_error2.slots_used, 2)
+        self.assertEqual(restriction_error2.used, 2)
+        self.assertEqual(restriction_error2.total, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -115,15 +115,15 @@ class TestHighSlot(RestrictionTestCase):
             item2, Restriction.high_slot)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.slots_max_allowed, 3)
-        self.assertEqual(restriction_error2.slots_used, 7)
+        self.assertEqual(restriction_error2.used, 7)
+        self.assertEqual(restriction_error2.total, 3)
         # Action
         restriction_error3 = self.get_restriction_error(
             item2, Restriction.high_slot)
         # Verification
         self.assertIsNotNone(restriction_error3)
-        self.assertEqual(restriction_error3.slots_max_allowed, 3)
-        self.assertEqual(restriction_error3.slots_used, 7)
+        self.assertEqual(restriction_error3.used, 7)
+        self.assertEqual(restriction_error3.total, 3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -45,8 +45,8 @@ class TestRigSize(RestrictionTestCase):
             item, Restriction.rig_size)
         # Verification
         self.assertIsNotNone(restriction_error)
+        self.assertEqual(restriction_error.size, 10)
         self.assertEqual(restriction_error.allowed_size, 6)
-        self.assertEqual(restriction_error.item_size, 10)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

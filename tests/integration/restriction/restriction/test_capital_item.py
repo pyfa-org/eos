@@ -40,8 +40,8 @@ class TestCapitalItem(RestrictionTestCase):
             item, Restriction.capital_item)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        self.assertEqual(restriction_error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -57,8 +57,8 @@ class TestCapitalItem(RestrictionTestCase):
             item, Restriction.capital_item)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        self.assertEqual(restriction_error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -77,8 +77,8 @@ class TestCapitalItem(RestrictionTestCase):
             item, Restriction.capital_item)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.max_subcap_volume, 3500)
         self.assertEqual(restriction_error.item_volume, 3501)
+        self.assertEqual(restriction_error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

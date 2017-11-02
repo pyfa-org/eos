@@ -46,8 +46,8 @@ class TestChargeSize(RestrictionTestCase):
             charge, Restriction.charge_size)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.size, 2)
+        self.assertEqual(restriction_error2.allowed_size, 3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -70,8 +70,8 @@ class TestChargeSize(RestrictionTestCase):
             charge, Restriction.charge_size)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.allowed_size, 1)
         self.assertEqual(restriction_error2.size, 2)
+        self.assertEqual(restriction_error2.allowed_size, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -93,8 +93,8 @@ class TestChargeSize(RestrictionTestCase):
             charge, Restriction.charge_size)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.allowed_size, 3)
         self.assertEqual(restriction_error2.size, None)
+        self.assertEqual(restriction_error2.allowed_size, 3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

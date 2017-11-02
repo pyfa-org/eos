@@ -33,8 +33,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.ch.attr(attribute_id=AttributeId.max_active_drones)
 
     def test_fail_excess_single(self):
-        # Check that error is raised when number of used slots exceeds slot
-        # amount provided by char
+        # Check that error is raised when quantity of used slots exceeds slot
+        # quantity provided by char
         self.fit.character = Character(self.ch.type(
             attributes={AttributeId.max_active_drones: 0}).id)
         item = Drone(self.ch.type().id, state=State.online)
@@ -44,14 +44,14 @@ class TestLaunchedDrone(RestrictionTestCase):
             item, Restriction.launched_drone)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
+        self.assertEqual(restriction_error.used, 1)
+        self.assertEqual(restriction_error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_single_no_char(self):
-        # When stats module does not specify total slot amount, make sure it's
+        # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
         self.fit.character = None
         item = Drone(self.ch.type().id, state=State.online)
@@ -61,8 +61,8 @@ class TestLaunchedDrone(RestrictionTestCase):
             item, Restriction.launched_drone)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.slots_max_allowed, 0)
-        self.assertEqual(restriction_error.slots_used, 1)
+        self.assertEqual(restriction_error.used, 1)
+        self.assertEqual(restriction_error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -81,15 +81,15 @@ class TestLaunchedDrone(RestrictionTestCase):
             item1, Restriction.launched_drone)
         # Verification
         self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.slots_max_allowed, 1)
-        self.assertEqual(restriction_error1.slots_used, 2)
+        self.assertEqual(restriction_error1.used, 2)
+        self.assertEqual(restriction_error1.total, 1)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.launched_drone)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.slots_max_allowed, 1)
-        self.assertEqual(restriction_error2.slots_used, 2)
+        self.assertEqual(restriction_error2.used, 2)
+        self.assertEqual(restriction_error2.total, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -153,8 +153,8 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_other_item_class(self):
-        # Check that error is raised when number of used slots exceeds slot
-        # amount provided by char
+        # Check that error is raised when quantity of used slots exceeds slot
+        # quantity provided by char
         self.fit.character = Character(self.ch.type(
             attributes={AttributeId.max_active_drones: 0}).id)
         item = ModuleHigh(self.ch.type().id, state=State.online)

@@ -29,7 +29,7 @@ from ..exception import RestrictionValidationError
 
 
 SkillRequirementErrorData = namedtuple(
-    'SkillRequirementErrorData', ('skill', 'level', 'required_level'))
+    'SkillRequirementErrorData', ('skill_type_id', 'level', 'required_level'))
 
 EXCEPTIONS = (Rig,)
 
@@ -96,7 +96,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
                 # item is tainted; mark it so and move to the next one
                 if skill_level is None or skill_level < skillrq_level:
                     skill_requirement_error = SkillRequirementErrorData(
-                        skill=skillrq_type_id,
+                        skill_type_id=skillrq_type_id,
                         level=skill_level,
                         required_level=skillrq_level)
                     skillrq_errors.append(skill_requirement_error)

@@ -38,7 +38,7 @@ class TestState(RestrictionTestCase):
         restriction_error = self.get_restriction_error(item, Restriction.state)
         # Verification
         self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.current_state, State.overload)
+        self.assertEqual(restriction_error.state, State.overload)
         self.assertCountEqual(
             restriction_error.allowed_states,
             (State.offline, State.online, State.active))

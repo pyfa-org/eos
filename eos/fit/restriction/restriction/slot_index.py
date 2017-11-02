@@ -29,7 +29,7 @@ from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('item_slot_index',))
+SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('slot_index',))
 
 
 class SlotIndexRestrictionRegister(BaseRestrictionRegister):
@@ -74,7 +74,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
             if len(slot_index_items) > 1:
                 for item in slot_index_items:
                     tainted_items[item] = SlotIndexErrorData(
-                        item_slot_index=slot_index)
+                        slot_index=slot_index)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
 

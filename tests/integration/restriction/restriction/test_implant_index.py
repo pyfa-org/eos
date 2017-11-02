@@ -44,12 +44,12 @@ class TestImplantIndex(RestrictionTestCase):
         restriction_error1 = self.get_restriction_error(
             item1, Restriction.implant_index)
         self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.item_slot_index, 120)
+        self.assertEqual(restriction_error1.slot_index, 120)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.implant_index)
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.item_slot_index, 120)
+        self.assertEqual(restriction_error2.slot_index, 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -66,13 +66,13 @@ class TestImplantIndex(RestrictionTestCase):
             item1, Restriction.implant_index)
         # Verification
         self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.item_slot_index, 120)
+        self.assertEqual(restriction_error1.slot_index, 120)
         # Action
         restriction_error2 = self.get_restriction_error(
             item2, Restriction.implant_index)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.item_slot_index, 120)
+        self.assertEqual(restriction_error2.slot_index, 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

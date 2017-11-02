@@ -51,7 +51,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_char(self):
-        # None for slot amount when no ship
+        # None for slot quantity when no ship
         self.fit.character = None
         # Verification
         self.assertIsNone(self.fit.stats.launched_drones.total)
@@ -60,7 +60,7 @@ class TestLaunchedDrone(StatTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_attr(self):
-        # None for slot amount when no attribute on ship
+        # None for slot quantity when no attribute on ship
         self.fit.character = Character(self.ch.type().id)
         # Verification
         self.assertIsNone(self.fit.stats.launched_drones.total)

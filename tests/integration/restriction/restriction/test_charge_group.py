@@ -45,8 +45,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         self.assertEqual(restriction_error2.group_id, 1008)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -68,8 +68,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         self.assertEqual(restriction_error2.group_id, 1008)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -91,8 +91,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         self.assertEqual(restriction_error2.group_id, 1008)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -114,8 +114,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         self.assertEqual(restriction_error2.group_id, 1008)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -137,8 +137,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         self.assertEqual(restriction_error2.group_id, 1008)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -160,8 +160,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         self.assertEqual(restriction_error2.group_id, None)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -185,8 +185,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         self.assertEqual(restriction_error2.group_id, 1008)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -210,8 +210,8 @@ class TestChargeGroup(RestrictionTestCase):
             charge, Restriction.charge_group)
         # Verification
         self.assertIsNotNone(restriction_error2)
-        self.assertCountEqual(restriction_error2.allowed_group_ids, [3, 5])
         self.assertEqual(restriction_error2.group_id, 1008)
+        self.assertCountEqual(restriction_error2.allowed_group_ids, [3, 5])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
