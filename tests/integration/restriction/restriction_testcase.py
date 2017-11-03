@@ -28,7 +28,7 @@ class RestrictionTestCase(IntegrationTestCase):
     """Class which should be used by restriction service tests.
 
     Attributes:
-        fit: Precreated fit, as it's used in almost all tests.
+        fit: Pre-created fit.
     """
 
     def setUp(self):

@@ -27,7 +27,7 @@ class CalculatorTestCase(IntegrationTestCase):
     """Class which should be used by attribute calculator tests.
 
     Attributes:
-        fit: Precreated fit, as it's used in almost all tests.
+        fit: Pre-created fit.
     """
 
     def setUp(self):

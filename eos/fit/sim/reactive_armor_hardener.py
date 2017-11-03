@@ -400,10 +400,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # that cycle for the slowest RAH has just ended. It is zero for the very
         # first tick in the history too, thus we skip it, but take it into
         # initial tick count
-        ignored_tick_quantity = 1
-        tick_count = ignored_tick_quantity
+        ignored_tick_count = 1
+        tick_count = ignored_tick_count
         cycle_count = 0
-        for tick_state in tick_states[ignored_tick_quantity:]:
+        for tick_state in tick_states[ignored_tick_count:]:
             # Once slowest RAH finished last cycle, do not count this tick and
             # break the loop
             for item_state in tick_state:

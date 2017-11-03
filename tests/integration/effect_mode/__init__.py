@@ -17,22 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ==============================================================================
-
-
-from eos import Fit
-from tests.integration.integration_testcase import IntegrationTestCase
-
-
-class StatTestCase(IntegrationTestCase):
-    """Class which should be used by restriction service tests.
-
-    Attributes:
-        fit: Pre-created fit.
-    """
-
-    def setUp(self):
-        super().setUp()
-        self.fit = Fit()
-
-    def get_log(self, name='eos.fit.stats*'):
-        return super().get_log(name=name)

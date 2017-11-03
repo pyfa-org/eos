@@ -29,7 +29,7 @@ class RahSimTestCase(IntegrationTestCase):
     """Class which should be used by RAH simulator tests.
 
     Attributes:
-        fit: Precreated fit, as it's used in almost all tests.
+        fit: Pre-created fit.
         rah_effect: RAH main effect.
         heat_effect: RAH heat effect.
         max_attr: Attribute which is intended to cap ship resistances.

@@ -36,7 +36,7 @@ class ExpressionTreeConverter:
     """
 
     def __init__(self, exp_rows):
-        self._fails = None
+        self._fail_count = None
         self._mods = None
         self.__exp_rows = self.__prepare_exp_rows(exp_rows)
 
@@ -57,11 +57,11 @@ class ExpressionTreeConverter:
             UnknownEtreeRootOperandError: If root expression row contains
                 operand with ID we do not know how to handle.
         """
-        self._fails = 0
+        self._fail_count = 0
         self._mods = []
         root_exp_row = self.__exp_rows.get(pre_root_id)
         self._parse(root_exp_row, root=True)
-        return self._mods, self._fails
+        return self._mods, self._fail_count
 
     def _parse(self, exp_row, root=False):
         operand_id = exp_row.get('operandID')
@@ -81,7 +81,7 @@ class ExpressionTreeConverter:
             # If we are not on root (came here via at least one splice), and if
             # we do not know what to do, consider it as build error
             else:
-                self._fails += 1
+                self._fail_count += 1
                 return
         else:
             try:
@@ -91,7 +91,7 @@ class ExpressionTreeConverter:
             # If there're any kind of errors in handler, also consider it as
             # build failure
             except Exception:
-                self._fails += 1
+                self._fail_count += 1
                 return
 
     def _handle_splice(self, exp_row):

@@ -20,19 +20,32 @@
 
 
 from eos import Fit
+from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
-class StatTestCase(IntegrationTestCase):
-    """Class which should be used by restriction service tests.
+class EffectModeTestCase(IntegrationTestCase):
+    """Class which should be used by effect mode tests.
+
+    With these tests we check in which cases which effects are enabled and
+    disabled by running attribute calculation, which may be or may be not
+    modified by an effect.
 
     Attributes:
         fit: Pre-created fit.
+        src_attr: Attribute which should be used as modification source.
+        tgt_attr: Attribute which should be used as modification target.
+        modifier: Modifier which modifies target attribute.
     """
 
     def setUp(self):
         super().setUp()
         self.fit = Fit()
-
-    def get_log(self, name='eos.fit.stats*'):
-        return super().get_log(name=name)
+        self.src_attr = self.ch.attr()
+        self.tgt_attr = self.ch.attr()
+        self.modifier = self.mod(
+            tgt_filter=ModifierTargetFilter.item,
+            tgt_domain=ModifierDomain.self,
+            tgt_attr_id=self.tgt_attr.id,
+            operator=ModifierOperator.mod_add,
+            src_attr_id=self.src_attr.id)
