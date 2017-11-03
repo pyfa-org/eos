@@ -27,7 +27,7 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 
 class TestFullComplianceOnline(EffectModeTestCase):
 
-    def test_running_normal(self):
+    def test_running_on_add(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[self.modifier])
         online_effect = self.ch.effect(
@@ -37,6 +37,7 @@ class TestFullComplianceOnline(EffectModeTestCase):
                 attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
         # Action
         self.fit.modules.high.append(item)
         # Verification
@@ -45,7 +46,71 @@ class TestFullComplianceOnline(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_stopped_no_online_effect(self):
+    def test_running_on_state_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.offline)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Action
+        item.state = State.online
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_running_on_mode_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.force_stop)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Action
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_running_on_online_mode_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        item.set_effect_mode(online_effect.id, EffectMode.force_stop)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Action
+        item.set_effect_mode(online_effect.id, EffectMode.full_compliance)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_no_online_effect_on_add(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[self.modifier])
         item = ModuleHigh(
@@ -53,8 +118,152 @@ class TestFullComplianceOnline(EffectModeTestCase):
                 attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
         # Action
         self.fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_no_online_effect_on_mode_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect]).id,
+            state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.force_run)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Action
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_disabled_online_effect_on_add(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        item.set_effect_mode(online_effect.id, EffectMode.force_stop)
+        # Action
+        self.fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_disabled_online_effect_on_mode_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.force_run)
+        item.set_effect_mode(online_effect.id, EffectMode.force_stop)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Action
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_disabled_online_effect_on_online_mode_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Action
+        item.set_effect_mode(online_effect.id, EffectMode.force_stop)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_insufficient_state_on_add(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.offline)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        # Action
+        self.fit.modules.high.append(item)
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_insufficient_state_on_state_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.online)
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Action
+        item.state = State.offline
+        # Verification
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stopped_insufficient_state_on_mode_switch(self):
+        effect = self.ch.effect(
+            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        online_effect = self.ch.effect(
+            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        item = ModuleHigh(
+            self.ch.type(
+                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                effects=[effect, online_effect]).id,
+            state=State.offline)
+        item.set_effect_mode(effect.id, EffectMode.force_run)
+        self.fit.modules.high.append(item)
+        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        # Action
+        item.set_effect_mode(effect.id, EffectMode.full_compliance)
         # Verification
         self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
         # Cleanup
