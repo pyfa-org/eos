@@ -76,13 +76,13 @@ class TestModeMultiset(EffectModeTestCase):
         item = ModuleHigh(
             self.ch.type(
                 attributes={
-                    tgt_attr_fullcomp.id: 10, src_attr_fullcomp: 2,
-                    tgt_attr_statecomp.id: 10, src_attr_statecomp: 2,
-                    tgt_attr_forcerun.id: 10, src_attr_forcerun: 2,
-                    tgt_attr_forcestop.id: 10, src_attr_forcestop: 2},
-                effects=[
+                    tgt_attr_fullcomp.id: 10, src_attr_fullcomp.id: 2,
+                    tgt_attr_statecomp.id: 10, src_attr_statecomp.id: 2,
+                    tgt_attr_forcerun.id: 10, src_attr_forcerun.id: 2,
+                    tgt_attr_forcestop.id: 10, src_attr_forcestop.id: 2},
+                effects=(
                     effect_fullcomp, effect_statecomp,
-                    effect_forcerun, effect_forcestop]).id,
+                    effect_forcerun, effect_forcestop)).id,
             state=State.active)
         self.fit.modules.high.append(item)
         self.assertAlmostEqual(item.attributes[tgt_attr_fullcomp.id], 10)
@@ -98,8 +98,8 @@ class TestModeMultiset(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attributes[tgt_attr_fullcomp.id], 10)
         self.assertAlmostEqual(item.attributes[tgt_attr_statecomp.id], 12)
-        self.assertAlmostEqual(item.attributes[tgt_attr_forcerun.id], 10)
-        self.assertAlmostEqual(item.attributes[tgt_attr_forcestop.id], 12)
+        self.assertAlmostEqual(item.attributes[tgt_attr_forcerun.id], 12)
+        self.assertAlmostEqual(item.attributes[tgt_attr_forcestop.id], 10)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

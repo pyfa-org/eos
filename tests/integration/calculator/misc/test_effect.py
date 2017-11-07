@@ -84,8 +84,7 @@ class TestEffectToggling(CalculatorTestCase):
         # Action
         self.item.set_effect_mode(self.effect1.id, EffectMode.force_stop)
         self.item.set_effect_mode(self.effect2.id, EffectMode.force_stop)
-        self.item.set_effect_mode(
-            self.effect_active.id, EffectMode.force_stop)
+        self.item.set_effect_mode(self.effect_active.id, EffectMode.force_stop)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
         # Cleanup
@@ -98,8 +97,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.set_effect_mode(self.effect1.id, EffectMode.force_stop)
         self.fit.modules.high.append(self.item)
         # Action
-        self.item.set_effect_mode(
-            self.effect1.id, EffectMode.state_compliance)
+        self.item.set_effect_mode(self.effect1.id, EffectMode.state_compliance)
         # Verification
         self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
         # Cleanup
@@ -113,10 +111,8 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.set_effect_mode(self.effect2.id, EffectMode.force_stop)
         self.fit.modules.high.append(self.item)
         # Action
-        self.item.set_effect_mode(
-            self.effect1.id, EffectMode.state_compliance)
-        self.item.set_effect_mode(
-            self.effect2.id, EffectMode.state_compliance)
+        self.item.set_effect_mode(self.effect1.id, EffectMode.state_compliance)
+        self.item.set_effect_mode(self.effect2.id, EffectMode.state_compliance)
         self.item.set_effect_mode(
             self.effect_active.id, EffectMode.state_compliance)
         # Verification

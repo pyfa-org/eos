@@ -269,7 +269,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         Set modes of multiple effects for this item.
 
         Args:
-            effects_modes: Map in the form of {effect ID: effect run mode}.
+            effects_modes: Map in {effect ID: effect run mode} format.
         """
         for effect_id, effect_mode in effects_modes.items():
             # If new mode is default, then remove it from override map
@@ -277,7 +277,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 # If override map is not initialized, we're not changing
                 # anything
                 if self.__effect_mode_overrides is None:
-                    return
+                    continue
                 # Try removing value from override map and do nothing if it
                 # fails. It means that default mode was requested for an effect
                 # for which getter will return default anyway
@@ -293,7 +293,10 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
                 self.__effect_mode_overrides[effect_id] = effect_mode
         # After all the changes we did, check if there's any data in overrides
         # map, if there's no data, replace it with None to save memory
-        if not self.__effect_mode_overrides:
+        if (
+            self.__effect_mode_overrides is not None and
+            len(self.__effect_mode_overrides) == 0
+        ):
             self.__effect_mode_overrides = None
         fit = self._fit
         if fit is not None:
