@@ -19,10 +19,7 @@
 # ==============================================================================
 
 
-from ..message.base import BaseInputMessage, BaseInstructionMessage
-
-
-class FitMessageBroker:
+class MessageBroker:
     """Manages message subscriptions and dispatch messages to recipients."""
 
     def __init__(self):
@@ -49,14 +46,12 @@ class FitMessageBroker:
             del self.__subscribers[message_type]
 
     def _publish(self, message):
-        """Publish message.
+        """Publish single message."""
+        for subscriber in self.__subscribers.get(type(message), ()):
+            subscriber._notify(message)
 
-        Deliver it to all subscribers.
-        """
-        if isinstance(message, BaseInputMessage):
-            for message in (message, *message.get_instructions()):
-                for subscriber in self.__subscribers.get(type(message), ()):
-                    subscriber._notify(message)
-        elif isinstance(message, BaseInstructionMessage):
+    def _publish_bulk(self, messages):
+        """Publish multiple messages."""
+        for message in messages:
             for subscriber in self.__subscribers.get(type(message), ()):
                 subscriber._notify(message)

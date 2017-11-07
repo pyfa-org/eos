@@ -21,8 +21,8 @@
 
 from .pubsub.message import (
     InputDefaultIncomingDamageChanged, InputEffectsRunModeChanged,
-    InputItemAdded, InputItemRemoved, InputSkillLevelChanged,
-    InputSourceChanged, InputStateChanged)
+    ItemAdded, temRemoved, InputSkillLevelChanged,
+    InputSourceChanged, ItemStateChanged)
 from .pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import (
     CooperativeVolatileMixin, InheritableVolatileMixin)
@@ -61,9 +61,9 @@ class FitVolatileManager(BaseSubscriber):
         self.__clear_volatile_attrs()
 
     _handler_map = {
-        InputItemAdded: _handle_item_addition,
-        InputItemRemoved: _handle_item_removal,
-        InputStateChanged: _handle_other_changes,
+        ItemAdded: _handle_item_addition,
+        temRemoved: _handle_item_removal,
+        ItemStateChanged: _handle_other_changes,
         InputEffectsRunModeChanged: _handle_other_changes,
         InputSkillLevelChanged: _handle_other_changes,
         InputSourceChanged: _handle_other_changes,

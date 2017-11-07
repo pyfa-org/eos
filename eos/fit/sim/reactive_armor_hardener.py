@@ -25,7 +25,7 @@ from math import ceil, floor
 
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.pubsub.message import (
-    InstrAttrValueChanged, InstrAttrValueChangedMasked,
+    AttrValueChanged, AttrValueChangedMasked,
     InputDefaultIncomingDamageChanged, InstrEffectsStart, InstrEffectsStop)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
@@ -467,8 +467,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     _handler_map = {
         InstrEffectsStart: _handle_effects_activation,
         InstrEffectsStop: _handle_effects_deactivation,
-        InstrAttrValueChanged: _handle_attr_change,
-        InstrAttrValueChangedMasked: _handle_attr_change_masked,
+        AttrValueChanged: _handle_attr_change,
+        AttrValueChangedMasked: _handle_attr_change_masked,
         InputDefaultIncomingDamageChanged: _handle_changed_damage_profile}
 
     def _notify(self, message):

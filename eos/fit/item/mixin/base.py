@@ -25,7 +25,7 @@ from eos.const.eos import EffectMode, State
 from eos.const.eve import EffectId
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import (
-    InputEffectsRunModeChanged, InputItemAdded, InputItemRemoved,
+    InputEffectsRunModeChanged, ItemAdded, temRemoved,
     InstrRefreshSource)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 
@@ -80,10 +80,10 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
             # Unlink fit and contained items first
             if charge is not None:
                 old_fit._unsubscribe(charge, charge._handler_map.keys())
-                old_fit._publish(InputItemRemoved(charge))
+                old_fit._publish(temRemoved(charge))
             # Then unlink fit and item itself
             old_fit._unsubscribe(self, self._handler_map.keys())
-            old_fit._publish(InputItemRemoved(self))
+            old_fit._publish(temRemoved(self))
         self.__container = new_container
         self._refresh_source()
         if charge is not None:
@@ -92,11 +92,11 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         new_fit = self._fit
         if new_fit is not None:
             # Link fit and item itself first
-            new_fit._publish(InputItemAdded(self))
+            new_fit._publish(ItemAdded(self))
             new_fit._subscribe(self, self._handler_map.keys())
             # Then link fit and contained items
             if charge is not None:
-                new_fit._publish(InputItemAdded(charge))
+                new_fit._publish(ItemAdded(charge))
                 new_fit._subscribe(charge, charge._handler_map.keys())
 
     @property

@@ -28,9 +28,9 @@ from .container import (
     ItemDescriptor, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
 from .helper import DamageTypes
 from .item import *
-from .pubsub.broker import FitMessageBroker
+from .pubsub.broker import MessageBroker
 from .pubsub.message import (
-    InputDefaultIncomingDamageChanged, InputItemAdded, InputItemRemoved,
+    InputDefaultIncomingDamageChanged, ItemAdded, temRemoved,
     InputSourceChanged)
 from .pubsub.subscriber import BaseSubscriber
 from .restriction import RestrictionService
@@ -39,7 +39,7 @@ from .stats import StatService
 from .volatile import FitVolatileManager
 
 
-class Fit(FitMessageBroker, BaseSubscriber):
+class Fit(MessageBroker, BaseSubscriber):
     """Definition of fit.
 
     Fit is one of eos' central objects - it holds all fit items and facilities
@@ -69,7 +69,7 @@ class Fit(FitMessageBroker, BaseSubscriber):
     """
 
     def __init__(self, source=DEFAULT):
-        FitMessageBroker.__init__(self)
+        MessageBroker.__init__(self)
         self.__source = None
         self.__default_incoming_damage = DamageTypes(
             em=25, thermal=25, kinetic=25, explosive=25)
@@ -178,8 +178,8 @@ class Fit(FitMessageBroker, BaseSubscriber):
         self.__items.discard(message.item)
 
     _handler_map = {
-        InputItemAdded: _handle_item_addition,
-        InputItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_addition,
+        temRemoved: _handle_item_removal}
 
     # Auxiliary methods
     def __repr__(self):
