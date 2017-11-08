@@ -22,13 +22,13 @@
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, EffectCategoryId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestDroneBayVolume(StatTestCase):
+class TestDroneBayVolume(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.drone_capacity)
         self.ch.attr(attribute_id=AttributeId.volume)
 

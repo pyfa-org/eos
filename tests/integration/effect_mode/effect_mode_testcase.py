@@ -39,7 +39,7 @@ class EffectModeTestCase(IntegrationTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        IntegrationTestCase.setUp(self)
         self.fit = Fit()
         self.src_attr = self.ch.attr()
         self.tgt_attr = self.ch.attr()

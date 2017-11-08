@@ -29,7 +29,7 @@ class TestHighSlot(RestrictionTestCase):
     """Check functionality of high slot quantity restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.hi_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.hi_power, category_id=EffectCategoryId.passive)

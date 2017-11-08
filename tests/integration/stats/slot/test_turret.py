@@ -22,13 +22,13 @@
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, EffectId, EffectCategoryId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestTurretSlot(StatTestCase):
+class TestTurretSlot(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.turret_slots_left)
         self.effect = self.ch.effect(
             effect_id=EffectId.turret_fitted,

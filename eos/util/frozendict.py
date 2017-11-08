@@ -29,7 +29,7 @@ with further modifications by me.
 class frozendict(dict):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        dict.__init__(self, *args, **kwargs)
         self.__hash = None
 
     def __blocked_attribute(self, *args, **kwargs):

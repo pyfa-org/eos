@@ -29,7 +29,7 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
 
     def setUp(self):
-        super().setUp()
+        ModBuilderTestCase.setUp(self)
         e_tgt = self.ef.make(
             1, operandID=OperandId.def_dom, expressionValue='UnknownDomain')
         e_tgt_attr = self.ef.make(

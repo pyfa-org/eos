@@ -30,7 +30,7 @@ class TestPowerGrid(RestrictionTestCase):
     """Check functionality of power grid restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.power)
         self.ch.attr(attribute_id=AttributeId.power_output)
         self.effect = self.ch.effect(

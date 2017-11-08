@@ -30,7 +30,7 @@ class TestCalibration(RestrictionTestCase):
     """Check functionality of calibration restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.upgrade_cost)
         self.ch.attr(attribute_id=AttributeId.upgrade_capacity)
         self.effect = self.ch.effect(

@@ -40,7 +40,7 @@ class IntegrationTestCase(EosTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        EosTestCase.setUp(self)
         self.ch2 = self._make_cache_handler()
         # Replace existing sources with test source
         self.__backup_sources = copy(SourceManager._sources)
@@ -54,7 +54,7 @@ class IntegrationTestCase(EosTestCase):
         SourceManager._sources.clear()
         SourceManager._sources.update(self.__backup_sources)
         SourceManager.default = self.__backup_default_source
-        super().tearDown()
+        EosTestCase.tearDown(self)
 
     def __make_source(self, alias, cache_handler, make_default=False):
         source = Source(alias, cache_handler)

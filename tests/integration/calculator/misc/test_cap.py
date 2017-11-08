@@ -29,7 +29,7 @@ class TestCap(CalculatorTestCase):
     """Test how capped attribute values are processed."""
 
     def setUp(self):
-        super().setUp()
+        CalculatorTestCase.setUp(self)
         self.capping_attr = self.ch.attr(default_value=5)
         self.capped_attr = self.ch.attr(max_attribute_id=self.capping_attr.id)
         self.src_attr = self.ch.attr()

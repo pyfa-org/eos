@@ -30,7 +30,7 @@ class TestDroneBandwidth(RestrictionTestCase):
     """Check functionality of drone bandwidth restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.drone_bandwidth)
         self.ch.attr(attribute_id=AttributeId.drone_bandwidth_used)
 

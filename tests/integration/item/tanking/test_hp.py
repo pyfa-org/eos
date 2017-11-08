@@ -27,7 +27,7 @@ from tests.integration.item.item_testcase import ItemMixinTestCase
 class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def setUp(self):
-        super().setUp()
+        ItemMixinTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.hp)
         self.ch.attr(attribute_id=AttributeId.armor_hp)
         self.ch.attr(attribute_id=AttributeId.shield_capacity)

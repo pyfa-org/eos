@@ -21,13 +21,13 @@
 
 from eos import *
 from eos.const.eve import AttributeId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestHp(StatTestCase):
+class TestHp(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.hp)
         self.ch.attr(attribute_id=AttributeId.armor_hp)
         self.ch.attr(attribute_id=AttributeId.shield_capacity)

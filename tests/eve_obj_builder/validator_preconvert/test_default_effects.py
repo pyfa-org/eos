@@ -30,7 +30,7 @@ class TestDefaultEffects(EveObjBuilderTestCase):
     logger_name = 'eos.data.eve_obj_builder.validator_preconv'
 
     def setUp(self):
-        super().setUp()
+        EveObjBuilderTestCase.setUp(self)
         self.type = {'typeID': 1, 'groupID': 1}
         self.dh.data['evetypes'].append(self.type)
         self.eff_link1 = {'typeID': 1, 'effectID': 1}

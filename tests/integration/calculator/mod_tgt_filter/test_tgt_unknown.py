@@ -30,7 +30,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtFilterUnknown(CalculatorTestCase):
 
     def setUp(self):
-        super().setUp()
+        CalculatorTestCase.setUp(self)
         self.tgt_attr = tgt_attr = self.ch.attr()
         self.src_attr = src_attr = self.ch.attr()
         self.invalid_modifier = self.mod(

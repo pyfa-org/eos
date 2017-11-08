@@ -26,7 +26,8 @@ class ContainerTestCase(IntegrationTestCase):
     """Class which should be used by item container tests."""
 
     def assert_fit_buffers_empty(self, fit, clear_all=False):
-        super().assert_fit_buffers_empty(fit, clear_all=clear_all)
+        IntegrationTestCase.assert_fit_buffers_empty(
+            self, fit, clear_all=clear_all)
 
     def get_log(self, name='eos.fit.container*'):
-        return super().get_log(name=name)
+        return IntegrationTestCase.get_log(self, name=name)

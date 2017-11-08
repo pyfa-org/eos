@@ -29,7 +29,7 @@ class TestLaunchedDrone(RestrictionTestCase):
     """Check functionality of max launched drone restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.max_active_drones)
 
     def test_fail_excess_single(self):

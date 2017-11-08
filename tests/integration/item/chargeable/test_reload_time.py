@@ -27,7 +27,7 @@ from tests.integration.item.item_testcase import ItemMixinTestCase
 class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
-        super().setUp()
+        ItemMixinTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.reload_time)
 
     def test_generic(self):

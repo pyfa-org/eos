@@ -22,13 +22,13 @@
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, EffectCategoryId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestLaunchedDrone(StatTestCase):
+class TestLaunchedDrone(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.max_active_drones)
 
     def test_output(self):

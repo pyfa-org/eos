@@ -27,7 +27,7 @@ from tests.integration.item.item_testcase import ItemMixinTestCase
 class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def setUp(self):
-        super().setUp()
+        ItemMixinTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.hp)
         self.ch.attr(attribute_id=AttributeId.em_damage_resonance)
         self.ch.attr(attribute_id=AttributeId.thermal_damage_resonance)

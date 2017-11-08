@@ -29,7 +29,7 @@ class TestMediumSlot(RestrictionTestCase):
     """Check functionality of medium slot quantity restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.med_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.med_power, category_id=EffectCategoryId.passive)

@@ -31,7 +31,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestModifierPython(CalculatorTestCase):
 
     def setUp(self):
-        super().setUp()
+        CalculatorTestCase.setUp(self)
         self.attr1 = attr1 = self.ch.attr()
         self.attr2 = attr2 = self.ch.attr()
         self.attr3 = attr3 = self.ch.attr()

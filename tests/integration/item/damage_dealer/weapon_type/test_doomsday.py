@@ -27,7 +27,7 @@ from tests.integration.item.item_testcase import ItemMixinTestCase
 class TestItemDamageDoomsday(ItemMixinTestCase):
 
     def setUp(self):
-        super().setUp()
+        ItemMixinTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.em_damage)
         self.ch.attr(attribute_id=AttributeId.thermal_damage)
         self.ch.attr(attribute_id=AttributeId.kinetic_damage)

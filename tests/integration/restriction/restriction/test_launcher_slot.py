@@ -29,7 +29,7 @@ class TestLauncherSlot(RestrictionTestCase):
     """Check functionality of launcher slot quantity restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.launcher_slots_left)
         self.effect = self.ch.effect(
             effect_id=EffectId.launcher_fitted,

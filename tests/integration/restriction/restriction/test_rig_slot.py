@@ -29,7 +29,7 @@ class TestRigSlot(RestrictionTestCase):
     """Check functionality of rig slot quantity restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.rig_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)

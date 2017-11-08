@@ -29,7 +29,7 @@ from tests.modifier_builder.modbuilder_testcase import ModBuilderTestCase
 class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
 
     def setUp(self):
-        super().setUp()
+        ModBuilderTestCase.setUp(self)
         e_tgt_own = self.ef.make(
             1, operandID=OperandId.def_dom, expressionValue='Ship')
         e_tgt_srq = self.ef.make(

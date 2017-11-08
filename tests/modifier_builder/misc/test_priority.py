@@ -29,7 +29,7 @@ class TestBuilderPriority(ModBuilderTestCase):
     """Check which kind of builder is picked for which case."""
 
     def setUp(self):
-        super().setUp()
+        ModBuilderTestCase.setUp(self)
         e_tgt = self.ef.make(
             1, operandID=OperandId.def_dom, expressionValue='Ship')
         e_tgt_attr = self.ef.make(

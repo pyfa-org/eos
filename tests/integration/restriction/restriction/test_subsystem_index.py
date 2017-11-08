@@ -29,7 +29,7 @@ class TestSubsystemIndex(RestrictionTestCase):
     """Check functionality of subsystem slot index restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.index_attr = self.ch.attr(attribute_id=AttributeId.subsystem_slot)
 
     def test_fail(self):

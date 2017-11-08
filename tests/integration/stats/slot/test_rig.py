@@ -21,13 +21,13 @@
 
 from eos import *
 from eos.const.eve import AttributeId, EffectId, EffectCategoryId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestRig(StatTestCase):
+class TestRig(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.rig_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)

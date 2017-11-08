@@ -22,13 +22,13 @@
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, EffectId, EffectCategoryId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestStatsDamageDps(StatTestCase):
+class TestStatsDamageDps(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.em_damage)
         self.ch.attr(attribute_id=AttributeId.thermal_damage)
         self.ch.attr(attribute_id=AttributeId.kinetic_damage)

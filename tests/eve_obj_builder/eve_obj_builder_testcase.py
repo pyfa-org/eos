@@ -33,7 +33,7 @@ class EveObjBuilderTestCase(EosTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        EosTestCase.setUp(self)
         self.dh = DataHandler()
 
     def run_builder(self):

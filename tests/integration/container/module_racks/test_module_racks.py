@@ -26,7 +26,7 @@ from tests.integration.container.container_testcase import ContainerTestCase
 class TestContainerModuleRacks(ContainerTestCase):
 
     def setUp(self):
-        super().setUp()
+        ContainerTestCase.setUp(self)
         self.mod_high1 = ModuleHigh(self.ch.type().id)
         self.mod_high2 = ModuleHigh(self.ch.type().id)
         self.mod_med1 = ModuleMed(self.ch.type().id)

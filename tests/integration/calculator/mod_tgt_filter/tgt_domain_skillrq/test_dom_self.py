@@ -30,7 +30,7 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
 
     def setUp(self):
-        super().setUp()
+        CalculatorTestCase.setUp(self)
         self.tgt_attr = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(

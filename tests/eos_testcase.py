@@ -60,7 +60,7 @@ class EosTestCase(TestCase):
         When redefining this method in child classes, make sure to call it
         before child's setup has started.
         """
-        super().setUp()
+        TestCase.setUp(self)
         logger = getLogger()
         # Save existing data about logging system (log level and handlers)
         self.__backup_loglevel = logger.getEffectiveLevel()

@@ -29,7 +29,7 @@ class TestShipTypeGroup(RestrictionTestCase):
     """Check functionality of 'can fit to ship type/group' restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.can_fit_ship_type_1)
         self.ch.attr(attribute_id=AttributeId.can_fit_ship_type_2)
         self.ch.attr(attribute_id=AttributeId.can_fit_ship_group_1)

@@ -29,7 +29,7 @@ class TestBoosterIndex(RestrictionTestCase):
     """Check functionality of booster slot index restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.index_attr = self.ch.attr(attribute_id=AttributeId.boosterness)
 
     def test_fail(self):

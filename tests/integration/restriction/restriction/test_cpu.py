@@ -30,7 +30,7 @@ class TestCpu(RestrictionTestCase):
     """Check functionality of cpu restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.cpu)
         self.ch.attr(attribute_id=AttributeId.cpu_output)
         self.effect = self.ch.effect(

@@ -29,7 +29,7 @@ class TestImplantIndex(RestrictionTestCase):
     """Check functionality of implant slot index restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.index_attr = self.ch.attr(attribute_id=AttributeId.implantness)
 
     def test_fail(self):

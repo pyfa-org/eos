@@ -22,13 +22,13 @@
 from eos import *
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, EffectId, EffectCategoryId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestLowSlot(StatTestCase):
+class TestLowSlot(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.low_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.lo_power, category_id=EffectCategoryId.passive)

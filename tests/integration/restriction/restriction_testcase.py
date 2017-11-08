@@ -32,7 +32,7 @@ class RestrictionTestCase(IntegrationTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        IntegrationTestCase.setUp(self)
         self.fit = Fit()
 
     def get_restriction_error(self, item, restriction):
@@ -61,4 +61,4 @@ class RestrictionTestCase(IntegrationTestCase):
             return None
 
     def get_log(self, name='eos.fit.restriction*'):
-        return super().get_log(name=name)
+        return IntegrationTestCase.get_log(self, name=name)

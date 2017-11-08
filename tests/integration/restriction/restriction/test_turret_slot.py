@@ -29,7 +29,7 @@ class TestTurretSlot(RestrictionTestCase):
     """Check functionality of turret slot quantity restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.turret_slots_left)
         self.effect = self.ch.effect(
             effect_id=EffectId.turret_fitted,

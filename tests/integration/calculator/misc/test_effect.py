@@ -29,7 +29,7 @@ class TestEffectToggling(CalculatorTestCase):
     """Test effect toggling."""
 
     def setUp(self):
-        super().setUp()
+        CalculatorTestCase.setUp(self)
         self.tgt_attr = self.ch.attr(stackable=1)
         src_attr1 = self.ch.attr()
         src_attr2 = self.ch.attr()

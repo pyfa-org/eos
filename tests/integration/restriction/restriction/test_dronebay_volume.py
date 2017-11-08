@@ -29,7 +29,7 @@ class TestDroneBayVolume(RestrictionTestCase):
     """Check functionality of drone bay volume restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.volume)
         self.ch.attr(attribute_id=AttributeId.drone_capacity)
 

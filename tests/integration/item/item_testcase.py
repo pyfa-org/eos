@@ -26,4 +26,4 @@ class ItemMixinTestCase(IntegrationTestCase):
     """Class which should be used by item tests."""
 
     def get_log(self, name='eos.fit.item*'):
-        return super().get_log(name=name)
+        return IntegrationTestCase.get_log(self, name=name)

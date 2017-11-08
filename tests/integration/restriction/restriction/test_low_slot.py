@@ -29,7 +29,7 @@ class TestLowSlot(RestrictionTestCase):
     """Check functionality of low slot quantity restriction."""
 
     def setUp(self):
-        super().setUp()
+        RestrictionTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.low_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.lo_power, category_id=EffectCategoryId.passive)

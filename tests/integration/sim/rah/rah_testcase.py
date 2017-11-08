@@ -43,7 +43,7 @@ class RahSimTestCase(IntegrationTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        IntegrationTestCase.setUp(self)
         # Attribute setup
         self.max_attr = self.ch.attr(
             default_value=1.0, high_is_good=False, stackable=False)
@@ -106,4 +106,4 @@ class RahSimTestCase(IntegrationTestCase):
             default_effect=self.rah_effect)
 
     def get_log(self, name='eos.fit.sim.reactive_armor_hardener*'):
-        return super().get_log(name=name)
+        return IntegrationTestCase.get_log(self, name=name)

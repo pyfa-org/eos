@@ -23,7 +23,7 @@ from eos import Fit
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
-class StatTestCase(IntegrationTestCase):
+class StatsTestCase(IntegrationTestCase):
     """Class which should be used by restriction service tests.
 
     Attributes:
@@ -31,8 +31,8 @@ class StatTestCase(IntegrationTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        IntegrationTestCase.setUp(self)
         self.fit = Fit()
 
     def get_log(self, name='eos.fit.stats*'):
-        return super().get_log(name=name)
+        return IntegrationTestCase.get_log(self, name=name)

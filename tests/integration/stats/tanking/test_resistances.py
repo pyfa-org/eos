@@ -21,13 +21,13 @@
 
 from eos import *
 from eos.const.eve import AttributeId
-from tests.integration.stats.stat_testcase import StatTestCase
+from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestResistances(StatTestCase):
+class TestResistances(StatsTestCase):
 
     def setUp(self):
-        super().setUp()
+        StatsTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.em_damage_resonance)
         self.ch.attr(attribute_id=AttributeId.thermal_damage_resonance)
         self.ch.attr(attribute_id=AttributeId.kinetic_damage_resonance)

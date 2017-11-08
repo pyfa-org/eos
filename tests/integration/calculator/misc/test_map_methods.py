@@ -29,7 +29,7 @@ class TestMapMethods(CalculatorTestCase):
     """Test map methods not covered by other test cases."""
 
     def setUp(self):
-        super().setUp()
+        CalculatorTestCase.setUp(self)
         self.attr1 = self.ch.attr()
         self.attr2 = self.ch.attr()
         self.attr3 = self.ch.attr(default_value=11)

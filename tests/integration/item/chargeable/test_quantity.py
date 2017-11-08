@@ -27,7 +27,7 @@ from tests.integration.item.item_testcase import ItemMixinTestCase
 class TestItemMixinChargeQuantity(ItemMixinTestCase):
 
     def setUp(self):
-        super().setUp()
+        ItemMixinTestCase.setUp(self)
         self.ch.attr(attribute_id=AttributeId.capacity)
         self.ch.attr(attribute_id=AttributeId.volume)
 

@@ -31,8 +31,8 @@ class CalculatorTestCase(IntegrationTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        IntegrationTestCase.setUp(self)
         self.fit = Fit()
 
     def get_log(self, name='eos.fit.calculator*'):
-        return super().get_log(name=name)
+        return IntegrationTestCase.get_log(self, name=name)

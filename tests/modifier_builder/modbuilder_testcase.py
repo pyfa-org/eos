@@ -32,7 +32,7 @@ class ModBuilderTestCase(EosTestCase):
     """
 
     def setUp(self):
-        super().setUp()
+        EosTestCase.setUp(self)
         self.ef = ExpressionFactory()
 
     def run_builder(self, effect_row):
@@ -45,4 +45,4 @@ class ModBuilderTestCase(EosTestCase):
         return builder.build(effect_row)
 
     def get_log(self, name='eos.data.eve_obj_builder.modifier_builder*'):
-        return super().get_log(name=name)
+        return EosTestCase.get_log(self, name=name)
