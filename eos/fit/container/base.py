@@ -21,7 +21,7 @@
 
 from eos.const.eos import State
 from eos.fit.pubsub.message import (
-    ClearVolatileCache, EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved,
+    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved,
     StatesActivated, StatesDeactivated)
 from .exception import ItemAlreadyAssignedError
 
@@ -53,27 +53,31 @@ class ItemContainerBase:
             subitem._refresh_source()
         # Fit updates
         fit = item._fit
-        if fit is not None and fit.source is not None:
-            messages = []
+        if fit is not None:
+            if fit.source is not None:
+                messages = []
+                for subitem in (item, *child_items):
+                    # Add item
+                    messages.append(ItemAdded(subitem))
+                    # Activate states
+                    states = {s for s in State if s <= subitem.state}
+                    messages.append(StatesActivated(subitem, states))
+                    # Start effects
+                    to_start, to_stop = (
+                        subitem._get_wanted_effect_status_changes())
+                    if to_start:
+                        subitem._running_effect_ids.update(to_start)
+                        messages.append(EffectsStarted(subitem, to_start))
+                    # Should never happen, as we cleared running effects when
+                    # removing item, or it had no running effects if it was
+                    # never assigned
+                    if to_stop:
+                        messages.append(EffectsStopped(subitem, to_stop))
+                        subitem._running_effect_ids.difference_update(to_stop)
+                fit._publish_bulk(messages)
             for subitem in (item, *child_items):
-                # Add item
-                messages.append(ItemAdded(subitem))
-                # Activate states
-                states = {s for s in State if s <= subitem.state}
-                messages.append(StatesActivated(subitem, states))
-                # Start effects
-                to_start, to_stop = subitem._get_wanted_effect_status_changes()
-                if to_start:
-                    subitem._running_effect_ids.update(to_start)
-                    messages.append(EffectsStarted(subitem, to_start))
-                # Should never happen, as we cleared running effects when
-                # removing item, or it had no running effects if it was never
-                # assigned
-                if to_stop:
-                    messages.append(EffectsStopped(subitem, to_stop))
-                    subitem._running_effect_ids.difference_update(to_stop)
-            messages.append(ClearVolatileCache())
-            fit._publish_bulk(messages)
+                fit._volatile_mgr.add_volatile_object(subitem)
+            fit._volatile_mgr.clear_volatile_attrs()
 
     def _handle_item_removal(self, item):
         """Do all the generic work to remove item to container.
@@ -84,21 +88,24 @@ class ItemContainerBase:
         # Fit updates
         child_items = item._child_items
         fit = item._fit
-        if fit is not None and fit.source is not None:
-            messages = []
-            messages.append(ClearVolatileCache())
+        if fit is not None:
+            if fit.source is not None:
+                messages = []
+                for subitem in (*child_items, item):
+                    # Stop effects
+                    running_effect_ids = set(subitem._running_effect_ids)
+                    if running_effect_ids:
+                        messages.append(EffectsStopped(subitem, running_effect_ids))
+                        subitem._running_effect_ids.clear()
+                    # Deactivate states
+                    states = {s for s in State if s <= subitem.state}
+                    messages.append(StatesDeactivated(subitem, states))
+                    # Remove item
+                    messages.append(ItemRemoved(subitem))
+                fit._publish_bulk(messages)
+            fit._volatile_mgr.clear_volatile_attrs()
             for subitem in (*child_items, item):
-                # Stop effects
-                running_effect_ids = set(subitem._running_effect_ids)
-                if running_effect_ids:
-                    messages.append(EffectsStopped(subitem, running_effect_ids))
-                    subitem._running_effect_ids.clear()
-                # Deactivate states
-                states = {s for s in State if s <= subitem.state}
-                messages.append(StatesDeactivated(subitem, states))
-                # Remove item
-                messages.append(ItemRemoved(subitem))
-            fit._publish_bulk(messages)
+                fit._volatile_mgr.remove_volatile_object(subitem)
         # Item updates
         item._container = None
         for subitem in (item, *child_items):

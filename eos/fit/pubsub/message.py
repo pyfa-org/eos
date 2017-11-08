@@ -112,12 +112,6 @@ class AttrValueChangedMasked:
         return make_repr_str(self, spec)
 
 
-class ClearVolatileCache:
-
-    def __repr__(self):
-        return make_repr_str(self)
-
-
 class DefaultIncomingDamageChanged:
 
     def __repr__(self):

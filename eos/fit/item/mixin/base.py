@@ -24,8 +24,7 @@ from abc import ABCMeta, abstractmethod
 from eos.const.eos import EffectMode, State
 from eos.const.eve import EffectId
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.pubsub.message import (
-    ClearVolatileCache, EffectsStarted, EffectsStopped)
+from eos.fit.pubsub.message import EffectsStarted, EffectsStopped
 
 
 DEFAULT_EFFECT_MODE = EffectMode.full_compliance
@@ -275,8 +274,8 @@ class BaseItemMixin(metaclass=ABCMeta):
                 messages.append(EffectsStopped(self, to_stop))
                 self._running_effect_ids.difference_update(to_stop)
             if messages:
-                messages.append(ClearVolatileCache())
                 fit._publish_bulk(messages)
+                fit._volatile_mgr.clear_volatile_attrs()
 
     # Auxiliary methods
     def _refresh_source(self):

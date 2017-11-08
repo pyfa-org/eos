@@ -19,16 +19,14 @@
 # ==============================================================================
 
 
-from .pubsub.message import ClearVolatileCache, ItemAdded, ItemRemoved
-from .pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import (
     CooperativeVolatileMixin, InheritableVolatileMixin)
 
 
-class FitVolatileManager(BaseSubscriber):
+class VolatileManager:
     """Manage on-fit objects with volatile data.
 
-    Tracks objects which potentially may carry volatile data and clear volatile
+    Tracks objects which potentially may carry volatile data and clears volatile
     data when requested.
 
     Args:
@@ -41,37 +39,19 @@ class FitVolatileManager(BaseSubscriber):
     def __init__(self, msg_broker, volatiles=()):
         self.__msg_broker = msg_broker
         self.__volatile_objects = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
         for volatile in volatiles:
-            self.__add_volatile_object(volatile)
-
-    # Message handling
-    def _handle_item_addition(self, message):
-        self.__add_volatile_object(message.item)
-        self.__clear_volatile_attrs()
-
-    def _handle_item_removal(self, message):
-        self.__clear_volatile_attrs()
-        self.__remove_volatile_object(message.item)
-
-    def _handle_clear_cache(self, _):
-        self.__clear_volatile_attrs()
-
-    _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        ClearVolatileCache: _handle_clear_cache}
+            self.add_volatile_object(volatile)
 
     # Private methods for message handlers
-    def __add_volatile_object(self, object):
+    def add_volatile_object(self, object):
         if isinstance(
                 object, (InheritableVolatileMixin, CooperativeVolatileMixin)):
             self.__volatile_objects.add(object)
 
-    def __remove_volatile_object(self, object):
+    def remove_volatile_object(self, object):
         self.__volatile_objects.discard(object)
 
-    def __clear_volatile_attrs(self):
+    def clear_volatile_attrs(self):
         """Clear volatile data.
 
         Go through objects in internal storage and clear volatile attribs stored

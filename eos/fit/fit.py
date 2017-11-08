@@ -33,12 +33,12 @@ from .helper import DamageTypes
 from .item import *
 from .pubsub.broker import MessageBroker
 from .pubsub.message import (
-    ClearVolatileCache, DefaultIncomingDamageChanged, EffectsStarted,
-    EffectsStopped, ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
+    DefaultIncomingDamageChanged, EffectsStarted, EffectsStopped,
+    ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
 from .restriction import RestrictionService
 from .sim import *
 from .stats import StatService
-from .volatile import FitVolatileManager
+from .volatile import VolatileManager
 
 
 class Fit(MessageBroker):
@@ -94,7 +94,7 @@ class Fit(MessageBroker):
         self._calculator = CalculationService(self)
         self.stats = StatService(self)
         self._restriction = RestrictionService(self, self.stats)
-        self._volatile_mgr = FitVolatileManager(self, volatiles=(self.stats,))
+        self._volatile_mgr = VolatileManager(self, volatiles=(self.stats,))
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Initialize source
@@ -163,7 +163,7 @@ class Fit(MessageBroker):
         self.__source = new_source
         for item in self._item_iter():
             item._refresh_source()
-        self._publish(ClearVolatileCache())
+        self._volatile_mgr.clear_volatile_attrs()
         # Notify everyone about items being "added"
         if new_source is not None:
             messages = []
@@ -199,8 +199,8 @@ class Fit(MessageBroker):
         old_profile = self.__default_incoming_damage
         self.__default_incoming_damage = new_profile
         if new_profile != old_profile:
-            self._publish_bulk((
-                DefaultIncomingDamageChanged(), ClearVolatileCache()))
+            self._publish(DefaultIncomingDamageChanged())
+            self._volatile_mgr.clear_volatile_attrs()
 
     @property
     def _fit(self):
