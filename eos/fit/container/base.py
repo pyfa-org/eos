@@ -75,6 +75,7 @@ class ItemContainerBase:
                         messages.append(EffectsStopped(subitem, to_stop))
                         subitem._running_effect_ids.difference_update(to_stop)
                 fit._publish_bulk(messages)
+            # Volatile cache
             for subitem in (item, *child_items):
                 fit._volatile_mgr.add_volatile_object(subitem)
             fit._volatile_mgr.clear_volatile_attrs()
@@ -95,7 +96,8 @@ class ItemContainerBase:
                     # Stop effects
                     running_effect_ids = set(subitem._running_effect_ids)
                     if running_effect_ids:
-                        messages.append(EffectsStopped(subitem, running_effect_ids))
+                        messages.append(
+                            EffectsStopped(subitem, running_effect_ids))
                         subitem._running_effect_ids.clear()
                     # Deactivate states
                     states = {s for s in State if s <= subitem.state}
@@ -103,6 +105,7 @@ class ItemContainerBase:
                     # Remove item
                     messages.append(ItemRemoved(subitem))
                 fit._publish_bulk(messages)
+            # Volatile cache
             fit._volatile_mgr.clear_volatile_attrs()
             for subitem in (*child_items, item):
                 fit._volatile_mgr.remove_volatile_object(subitem)

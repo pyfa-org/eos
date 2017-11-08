@@ -53,7 +53,7 @@ class DronebayVolumeStatRegister(
     def _users(self):
         return self.__resource_users
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         if (
             isinstance(message.item, Drone) and
             AttributeId.volume in message.item._type_attributes
@@ -62,12 +62,12 @@ class DronebayVolumeStatRegister(
         elif isinstance(message.item, Ship):
             self.__current_ship = message.item
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if isinstance(message.item, Drone):
             self.__resource_users.discard(message.item)
         elif message.item is self.__current_ship:
             self.__current_ship = None
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}

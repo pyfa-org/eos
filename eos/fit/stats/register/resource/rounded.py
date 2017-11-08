@@ -57,30 +57,30 @@ class RoundedResourceStatRegister(
     def _users(self):
         return self.__resource_users
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         if isinstance(message.item, Ship):
             self.__current_ship = message.item
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if message.item is self.__current_ship:
             self.__current_ship = None
 
-    def _handle_item_effects_activation(self, message):
+    def _handle_effects_started(self, message):
         if (
             self.__use_effect_id in message.effect_ids and
             self.__use_attr_id in message.item._type_attributes
         ):
             self.__resource_users.add(message.item)
 
-    def _handle_item_effects_deactivation(self, message):
+    def _handle_effects_stopped(self, message):
         if self.__use_effect_id in message.effect_ids:
             self.__resource_users.discard(message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        EffectsStarted: _handle_item_effects_activation,
-        EffectsStopped: _handle_item_effects_deactivation}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed,
+        EffectsStarted: _handle_effects_started,
+        EffectsStopped: _handle_effects_stopped}
 
 
 class CpuStatRegister(RoundedResourceStatRegister):

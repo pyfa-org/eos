@@ -55,7 +55,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_containers = {}
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         # We're going to track containers, not charges; ignore all items which
         # can't fit a charge
         if not hasattr(message.item, 'charge'):
@@ -75,13 +75,13 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             self.__restricted_containers[message.item] = (
                 tuple(allowed_group_ids))
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if message.item in self.__restricted_containers:
             del self.__restricted_containers[message.item]
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}
 
     def validate(self):
         tainted_items = {}

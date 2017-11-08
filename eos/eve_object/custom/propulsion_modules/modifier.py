@@ -58,7 +58,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             raise ModificationCalculationError from e
         return ModifierOperator.post_percent, ship_speed_percentage
 
-    def __revise_on_attr_change(self, message, carrier_item, ship):
+    def __revise_on_attr_changed(self, message, carrier_item, ship):
         """
         If any of the attribute values this modifier relies on is changed,
         then modification value can be changed as well.
@@ -77,7 +77,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         return False
 
     __revision_map = {
-        AttrValueChanged: __revise_on_attr_change}
+        AttrValueChanged: __revise_on_attr_changed}
 
     @property
     def revise_message_types(self):

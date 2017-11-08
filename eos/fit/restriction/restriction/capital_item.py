@@ -52,7 +52,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         self.__capital_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         if isinstance(message.item, Ship):
             self.__current_ship = message.item
         if not isinstance(message.item, TRACKED_ITEM_CLASSES):
@@ -67,14 +67,14 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
             return
         self.__capital_items.add(message.item)
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if message.item is self.__current_ship:
             self.__current_ship = None
         self.__capital_items.discard(message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}
 
     def validate(self):
         # Skip validation only if ship has special special attribute set value

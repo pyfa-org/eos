@@ -76,21 +76,21 @@ class CalculationService(BaseSubscriber):
         return modifications
 
     # Handle item changes which are significant for calculator
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         if isinstance(message.item, Character):
             self._current_char = message.item
         elif isinstance(message.item, Ship):
             self._current_ship = message.item
         self.__affections.register_affectee(message.item)
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if message.item is self._current_char:
             self._current_char = None
         elif message.item is self._current_ship:
             self._current_ship = None
         self.__affections.unregister_affectee(message.item)
 
-    def _handle_item_effects_activation(self, message):
+    def _handle_effects_started(self, message):
         affectors = self.__generate_affectors(message.item, message.effect_ids)
         for affector in affectors:
             self.__subscribe_affector(affector)
@@ -98,7 +98,7 @@ class CalculationService(BaseSubscriber):
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr_id]
 
-    def _handle_item_effects_deactivation(self, message):
+    def _handle_effects_stopped(self, message):
         affectors = self.__generate_affectors(message.item, message.effect_ids)
         for affector in affectors:
             for target_item in self.__affections.get_affectees(affector):
@@ -158,10 +158,10 @@ class CalculationService(BaseSubscriber):
 
     # Message routing
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        EffectsStarted: _handle_item_effects_activation,
-        EffectsStopped: _handle_item_effects_deactivation,
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed,
+        EffectsStarted: _handle_effects_started,
+        EffectsStopped: _handle_effects_stopped,
         AttrValueChanged: _revise_regular_attr_dependents}
 
     def _notify(self, message):

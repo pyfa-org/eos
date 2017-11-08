@@ -192,7 +192,6 @@ class EosTestCase(TestCase):
             except TypeError:
                 pass
             else:
-                if attr_len > 0: print(obj_classname, attr_name)
                 entry_count += attr_len
             # Recursively check children if value we're checking is defined
             # within eos

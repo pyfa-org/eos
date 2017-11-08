@@ -91,15 +91,15 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
         self.__items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         self.__items.add(message.item)
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         self.__items.discard(message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}
 
     def validate(self):
         tainted_items = {}

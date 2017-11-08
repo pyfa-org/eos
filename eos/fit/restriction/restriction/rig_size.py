@@ -47,30 +47,30 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         if isinstance(message.item, Ship):
             self.__current_ship = message.item
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if message.item is self.__current_ship:
             self.__current_ship = None
 
-    def _handle_item_effects_activation(self, message):
+    def _handle_effects_started(self, message):
         if (
             EffectId.rig_slot in message.effect_ids and
             AttributeId.rig_size in message.item._type_attributes
         ):
             self.__restricted_items.add(message.item)
 
-    def _handle_item_effects_deactivation(self, message):
+    def _handle_effects_stopped(self, message):
         if EffectId.rig_slot in message.effect_ids:
             self.__restricted_items.discard(message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal,
-        EffectsStarted: _handle_item_effects_activation,
-        EffectsStopped: _handle_item_effects_deactivation}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed,
+        EffectsStarted: _handle_effects_started,
+        EffectsStopped: _handle_effects_stopped}
 
     def validate(self):
         # Do not apply restriction when fit doesn't have ship and when ship

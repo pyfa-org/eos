@@ -46,7 +46,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         self.__index_item_map = KeyedStorage()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         # Skip items which don't have index specified
         slot_index = message.item._type_attributes.get(
             self.__slot_index_attr_id)
@@ -54,7 +54,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
             return
         self.__index_item_map.add_data_entry(slot_index, message.item)
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         slot_index = message.item._type_attributes.get(
             self.__slot_index_attr_id)
         if slot_index is None:
@@ -62,8 +62,8 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         self.__index_item_map.rm_data_entry(slot_index, message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}
 
     def validate(self):
         tainted_items = {}

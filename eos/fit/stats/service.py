@@ -194,14 +194,14 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             container._clear_volatile_attrs()
         InheritableVolatileMixin._clear_volatile_attrs(self)
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         if isinstance(message.item, Ship):
             self.__current_ship = message.item
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if message.item is self.__current_ship:
             self.__current_ship = None
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}

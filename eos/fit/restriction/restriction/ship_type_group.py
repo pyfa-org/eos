@@ -98,7 +98,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = {}
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         if isinstance(message.item, Ship):
             self.__current_ship = message.item
         elif not isinstance(message.item, TRACKED_ITEM_CLASSES):
@@ -128,15 +128,15 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             type_ids=tuple(allowed_type_ids),
             group_ids=tuple(allowed_group_ids))
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         if message.item is self.__current_ship:
             self.__current_ship = None
         elif message.item in self.__restricted_items:
             del self.__restricted_items[message.item]
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}
 
     def validate(self):
         # Get type ID and group ID of ship, if no ship available, assume they're

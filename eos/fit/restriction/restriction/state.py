@@ -41,17 +41,17 @@ class StateRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_states_activation(self, message):
+    def _handle_states_activated(self, message):
         if State.online in message.states:
             self.__restricted_items.add(message.item)
 
-    def _handle_item_states_deactivation(self, message):
+    def _handle_states_deactivated(self, message):
         if State.online in message.states:
             self.__restricted_items.discard(message.item)
 
     _handler_map = {
-        StatesActivated: _handle_item_states_activation,
-        StatesDeactivated: _handle_item_states_deactivation}
+        StatesActivated: _handle_states_activated,
+        StatesDeactivated: _handle_states_deactivated}
 
     def validate(self):
         tainted_items = {}

@@ -417,7 +417,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         return tick_count
 
     # Message handling
-    def _handle_effects_activation(self, message):
+    def _handle_effects_started(self, message):
         if EffectId.adaptive_armor_hardener in message.effect_ids:
             for attr_id in res_attr_ids:
                 message.item.attributes._set_override_callback(
@@ -425,7 +425,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__data.setdefault(message.item, {})
             self.__clear_results()
 
-    def _handle_effects_deactivation(self, message):
+    def _handle_effects_stopped(self, message):
         if EffectId.adaptive_armor_hardener in message.effect_ids:
             for attr_id in res_attr_ids:
                 message.item.attributes._del_override_callback(attr_id)
@@ -435,7 +435,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 pass
             self.__clear_results()
 
-    def _handle_attr_change(self, message):
+    def _handle_attr_changed(self, message):
         item = message.item
         # Ship resistances
         if item is self.__fit.ship and message.attr_id in res_attr_ids:
@@ -453,7 +453,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         ):
             self.__clear_results()
 
-    def _handle_attr_change_masked(self, message):
+    def _handle_attr_changed_masked(self, message):
         # We've set up overrides on RAHs' resonance attributes, but when base
         # (not modified by simulator) values of these attributes change, we
         # should re-run simulator - as now we have different resonance value to
@@ -465,10 +465,10 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         self.__clear_results()
 
     _handler_map = {
-        EffectsStarted: _handle_effects_activation,
-        EffectsStopped: _handle_effects_deactivation,
-        AttrValueChanged: _handle_attr_change,
-        AttrValueChangedMasked: _handle_attr_change_masked,
+        EffectsStarted: _handle_effects_started,
+        EffectsStopped: _handle_effects_stopped,
+        AttrValueChanged: _handle_attr_changed,
+        AttrValueChangedMasked: _handle_attr_changed_masked,
         DefaultIncomingDamageChanged: _handle_changed_damage_profile}
 
     def _notify(self, message):

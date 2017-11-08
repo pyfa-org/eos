@@ -107,15 +107,15 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
         MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_fitted)
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_addition(self, message):
+    def _handle_item_added(self, message):
         MaxGroupRestrictionRegister._register_item(self, message.item)
 
-    def _handle_item_removal(self, message):
+    def _handle_item_removed(self, message):
         MaxGroupRestrictionRegister._unregister_item(self, message.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_addition,
-        ItemRemoved: _handle_item_removal}
+        ItemAdded: _handle_item_added,
+        ItemRemoved: _handle_item_removed}
 
     @property
     def type(self):
@@ -134,17 +134,17 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
         MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_online)
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_states_activation(self, message):
+    def _handle_states_activated(self, message):
         if State.online in message.states:
             MaxGroupRestrictionRegister._register_item(self, message.item)
 
-    def _handle_item_states_deactivation(self, message):
+    def _handle_states_deactivated(self, message):
         if State.online in message.states:
             MaxGroupRestrictionRegister._unregister_item(self, message.item)
 
     _handler_map = {
-        StatesActivated: _handle_item_states_activation,
-        StatesDeactivated: _handle_item_states_deactivation}
+        StatesActivated: _handle_states_activated,
+        StatesDeactivated: _handle_states_deactivated}
 
     @property
     def type(self):
@@ -163,17 +163,17 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
         MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_active)
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_states_activation(self, message):
+    def _handle_states_activated(self, message):
         if State.active in message.states:
             MaxGroupRestrictionRegister._register_item(self, message.item)
 
-    def _handle_item_states_deactivation(self, message):
+    def _handle_states_deactivated(self, message):
         if State.active in message.states:
             MaxGroupRestrictionRegister._unregister_item(self, message.item)
 
     _handler_map = {
-        StatesActivated: _handle_item_states_activation,
-        StatesDeactivated: _handle_item_states_deactivation}
+        StatesActivated: _handle_states_activated,
+        StatesDeactivated: _handle_states_deactivated}
 
     @property
     def type(self):
