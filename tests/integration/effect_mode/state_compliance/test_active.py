@@ -27,7 +27,7 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 
 class TestStateComplianceActive(EffectModeTestCase):
 
-    def test_running_on_add(self):
+    def test_started_on_add(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         item = ModuleHigh(
@@ -44,7 +44,7 @@ class TestStateComplianceActive(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_on_state_switch(self):
+    def test_started_on_state_switch(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         item = ModuleHigh(
@@ -63,7 +63,7 @@ class TestStateComplianceActive(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_on_mode_switch(self):
+    def test_started_on_mode_switch(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         item = ModuleHigh(
@@ -82,7 +82,7 @@ class TestStateComplianceActive(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_not_default(self):
+    def test_started_not_default(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         default_effect = self.ch.effect(category_id=EffectCategoryId.active)

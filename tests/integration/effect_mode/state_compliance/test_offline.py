@@ -27,7 +27,7 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 
 class TestStateComplianceOffline(EffectModeTestCase):
 
-    def test_running_on_add(self):
+    def test_started_on_add(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[self.modifier])
         item = ModuleHigh(
@@ -44,7 +44,7 @@ class TestStateComplianceOffline(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_on_mode_switch(self):
+    def test_started_on_mode_switch(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[self.modifier])
         item = ModuleHigh(
@@ -63,7 +63,7 @@ class TestStateComplianceOffline(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_chance_based_on_add(self):
+    def test_started_chance_based_on_add(self):
         chance_attr = self.ch.attr()
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
@@ -85,7 +85,7 @@ class TestStateComplianceOffline(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_chance_based_on_mode_switch(self):
+    def test_started_chance_based_on_mode_switch(self):
         chance_attr = self.ch.attr()
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,

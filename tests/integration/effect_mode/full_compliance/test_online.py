@@ -27,7 +27,7 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 
 class TestFullComplianceOnline(EffectModeTestCase):
 
-    def test_running_on_add(self):
+    def test_started_on_add(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[self.modifier])
         online_effect = self.ch.effect(
@@ -46,7 +46,7 @@ class TestFullComplianceOnline(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_on_state_switch(self):
+    def test_started_on_state_switch(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[self.modifier])
         online_effect = self.ch.effect(
@@ -67,7 +67,7 @@ class TestFullComplianceOnline(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_on_mode_switch(self):
+    def test_started_on_mode_switch(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[self.modifier])
         online_effect = self.ch.effect(
@@ -88,7 +88,7 @@ class TestFullComplianceOnline(EffectModeTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_running_on_online_mode_switch(self):
+    def test_started_on_online_mode_switch(self):
         effect = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[self.modifier])
         online_effect = self.ch.effect(
