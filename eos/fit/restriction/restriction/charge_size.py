@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttributeId
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -61,8 +61,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_containers.discard(message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal}
 
     def validate(self):
         tainted_items = {}

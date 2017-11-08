@@ -22,17 +22,6 @@
 from eos.util.repr import make_repr_str
 
 
-class FitSourceChanged:
-
-    def __init__(self, old, new):
-        self.old = old
-        self.new = new
-
-    def __repr__(self):
-        spec = ['old', 'new']
-        return make_repr_str(self, spec)
-
-
 class ItemAdded:
 
     def __init__(self, item):
@@ -53,7 +42,7 @@ class ItemRemoved:
         return make_repr_str(self, spec)
 
 
-class ItemStatesActivated:
+class StatesActivated:
 
     def __init__(self, item, states):
         self.item = item
@@ -65,7 +54,7 @@ class ItemStatesActivated:
         return make_repr_str(self, spec)
 
 
-class ItemStatesDeactivated:
+class StatesDeactivated:
 
     def __init__(self, item, states):
         self.item = item
@@ -77,7 +66,7 @@ class ItemStatesDeactivated:
         return make_repr_str(self, spec)
 
 
-class ItemEffectsStarted:
+class EffectsStarted:
 
     def __init__(self, item, effect_ids):
         self.item = item
@@ -89,7 +78,7 @@ class ItemEffectsStarted:
         return make_repr_str(self, spec)
 
 
-class ItemEffectsStopped:
+class EffectsStopped:
 
     def __init__(self, item, effect_ids):
         self.item = item
@@ -122,6 +111,11 @@ class AttrValueChangedMasked:
         spec = ['item', 'attr_id']
         return make_repr_str(self, spec)
 
+
+class ClearVolatileCache:
+
+    def __repr__(self):
+        return make_repr_str(self)
 
 
 class DefaultIncomingDamageChanged:

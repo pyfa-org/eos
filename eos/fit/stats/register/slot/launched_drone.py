@@ -23,7 +23,7 @@ from eos.const.eos import State
 from eos.const.eve import AttributeId
 from eos.fit.item import Character, Drone
 from eos.fit.pubsub.message import (
-    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate)
+    ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseSlotStatRegister
 
@@ -70,7 +70,7 @@ class LaunchedDroneStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
             self.__slot_users.discard(message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal,
-        InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        StatesActivated: _handle_item_states_activation,
+        StatesDeactivated: _handle_item_states_deactivation}

@@ -19,6 +19,9 @@
 # ==============================================================================
 
 
+from itertools import chain
+
+from eos.const.eos import State
 from eos.const.eve import TypeId
 from eos.data.source import Source, SourceManager
 from eos.util.default import DEFAULT
@@ -30,16 +33,15 @@ from .helper import DamageTypes
 from .item import *
 from .pubsub.broker import MessageBroker
 from .pubsub.message import (
-    InputDefaultIncomingDamageChanged, ItemAdded, temRemoved,
-    InputSourceChanged)
-from .pubsub.subscriber import BaseSubscriber
+    ClearVolatileCache, DefaultIncomingDamageChanged, EffectsStarted,
+    EffectsStopped, ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
 from .restriction import RestrictionService
 from .sim import *
 from .stats import StatService
 from .volatile import FitVolatileManager
 
 
-class Fit(MessageBroker, BaseSubscriber):
+class Fit(MessageBroker):
     """Definition of fit.
 
     Fit is one of eos' central objects - it holds all fit items and facilities
@@ -75,7 +77,6 @@ class Fit(MessageBroker, BaseSubscriber):
             em=25, thermal=25, kinetic=25, explosive=25)
         # Keep list of all items which belong to this fit
         self.__items = set()
-        self._subscribe(self, self._handler_map.keys())
         # Character-related item containers
         self.skills = ItemKeyedSet(self, Skill)
         self.implants = ItemSet(self, Implant)
@@ -105,9 +106,9 @@ class Fit(MessageBroker, BaseSubscriber):
         # to make sure it's part of it
         self.character = Character(TypeId.character_static)
 
+    character = ItemDescriptor('_character', Character)
     ship = ItemDescriptor('_ship', Ship)
     stance = ItemDescriptor('_stance', Stance)
-    character = ItemDescriptor('_character', Character)
     effect_beacon = ItemDescriptor('_effect_beacon', EffectBeacon)
 
     def validate(self, skip_checks=()):
@@ -143,9 +144,46 @@ class Fit(MessageBroker, BaseSubscriber):
         old_source = self.source
         if new_source is old_source:
             return
-        # Assign new source and send message about update
+        # Notify everyone about items being "removed"
+        if old_source is not None:
+            messages = []
+            for item in self._item_iter():
+                # Stop effects
+                running_effect_ids = set(item._running_effect_ids)
+                if running_effect_ids:
+                    messages.append(EffectsStopped(item, running_effect_ids))
+                    item._running_effect_ids.clear()
+                # Deactivate states
+                states = {s for s in State if s <= item.state}
+                messages.append(StatesDeactivated(item, states))
+                # Remove item
+                messages.append(ItemRemoved(item))
+            self._publish_bulk(messages)
+        # Refresh source and clear remaining source-dependent data
         self.__source = new_source
-        self._publish(InputSourceChanged(old_source, new_source, self.__items))
+        for item in self._item_iter():
+            item._refresh_source()
+        self._publish(ClearVolatileCache())
+        # Notify everyone about items being "added"
+        if new_source is not None:
+            messages = []
+            for item in self._item_iter():
+                # Add item
+                messages.append(ItemAdded(item))
+                # Activate states
+                states = {s for s in State if s <= item.state}
+                messages.append(StatesActivated(item, states))
+                # Start effects
+                to_start, to_stop = item._get_wanted_effect_status_changes()
+                if to_start:
+                    item._running_effect_ids.update(to_start)
+                    messages.append(EffectsStarted(item, to_start))
+                # Should never happen, as we cleared running effects when
+                # removing source
+                if to_stop:
+                    messages.append(EffectsStopped(item, to_stop))
+                    item._running_effect_ids.difference_update(to_stop)
+            self._publish_bulk(messages)
 
     @property
     def default_incoming_damage(self):
@@ -161,7 +199,8 @@ class Fit(MessageBroker, BaseSubscriber):
         old_profile = self.__default_incoming_damage
         self.__default_incoming_damage = new_profile
         if new_profile != old_profile:
-            self._publish(InputDefaultIncomingDamageChanged())
+            self._publish_bulk((
+                DefaultIncomingDamageChanged(), ClearVolatileCache()))
 
     @property
     def _fit(self):
@@ -170,16 +209,22 @@ class Fit(MessageBroker, BaseSubscriber):
         # container's fit is used, thus fit's fit is self
         return self
 
-    # Message handling
-    def _handle_item_addition(self, message):
-        self.__items.add(message.item)
-
-    def _handle_item_removal(self, message):
-        self.__items.discard(message.item)
-
-    _handler_map = {
-        ItemAdded: _handle_item_addition,
-        temRemoved: _handle_item_removal}
+    def _item_iter(self):
+        single = (self.character, self.ship, self.stance, self.effect_beacon)
+        for item in chain(
+            (i for i in single if i is not None),
+            self.skills,
+            self.implants,
+            self.boosters,
+            self.subsystems,
+            self.modules.items(),
+            self.rigs,
+            self.drones,
+            self.fighters
+        ):
+            yield item
+            for child_item in item._child_items:
+                yield child_item
 
     # Auxiliary methods
     def __repr__(self):

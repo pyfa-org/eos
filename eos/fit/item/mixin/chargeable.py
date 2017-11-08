@@ -51,6 +51,10 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     charge = ItemDescriptor('_charge', Charge)
 
+    @property
+    def _child_items(self):
+        return (self.charge,) if self.charge is not None else ()
+
     @volatile_property
     def charge_quantity(self):
         """Max quantity of loadable charges.

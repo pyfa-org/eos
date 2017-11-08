@@ -25,7 +25,7 @@ from eos.const.eos import Restriction
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
-    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
+    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -67,10 +67,10 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
             self.__restricted_items.discard(message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal,
-        InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        EffectsStarted: _handle_item_effects_activation,
+        EffectsStopped: _handle_item_effects_deactivation}
 
     def validate(self):
         # Do not apply restriction when fit doesn't have ship and when ship

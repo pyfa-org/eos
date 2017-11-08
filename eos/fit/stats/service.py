@@ -24,7 +24,7 @@ import math
 from eos.const.eve import AttributeId
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import ItemAdded, ItemRemoved
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .register import *
@@ -203,5 +203,5 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             self.__current_ship = None
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal}

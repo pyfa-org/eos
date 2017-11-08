@@ -25,15 +25,13 @@ from eos.const.eos import EffectMode, State
 from eos.const.eve import EffectId
 from eos.fit.calculator import MutableAttributeMap
 from eos.fit.pubsub.message import (
-    InputEffectsRunModeChanged, ItemAdded, temRemoved,
-    InstrRefreshSource)
-from eos.fit.pubsub.subscriber import BaseSubscriber
+    ClearVolatileCache, EffectsStarted, EffectsStopped)
 
 
 DEFAULT_EFFECT_MODE = EffectMode.full_compliance
 
 
-class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
+class BaseItemMixin(metaclass=ABCMeta):
     """Base class for all items.
 
     It provides all the data needed for attribute calculation to work properly.
@@ -50,7 +48,7 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
 
     def __init__(self, type_id, **kwargs):
         self._type_id = type_id
-        self.__container = None
+        self._container = None
         # Special dictionary subclass that holds modified attributes and data
         # related to their calculation
         self.attributes = MutableAttributeMap(self)
@@ -64,40 +62,8 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         super().__init__(**kwargs)
 
     @property
-    def _container(self):
-        """Refers container this item is placed to.
-
-        Can be other fit, various container classes or other item.
-        """
-        return self.__container
-
-    @_container.setter
-    def _container(self, new_container):
-        charge = getattr(self, 'charge', None)
-        # Old fit section
-        old_fit = self._fit
-        if old_fit is not None:
-            # Unlink fit and contained items first
-            if charge is not None:
-                old_fit._unsubscribe(charge, charge._handler_map.keys())
-                old_fit._publish(temRemoved(charge))
-            # Then unlink fit and item itself
-            old_fit._unsubscribe(self, self._handler_map.keys())
-            old_fit._publish(temRemoved(self))
-        self.__container = new_container
-        self._refresh_source()
-        if charge is not None:
-            charge._refresh_source()
-        # New fit section
-        new_fit = self._fit
-        if new_fit is not None:
-            # Link fit and item itself first
-            new_fit._publish(ItemAdded(self))
-            new_fit._subscribe(self, self._handler_map.keys())
-            # Then link fit and contained items
-            if charge is not None:
-                new_fit._publish(ItemAdded(charge))
-                new_fit._subscribe(charge, charge._handler_map.keys())
+    def _child_items(self):
+        return ()
 
     @property
     def _container_position(self):
@@ -299,17 +265,20 @@ class BaseItemMixin(BaseSubscriber, metaclass=ABCMeta):
         ):
             self.__effect_mode_overrides = None
         fit = self._fit
-        if fit is not None:
-            fit._publish(InputEffectsRunModeChanged(self))
+        if fit is not None and fit.source is not None:
+            messages = []
+            to_start, to_stop = self._get_wanted_effect_status_changes()
+            if to_start:
+                self._running_effect_ids.update(to_start)
+                messages.append(EffectsStarted(self, to_start))
+            if to_stop:
+                messages.append(EffectsStopped(self, to_stop))
+                self._running_effect_ids.difference_update(to_stop)
+            if messages:
+                messages.append(ClearVolatileCache())
+                fit._publish_bulk(messages)
 
-    # Message handling
-    def _handle_refresh_source(self, _):
-        self._refresh_source()
-
-    _handler_map = {
-        InstrRefreshSource: _handle_refresh_source}
-
-    # Private methods for message handlers
+    # Auxiliary methods
     def _refresh_source(self):
         """Refresh item's source-dependent data.
 

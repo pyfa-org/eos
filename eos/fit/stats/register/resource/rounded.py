@@ -22,7 +22,7 @@
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
 from eos.fit.pubsub.message import (
-    InstrEffectsStart, InstrEffectsStop, InstrItemAdd, InstrItemRemove)
+    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister
 
@@ -77,10 +77,10 @@ class RoundedResourceStatRegister(
             self.__resource_users.discard(message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal,
-        InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        EffectsStarted: _handle_item_effects_activation,
+        EffectsStopped: _handle_item_effects_deactivation}
 
 
 class CpuStatRegister(RoundedResourceStatRegister):

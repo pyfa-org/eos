@@ -22,7 +22,7 @@
 from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import AttributeId, TypeId
 from eos.fit.pubsub.message import (
-    AttrValueChanged, InstrItemAdd, InstrItemRemove)
+    AttrValueChanged, ItemAdded, ItemRemoved)
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
 
@@ -74,8 +74,8 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         return False
 
     __revision_map = {
-        InstrItemAdd: __revise_on_item_add_remove,
-        InstrItemRemove: __revise_on_item_add_remove,
+        ItemAdded: __revise_on_item_add_remove,
+        ItemRemoved: __revise_on_item_add_remove,
         AttrValueChanged: __revise_on_attr_change}
 
     @property

@@ -19,10 +19,7 @@
 # ==============================================================================
 
 
-from .pubsub.message import (
-    InputDefaultIncomingDamageChanged, InputEffectsRunModeChanged,
-    ItemAdded, temRemoved, InputSkillLevelChanged,
-    InputSourceChanged, ItemStateChanged)
+from .pubsub.message import ClearVolatileCache, ItemAdded, ItemRemoved
 from .pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import (
     CooperativeVolatileMixin, InheritableVolatileMixin)
@@ -57,17 +54,13 @@ class FitVolatileManager(BaseSubscriber):
         self.__clear_volatile_attrs()
         self.__remove_volatile_object(message.item)
 
-    def _handle_other_changes(self, _):
+    def _handle_clear_cache(self, _):
         self.__clear_volatile_attrs()
 
     _handler_map = {
         ItemAdded: _handle_item_addition,
-        temRemoved: _handle_item_removal,
-        ItemStateChanged: _handle_other_changes,
-        InputEffectsRunModeChanged: _handle_other_changes,
-        InputSkillLevelChanged: _handle_other_changes,
-        InputSourceChanged: _handle_other_changes,
-        InputDefaultIncomingDamageChanged: _handle_other_changes}
+        ItemRemoved: _handle_item_removal,
+        ClearVolatileCache: _handle_clear_cache}
 
     # Private methods for message handlers
     def __add_volatile_object(self, object):

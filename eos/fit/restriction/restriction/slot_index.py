@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttributeId
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import ItemAdded, ItemRemoved
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -62,8 +62,8 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         self.__index_item_map.rm_data_entry(slot_index, message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal}
 
     def validate(self):
         tainted_items = {}

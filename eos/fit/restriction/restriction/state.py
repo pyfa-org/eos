@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from eos.fit.pubsub.message import InstrStatesActivate, InstrStatesDeactivate
+from eos.fit.pubsub.message import StatesActivated, StatesDeactivated
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -50,8 +50,8 @@ class StateRestrictionRegister(BaseRestrictionRegister):
             self.__restricted_items.discard(message.item)
 
     _handler_map = {
-        InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation}
+        StatesActivated: _handle_item_states_activation,
+        StatesDeactivated: _handle_item_states_deactivation}
 
     def validate(self):
         tainted_items = {}

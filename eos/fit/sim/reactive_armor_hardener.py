@@ -25,8 +25,8 @@ from math import ceil, floor
 
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.pubsub.message import (
-    AttrValueChanged, AttrValueChangedMasked,
-    InputDefaultIncomingDamageChanged, InstrEffectsStart, InstrEffectsStop)
+    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDamageChanged,
+    EffectsStarted, EffectsStopped)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
 from eos.util.round import sig_round
@@ -465,11 +465,11 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         self.__clear_results()
 
     _handler_map = {
-        InstrEffectsStart: _handle_effects_activation,
-        InstrEffectsStop: _handle_effects_deactivation,
+        EffectsStarted: _handle_effects_activation,
+        EffectsStopped: _handle_effects_deactivation,
         AttrValueChanged: _handle_attr_change,
         AttrValueChangedMasked: _handle_attr_change_masked,
-        InputDefaultIncomingDamageChanged: _handle_changed_damage_profile}
+        DefaultIncomingDamageChanged: _handle_changed_damage_profile}
 
     def _notify(self, message):
         # Do not react to messages while sim is running

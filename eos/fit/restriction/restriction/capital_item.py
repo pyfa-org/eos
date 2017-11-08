@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed, Ship
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -73,8 +73,8 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         self.__capital_items.discard(message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal}
 
     def validate(self):
         # Skip validation only if ship has special special attribute set value

@@ -24,8 +24,7 @@ from eos.eve_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.item import Character, Ship
 from eos.fit.pubsub.message import (
-    AttrValueChanged, InstrEffectsStart, InstrEffectsStop, InstrItemAdd,
-    InstrItemRemove)
+    AttrValueChanged, EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
 from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_storage import KeyedStorage
 from .affector import Affector
@@ -159,10 +158,10 @@ class CalculationService(BaseSubscriber):
 
     # Message routing
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal,
-        InstrEffectsStart: _handle_item_effects_activation,
-        InstrEffectsStop: _handle_item_effects_deactivation,
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal,
+        EffectsStarted: _handle_item_effects_activation,
+        EffectsStopped: _handle_item_effects_deactivation,
         AttrValueChanged: _revise_regular_attr_dependents}
 
     def _notify(self, message):

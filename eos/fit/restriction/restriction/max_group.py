@@ -25,7 +25,7 @@ from eos.const.eos import Restriction, State
 from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
 from eos.fit.pubsub.message import (
-    InstrItemAdd, InstrItemRemove, InstrStatesActivate, InstrStatesDeactivate)
+    ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -114,8 +114,8 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
         MaxGroupRestrictionRegister._unregister_item(self, message.item)
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal}
 
     @property
     def type(self):
@@ -143,8 +143,8 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
             MaxGroupRestrictionRegister._unregister_item(self, message.item)
 
     _handler_map = {
-        InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation}
+        StatesActivated: _handle_item_states_activation,
+        StatesDeactivated: _handle_item_states_deactivation}
 
     @property
     def type(self):
@@ -172,8 +172,8 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
             MaxGroupRestrictionRegister._unregister_item(self, message.item)
 
     _handler_map = {
-        InstrStatesActivate: _handle_item_states_activation,
-        InstrStatesDeactivate: _handle_item_states_deactivation}
+        StatesActivated: _handle_item_states_activation,
+        StatesDeactivated: _handle_item_states_deactivation}
 
     @property
     def type(self):

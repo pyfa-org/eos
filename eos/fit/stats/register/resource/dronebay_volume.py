@@ -21,7 +21,7 @@
 
 from eos.const.eve import AttributeId
 from eos.fit.item import Drone, Ship
-from eos.fit.pubsub.message import InstrItemAdd, InstrItemRemove
+from eos.fit.pubsub.message import ItemAdded, ItemRemoved
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister
 
@@ -69,5 +69,5 @@ class DronebayVolumeStatRegister(
             self.__current_ship = None
 
     _handler_map = {
-        InstrItemAdd: _handle_item_addition,
-        InstrItemRemove: _handle_item_removal}
+        ItemAdded: _handle_item_addition,
+        ItemRemoved: _handle_item_removal}

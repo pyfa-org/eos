@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModifierDomain, State
 from eos.const.eve import AttributeId
-from eos.fit.pubsub.message import InputSkillLevelChanged
+from eos.fit.pubsub.message import ClearVolatileCache
 from eos.util.repr import make_repr_str
 from .mixin.state import ImmutableStateMixin
 
@@ -54,8 +54,8 @@ class Skill(ImmutableStateMixin):
         self.__level = new_lvl
         self.attributes._override_value_may_change(AttributeId.skill_level)
         fit = self._fit
-        if fit is not None:
-            fit._publish(InputSkillLevelChanged(self))
+        if fit is not None and fit.source is not None:
+            fit._publish(ClearVolatileCache())
 
     # Attribute calculation-related properties
     _parent_modifier_domain = ModifierDomain.character

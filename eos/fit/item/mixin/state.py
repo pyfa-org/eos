@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
-from eos.fit.pubsub.message import ItemStateChanged
+from eos.const.eos import State
+from eos.fit.pubsub.message import (
+    ClearVolatileCache, EffectsStarted, EffectsStopped,
+    StatesActivated, StatesDeactivated)
 from .base import BaseItemMixin
 
 
@@ -75,5 +78,24 @@ class MutableStateMixin(BaseItemMixin):
         # When item is assigned to some fit, ask fit to perform fit-specific
         # state switch of our item
         fit = self._fit
-        if fit is not None:
-            fit._publish(ItemStateChanged(self, old_state, new_state))
+        if fit is not None and fit.source is not None:
+            messages = []
+            # State switching upwards
+            if new_state > old_state:
+                states = {s for s in State if old_state < s <= new_state}
+                messages.append(StatesActivated(self, states))
+            # State switching downwards
+            else:
+                # Deactivate effects and states
+                states = {s for s in State if new_state < s <= old_state}
+                messages.append(StatesDeactivated(self, states))
+            # Effect changes
+            to_start, to_stop = self._get_wanted_effect_status_changes()
+            if to_start:
+                self._running_effect_ids.update(to_start)
+                messages.append(EffectsStarted(self, to_start))
+            if to_stop:
+                messages.append(EffectsStopped(self, to_stop))
+                self._running_effect_ids.difference_update(to_stop)
+            messages.append(ClearVolatileCache())
+            fit._publish_bulk(messages)
