@@ -20,27 +20,29 @@
 
 
 """
-Recipe taken from
+Initial version taken from
 http://code.activestate.com/recipes/414283-frozen-dictionaries/
+with further modifications by me.
 """
 
 
-class FrozenDict(dict):
+class frozendict(dict):
 
-    def __new__(cls, *args):
-        new = dict.__new__(cls)
-        dict.__init__(new, *args)
-        return new
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__hash = None
 
     def __blocked_attribute(self, *args, **kwargs):
         raise TypeError('frozendict cannot be modified')
 
     # Prohibit use of methods which modify dictionary
-    __delitem__ = __setitem__ = __blocked_attribute
-    clear = pop = popitem = setdefault = update = __blocked_attribute
+    __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = (
+        __blocked_attribute)
 
     def __hash__(self):
-        return hash(frozenset(self.items()))
+        if self.__hash is None:
+            self.__hash = hash(frozenset(self.items()))
+        return self.__hash
 
     def __repr__(self):
         return 'frozendict({})'.format(dict.__repr__(self))

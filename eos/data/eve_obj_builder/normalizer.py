@@ -22,7 +22,7 @@
 from logging import getLogger
 
 from eos.const.eve import AttributeId, TypeGroupId, OperandId
-from eos.util.frozen_dict import FrozenDict
+from eos.util.frozendict import frozendict
 
 
 logger = getLogger(__name__)
@@ -86,13 +86,13 @@ class Normalizer:
                         attrs_skipped += 1
                         continue
                     # Generate row and add it to proper attribute table
-                    dgmtypeattribs.add(FrozenDict({
+                    dgmtypeattribs.add(frozendict({
                         'typeID': type_id,
                         'attributeID': attribute_id,
                         'value': value}))
                 else:
                     new_row[field] = value
-            new_evetypes.add(FrozenDict(new_row))
+            new_evetypes.add(frozendict(new_row))
         # Update evetypes with rows which do not contain attributes
         data['evetypes'].clear()
         data['evetypes'].update(new_evetypes)
@@ -169,7 +169,7 @@ class Normalizer:
                     new_exp_row.update(exp_row)
                     new_exp_row['expressionValue'] = None
                     new_exp_row[id_col_name] = repls[symbolic_entity_name]
-                    new_exp_row = FrozenDict(new_exp_row)
+                    new_exp_row = frozendict(new_exp_row)
                     dgmexps.remove(exp_row)
                     dgmexps.add(new_exp_row)
                     used_repls.add(symbolic_entity_name)

@@ -23,7 +23,7 @@ from logging import getLogger
 from numbers import Real
 
 from eos.const.eve import EffectId
-from eos.util.frozen_dict import FrozenDict
+from eos.util.frozendict import frozendict
 
 
 logger = getLogger(__name__)
@@ -98,7 +98,7 @@ class ValidatorPreConv:
                 new_row = {}
                 for field, value in invalid_row.items():
                     new_row[field] = False if field == 'isDefault' else value
-                dte_rows.add(FrozenDict(new_row))
+                dte_rows.add(frozendict(new_row))
 
     @staticmethod
     def _colliding_module_racks(dte_rows):

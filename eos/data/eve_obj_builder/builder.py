@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.util.frozen_dict import FrozenDict
+from eos.util.frozendict import frozendict
 from .cleaner import Cleaner
 from .converter import Converter
 from .normalizer import Normalizer
@@ -70,7 +70,7 @@ class EveObjBuilder:
                 # data, write position to each row
                 row['table_pos'] = table_pos
                 table_pos += 1
-                table.add(FrozenDict(row))
+                table.add(frozendict(row))
             data[tablename] = table
 
         # Run pre-cleanup checks, as cleanup stage and further stages rely on
