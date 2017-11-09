@@ -73,8 +73,6 @@ class Fit(MessageBroker):
         self.__source = None
         self.__default_incoming_damage = DamageTypes(
             em=25, thermal=25, kinetic=25, explosive=25)
-        # Keep list of all items which belong to this fit
-        self.__items = set()
         # Character-related item containers
         self.skills = ItemKeyedSet(self, Skill)
         self.implants = ItemSet(self, Implant)
