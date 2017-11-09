@@ -24,7 +24,7 @@ from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
 from eos.const.eve import EffectId, EffectCategoryId
 from eos.eve_object.modifier import ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
-from eos.fit.pubsub.message import AttrValueChanged
+from eos.fit.message import AttrValueChanged
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 

@@ -22,7 +22,7 @@
 from eos.const.eos import State
 from eos.const.eve import AttributeId
 from eos.fit.item import Drone, Ship
-from eos.fit.pubsub.message import (
+from eos.fit.message import (
     ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister

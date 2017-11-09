@@ -21,20 +21,18 @@
 
 from itertools import chain
 
-from eos.const.eos import State
 from eos.const.eve import TypeId
 from eos.data.source import Source, SourceManager
 from eos.util.default import DEFAULT
+from eos.util.pubsub.broker import MessageBroker
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import (
     ItemDescriptor, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
 from .helper import DamageTypes
 from .item import *
-from .pubsub.broker import MessageBroker
-from .pubsub.message import (
-    DefaultIncomingDamageChanged, EffectsStarted, EffectsStopped,
-    ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
+from .message import DefaultIncomingDamageChanged
+from .message.helper import get_items_added_messages, get_items_removed_messages
 from .restriction import RestrictionService
 from .sim import *
 from .stats import StatService
@@ -146,19 +144,7 @@ class Fit(MessageBroker):
             return
         # Notify everyone about items being "removed"
         if old_source is not None:
-            messages = []
-            for item in self._item_iter():
-                # Stop effects
-                running_effect_ids = set(item._running_effect_ids)
-                if running_effect_ids:
-                    messages.append(EffectsStopped(item, running_effect_ids))
-                    item._running_effect_ids.clear()
-                # Deactivate states
-                states = {s for s in State if s <= item.state}
-                messages.append(StatesDeactivated(item, states))
-                # Remove item
-                messages.append(ItemRemoved(item))
-            self._publish_bulk(messages)
+            self._publish_bulk(get_items_removed_messages(self._item_iter()))
         # Refresh source and clear remaining source-dependent data
         self.__source = new_source
         for item in self._item_iter():
@@ -166,24 +152,7 @@ class Fit(MessageBroker):
         self._volatile_mgr.clear_volatile_attrs()
         # Notify everyone about items being "added"
         if new_source is not None:
-            messages = []
-            for item in self._item_iter():
-                # Add item
-                messages.append(ItemAdded(item))
-                # Activate states
-                states = {s for s in State if s <= item.state}
-                messages.append(StatesActivated(item, states))
-                # Start effects
-                to_start, to_stop = item._get_wanted_effect_status_changes()
-                if to_start:
-                    item._running_effect_ids.update(to_start)
-                    messages.append(EffectsStarted(item, to_start))
-                # Should never happen, as we cleared running effects when
-                # removing source
-                if to_stop:
-                    messages.append(EffectsStopped(item, to_stop))
-                    item._running_effect_ids.difference_update(to_stop)
-            self._publish_bulk(messages)
+            self._publish_bulk(get_items_added_messages(self._item_iter()))
 
     @property
     def default_incoming_damage(self):

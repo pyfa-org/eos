@@ -32,7 +32,8 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
     def hp(self):
         """Fetch HP stats of the item.
 
-        Returns: TankingLayersTotal helper container instance.
+        Returns:
+            TankingLayersTotal helper container instance.
         """
         hull = self.attributes.get(AttributeId.hp, None)
         armor = self.attributes.get(AttributeId.armor_hp, None)
@@ -43,8 +44,9 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
     def resistances(self):
         """Fetch resistances of the item.
 
-        Returns: TankingLayers helper container instance, whose attributes are
-        DamageTypes helper container instances.
+        Returns:
+            TankingLayers helper container instance, whose attributes are
+            DamageTypes helper container instances.
         """
         hull = DamageTypes(
             em=self.__get_resistance_by_attr(
@@ -91,7 +93,8 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
             damage_profile (optional): DamageProfile helper container instance.
                 If not specified, default on-fit damage profile is used.
 
-        Returns: TankingLayersTotal helper container instance.
+        Returns:
+            TankingLayersTotal helper container instance.
         """
         if damage_profile is None:
             damage_profile = self._fit.default_incoming_damage
@@ -138,7 +141,8 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         Eve takes the worst resistance and calculates EHP against it, on a per-
         layer basis.
 
-        Returns: TankingLayersTotal helper container instance.
+        Returns:
+            TankingLayersTotal helper container instance.
         """
         hull_ehp = self.__get_layer_worst_case_ehp(
             self.hp.hull, self.resistances.hull)

@@ -24,8 +24,8 @@ import math
 from eos.const.eve import AttributeId
 from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import ItemAdded, ItemRemoved
-from eos.fit.pubsub.subscriber import BaseSubscriber
+from eos.fit.message import ItemAdded, ItemRemoved
+from eos.util.pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .register import *
 
@@ -77,8 +77,9 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
     def hp(self):
         """Fetch ship HP stats.
 
-        Returns: TankingLayersTotal helper container instance. If ship data
-        cannot be fetched, HP values will be None.
+        Returns:
+            TankingLayersTotal helper container instance. If ship data cannot be
+            fetched, HP values will be None.
         """
         try:
             return self.__current_ship.hp
@@ -89,9 +90,10 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
     def resistances(self):
         """Fetch ship resistances.
 
-        Returns: TankingLayers helper container instance, whose attributes are
-        DamageTypes helper container instances. If ship data cannot be fetched,
-        resistance values will be None.
+        Returns:
+            TankingLayers helper container instance, whose attributes are
+            DamageTypes helper container instances. If ship data cannot be
+            fetched, resistance values will be None.
         """
         try:
             return self.__current_ship.resistances
@@ -107,8 +109,9 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             damage_profile (optional): DamageProfile helper container instance.
                 If not specified, default on-fit damage profile is used.
 
-        Returns: TankingLayersTotal helper container instance. If ship data
-        cannot be fetched, EHP values will be None.
+        Returns:
+            TankingLayersTotal helper container instance. If ship data cannot be
+            fetched, EHP values will be None.
         """
         try:
             return self.__current_ship.get_ehp(damage_profile)
@@ -122,8 +125,9 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         Eve takes the worst resistance and calculates EHP against it, on a per-
         layer basis.
 
-        Returns: TankingLayersTotal helper container instance. If ship data
-        cannot be fetched, EHP values will be None.
+        Returns:
+            TankingLayersTotal helper container instance. If ship data cannot be
+            fetched, EHP values will be None.
         """
         try:
             return self.__current_ship.worst_case_ehp
@@ -143,7 +147,8 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
                 instance. If specified, effective damage against these
                 resistances is calculated.
 
-        Returns: DamageTypesTotal helper container instance.
+        Returns:
+            DamageTypesTotal helper container instance.
         """
         return self.__dd_reg._collect_damage_stats(
             item_filter, 'get_nominal_volley',
@@ -165,7 +170,8 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             reload (optional): Boolean flag which controls if reload should be
                 taken into consideration or not. By default, reload is ignored.
 
-        Returns: DamageTypesTotal helper container instance.
+        Returns:
+            DamageTypesTotal helper container instance.
         """
         return self.__dd_reg._collect_damage_stats(
             item_filter, 'get_nominal_dps',

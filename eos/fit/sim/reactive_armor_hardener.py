@@ -24,10 +24,10 @@ from logging import getLogger
 from math import ceil, floor
 
 from eos.const.eve import AttributeId, EffectId
-from eos.fit.pubsub.message import (
+from eos.fit.message import (
     AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDamageChanged,
     EffectsStarted, EffectsStopped)
-from eos.fit.pubsub.subscriber import BaseSubscriber
+from eos.util.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
 from eos.util.round import sig_round
 

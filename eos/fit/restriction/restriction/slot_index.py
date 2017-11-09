@@ -23,7 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttributeId
-from eos.fit.pubsub.message import ItemAdded, ItemRemoved
+from eos.fit.message import ItemAdded, ItemRemoved
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError

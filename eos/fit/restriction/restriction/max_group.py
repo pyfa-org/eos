@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction, State
 from eos.const.eve import AttributeId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
-from eos.fit.pubsub.message import (
+from eos.fit.message import (
     ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister

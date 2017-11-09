@@ -27,8 +27,7 @@ from math import exp
 from eos.const.eos import ModifierOperator
 from eos.const.eve import AttributeId, TypeCategoryId
 from eos.data.cache_handler.exception import AttributeFetchError
-from eos.fit.pubsub.message import (
-    AttrValueChanged, AttrValueChangedMasked)
+from eos.fit.message import AttrValueChanged, AttrValueChangedMasked
 from eos.util.keyed_storage import KeyedStorage
 from .exception import AttributeMetadataError, BaseValueError
 

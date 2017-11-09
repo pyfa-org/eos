@@ -43,8 +43,9 @@ class RestrictionTestCase(IntegrationTestCase):
             restriction: Restriction type which we're interested in. Errors of
                 any other restriction types will be ignored.
 
-        Returns: If specified error occurred with specified item, returns error
-        data; if it didn't, returns None.
+        Returns:
+            If specified error occurred with specified item, returns error data;
+            if it didn't, returns None.
         """
         skip_checks = set(Restriction).difference([restriction])
         try:

@@ -22,7 +22,7 @@
 from eos.fit.item.mixin.damage_dealer import (
     DamageDealerMixin, BASIC_MAP, CHARGE_MAP)
 from eos.fit.helper import DamageTypesTotal
-from eos.fit.pubsub.message import EffectsStarted, EffectsStopped
+from eos.fit.message import EffectsStarted, EffectsStopped
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseStatRegister
 
@@ -71,7 +71,8 @@ class DamageDealerRegister(BaseStatRegister):
                 each item to request its damage stats. Args and kwargs are
                 arguments which are passed to this method.
 
-        Return value: Returns: DamageTypesTotal helper container instance.
+        Returns:
+            DamageTypesTotal helper container instance.
         """
         em, therm, kin, expl = None, None, None, None
         for item in self.__dealers:

@@ -21,7 +21,7 @@
 
 from abc import ABCMeta, abstractmethod
 
-from eos.fit.pubsub.subscriber import BaseSubscriber
+from eos.util.pubsub.subscriber import BaseSubscriber
 
 
 class BaseRestriction(metaclass=ABCMeta):

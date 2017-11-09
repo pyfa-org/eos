@@ -19,10 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import State
-from eos.fit.pubsub.message import (
-    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved,
-    StatesActivated, StatesDeactivated)
+from eos.fit.message.helper import (
+    get_items_added_messages, get_items_removed_messages)
 from .exception import ItemAlreadyAssignedError
 
 
@@ -54,27 +52,10 @@ class ItemContainerBase:
         # Fit updates
         fit = item._fit
         if fit is not None:
+            # Notify services about added item
             if fit.source is not None:
-                messages = []
-                for subitem in (item, *child_items):
-                    # Add item
-                    messages.append(ItemAdded(subitem))
-                    # Activate states
-                    states = {s for s in State if s <= subitem.state}
-                    messages.append(StatesActivated(subitem, states))
-                    # Start effects
-                    to_start, to_stop = (
-                        subitem._get_wanted_effect_status_changes())
-                    if to_start:
-                        subitem._running_effect_ids.update(to_start)
-                        messages.append(EffectsStarted(subitem, to_start))
-                    # Should never happen, as we cleared running effects when
-                    # removing item, or it had no running effects if it was
-                    # never assigned
-                    if to_stop:
-                        messages.append(EffectsStopped(subitem, to_stop))
-                        subitem._running_effect_ids.difference_update(to_stop)
-                fit._publish_bulk(messages)
+                fit._publish_bulk(
+                    get_items_added_messages((item, *child_items)))
             # Volatile cache
             for subitem in (item, *child_items):
                 fit._volatile_mgr.add_volatile_object(subitem)
@@ -90,21 +71,10 @@ class ItemContainerBase:
         child_items = item._child_items
         fit = item._fit
         if fit is not None:
+            # Notify services about removed item
             if fit.source is not None:
-                messages = []
-                for subitem in (*child_items, item):
-                    # Stop effects
-                    running_effect_ids = set(subitem._running_effect_ids)
-                    if running_effect_ids:
-                        messages.append(
-                            EffectsStopped(subitem, running_effect_ids))
-                        subitem._running_effect_ids.clear()
-                    # Deactivate states
-                    states = {s for s in State if s <= subitem.state}
-                    messages.append(StatesDeactivated(subitem, states))
-                    # Remove item
-                    messages.append(ItemRemoved(subitem))
-                fit._publish_bulk(messages)
+                fit._publish_bulk(
+                    get_items_removed_messages((*child_items, item)))
             # Volatile cache
             fit._volatile_mgr.clear_volatile_attrs()
             for subitem in (*child_items, item):

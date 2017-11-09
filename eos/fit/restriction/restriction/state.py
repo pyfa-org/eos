@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from eos.fit.pubsub.message import StatesActivated, StatesDeactivated
+from eos.fit.message import StatesActivated, StatesDeactivated
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 

@@ -19,9 +19,7 @@
 # ==============================================================================
 
 
-from eos.util.pubsub.subscriber import BaseSubscriber
-
-
-class BaseStatRegister(BaseSubscriber):
-    """Base class for all statistics registers."""
-    ...
+from .message import (
+    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDamageChanged,
+    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved, StatesActivated,
+    StatesDeactivated)

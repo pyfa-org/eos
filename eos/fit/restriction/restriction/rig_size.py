@@ -24,7 +24,7 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import (
+from eos.fit.message import (
     EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError

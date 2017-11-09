@@ -21,7 +21,7 @@
 
 from eos.const.eve import AttributeId, EffectId
 from eos.fit.item import Ship
-from eos.fit.pubsub.message import (
+from eos.fit.message import (
     EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
 from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
 from .base import BaseResourceStatRegister

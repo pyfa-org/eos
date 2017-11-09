@@ -45,8 +45,9 @@ class SideEffectMixin(BaseItemMixin):
     def side_effects(self):
         """Get map with data about item side-effects.
 
-        Returns: Dictionary in {effect ID: (effect=effect, chance=chance of
-        setting in, enabled=side-effect status)} format.
+        Returns:
+            Dictionary in {effect ID: (effect=effect, chance=chance of setting
+            in, enabled=side-effect status)} format.
         """
         side_effects = {}
         for effect_id, effect in self._type_effects.items():

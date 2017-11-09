@@ -188,7 +188,8 @@ class DamageDealerMixin(
                 instance. If specified, effective damage against these
                 resistances is calculated.
 
-        Returns: DamageTypesTotal helper container instance.
+        Returns:
+            DamageTypesTotal helper container instance.
         """
         # TODO: Combine multiple volleys into one as temporary measure
         em, therm, kin, expl = None, None, None, None
@@ -257,7 +258,8 @@ class DamageDealerMixin(
             reload (optional): Boolean flag which controls if reload should be
                 taken into consideration or not. By default, reload is ignored.
 
-        Returns: DamageTypesTotal helper container instance.
+        Returns:
+            DamageTypesTotal helper container instance.
         """
         volley = self.get_nominal_volley(target_resistances=target_resistances)
         # If all attribs of base volley are None, nothing we can do here

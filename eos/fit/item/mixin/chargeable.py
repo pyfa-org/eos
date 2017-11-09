@@ -61,9 +61,10 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
         It depends on capacity of this item and volume of charge.
 
-        Returns: Quantity of loadable charges as integer. If any of necessary
-        attribute values is not defined, or no charge is found in item, None is
-        returned.
+        Returns:
+            Quantity of loadable charges as integer. If any of necessary
+            attribute values is not defined, or no charge is found in item, None
+            is returned.
         """
         if self.charge is None:
             return None

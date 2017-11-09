@@ -23,10 +23,10 @@ from eos.const.eos import ModifierDomain
 from eos.eve_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.item import Character, Ship
-from eos.fit.pubsub.message import (
+from eos.fit.message import (
     AttrValueChanged, EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
-from eos.fit.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_storage import KeyedStorage
+from eos.util.pubsub.subscriber import BaseSubscriber
 from .affector import Affector
 from .register import AffectionRegister
 
