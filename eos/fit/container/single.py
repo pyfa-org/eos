@@ -34,7 +34,7 @@ class ItemDescriptor(ItemContainerBase):
 
     def __init__(self, attr_name, item_class):
         ItemContainerBase.__init__(self, item_class)
-        self.__attr_name = attr_name
+        self.__attr_name = self.__mangle_attr_name(attr_name)
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -56,3 +56,8 @@ class ItemDescriptor(ItemContainerBase):
                 if old_item is not None:
                     self._handle_item_addition(old_item, instance)
                 raise ValueError(*e.args) from e
+
+    def __mangle_attr_name(self, attr_name):
+        if attr_name.startswith('__') and not attr_name.endswith('__'):
+            return '_{}{}'.format(type(self).__name__, attr_name)
+        return attr_name

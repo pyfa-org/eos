@@ -102,10 +102,10 @@ class Fit(MessageBroker):
         # to make sure it's part of it
         self.character = Character(TypeId.character_static)
 
-    character = ItemDescriptor('_character', Character)
-    ship = ItemDescriptor('_ship', Ship)
-    stance = ItemDescriptor('_stance', Stance)
-    effect_beacon = ItemDescriptor('_effect_beacon', EffectBeacon)
+    character = ItemDescriptor('__character', Character)
+    ship = ItemDescriptor('__ship', Ship)
+    stance = ItemDescriptor('__stance', Stance)
+    effect_beacon = ItemDescriptor('__effect_beacon', EffectBeacon)
 
     def validate(self, skip_checks=()):
         """Run fit validation.
