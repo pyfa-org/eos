@@ -29,17 +29,16 @@ from .base import BaseItemMixin
 SideEffectData = namedtuple('SideEffectData', ('effect', 'chance', 'status'))
 
 
-# Map which defines run mode into side-effect status conversion rules
-# Format: {run mode: side-effect status}
-mode_conversion = {
-    EffectMode.full_compliance: False,
-    EffectMode.state_compliance: True,
-    EffectMode.force_run: True,
-    EffectMode.force_stop: False}
-
-
 class SideEffectMixin(BaseItemMixin):
     """Allows to manage item's side-effects."""
+
+    # Map which defines run mode into side-effect status conversion rules
+    # Format: {effect run mode: side-effect status}
+    __mode_conversion = {
+        EffectMode.full_compliance: False,
+        EffectMode.state_compliance: True,
+        EffectMode.force_run: True,
+        EffectMode.force_stop: False}
 
     @property
     def side_effects(self):
@@ -58,7 +57,8 @@ class SideEffectMixin(BaseItemMixin):
             chance = effect.get_fitting_usage_chance(self)
             if chance is None:
                 continue
-            side_effect_state = mode_conversion[self.get_effect_mode(effect_id)]
+            side_effect_state = (
+                self.__mode_conversion[self.get_effect_mode(effect_id)])
             side_effects[effect_id] = SideEffectData(
                 effect, chance, side_effect_state)
         return side_effects

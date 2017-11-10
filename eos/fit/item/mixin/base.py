@@ -20,6 +20,7 @@
 
 
 from abc import ABCMeta, abstractmethod
+from collections import namedtuple
 
 from eos.const.eos import EffectMode
 from eos.fit.calculator import MutableAttributeMap
@@ -27,6 +28,9 @@ from eos.fit.message.helper import MsgHelper
 
 
 DEFAULT_EFFECT_MODE = EffectMode.full_compliance
+
+
+EffectData = namedtuple('EffectData', ('effect', 'mode', 'status'))
 
 
 class BaseItemMixin(metaclass=ABCMeta):
@@ -136,7 +140,16 @@ class BaseItemMixin(metaclass=ABCMeta):
         else:
             return None
 
-    # Effect mode methods
+    # Effect methods
+    @property
+    def effects(self):
+        effects = {}
+        for effect_id, effect in self._type_effects.items():
+            mode = self.get_effect_mode(effect_id)
+            status = effect_id in self._running_effect_ids
+            effects[effect_id] = EffectData(effect, mode, status)
+        return effects
+
     def get_effect_mode(self, effect_id):
         if self.__effect_mode_overrides is None:
             return DEFAULT_EFFECT_MODE
