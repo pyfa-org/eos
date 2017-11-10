@@ -48,17 +48,17 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_containers = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
+    def _handle_item_added(self, msg):
         # Ignore container items without charge attribute
-        if not hasattr(message.item, 'charge'):
+        if not hasattr(msg.item, 'charge'):
             return
         # And without size specification
-        if AttributeId.charge_size not in message.item._type_attributes:
+        if AttributeId.charge_size not in msg.item._type_attributes:
             return
-        self.__restricted_containers.add(message.item)
+        self.__restricted_containers.add(msg.item)
 
-    def _handle_item_removed(self, message):
-        self.__restricted_containers.discard(message.item)
+    def _handle_item_removed(self, msg):
+        self.__restricted_containers.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

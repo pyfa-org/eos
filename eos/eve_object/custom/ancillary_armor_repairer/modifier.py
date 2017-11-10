@@ -52,22 +52,22 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             multiplier = 1
         return ModifierOperator.post_mul_immune, multiplier
 
-    def __revise_on_item_added_removed(self, message, carrier_item, _):
+    def __revise_on_item_added_removed(self, msg, carrier_item, _):
         # If added/removed item is charge of effect carrying item and charge is
         # paste, then modification value changes
         if (
-            getattr(carrier_item, 'charge', None) is message.item and
-            message.item._type_id == TypeId.nanite_repair_paste
+            getattr(carrier_item, 'charge', None) is msg.item and
+            msg.item._type_id == TypeId.nanite_repair_paste
         ):
             return True
         return False
 
-    def __revise_on_attr_changed(self, message, carrier_item, _):
+    def __revise_on_attr_changed(self, msg, carrier_item, _):
         # If armor rep multiplier changes, then result of modification also
         # should change
         if (
-            message.item is carrier_item and
-            message.attr == AttributeId.charged_armor_damage_multiplier
+            msg.item is carrier_item and
+            msg.attr == AttributeId.charged_armor_damage_multiplier
         ):
             return True
         return False
@@ -78,9 +78,9 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         AttrValueChanged: __revise_on_attr_changed}
 
     @property
-    def revise_message_types(self):
+    def revise_msg_types(self):
         return set(self.__revision_map.keys())
 
-    def revise_modification(self, message, carrier_item, ship):
-        revision_func = self.__revision_map[type(message)]
-        return revision_func(self, message, carrier_item, ship)
+    def revise_modification(self, msg, carrier_item, ship):
+        revision_func = self.__revision_map[type(msg)]
+        return revision_func(self, msg, carrier_item, ship)

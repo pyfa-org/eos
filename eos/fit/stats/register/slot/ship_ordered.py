@@ -57,21 +57,21 @@ class OrderedShipSlotStatRegister(
     def _users(self):
         return self.__slot_users
 
-    def _handle_item_added(self, message):
-        if isinstance(message.item, Ship):
-            self.__current_ship = message.item
+    def _handle_item_added(self, msg):
+        if isinstance(msg.item, Ship):
+            self.__current_ship = msg.item
 
-    def _handle_item_removed(self, message):
-        if message.item is self.__current_ship:
+    def _handle_item_removed(self, msg):
+        if msg.item is self.__current_ship:
             self.__current_ship = None
 
-    def _handle_effects_started(self, message):
-        if self.__slot_effect_id in message.effect_ids:
-            self.__slot_users.add(message.item)
+    def _handle_effects_started(self, msg):
+        if self.__slot_effect_id in msg.effect_ids:
+            self.__slot_users.add(msg.item)
 
-    def _handle_effects_stopped(self, message):
-        if self.__slot_effect_id in message.effect_ids:
-            self.__slot_users.discard(message.item)
+    def _handle_effects_stopped(self, msg):
+        if self.__slot_effect_id in msg.effect_ids:
+            self.__slot_users.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

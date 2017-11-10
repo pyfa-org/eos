@@ -41,7 +41,7 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def revise_message_types(self):
+    def revise_msg_types(self):
         """Get types of messages which this modifier cares about.
 
         Returns:
@@ -51,7 +51,7 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def revise_modification(self, message, carrier_item, ship):
+    def revise_modification(self, msg, carrier_item, ship):
         """Decide if modification value may change.
 
         Rely on provided event and context for it, decide if modification

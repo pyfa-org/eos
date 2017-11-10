@@ -76,30 +76,30 @@ class CalculationService(BaseSubscriber):
         return modifications
 
     # Handle item changes which are significant for calculator
-    def _handle_item_added(self, message):
-        if isinstance(message.item, Character):
-            self._current_char = message.item
-        elif isinstance(message.item, Ship):
-            self._current_ship = message.item
-        self.__affections.register_affectee(message.item)
+    def _handle_item_added(self, msg):
+        if isinstance(msg.item, Character):
+            self._current_char = msg.item
+        elif isinstance(msg.item, Ship):
+            self._current_ship = msg.item
+        self.__affections.register_affectee(msg.item)
 
-    def _handle_item_removed(self, message):
-        if message.item is self._current_char:
+    def _handle_item_removed(self, msg):
+        if msg.item is self._current_char:
             self._current_char = None
-        elif message.item is self._current_ship:
+        elif msg.item is self._current_ship:
             self._current_ship = None
-        self.__affections.unregister_affectee(message.item)
+        self.__affections.unregister_affectee(msg.item)
 
-    def _handle_effects_started(self, message):
-        affectors = self.__generate_affectors(message.item, message.effect_ids)
+    def _handle_effects_started(self, msg):
+        affectors = self.__generate_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
             self.__subscribe_affector(affector)
             self.__affections.register_affector(affector)
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr_id]
 
-    def _handle_effects_stopped(self, message):
-        affectors = self.__generate_affectors(message.item, message.effect_ids)
+    def _handle_effects_stopped(self, msg):
+        affectors = self.__generate_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr_id]
@@ -107,7 +107,7 @@ class CalculationService(BaseSubscriber):
             self.__unsubscribe_affector(affector)
 
     # Methods to clear calculated child nodes when parent nodes change
-    def _revise_regular_attr_dependents(self, message):
+    def _revise_regular_attr_dependents(self, msg):
         """Remove calculated attribute values which rely on passed attribute.
 
         Removing them allows to recalculate updated value. Here we process all
@@ -116,8 +116,8 @@ class CalculationService(BaseSubscriber):
         python modifiers are processed separately.
         """
         # Remove values of target attributes capped by changing attribute
-        item = message.item
-        attr_id = message.attr_id
+        item = msg.item
+        attr_id = msg.attr_id
         for capped_attr_id in item.attributes._cap_map.get(attr_id, ()):
             del item.attributes[capped_attr_id]
         # Remove values of target attributes which are using changing attribute
@@ -135,7 +135,7 @@ class CalculationService(BaseSubscriber):
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[modifier.tgt_attr_id]
 
-    def _revise_python_attr_dependents(self, message):
+    def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.
 
         Here we go through python modifiers, deliver to them message, and if,
@@ -144,14 +144,14 @@ class CalculationService(BaseSubscriber):
         """
         # If there's no affector-subscribers for received message type, do
         # nothing
-        msg_type = type(message)
+        msg_type = type(msg)
         if msg_type not in self.__subscribed_affectors:
             return
         # Otherwise, ask affector if target value should change, and remove it
         # if it should
         for affector in self.__subscribed_affectors[msg_type]:
             if not affector.modifier.revise_modification(
-                    message, affector.carrier_item, self._current_ship):
+                    msg, affector.carrier_item, self._current_ship):
                 continue
             for target_item in self.__affections.get_affectees(affector):
                 del target_item.attributes[affector.modifier.tgt_attr_id]
@@ -164,11 +164,11 @@ class CalculationService(BaseSubscriber):
         EffectsStopped: _handle_effects_stopped,
         AttrValueChanged: _revise_regular_attr_dependents}
 
-    def _notify(self, message):
-        BaseSubscriber._notify(self, message)
+    def _notify(self, msg):
+        BaseSubscriber._notify(self, msg)
         # Relay all messages to python modifiers, as in case of python modifiers
         # any message may result in deleting dependent attributes
-        self._revise_python_attr_dependents(message)
+        self._revise_python_attr_dependents(msg)
 
     # Do not process here just target domain
     _supported_domains = set(
@@ -206,7 +206,7 @@ class CalculationService(BaseSubscriber):
         if not isinstance(affector.modifier, BasePythonModifier):
             return
         to_subscribe = set()
-        for msg_type in affector.modifier.revise_message_types:
+        for msg_type in affector.modifier.revise_msg_types:
             # Subscribe service to new message type only if there's no such
             # subscription yet
             if (
@@ -223,7 +223,7 @@ class CalculationService(BaseSubscriber):
         if not isinstance(affector.modifier, BasePythonModifier):
             return
         to_ubsubscribe = set()
-        for msg_type in affector.modifier.revise_message_types:
+        for msg_type in affector.modifier.revise_msg_types:
             # Make sure affector will not receive messages anymore
             self.__subscribed_affectors.rm_data_entry(msg_type, affector)
             # Unsubscribe service from message type if there're no recipients

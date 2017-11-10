@@ -52,25 +52,25 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         self.__capital_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
-        if isinstance(message.item, Ship):
-            self.__current_ship = message.item
-        if not isinstance(message.item, TRACKED_ITEM_CLASSES):
+    def _handle_item_added(self, msg):
+        if isinstance(msg.item, Ship):
+            self.__current_ship = msg.item
+        if not isinstance(msg.item, TRACKED_ITEM_CLASSES):
             return
         # Ignore items with no volume attribute and items with volume which
         # satisfies us regardless of ship type
         try:
-            item_volume = message.item._type_attributes[AttributeId.volume]
+            item_volume = msg.item._type_attributes[AttributeId.volume]
         except KeyError:
             return
         if item_volume <= MAX_SUBCAP_VOLUME:
             return
-        self.__capital_items.add(message.item)
+        self.__capital_items.add(msg.item)
 
-    def _handle_item_removed(self, message):
-        if message.item is self.__current_ship:
+    def _handle_item_removed(self, msg):
+        if msg.item is self.__current_ship:
             self.__current_ship = None
-        self.__capital_items.discard(message.item)
+        self.__capital_items.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

@@ -42,19 +42,19 @@ class DamageDealerRegister(BaseStatRegister):
         self.__dealers = KeyedStorage()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_effects_started(self, message):
-        if not isinstance(message.item, DamageDealerMixin):
+    def _handle_effects_started(self, msg):
+        if not isinstance(msg.item, DamageDealerMixin):
             return
-        damage_effects = message.effect_ids.intersection(PRIMARY_DAMAGE_EFFECTS)
+        damage_effects = msg.effect_ids.intersection(PRIMARY_DAMAGE_EFFECTS)
         if damage_effects:
-            self.__dealers.add_data_set(message.item, damage_effects)
+            self.__dealers.add_data_set(msg.item, damage_effects)
 
-    def _handle_effects_stopped(self, message):
-        if not isinstance(message.item, DamageDealerMixin):
+    def _handle_effects_stopped(self, msg):
+        if not isinstance(msg.item, DamageDealerMixin):
             return
-        damage_effects = message.effect_ids.intersection(PRIMARY_DAMAGE_EFFECTS)
+        damage_effects = msg.effect_ids.intersection(PRIMARY_DAMAGE_EFFECTS)
         if damage_effects:
-            self.__dealers.rm_data_set(message.item, damage_effects)
+            self.__dealers.rm_data_set(msg.item, damage_effects)
 
     _handler_map = {
         EffectsStarted: _handle_effects_started,

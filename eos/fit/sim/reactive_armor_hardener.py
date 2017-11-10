@@ -417,48 +417,47 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         return tick_count
 
     # Message handling
-    def _handle_effects_started(self, message):
-        if EffectId.adaptive_armor_hardener in message.effect_ids:
+    def _handle_effects_started(self, msg):
+        if EffectId.adaptive_armor_hardener in msg.effect_ids:
             for attr_id in res_attr_ids:
-                message.item.attributes._set_override_callback(
-                    attr_id, (self.get_reso, (message.item, attr_id), {}))
-            self.__data.setdefault(message.item, {})
+                msg.item.attributes._set_override_callback(
+                    attr_id, (self.get_reso, (msg.item, attr_id), {}))
+            self.__data.setdefault(msg.item, {})
             self.__clear_results()
 
-    def _handle_effects_stopped(self, message):
-        if EffectId.adaptive_armor_hardener in message.effect_ids:
+    def _handle_effects_stopped(self, msg):
+        if EffectId.adaptive_armor_hardener in msg.effect_ids:
             for attr_id in res_attr_ids:
-                message.item.attributes._del_override_callback(attr_id)
+                msg.item.attributes._del_override_callback(attr_id)
             try:
-                del self.__data[message.item]
+                del self.__data[msg.item]
             except KeyError:
                 pass
             self.__clear_results()
 
-    def _handle_attr_changed(self, message):
-        item = message.item
+    def _handle_attr_changed(self, msg):
+        item = msg.item
         # Ship resistances
-        if item is self.__fit.ship and message.attr_id in res_attr_ids:
+        if item is self.__fit.ship and msg.attr_id in res_attr_ids:
             self.__clear_results()
         # RAH resistance shift or cycle time
         elif item in self.__data and (
-            message.attr_id == AttributeId.resistance_shift_amount or
+            msg.attr_id == AttributeId.resistance_shift_amount or
             # Cycle time change invalidates results only when there're more than
             # 1 RAHs
             (
                 len(self.__data) > 1 and
-                message.attr_id ==
-                self.__get_rah_effect(item).duration_attribute_id
+                msg.attr_id == self.__get_rah_effect(item).duration_attribute_id
             )
         ):
             self.__clear_results()
 
-    def _handle_attr_changed_masked(self, message):
+    def _handle_attr_changed_masked(self, msg):
         # We've set up overrides on RAHs' resonance attributes, but when base
         # (not modified by simulator) values of these attributes change, we
         # should re-run simulator - as now we have different resonance value to
         # base sim results off
-        if message.item in self.__data and message.attr_id in res_attr_ids:
+        if msg.item in self.__data and msg.attr_id in res_attr_ids:
             self.__clear_results()
 
     def _handle_changed_damage_profile(self, _):
@@ -471,11 +470,11 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         AttrValueChangedMasked: _handle_attr_changed_masked,
         DefaultIncomingDamageChanged: _handle_changed_damage_profile}
 
-    def _notify(self, message):
+    def _notify(self, msg):
         # Do not react to messages while sim is running
         if self.__running is True:
             return
-        BaseSubscriber._notify(self, message)
+        BaseSubscriber._notify(self, msg)
 
     # Auxiliary message handling methods
     def __get_rah_effect(self, item):

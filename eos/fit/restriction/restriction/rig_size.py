@@ -47,24 +47,24 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
-        if isinstance(message.item, Ship):
-            self.__current_ship = message.item
+    def _handle_item_added(self, msg):
+        if isinstance(msg.item, Ship):
+            self.__current_ship = msg.item
 
-    def _handle_item_removed(self, message):
-        if message.item is self.__current_ship:
+    def _handle_item_removed(self, msg):
+        if msg.item is self.__current_ship:
             self.__current_ship = None
 
-    def _handle_effects_started(self, message):
+    def _handle_effects_started(self, msg):
         if (
-            EffectId.rig_slot in message.effect_ids and
-            AttributeId.rig_size in message.item._type_attributes
+            EffectId.rig_slot in msg.effect_ids and
+            AttributeId.rig_size in msg.item._type_attributes
         ):
-            self.__restricted_items.add(message.item)
+            self.__restricted_items.add(msg.item)
 
-    def _handle_effects_stopped(self, message):
-        if EffectId.rig_slot in message.effect_ids:
-            self.__restricted_items.discard(message.item)
+    def _handle_effects_stopped(self, msg):
+        if EffectId.rig_slot in msg.effect_ids:
+            self.__restricted_items.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

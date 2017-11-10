@@ -53,21 +53,21 @@ class LaunchedDroneStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
     def _users(self):
         return self.__slot_users
 
-    def _handle_item_added(self, message):
-        if isinstance(message.item, Character):
-            self.__current_char = message.item
+    def _handle_item_added(self, msg):
+        if isinstance(msg.item, Character):
+            self.__current_char = msg.item
 
-    def _handle_item_removed(self, message):
-        if message.item is self.__current_char:
+    def _handle_item_removed(self, msg):
+        if msg.item is self.__current_char:
             self.__current_char = None
 
-    def _handle_states_activated(self, message):
-        if isinstance(message.item, Drone) and State.online in message.states:
-            self.__slot_users.add(message.item)
+    def _handle_states_activated(self, msg):
+        if isinstance(msg.item, Drone) and State.online in msg.states:
+            self.__slot_users.add(msg.item)
 
-    def _handle_states_deactivated(self, message):
-        if isinstance(message.item, Drone) and State.online in message.states:
-            self.__slot_users.discard(message.item)
+    def _handle_states_deactivated(self, msg):
+        if isinstance(msg.item, Drone) and State.online in msg.states:
+            self.__slot_users.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

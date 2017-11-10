@@ -24,7 +24,7 @@ from itertools import chain
 from eos.const.eve import TypeId
 from eos.data.source import Source, SourceManager
 from eos.util.default import DEFAULT
-from eos.util.pubsub.broker import MessageBroker
+from eos.util.pubsub.broker import MsgBroker
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import (
@@ -32,14 +32,14 @@ from .container import (
 from .helper import DamageTypes
 from .item import *
 from .message import DefaultIncomingDamageChanged
-from .message.helper import get_items_added_messages, get_items_removed_messages
+from .message.helper import MsgHelper
+from .misc.volatile import VolatileManager
 from .restriction import RestrictionService
 from .sim import *
 from .stats import StatService
-from .volatile import VolatileManager
 
 
-class Fit(MessageBroker):
+class Fit(MsgBroker):
     """Definition of fit.
 
     Fit is one of eos' central objects - it holds all fit items and facilities
@@ -69,7 +69,7 @@ class Fit(MessageBroker):
     """
 
     def __init__(self, source=DEFAULT):
-        MessageBroker.__init__(self)
+        MsgBroker.__init__(self)
         self.__source = None
         self.__default_incoming_damage = DamageTypes(
             em=25, thermal=25, kinetic=25, explosive=25)
@@ -142,7 +142,8 @@ class Fit(MessageBroker):
             return
         # Notify everyone about items being "removed"
         if old_source is not None:
-            self._publish_bulk(get_items_removed_messages(self._item_iter()))
+            msgs = MsgHelper.get_items_removed_msgs(self._item_iter())
+            self._publish_bulk(msgs)
         # Refresh source and clear remaining source-dependent data
         self.__source = new_source
         for item in self._item_iter():
@@ -150,7 +151,8 @@ class Fit(MessageBroker):
         self._volatile_mgr.clear_volatile_attrs()
         # Notify everyone about items being "added"
         if new_source is not None:
-            self._publish_bulk(get_items_added_messages(self._item_iter()))
+            msgs = MsgHelper.get_items_added_msgs(self._item_iter())
+            self._publish_bulk(msgs)
 
     @property
     def default_incoming_damage(self):

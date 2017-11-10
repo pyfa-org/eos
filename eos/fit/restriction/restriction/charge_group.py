@@ -55,29 +55,29 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_containers = {}
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
+    def _handle_item_added(self, msg):
         # We're going to track containers, not charges; ignore all items which
         # can't fit a charge
-        if not hasattr(message.item, 'charge'):
+        if not hasattr(msg.item, 'charge'):
             return
         # Compose set of charge groups this container is able to fit
         allowed_group_ids = set()
         for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
                 allowed_group_id = (
-                    message.item._type_attributes[allowed_group_attr_id])
+                    msg.item._type_attributes[allowed_group_attr_id])
             except KeyError:
                 continue
             else:
                 allowed_group_ids.add(allowed_group_id)
         # Only if groups were specified, consider restriction enabled
         if allowed_group_ids:
-            self.__restricted_containers[message.item] = (
+            self.__restricted_containers[msg.item] = (
                 tuple(allowed_group_ids))
 
-    def _handle_item_removed(self, message):
-        if message.item in self.__restricted_containers:
-            del self.__restricted_containers[message.item]
+    def _handle_item_removed(self, msg):
+        if msg.item in self.__restricted_containers:
+            del self.__restricted_containers[msg.item]
 
     _handler_map = {
         ItemAdded: _handle_item_added,

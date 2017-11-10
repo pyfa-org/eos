@@ -98,10 +98,10 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = {}
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
-        if isinstance(message.item, Ship):
-            self.__current_ship = message.item
-        elif not isinstance(message.item, TRACKED_ITEM_CLASSES):
+    def _handle_item_added(self, msg):
+        if isinstance(msg.item, Ship):
+            self.__current_ship = msg.item
+        elif not isinstance(msg.item, TRACKED_ITEM_CLASSES):
             return
         # Containers for type IDs and group IDs of ships, to which item is
         # allowed to fit
@@ -114,8 +114,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             # Cycle through IDs of known restriction attributes
             for allowed_attr_id in allowed_attr_ids:
                 try:
-                    allowed_value = (
-                        message.item._type_attributes[allowed_attr_id])
+                    allowed_value = msg.item._type_attributes[allowed_attr_id]
                 except KeyError:
                     continue
                 else:
@@ -124,15 +123,15 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         if not allowed_type_ids and not allowed_group_ids:
             return
         # Finally, register items which made it into here
-        self.__restricted_items[message.item] = AllowedData(
+        self.__restricted_items[msg.item] = AllowedData(
             type_ids=tuple(allowed_type_ids),
             group_ids=tuple(allowed_group_ids))
 
-    def _handle_item_removed(self, message):
-        if message.item is self.__current_ship:
+    def _handle_item_removed(self, msg):
+        if msg.item is self.__current_ship:
             self.__current_ship = None
-        elif message.item in self.__restricted_items:
-            del self.__restricted_items[message.item]
+        elif msg.item in self.__restricted_items:
+            del self.__restricted_items[msg.item]
 
     _handler_map = {
         ItemAdded: _handle_item_added,

@@ -55,18 +55,13 @@ class TestModifierPython(CalculatorTestCase):
                 return ModifierOperator.post_mul, carrier_mul * ship_mul
 
             @property
-            def revise_message_types(self):
+            def revise_msg_types(self):
                 return {AttrValueChanged}
 
-            def revise_modification(self, message, carrier_item, ship):
+            def revise_modification(self, msg, carrier_item, ship):
                 if (
-                    (
-                        message.item is carrier_item and
-                        message.attr_id == attr2.id
-                    ) or (
-                        message.item is ship and
-                        message.attr_id == attr3.id
-                    )
+                    (msg.item is carrier_item and msg.attr_id == attr2.id) or
+                    (msg.item is ship and msg.attr_id == attr3.id)
                 ):
                     return True
                 return False

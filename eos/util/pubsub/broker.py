@@ -19,39 +19,39 @@
 # ==============================================================================
 
 
-class MessageBroker:
+class MsgBroker:
     """Manages message subscriptions and dispatch messages to recipients."""
 
     def __init__(self):
         # Format: {event class: {subscribers}}
         self.__subscribers = {}
 
-    def _subscribe(self, subscriber, message_types):
+    def _subscribe(self, subscriber, msg_types):
         """Register subscriber for passed message types."""
-        for message_type in message_types:
-            self.__subscribers.setdefault(message_type, set()).add(subscriber)
+        for msg_type in msg_types:
+            self.__subscribers.setdefault(msg_type, set()).add(subscriber)
 
-    def _unsubscribe(self, subscriber, message_types):
+    def _unsubscribe(self, subscriber, msg_types):
         """Unregister subscriber from passed message types."""
         msgtypes_to_remove = set()
-        for message_type in message_types:
+        for msg_type in msg_types:
             try:
-                subscribers = self.__subscribers[message_type]
+                subscribers = self.__subscribers[msg_type]
             except KeyError:
                 continue
             subscribers.discard(subscriber)
             if not subscribers:
-                msgtypes_to_remove.add(message_type)
-        for message_type in msgtypes_to_remove:
-            del self.__subscribers[message_type]
+                msgtypes_to_remove.add(msg_type)
+        for msg_type in msgtypes_to_remove:
+            del self.__subscribers[msg_type]
 
-    def _publish(self, message):
+    def _publish(self, msg):
         """Publish single message."""
-        for subscriber in self.__subscribers.get(type(message), ()):
-            subscriber._notify(message)
+        for subscriber in self.__subscribers.get(type(msg), ()):
+            subscriber._notify(msg)
 
-    def _publish_bulk(self, messages):
+    def _publish_bulk(self, msgs):
         """Publish multiple messages."""
-        for message in messages:
-            for subscriber in self.__subscribers.get(type(message), ()):
-                subscriber._notify(message)
+        for msg in msgs:
+            for subscriber in self.__subscribers.get(type(msg), ()):
+                subscriber._notify(msg)

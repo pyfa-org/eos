@@ -103,7 +103,7 @@ class IntegrationTestCase(EosTestCase):
             ignore_attrs=(
                 ('Fit', '_Fit__source'),
                 ('Fit', '_Fit__default_incoming_damage'),
-                ('Fit', '_MessageBroker__subscribers'),
+                ('Fit', '_MsgBroker__subscribers'),
                 ('RestrictionService', '_RestrictionService__restrictions'),
                 ('StatService', '_StatService__volatile_containers')))
         if entry_num:

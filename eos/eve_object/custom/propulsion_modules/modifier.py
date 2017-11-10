@@ -58,19 +58,19 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             raise ModificationCalculationError from e
         return ModifierOperator.post_percent, ship_speed_percentage
 
-    def __revise_on_attr_changed(self, message, carrier_item, ship):
+    def __revise_on_attr_changed(self, msg, carrier_item, ship):
         """
         If any of the attribute values this modifier relies on is changed,
         then modification value can be changed as well.
         """
         if (
-            (message.item is ship and message.attr == AttributeId.mass) or
+            (msg.item is ship and msg.attr == AttributeId.mass) or
             (
-                message.item is carrier_item and
-                message.attr == AttributeId.speed_factor
+                msg.item is carrier_item and
+                msg.attr == AttributeId.speed_factor
             ) or (
-                message.item is carrier_item and
-                message.attr == AttributeId.speed_boost_factor
+                msg.item is carrier_item and
+                msg.attr == AttributeId.speed_boost_factor
             )
         ):
             return True
@@ -80,9 +80,9 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         AttrValueChanged: __revise_on_attr_changed}
 
     @property
-    def revise_message_types(self):
+    def revise_msg_types(self):
         return set(self.__revision_map)
 
-    def revise_modification(self, message, carrier_item, ship):
-        revision_func = self.__revision_map[type(message)]
-        return revision_func(self, message, carrier_item, ship)
+    def revise_modification(self, msg, carrier_item, ship):
+        revision_func = self.__revision_map[type(msg)]
+        return revision_func(self, msg, carrier_item, ship)

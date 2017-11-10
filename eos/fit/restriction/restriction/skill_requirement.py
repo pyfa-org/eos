@@ -53,24 +53,24 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
+    def _handle_item_added(self, msg):
         # Handle skill addition
-        if isinstance(message.item, Skill):
-            self.__skills[message.item._type_id] = message.item
+        if isinstance(msg.item, Skill):
+            self.__skills[msg.item._type_id] = msg.item
         # Items which are not exceptions and which have any skill requirement
         # are tracked
         if (
-            message.item._type.required_skills and
-            not isinstance(message.item, EXCEPTIONS)
+            msg.item._type.required_skills and
+            not isinstance(msg.item, EXCEPTIONS)
         ):
-            self.__restricted_items.add(message.item)
+            self.__restricted_items.add(msg.item)
 
-    def _handle_item_removed(self, message):
+    def _handle_item_removed(self, msg):
         # Handle skill removal
-        if isinstance(message.item, Skill):
-            del self.__skills[message.item._type_id]
+        if isinstance(msg.item, Skill):
+            del self.__skills[msg.item._type_id]
         # Handle restricted item removal
-        self.__restricted_items.discard(message.item)
+        self.__restricted_items.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

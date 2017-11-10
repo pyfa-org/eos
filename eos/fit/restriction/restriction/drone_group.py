@@ -53,16 +53,16 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         self.__drones = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
-        if isinstance(message.item, Ship):
-            self.__current_ship = message.item
-        elif isinstance(message.item, Drone):
-            self.__drones.add(message.item)
+    def _handle_item_added(self, msg):
+        if isinstance(msg.item, Ship):
+            self.__current_ship = msg.item
+        elif isinstance(msg.item, Drone):
+            self.__drones.add(msg.item)
 
-    def _handle_item_removed(self, message):
-        if message.item is self.__current_ship:
+    def _handle_item_removed(self, msg):
+        if msg.item is self.__current_ship:
             self.__current_ship = None
-        self.__drones.discard(message.item)
+        self.__drones.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

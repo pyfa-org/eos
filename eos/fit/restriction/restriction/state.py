@@ -41,13 +41,13 @@ class StateRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_states_activated(self, message):
-        if State.online in message.states:
-            self.__restricted_items.add(message.item)
+    def _handle_states_activated(self, msg):
+        if State.online in msg.states:
+            self.__restricted_items.add(msg.item)
 
-    def _handle_states_deactivated(self, message):
-        if State.online in message.states:
-            self.__restricted_items.discard(message.item)
+    def _handle_states_deactivated(self, msg):
+        if State.online in msg.states:
+            self.__restricted_items.discard(msg.item)
 
     _handler_map = {
         StatesActivated: _handle_states_activated,

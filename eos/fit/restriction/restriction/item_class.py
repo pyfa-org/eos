@@ -91,11 +91,11 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
         self.__items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
-        self.__items.add(message.item)
+    def _handle_item_added(self, msg):
+        self.__items.add(msg.item)
 
-    def _handle_item_removed(self, message):
-        self.__items.discard(message.item)
+    def _handle_item_removed(self, msg):
+        self.__items.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,

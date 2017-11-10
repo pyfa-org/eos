@@ -389,7 +389,6 @@ class MutableAttributeMap:
         When originator of callback knows that callback return value may (or
         will) change for an attribute, it should invoke this method.
         """
-
         self.__publish(AttrValueChanged(self.__item, attr_id))
 
     def _get_without_overrides(self, attr_id, default=None):
@@ -425,7 +424,10 @@ class MutableAttributeMap:
             self.__cap_map = None
 
     # Auxiliary methods
-    def __publish(self, message):
-        fit = self.__item._fit
-        if fit is not None:
-            fit._publish(message)
+    def __publish(self, msg):
+        try:
+            publish_func = self.__item._fit._publish
+        except AttributeError:
+            pass
+        else:
+            publish_func(msg)

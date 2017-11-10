@@ -49,3 +49,6 @@ class EffectModeTestCase(IntegrationTestCase):
             tgt_attr_id=self.tgt_attr.id,
             operator=ModifierOperator.mod_add,
             src_attr_id=self.src_attr.id)
+
+    def get_log(self, name='eos.fit*'):
+        return IntegrationTestCase.get_log(self, name=name)

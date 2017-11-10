@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.fit.message.helper import get_item_state_update_messages
+from eos.fit.message.helper import MsgHelper
 from .base import BaseItemMixin
 
 
@@ -77,6 +77,7 @@ class MutableStateMixin(BaseItemMixin):
         fit = self._fit
         if fit is not None:
             if fit.source is not None:
-                fit._publish_bulk(
-                    get_item_state_update_messages(self, old_state, new_state))
+                msgs = MsgHelper.get_item_state_update_msgs(
+                    self, old_state, new_state)
+                fit._publish_bulk(msgs)
             fit._volatile_mgr.clear_volatile_attrs()

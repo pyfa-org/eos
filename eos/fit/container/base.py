@@ -19,8 +19,7 @@
 # ==============================================================================
 
 
-from eos.fit.message.helper import (
-    get_items_added_messages, get_items_removed_messages)
+from eos.fit.message.helper import MsgHelper
 from .exception import ItemAlreadyAssignedError
 
 
@@ -54,8 +53,8 @@ class ItemContainerBase:
         if fit is not None:
             # Notify services about added item
             if fit.source is not None:
-                fit._publish_bulk(
-                    get_items_added_messages((item, *child_items)))
+                msgs = MsgHelper.get_items_added_msgs((item, *child_items))
+                fit._publish_bulk(msgs)
             # Volatile cache
             for subitem in (item, *child_items):
                 fit._volatile_mgr.add_volatile_object(subitem)
@@ -73,8 +72,8 @@ class ItemContainerBase:
         if fit is not None:
             # Notify services about removed item
             if fit.source is not None:
-                fit._publish_bulk(
-                    get_items_removed_messages((*child_items, item)))
+                msgs = MsgHelper.get_items_removed_msgs((*child_items, item))
+                fit._publish_bulk(msgs)
             # Volatile cache
             fit._volatile_mgr.clear_volatile_attrs()
             for subitem in (*child_items, item):

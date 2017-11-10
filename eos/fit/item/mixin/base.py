@@ -23,7 +23,7 @@ from abc import ABCMeta, abstractmethod
 
 from eos.const.eos import EffectMode
 from eos.fit.calculator import MutableAttributeMap
-from eos.fit.message.helper import get_effects_status_update_messages
+from eos.fit.message.helper import MsgHelper
 
 
 DEFAULT_EFFECT_MODE = EffectMode.full_compliance
@@ -182,9 +182,9 @@ class BaseItemMixin(metaclass=ABCMeta):
             self.__effect_mode_overrides = None
         fit = self._fit
         if fit is not None and fit.source is not None:
-            messages = get_effects_status_update_messages(self)
-            if messages:
-                fit._publish_bulk(messages)
+            msgs = MsgHelper.get_effects_status_update_msgs(self)
+            if msgs:
+                fit._publish_bulk(msgs)
                 fit._volatile_mgr.clear_volatile_attrs()
 
     # Auxiliary methods

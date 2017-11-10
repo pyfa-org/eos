@@ -46,20 +46,18 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
         self.__index_item_map = KeyedStorage()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, message):
+    def _handle_item_added(self, msg):
         # Skip items which don't have index specified
-        slot_index = message.item._type_attributes.get(
-            self.__slot_index_attr_id)
+        slot_index = msg.item._type_attributes.get(self.__slot_index_attr_id)
         if slot_index is None:
             return
-        self.__index_item_map.add_data_entry(slot_index, message.item)
+        self.__index_item_map.add_data_entry(slot_index, msg.item)
 
-    def _handle_item_removed(self, message):
-        slot_index = message.item._type_attributes.get(
-            self.__slot_index_attr_id)
+    def _handle_item_removed(self, msg):
+        slot_index = msg.item._type_attributes.get(self.__slot_index_attr_id)
         if slot_index is None:
             return
-        self.__index_item_map.rm_data_entry(slot_index, message.item)
+        self.__index_item_map.rm_data_entry(slot_index, msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,
