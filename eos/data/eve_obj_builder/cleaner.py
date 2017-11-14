@@ -24,7 +24,7 @@ from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eve import AttributeId, TypeCategoryId, TypeGroupId
+from eos.const.eve import AttrId, TypeCategoryId, TypeGroupId
 from eos.util.cached_property import cached_property
 
 
@@ -69,7 +69,6 @@ class Cleaner:
             TypeCategoryId.skill,
             TypeCategoryId.subsystem)
         # Set with group IDs of item types we want to keep
-        # It is set because we will need to modify it
         strong_group_ids = {TypeGroupId.character, TypeGroupId.effect_beacon}
         # Go through table data, filling valid groups set according to valid
         # categories
@@ -130,11 +129,11 @@ class Cleaner:
         # restored
         # Format: {(target table name, target column name): {values to have}}}
         tgt_data = {}
-        self._get_targets_relational(tgt_data)
-        self._get_targets_yaml(tgt_data)
-        self._get_targets_default_ammo(tgt_data)
-        # Now, when we have all the target data values, we may look for
-        # rows, which have matching values, and restore them
+        self._get_tgts_relational(tgt_data)
+        self._get_tgts_yaml(tgt_data)
+        self._get_tgts_default_ammo(tgt_data)
+        # Now, when we have all the target data values, we may look for rows,
+        # which have matching values, and restore them
         for tgt_spec, tgt_values in tgt_data.items():
             tgt_table_name, tgt_column_name = tgt_spec
             to_restore = set()
@@ -145,7 +144,7 @@ class Cleaner:
                 self._changed = True
                 self._restore_data(tgt_table_name, to_restore)
 
-    def _get_targets_relational(self, tgt_data):
+    def _get_tgts_relational(self, tgt_data):
         """Find out which data relationally is referenced from actual data.
 
         In this method, we get only references defined in 'relational' format,
@@ -187,8 +186,8 @@ class Cleaner:
             'typefighterabils': {
                 'typeID': ('evetypes', 'typeID')}}
         for src_table_name, table_fks in foreign_keys.items():
-            for src_column_name, fk_target in table_fks.items():
-                tgt_table_name, tgt_column_name = fk_target
+            for src_column_name, fk_tgt in table_fks.items():
+                tgt_table_name, tgt_column_name = fk_tgt
                 for row in self.data[src_table_name]:
                     fk_value = row.get(src_column_name)
                     # If there's no such field in a row or it is None, this is
@@ -198,7 +197,7 @@ class Cleaner:
                     tgt_spec = (tgt_table_name, tgt_column_name)
                     tgt_data.setdefault(tgt_spec, set()).add(fk_value)
 
-    def _get_targets_yaml(self, tgt_data):
+    def _get_tgts_yaml(self, tgt_data):
         """Find out which data is referenced from YAML in actual data.
 
         Method knows where to look for YAML data and which references it
@@ -235,8 +234,8 @@ class Cleaner:
         Generates auxiliary map to avoid re-parsing YAML on each cleanup cycle.
 
         Returns:
-            Dictionary in {effect ID: ({type IDs}, {group IDs}, {attrib IDs})}
-            format.
+            Dictionary in {effect ID: ({type IDs}, {group IDs}, {attribute
+            IDs})} format.
         """
 
         # Helper function to fetch actual attribute values from modinfo dicts
@@ -248,7 +247,7 @@ class Cleaner:
             else:
                 entities.add(entity_id)
 
-        # Format: {effect ID: ({type IDs}, {group IDs}, {attrib IDs})}
+        # Format: {effect ID: ({type IDs}, {group IDs}, {attribute IDs})}
         relations = {}
         # Cycle through both data and trashed data, to make sure all rows are
         # processed regardless of stage during which this property is accessed
@@ -288,7 +287,7 @@ class Cleaner:
             relations[effect_row['effectID']] = (type_ids, group_ids, attr_ids)
         return relations
 
-    def _get_targets_default_ammo(self, tgt_data):
+    def _get_tgts_default_ammo(self, tgt_data):
         """Find out which types are referred via 'ammo loaded' attribute.
 
         Some item types specify which ammo is loaded into them by default, and
@@ -300,7 +299,7 @@ class Cleaner:
                 should have.
         """
         for row in self.data['dgmtypeattribs']:
-            if row.get('attributeID') != AttributeId.ammo_loaded:
+            if row.get('attributeID') != AttrId.ammo_loaded:
                 continue
             try:
                 ammo_type_id = int(row.get('value'))
@@ -313,10 +312,10 @@ class Cleaner:
         """Log cleanup results."""
         table_msgs = []
         for table_name in sorted(self.data):
-            datalen = len(self.data[table_name])
-            trashedlen = len(self.trashed_data[table_name])
+            data_len = len(self.data[table_name])
+            trashed_len = len(self.trashed_data[table_name])
             try:
-                ratio = trashedlen / (datalen + trashedlen)
+                ratio = trashed_len / (data_len + trashed_len)
             # Skip results if table was empty
             except ZeroDivisionError:
                 continue
@@ -325,39 +324,39 @@ class Cleaner:
             msg = 'cleaned: {}'.format(', '.join(table_msgs))
             logger.info(msg)
 
-    def _pump_data(self, table_name, datarows):
+    def _pump_data(self, table_name, rows):
         """Mark data rows as strong.
 
         Rows marked as strong are immune to removal.
 
         Args:
             table_name: Name of a table where data for marking resides.
-            datarows: iterable with data rows from the table.
+            rows: iterable with data rows from the table.
         """
-        self.strong_data.setdefault(table_name, set()).update(datarows)
+        self.strong_data.setdefault(table_name, set()).update(rows)
 
-    def _trash_data(self, table_name, datarows):
+    def _trash_data(self, table_name, rows):
         """Move data rows into trash.
 
         Data is moved into trash with ability to be restored later, if needed.
 
         Args:
             table_name: Name of a table where data for marking resides.
-            datarows: iterable with data rows from the table.
+            rows: iterable with data rows from the table.
         """
         data_table = self.data[table_name]
         trash_table = self.trashed_data.setdefault(table_name, set())
-        trash_table.update(datarows)
-        data_table.difference_update(datarows)
+        trash_table.update(rows)
+        data_table.difference_update(rows)
 
-    def _restore_data(self, table_name, datarows):
+    def _restore_data(self, table_name, rows):
         """Restore data rows from trash into actual data.
 
         Args:
             table_name: Name of a table where data for marking resides.
-            datarows: iterable with data rows from the table.
+            rows: iterable with data rows from the table.
         """
         data_table = self.data[table_name]
         trash_table = self.trashed_data[table_name]
-        data_table.update(datarows)
-        trash_table.difference_update(datarows)
+        data_table.update(rows)
+        trash_table.difference_update(rows)

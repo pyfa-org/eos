@@ -116,7 +116,7 @@ class MsgHelper:
         """
         msgs = []
         start_ids, stop_ids = (
-            EffectStatusResolver.get_effects_status_updates(item))
+            EffectStatusResolver.get_effect_status_updates(item))
         if start_ids:
             item._running_effect_ids.update(start_ids)
             msgs.append(EffectsStarted(item, start_ids))

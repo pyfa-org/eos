@@ -19,8 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, TypeId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, TypeId
 from eos.fit.message import AttrValueChanged, ItemAdded, ItemRemoved
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
@@ -30,27 +30,21 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self, tgt_filter_extra_arg=None,
-            tgt_attr_id=AttributeId.armor_damage_amount)
+            self, tgt_filter=ModTgtFilter.item, tgt_domain=ModDomain.self,
+            tgt_filter_extra_arg=None, tgt_attr_id=AttrId.armor_dmg_amount)
 
     def get_modification(self, carrier_item, _):
         # If carrier item has charge and it's paste, use on-carrier rep amount
-        # multiplier, otherwise do nothing (multipy by 1).
+        # multiplier, otherwise do nothing (multiply by 1).
         charge = getattr(carrier_item, 'charge', None)
-        if (
-            charge is not None and
-            charge._type_id == TypeId.nanite_repair_paste
-        ):
+        if charge is not None and charge._type_id == TypeId.nanite_repair_paste:
             try:
-                multiplier = (
-                    carrier_item.attributes
-                    [AttributeId.charged_armor_damage_multiplier])
+                value = carrier_item.attrs[AttrId.charged_armor_dmg_multiplier]
             except (AttributeError, KeyError) as e:
                 raise ModificationCalculationError from e
         else:
-            multiplier = 1
-        return ModifierOperator.post_mul_immune, multiplier
+            value = 1
+        return ModOperator.post_mul_immune, value
 
     def __revise_on_item_added_removed(self, msg, carrier_item, _):
         # If added/removed item is charge of effect carrying item and charge is
@@ -67,7 +61,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         # should change
         if (
             msg.item is carrier_item and
-            msg.attr == AttributeId.charged_armor_damage_multiplier
+            msg.attr_id == AttrId.charged_armor_dmg_multiplier
         ):
             return True
         return False

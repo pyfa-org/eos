@@ -42,7 +42,7 @@ class EveObjBuilder:
                 raw eve data.
 
         Returns:
-            Tuple with 3 iterables, which contain types, attributes and effects.
+            3 iterables, which contain types, attributes and effects.
         """
         # Put all the data we need into single dictionary Format, as usual,
         # {table name: table}, where table is set of rows, which are
@@ -50,7 +50,7 @@ class EveObjBuilder:
         # sets and frozendicts is used to speed up several stages of the
         # builder.
         data = {}
-        tables = {
+        getter_map = {
             'evetypes': data_handler.get_evetypes,
             'evegroups': data_handler.get_evegroups,
             'dgmattribs': data_handler.get_dgmattribs,
@@ -60,10 +60,10 @@ class EveObjBuilder:
             'dgmexpressions': data_handler.get_dgmexpressions,
             'typefighterabils': data_handler.get_typefighterabils}
 
-        for tablename, method in tables.items():
+        for table_name, getter in getter_map.items():
             table_pos = 0
             table = set()
-            for row in method():
+            for row in getter():
                 # During further builder stages. some of rows may fall in risk
                 # groups, where all rows but one need to be removed. To
                 # deterministically remove rows based on position in original
@@ -71,7 +71,7 @@ class EveObjBuilder:
                 row['table_pos'] = table_pos
                 table_pos += 1
                 table.add(frozendict(row))
-            data[tablename] = table
+            data[table_name] = table
 
         # Run pre-cleanup checks, as cleanup stage and further stages rely on
         # some assumptions about the data
@@ -88,6 +88,6 @@ class EveObjBuilder:
         ValidatorPreConv.run(data)
 
         # Convert data into Eos-specific objects
-        types, attributes, effects = Converter.run(data)
+        types, attrs, effects = Converter.run(data)
 
-        return types, attributes, effects
+        return types, attrs, effects

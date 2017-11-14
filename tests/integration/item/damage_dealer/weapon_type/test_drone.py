@@ -20,35 +20,35 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
-class TestItemDamageDrone(ItemMixinTestCase):
+class TestItemDmgDrone(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
-        self.ch.attr(attribute_id=AttributeId.em_damage)
-        self.ch.attr(attribute_id=AttributeId.thermal_damage)
-        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.ch.attr(attr_id=AttrId.dmg_multiplier)
+        self.ch.attr(attr_id=AttrId.em_dmg)
+        self.ch.attr(attr_id=AttrId.thermal_dmg)
+        self.ch.attr(attr_id=AttrId.kinetic_dmg)
+        self.ch.attr(attr_id=AttrId.explosive_dmg)
         self.cycle_attr = self.ch.attr()
         self.effect = self.ch.effect(
-            effect_id=EffectId.target_attack,
+            effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.active,
-            duration_attribute_id=self.cycle_attr.id)
+            duration_attr_id=self.cycle_attr.id)
 
     def test_nominal_volley_generic(self):
         fit = Fit()
         item = Drone(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
@@ -68,11 +68,11 @@ class TestItemDamageDrone(ItemMixinTestCase):
         fit = Fit()
         item = Drone(
             self.ch.type(
-                attributes={
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85,
+                attrs={
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
@@ -92,12 +92,12 @@ class TestItemDamageDrone(ItemMixinTestCase):
         fit = Fit()
         item = Drone(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.online)
@@ -117,12 +117,12 @@ class TestItemDamageDrone(ItemMixinTestCase):
         fit = Fit()
         item = Drone(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
@@ -143,12 +143,12 @@ class TestItemDamageDrone(ItemMixinTestCase):
         fit = Fit()
         item = Drone(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
@@ -168,12 +168,12 @@ class TestItemDamageDrone(ItemMixinTestCase):
         fit = Fit()
         item = Drone(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.em_damage: 52,
-                    AttributeId.thermal_damage: 63,
-                    AttributeId.kinetic_damage: 74,
-                    AttributeId.explosive_damage: 85,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)

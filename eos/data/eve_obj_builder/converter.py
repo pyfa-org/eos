@@ -22,7 +22,7 @@
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
 from eos.eve_object.type import Type
-from .modifier_builder import ModifierBuilder
+from .mod_builder import ModBuilder
 
 
 class Converter:
@@ -35,7 +35,7 @@ class Converter:
             data: Dictionary in {table name: {table, rows}} format.
 
         Returns:
-            Tuple with 3 iterables, which contain types, attributes and effects.
+            3 iterables, which contain types, attributes and effects.
         """
         # Before actually instantiating anything, we need to collect some data
         # in convenient form
@@ -52,11 +52,11 @@ class Converter:
         types_effects = {}
         for row in data['dgmtypeeffects']:
             types_effects.setdefault(row['typeID'], set()).add(row['effectID'])
-        # Format: {type ID: {attr ID: value}}
-        types_attribs = {}
+        # Format: {type ID: {attribute ID: value}}
+        types_attrs = {}
         for row in data['dgmtypeattribs']:
-            type_attribs = types_attribs.setdefault(row['typeID'], {})
-            type_attribs[row['attributeID']] = row['value']
+            type_attrs = types_attrs.setdefault(row['typeID'], {})
+            type_attrs[row['attributeID']] = row['value']
         # Format: {type ID: {ability ID: ability data}}
         typeabils_reformat = {}
         for row in data['typefighterabils']:
@@ -67,34 +67,34 @@ class Converter:
                 'charge_rearm_time': row.get('rearmTimeSeconds')}
 
         # Convert attributes
-        attributes = []
+        attrs = []
         for row in data['dgmattribs']:
-            attributes.append(Attribute(
-                attribute_id=row['attributeID'],
-                max_attribute_id=row.get('maxAttributeID'),
+            attrs.append(Attribute(
+                attr_id=row['attributeID'],
+                max_attr_id=row.get('maxAttributeID'),
                 default_value=row.get('defaultValue'),
                 high_is_good=row.get('highIsGood'),
                 stackable=row.get('stackable')))
 
         # Convert effects
         effects = []
-        mod_builder = ModifierBuilder(data['dgmexpressions'])
+        mod_builder = ModBuilder(data['dgmexpressions'])
         for row in data['dgmeffects']:
-            mods, build_status = mod_builder.build(row)
+            modifiers, build_status = mod_builder.build(row)
             effects.append(Effect(
                 effect_id=row['effectID'],
                 category_id=row.get('effectCategory'),
                 is_offensive=row.get('isOffensive'),
                 is_assistance=row.get('isAssistance'),
-                duration_attribute_id=row.get('durationAttributeID'),
-                discharge_attribute_id=row.get('dischargeAttributeID'),
-                range_attribute_id=row.get('rangeAttributeID'),
-                falloff_attribute_id=row.get('falloffAttributeID'),
-                tracking_speed_attribute_id=row.get('trackingSpeedAttributeID'),
-                fitting_usage_chance_attribute_id=row.get(
-                    'fittingUsageChanceAttributeID'),
+                duration_attr_id=row.get('durationAttributeID'),
+                discharge_attr_id=row.get('dischargeAttributeID'),
+                range_attr_id=row.get('rangeAttributeID'),
+                falloff_attr_id=row.get('falloffAttributeID'),
+                tracking_speed_attr_id=row.get('trackingSpeedAttributeID'),
+                fitting_usage_chance_attr_id=(
+                    row.get('fittingUsageChanceAttributeID')),
                 build_status=build_status,
-                modifiers=tuple(mods),
+                modifiers=tuple(modifiers),
                 customize=False))
 
         # Convert types
@@ -109,10 +109,10 @@ class Converter:
                 type_id=type_id,
                 group_id=type_group,
                 category_id=groups_keyed.get(type_group, {}).get('categoryID'),
-                attributes=types_attribs.get(type_id, {}),
+                attrs=types_attrs.get(type_id, {}),
                 effects=tuple(effect_map[eid] for eid in type_effect_ids),
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),
                 fighter_abilities=typeabils_reformat.get(type_id, {}),
                 customize=False))
 
-        return types, attributes, effects
+        return types, attrs, effects

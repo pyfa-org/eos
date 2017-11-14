@@ -34,14 +34,14 @@ class TestEffectModeErrors(EffectModeTestCase):
             category_id=EffectCategoryId.passive, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         # Action
         item.set_effect_mode(effect.id, 9999)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]

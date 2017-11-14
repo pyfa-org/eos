@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -34,35 +34,35 @@ class TestCalculationChain(CalculatorTestCase):
         attr3 = self.ch.attr()
         attr4 = self.ch.attr()
         modifier1 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=attr2.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=attr1.id)
         effect1 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier1])
         modifier2 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.ship,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.ship,
             tgt_attr_id=attr3.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=attr2.id)
         effect2 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier2])
         modifier3 = self.mod(
-            tgt_filter=ModifierTargetFilter.domain,
-            tgt_domain=ModifierDomain.ship,
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
             tgt_attr_id=attr4.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=attr3.id)
         effect3 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier3])
         implant = Implant(self.ch.type(
-            attributes={attr1.id: 5, attr2.id: 20},
+            attrs={attr1.id: 5, attr2.id: 20},
             effects=(effect1, effect2)).id)
         ship = Ship(self.ch.type(
-            attributes={attr3.id: 150}, effects=[effect3]).id)
-        rig = Rig(self.ch.type(attributes={attr4.id: 12.5}).id)
+            attrs={attr3.id: 150}, effects=[effect3]).id)
+        rig = Rig(self.ch.type(attrs={attr4.id: 12.5}).id)
         self.fit.implants.add(implant)
         self.fit.ship = ship
         # Action
@@ -74,7 +74,7 @@ class TestCalculationChain(CalculatorTestCase):
         # it is applied to all entities assigned to ship, including item3, to
         # theirs attr4 as percentage modifier again - so final result is 12.5 +
         # 300% = 50
-        self.assertAlmostEqual(rig.attributes[attr4.id], 50)
+        self.assertAlmostEqual(rig.attrs[attr4.id], 50)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -42,12 +42,12 @@ class ValidatorPreConv:
         Args:
             data: Dictionary in {table name: {table, rows}} format.
         """
-        ValidatorPreConv._attribute_value_type(data['dgmtypeattribs'])
+        ValidatorPreConv._attr_value_type(data['dgmtypeattribs'])
         ValidatorPreConv._multiple_default_effects(data['dgmtypeeffects'])
         ValidatorPreConv._colliding_module_racks(data['dgmtypeeffects'])
 
     @staticmethod
-    def _attribute_value_type(dta_rows):
+    def _attr_value_type(dta_rows):
         """Make sure that all attributes have numeric values.
 
         Args:

@@ -32,12 +32,12 @@ class frozendict(dict):
         dict.__init__(self, *args, **kwargs)
         self.__hash = None
 
-    def __blocked_attribute(self, *args, **kwargs):
+    def __blocked_attr(self, *args, **kwargs):
         raise TypeError('frozendict cannot be modified')
 
     # Prohibit use of methods which modify dictionary
     __delitem__ = __setitem__ = clear = pop = popitem = setdefault = update = (
-        __blocked_attribute)
+        __blocked_attr)
 
     def __hash__(self):
         if self.__hash is None:

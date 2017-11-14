@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eos import ModifierDomain, State
+from eos.const.eos import ModDomain, State
 from eos.util.repr import make_repr_str
 from .mixin.state import ImmutableStateMixin
 
@@ -36,7 +36,7 @@ class Rig(ImmutableStateMixin):
         super().__init__(type_id=type_id, state=State.offline)
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = ModifierDomain.ship
+    _parent_modifier_domain = ModDomain.ship
     _owner_modifiable = False
 
     # Auxiliary methods

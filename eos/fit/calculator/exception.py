@@ -22,13 +22,13 @@
 from eos.exception import EosError
 
 
-class AttributeCalculatorError(EosError):
+class AttrCalculatorError(EosError):
     """All attribute calculator exceptions are based on this class."""
     ...
 
 
 # Exception classes used by affection register
-class UnexpectedDomainError(AttributeCalculatorError):
+class UnexpectedDomainError(AttrCalculatorError):
     """Raised when modifier domain has unexpected value.
 
     Raised when modifier being processed cannot have this domain (which domains
@@ -37,18 +37,18 @@ class UnexpectedDomainError(AttributeCalculatorError):
     ...
 
 
-class UnknownTargetFilterError(AttributeCalculatorError):
+class UnknownTgtFilterError(AttrCalculatorError):
     """Raised when modifier has unknown target filter type."""
     ...
 
 
 # Exception classes used by map's calculation method
-class AttributeMetadataError(AttributeCalculatorError):
+class AttrMetadataError(AttrCalculatorError):
     """Raised when attribute cannot be found in attribute database."""
     ...
 
 
-class BaseValueError(AttributeCalculatorError):
+class BaseValueError(AttrCalculatorError):
     """Raised when base value of attribute cannot be calculated.
 
     WHen calculating modified value of an attribute, we can take initial value

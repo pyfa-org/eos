@@ -20,8 +20,8 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
@@ -29,8 +29,8 @@ class TestPowergrid(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.power_output)
-        self.ch.attr(attribute_id=AttributeId.power)
+        self.ch.attr(attr_id=AttrId.power_output)
+        self.ch.attr(attr_id=AttrId.power)
         self.effect = self.ch.effect(
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
 
@@ -38,15 +38,15 @@ class TestPowergrid(StatsTestCase):
         # Check that modified attribute of ship is used
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
-            tgt_attr_id=AttributeId.power_output,
-            operator=ModifierOperator.post_mul,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=AttrId.power_output,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         mod_effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.power_output: 200, src_attr.id: 2},
+            attrs={AttrId.power_output: 200, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.output, 400)
@@ -75,16 +75,16 @@ class TestPowergrid(StatsTestCase):
         # Check that modified consumption attribute is used
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
-            tgt_attr_id=AttributeId.power,
-            operator=ModifierOperator.post_mul,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=AttrId.power,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         mod_effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 100, src_attr.id: 0.5},
+                attrs={AttrId.power: 100, src_attr.id: 0.5},
                 effects=(self.effect, mod_effect)).id,
             state=State.online))
         # Verification
@@ -96,7 +96,7 @@ class TestPowergrid(StatsTestCase):
     def test_use_single_rounding(self):
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 55.5555555555},
+                attrs={AttrId.power: 55.5555555555},
                 effects=[self.effect]).id,
             state=State.online))
         # Verification
@@ -108,11 +108,11 @@ class TestPowergrid(StatsTestCase):
     def test_use_multiple(self):
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attrs={AttrId.power: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attrs={AttrId.power: 30}, effects=[self.effect]).id,
             state=State.online))
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 80)
@@ -123,11 +123,11 @@ class TestPowergrid(StatsTestCase):
     def test_use_state(self):
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attrs={AttrId.power: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attrs={AttrId.power: 30}, effects=[self.effect]).id,
             state=State.offline))
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
@@ -138,11 +138,11 @@ class TestPowergrid(StatsTestCase):
     def test_use_disabled_effect(self):
         item1 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attrs={AttrId.power: 50}, effects=[self.effect]).id,
             state=State.online)
         item2 = ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attrs={AttrId.power: 30}, effects=[self.effect]).id,
             state=State.online)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item1)
@@ -162,14 +162,14 @@ class TestPowergrid(StatsTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.power_output: 200}).id)
+            attrs={AttrId.power_output: 200}).id)
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 50}, effects=[self.effect]).id,
+                attrs={AttrId.power: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
             self.ch.type(
-                attributes={AttributeId.power: 30}, effects=[self.effect]).id,
+                attrs={AttrId.power: 30}, effects=[self.effect]).id,
             state=State.online))
         self.fit.source = None
         # Verification

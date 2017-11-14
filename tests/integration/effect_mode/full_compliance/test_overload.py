@@ -32,14 +32,14 @@ class TestFullComplianceOverload(EffectModeTestCase):
             category_id=EffectCategoryId.overload, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.overload)
         item.set_effect_mode(effect.id, EffectMode.full_compliance)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -49,16 +49,16 @@ class TestFullComplianceOverload(EffectModeTestCase):
             category_id=EffectCategoryId.overload, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.active)
         item.set_effect_mode(effect.id, EffectMode.full_compliance)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Action
         item.state = State.overload
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -68,16 +68,16 @@ class TestFullComplianceOverload(EffectModeTestCase):
             category_id=EffectCategoryId.overload, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.overload)
         item.set_effect_mode(effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Action
         item.set_effect_mode(effect.id, EffectMode.full_compliance)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -87,14 +87,14 @@ class TestFullComplianceOverload(EffectModeTestCase):
             category_id=EffectCategoryId.overload, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.active)
         item.set_effect_mode(effect.id, EffectMode.full_compliance)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -104,16 +104,16 @@ class TestFullComplianceOverload(EffectModeTestCase):
             category_id=EffectCategoryId.overload, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.overload)
         item.set_effect_mode(effect.id, EffectMode.full_compliance)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Action
         item.state = State.active
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -123,16 +123,16 @@ class TestFullComplianceOverload(EffectModeTestCase):
             category_id=EffectCategoryId.overload, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.active)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Action
         item.set_effect_mode(effect.id, EffectMode.full_compliance)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

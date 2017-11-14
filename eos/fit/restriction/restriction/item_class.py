@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId, TypeCategoryId, EffectId, TypeGroupId
+from eos.const.eve import AttrId, TypeCategoryId, EffectId, TypeGroupId
 from eos.fit.item import *
 from eos.fit.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
@@ -36,7 +36,7 @@ ItemClassErrorData = namedtuple(
 CLASS_VALIDATORS = {
     Booster: lambda item_type:
         item_type.category_id == TypeCategoryId.implant and
-        AttributeId.boosterness in item_type.attributes,
+        AttrId.boosterness in item_type.attrs,
     Character: lambda item_type:
         item_type.group_id == TypeGroupId.character,
     Charge: lambda item_type:
@@ -47,12 +47,12 @@ CLASS_VALIDATORS = {
         item_type.group_id == TypeGroupId.effect_beacon,
     FighterSquad: lambda item_type:
         item_type.category_id == TypeCategoryId.fighter and (
-            AttributeId.fighter_squadron_is_heavy in item_type.attributes or
-            AttributeId.fighter_squadron_is_light in item_type.attributes or
-            AttributeId.fighter_squadron_is_support in item_type.attributes),
+            AttrId.fighter_squadron_is_heavy in item_type.attrs or
+            AttrId.fighter_squadron_is_light in item_type.attrs or
+            AttrId.fighter_squadron_is_support in item_type.attrs),
     Implant: lambda item_type:
         item_type.category_id == TypeCategoryId.implant and
-        AttributeId.implantness in item_type.attributes,
+        AttrId.implantness in item_type.attrs,
     ModuleHigh: lambda item_type:
         item_type.category_id == TypeCategoryId.module and
         EffectId.hi_power in item_type.effects,

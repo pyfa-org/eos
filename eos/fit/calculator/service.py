@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eos import ModifierDomain
+from eos.const.eos import ModDomain
 from eos.eve_object.modifier import DogmaModifier, ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.item import Character, Ship
@@ -50,7 +50,7 @@ class CalculationService(BaseSubscriber):
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def get_modifications(self, tgt_item, tgt_attr_id):
-        """Get modifications of target attr on target item.
+        """Get modifications of target attribute on target item.
 
         Args:
             tgt_item: Item, for which we're getting modifications.
@@ -95,14 +95,14 @@ class CalculationService(BaseSubscriber):
         for affector in affectors:
             self.__subscribe_affector(affector)
             self.__affections.register_affector(affector)
-            for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr_id]
+            for tgt_item in self.__affections.get_affectees(affector):
+                del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     def _handle_effects_stopped(self, msg):
         affectors = self.__generate_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
-            for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr_id]
+            for tgt_item in self.__affections.get_affectees(affector):
+                del tgt_item.attrs[affector.modifier.tgt_attr_id]
             self.__affections.unregister_affector(affector)
             self.__unsubscribe_affector(affector)
 
@@ -118,8 +118,8 @@ class CalculationService(BaseSubscriber):
         # Remove values of target attributes capped by changing attribute
         item = msg.item
         attr_id = msg.attr_id
-        for capped_attr_id in item.attributes._cap_map.get(attr_id, ()):
-            del item.attributes[capped_attr_id]
+        for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
+            del item.attrs[capped_attr_id]
         # Remove values of target attributes which are using changing attribute
         # as modification source
         for affector in self.__generate_affectors(
@@ -132,8 +132,8 @@ class CalculationService(BaseSubscriber):
                 modifier.src_attr_id != attr_id
             ):
                 continue
-            for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[modifier.tgt_attr_id]
+            for tgt_item in self.__affections.get_affectees(affector):
+                del tgt_item.attrs[modifier.tgt_attr_id]
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.
@@ -151,10 +151,11 @@ class CalculationService(BaseSubscriber):
         # if it should
         for affector in self.__subscribed_affectors[msg_type]:
             if not affector.modifier.revise_modification(
-                    msg, affector.carrier_item, self._current_ship):
+                msg, affector.carrier_item, self._current_ship
+            ):
                 continue
-            for target_item in self.__affections.get_affectees(affector):
-                del target_item.attributes[affector.modifier.tgt_attr_id]
+            for tgt_item in self.__affections.get_affectees(affector):
+                del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     # Message routing
     _handler_map = {
@@ -172,9 +173,7 @@ class CalculationService(BaseSubscriber):
 
     # Do not process here just target domain
     _supported_domains = set(
-        domain
-        for domain in ModifierDomain
-        if domain != ModifierDomain.target)
+        domain for domain in ModDomain if domain != ModDomain.target)
 
     # Affector generation and manipulation
     def __generate_affectors(self, item, effect_ids):
@@ -216,7 +215,8 @@ class CalculationService(BaseSubscriber):
                 to_subscribe.add(msg_type)
             # Add affector to subscriber map to let it receive messages
             self.__subscribed_affectors.add_data_entry(msg_type, affector)
-        self.__msg_broker._subscribe(self, to_subscribe)
+        if to_subscribe:
+            self.__msg_broker._subscribe(self, to_subscribe)
 
     def __unsubscribe_affector(self, affector):
         """Unsubscribe python affector."""
@@ -233,4 +233,5 @@ class CalculationService(BaseSubscriber):
                 msg_type not in self.__subscribed_affectors
             ):
                 to_ubsubscribe.add(msg_type)
-        self.__msg_broker._unsubscribe(self, to_ubsubscribe)
+        if to_ubsubscribe:
+            self.__msg_broker._unsubscribe(self, to_ubsubscribe)

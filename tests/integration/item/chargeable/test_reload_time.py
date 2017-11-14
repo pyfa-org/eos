@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
@@ -28,13 +28,13 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.reload_time)
+        self.ch.attr(attr_id=AttrId.reload_time)
 
     def test_generic(self):
         fit = Fit()
         effect = self.ch.effect(category_id=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.reload_time: 5000.0}, effects=[effect],
+            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -43,7 +43,7 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_generic_no_attribute(self):
+    def test_generic_no_attr(self):
         fit = Fit()
         effect = self.ch.effect(category_id=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
@@ -59,7 +59,7 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         fit = Fit()
         effect = self.ch.effect(category_id=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.reload_time: 5000.0}, effects=[effect]).id)
+            attrs={AttrId.reload_time: 5000.0}, effects=[effect]).id)
         fit.modules.high.append(item)
         # Verification
         self.assertAlmostEqual(item.reload_time, 5.0)
@@ -70,10 +70,10 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
     def test_combat_combat_laser(self):
         fit = Fit()
         effect = self.ch.effect(
-            effect_id=EffectId.target_attack,
+            effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.reload_time: 5000.0}, effects=[effect],
+            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -88,7 +88,7 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
             effect_id=EffectId.mining_laser,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.reload_time: 5000.0}, effects=[effect],
+            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -101,7 +101,7 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         fit = Fit()
         effect = self.ch.effect(category_id=EffectCategoryId.active)
         item = ModuleHigh(self.ch.type(
-            attributes={AttributeId.reload_time: 5000.0}, effects=[effect],
+            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         fit.source = None

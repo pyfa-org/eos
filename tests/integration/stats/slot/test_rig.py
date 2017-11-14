@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
@@ -28,13 +28,13 @@ class TestRig(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.rig_slots)
+        self.ch.attr(attr_id=AttrId.rig_slots)
         self.effect = self.ch.effect(
             effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)
 
     def test_output(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.rig_slots: 3}).id)
+            attrs={AttrId.rig_slots: 3}).id)
         # Verification
         self.assertEqual(self.fit.stats.rig_slots.total, 3)
         # Cleanup
@@ -97,7 +97,7 @@ class TestRig(StatsTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.rig_slots: 3}).id)
+            attrs={AttrId.rig_slots: 3}).id)
         self.fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
         self.fit.rigs.add(Rig(self.ch.type(effects=[self.effect]).id))
         self.fit.source = None

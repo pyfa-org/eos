@@ -23,7 +23,7 @@ from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import EffectMode
-from eos.fit.calculator import MutableAttributeMap
+from eos.fit.calculator import MutableAttrMap
 from eos.fit.message.helper import MsgHelper
 
 
@@ -53,7 +53,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         self._container = None
         # Special dictionary subclass that holds modified attributes and data
         # related to their calculation
-        self.attributes = MutableAttributeMap(self)
+        self.attrs = MutableAttrMap(self)
         # Container for effects IDs which are currently running
         self._running_effect_ids = set()
         # Effect run modes, if they are any different from default
@@ -94,9 +94,9 @@ class BaseItemMixin(metaclass=ABCMeta):
 
     # Properties which expose various item type properties with safe fallback
     @property
-    def _type_attributes(self):
+    def _type_attrs(self):
         try:
-            return self._type.attributes
+            return self._type.attrs
         except AttributeError:
             return {}
 
@@ -208,7 +208,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         change when item switches fit or its fit switches source), this method
         should be called.
         """
-        self.attributes.clear()
+        self.attrs.clear()
         try:
             type_getter = self._fit.source.cache_handler.get_type
         except AttributeError:

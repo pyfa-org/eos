@@ -28,7 +28,7 @@ from enum import IntEnum, unique
 
 
 @unique
-class AttributeId(IntEnum):
+class AttrId(IntEnum):
     """Contains necessary attribute IDs."""
     # Resources
     cpu = 50
@@ -53,31 +53,31 @@ class AttributeId(IntEnum):
     subsystem_slot = 1366
     turret_slots_left = 102
     # Damage
-    em_damage = 114
-    explosive_damage = 116
-    kinetic_damage = 117
-    thermal_damage = 118
+    em_dmg = 114
+    explosive_dmg = 116
+    kinetic_dmg = 117
+    thermal_dmg = 118
     # Resistances
-    armor_em_damage_resonance = 267
-    armor_explosive_damage_resonance = 268
-    armor_kinetic_damage_resonance = 269
-    armor_thermal_damage_resonance = 270
-    em_damage_resonance = 113
-    explosive_damage_resonance = 111
-    kinetic_damage_resonance = 109
-    resistance_shift_amount = 1849
-    thermal_damage_resonance = 110
-    shield_em_damage_resonance = 271
-    shield_explosive_damage_resonance = 272
-    shield_kinetic_damage_resonance = 273
-    shield_thermal_damage_resonance = 274
+    armor_em_dmg_resonance = 267
+    armor_explosive_dmg_resonance = 268
+    armor_kinetic_dmg_resonance = 269
+    armor_thermal_dmg_resonance = 270
+    em_dmg_resonance = 113
+    explosive_dmg_resonance = 111
+    kinetic_dmg_resonance = 109
+    resist_shift_amount = 1849
+    thermal_dmg_resonance = 110
+    shield_em_dmg_resonance = 271
+    shield_explosive_dmg_resonance = 272
+    shield_kinetic_dmg_resonance = 273
+    shield_thermal_dmg_resonance = 274
     # Tanking
     armor_hp = 265
     hp = 9
     shield_capacity = 263
     # Repairing
-    armor_damage_amount = 84
-    charged_armor_damage_multiplier = 1886
+    armor_dmg_amount = 84
+    charged_armor_dmg_multiplier = 1886
     # Charge-related
     ammo_loaded = 127
     charge_group_1 = 604
@@ -88,7 +88,7 @@ class AttributeId(IntEnum):
     charge_rate = 56
     charge_size = 128
     crystal_volatility_chance = 783
-    crystal_volatility_damage = 784
+    crystal_volatility_dmg = 784
     crystals_get_damaged = 786
     reload_time = 1795
     # Skills
@@ -150,12 +150,12 @@ class AttributeId(IntEnum):
     # Misc
     agility = 70
     capacity = 38
-    damage_multiplier = 64
+    dmg_multiplier = 64
     is_capital_size = 1785
     mass = 4
     mass_addition = 796
     max_velocity = 37
-    missile_damage_multiplier = 212
+    missile_dmg_multiplier = 212
     module_reactivation_delay = 669
     radius = 162
     signature_radius = 552
@@ -225,7 +225,7 @@ class EffectId(IntEnum):
     super_weapon_caldari = 4490
     super_weapon_gallente = 4491
     super_weapon_minmatar = 4492
-    target_attack = 10
+    tgt_attack = 10
     turret_fitted = 42
     use_missiles = 101
 

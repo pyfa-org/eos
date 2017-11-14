@@ -22,7 +22,7 @@
 from abc import ABCMeta, abstractmethod
 from numbers import Integral
 
-from eos.const.eos import ModifierDomain, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModTgtFilter
 
 
 class BaseModifier(metaclass=ABCMeta):
@@ -58,15 +58,15 @@ class BaseModifier(metaclass=ABCMeta):
     # Validation-related methods
     def _validate_base(self):
         tgt_validators = {
-            ModifierTargetFilter.item:
+            ModTgtFilter.item:
                 self.__validate_tgt_filter_item,
-            ModifierTargetFilter.domain:
+            ModTgtFilter.domain:
                 self.__validate_tgt_filter_domain,
-            ModifierTargetFilter.domain_group:
+            ModTgtFilter.domain_group:
                 self.__validate_tgt_filter_domain_group,
-            ModifierTargetFilter.domain_skillrq:
+            ModTgtFilter.domain_skillrq:
                 self.__validate_tgt_filter_domain_skillrq,
-            ModifierTargetFilter.owner_skillrq:
+            ModTgtFilter.owner_skillrq:
                 self.__validate_tgt_filter_owner_skillrq}
         try:
             tgt_validator = tgt_validators[self.tgt_filter]
@@ -79,43 +79,42 @@ class BaseModifier(metaclass=ABCMeta):
 
     def __validate_tgt_common(self):
         return all((
-            self.tgt_filter in ModifierTargetFilter.__members__.values(),
-            self.tgt_domain in ModifierDomain.__members__.values(),
+            self.tgt_filter in ModTgtFilter.__members__.values(),
+            self.tgt_domain in ModDomain.__members__.values(),
             isinstance(self.tgt_attr_id, Integral)))
 
     def __validate_tgt_filter_item(self):
         return all((
             self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target,
-                ModifierDomain.other),
+                ModDomain.self, ModDomain.character, ModDomain.ship,
+                ModDomain.target, ModDomain.other),
             self.tgt_filter_extra_arg is None))
 
     def __validate_tgt_filter_domain(self):
         return all((
             self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target),
+                ModDomain.self, ModDomain.character,
+                ModDomain.ship, ModDomain.target),
             self.tgt_filter_extra_arg is None))
 
     def __validate_tgt_filter_domain_group(self):
         return all((
             self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target),
+                ModDomain.self, ModDomain.character,
+                ModDomain.ship, ModDomain.target),
             # References group via ID
             isinstance(self.tgt_filter_extra_arg, Integral)))
 
     def __validate_tgt_filter_domain_skillrq(self):
         return all((
             self.tgt_domain in (
-                ModifierDomain.self, ModifierDomain.character,
-                ModifierDomain.ship, ModifierDomain.target),
+                ModDomain.self, ModDomain.character,
+                ModDomain.ship, ModDomain.target),
             # References skill via ID
             isinstance(self.tgt_filter_extra_arg, Integral)))
 
     def __validate_tgt_filter_owner_skillrq(self):
         return all((
-            self.tgt_domain == ModifierDomain.character,
+            self.tgt_domain == ModDomain.character,
             # References skill via ID
             isinstance(self.tgt_filter_extra_arg, Integral)))

@@ -20,7 +20,7 @@
 
 
 from eos.data.cache_handler.exception import (
-    AttributeFetchError, EffectFetchError, TypeFetchError)
+    AttrFetchError, EffectFetchError, TypeFetchError)
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
 from eos.eve_object.type import Type
@@ -33,11 +33,11 @@ class CacheHandler:
 
     def __init__(self):
         self.__type_data = {}
-        self.__attribute_data = {}
+        self.__attr_data = {}
         self.__effect_data = {}
-        self.__allocated_type = 0
-        self.__allocated_attribute = 0
-        self.__allocated_effect = 0
+        self.__allocated_type_id = 0
+        self.__allocated_attr_id = 0
+        self.__allocated_effect_id = 0
 
     def type(self, type_id=None, customize=False, **kwargs):
         # Allocate & verify ID
@@ -50,16 +50,16 @@ class CacheHandler:
         self.__type_data[item_type.id] = item_type
         return item_type
 
-    def attr(self, attribute_id=None, **kwargs):
+    def attr(self, attr_id=None, **kwargs):
         # Allocate & verify ID
-        if attribute_id is None:
-            attribute_id = self.allocate_attr_id()
-        if attribute_id in self.__attribute_data:
-            raise KeyError(attribute_id)
+        if attr_id is None:
+            attr_id = self.allocate_attr_id()
+        if attr_id in self.__attr_data:
+            raise KeyError(attr_id)
         # Create, store and return attribute
-        attribute = Attribute(attribute_id=attribute_id, **kwargs)
-        self.__attribute_data[attribute.id] = attribute
-        return attribute
+        attr = Attribute(attr_id=attr_id, **kwargs)
+        self.__attr_data[attr.id] = attr
+        return attr
 
     def effect(self, effect_id=None, customize=False, **kwargs):
         # Allocate & verify ID
@@ -78,35 +78,35 @@ class CacheHandler:
         except KeyError:
             raise TypeFetchError(type_id)
 
-    def get_attribute(self, attr):
+    def get_attr(self, attr_id):
         try:
-            return self.__attribute_data[attr]
+            return self.__attr_data[attr_id]
         except KeyError:
-            raise AttributeFetchError(attr)
+            raise AttrFetchError(attr_id)
 
-    def get_effect(self, eff_id):
+    def get_effect(self, effect_id):
         try:
-            return self.__effect_data[eff_id]
+            return self.__effect_data[effect_id]
         except KeyError:
-            raise EffectFetchError(eff_id)
+            raise EffectFetchError(effect_id)
 
     def allocate_type_id(self):
         allocated = max((
-            TEST_ID_START - 1, self.__allocated_type,
+            TEST_ID_START - 1, self.__allocated_type_id,
             *self.__type_data.keys())) + 1
-        self.__allocated_type = allocated
+        self.__allocated_type_id = allocated
         return allocated
 
     def allocate_attr_id(self):
         allocated = max((
-            TEST_ID_START - 1, self.__allocated_attribute,
-            *self.__attribute_data.keys())) + 1
-        self.__allocated_attribute = allocated
+            TEST_ID_START - 1, self.__allocated_attr_id,
+            *self.__attr_data.keys())) + 1
+        self.__allocated_attr_id = allocated
         return allocated
 
     def allocate_effect_id(self):
         allocated = max((
-            TEST_ID_START - 1, self.__allocated_effect,
+            TEST_ID_START - 1, self.__allocated_effect_id,
             *self.__effect_data.keys())) + 1
-        self.__allocated_effect = allocated
+        self.__allocated_effect_id = allocated
         return allocated

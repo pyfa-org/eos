@@ -19,5 +19,5 @@
 # ==============================================================================
 
 
-from .map import MutableAttributeMap
+from .map import MutableAttrMap
 from .service import CalculationService

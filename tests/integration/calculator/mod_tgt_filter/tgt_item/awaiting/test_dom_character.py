@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -31,24 +31,24 @@ class TestTgtItemAwaitingDomainChar(CalculatorTestCase):
         tgt_attr = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.character,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.character,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         influence_src = Implant(self.ch.type(
-            attributes={src_attr.id: 20}, effects=[effect]).id)
+            attrs={src_attr.id: 20}, effects=[effect]).id)
         self.fit.implants.add(influence_src)
         influence_tgt = Character(self.ch.type(
-            attributes={tgt_attr.id: 100}).id)
+            attrs={tgt_attr.id: 100}).id)
         # Action
         # Here we add influence target after adding source, to make sure
         # modifiers wait for target to appear, and then are applied onto it
         self.fit.character = influence_tgt
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[tgt_attr.id], 120)
+        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr.id], 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -19,30 +19,30 @@
 # ==============================================================================
 
 
-from eos.const.eos import ModifierDomain, State
-from eos.const.eve import AttributeId
+from eos.const.eos import ModDomain, State
+from eos.const.eve import AttrId
 from eos.util.repr import make_repr_str
 from .mixin.chargeable import ChargeableMixin
-from .mixin.damage_dealer import DamageDealerMixin
+from .mixin.dmg_dealer import DmgDealerMixin
 from .mixin.defeff_proxy import DefaultEffectProxyMixin
 from .mixin.state import MutableStateMixin
 
 
 class Module(
-        MutableStateMixin, ChargeableMixin, DamageDealerMixin,
+        MutableStateMixin, ChargeableMixin, DmgDealerMixin,
         DefaultEffectProxyMixin):
     def __init__(self, type_id, state=State.offline, charge=None):
         super().__init__(type_id=type_id, state=state, charge=charge)
 
     @property
     def reactivation_delay(self):
-        delay_ms = self.attributes.get(AttributeId.module_reactivation_delay)
+        delay_ms = self.attrs.get(AttrId.module_reactivation_delay)
         if delay_ms is None:
             return None
         return delay_ms / 1000
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = ModifierDomain.ship
+    _parent_modifier_domain = ModDomain.ship
     _owner_modifiable = False
 
     # Auxiliary methods

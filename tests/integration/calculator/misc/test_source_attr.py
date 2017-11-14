@@ -22,12 +22,12 @@
 import logging
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
-class TestSourceAttribute(CalculatorTestCase):
+class TestSrcAttr(CalculatorTestCase):
 
     def test_absent_attr_combination(self):
         # Check how calculator reacts to source attribute which is absent
@@ -35,28 +35,28 @@ class TestSourceAttribute(CalculatorTestCase):
         abs_attr = self.ch.attr()
         src_attr = self.ch.attr()
         invalid_modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=abs_attr.id)
         valid_modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
         item_type = self.ch.type(
-            attributes={src_attr.id: 1.5, tgt_attr.id: 100}, effects=[effect])
+            attrs={src_attr.id: 1.5, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_type.id)
         # Action
         self.fit.rigs.add(item)
         # Verification
         # Invalid source value shouldn't screw whole calculation process
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 150)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 150)
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]

@@ -32,7 +32,7 @@ class TypeFetchError(CacheHandlerError):
     ...
 
 
-class AttributeFetchError(CacheHandlerError):
+class AttrFetchError(CacheHandlerError):
     """Raised when cache handler can't find attribute with requested ID."""
     ...
 

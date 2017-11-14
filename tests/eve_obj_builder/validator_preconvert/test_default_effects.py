@@ -49,7 +49,7 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.assertIn(1, self.types)
         self.assertEqual(len(self.effects), 2)
         self.assertIn(2, self.effects)
-        self.assertEqual(self.effects[2].falloff_attribute_id, 20)
+        self.assertEqual(self.effects[2].falloff_attr_id, 20)
         self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
 
     def test_duplicate(self):
@@ -62,7 +62,7 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.assertEqual(len(self.effects), 2)
         self.assertIn(1, self.effects)
         self.assertIn(2, self.effects)
-        self.assertEqual(self.effects[1].falloff_attribute_id, 10)
+        self.assertEqual(self.effects[1].falloff_attr_id, 10)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]

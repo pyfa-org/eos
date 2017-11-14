@@ -79,13 +79,13 @@ class JsonDataHandler(BaseDataHandler):
             data = list(data.values())
         return data
 
-    def __collapse_dict(self, source, target):
+    def __collapse_dict(self, src, tgt):
         """Convert multi-level dictionary to single-level one."""
-        for k, v in source.items():
+        for k, v in src.items():
             if isinstance(v, Mapping):
-                self.__collapse_dict(v, target)
-            elif k not in target:
-                target[k] = v
+                self.__collapse_dict(v, tgt)
+            elif k not in tgt:
+                tgt[k] = v
 
     def get_version(self):
         metadata = self.__fetch_file('phbmetadata')

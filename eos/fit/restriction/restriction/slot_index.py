@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.message import ItemAdded, ItemRemoved
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
@@ -48,13 +48,13 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister):
 
     def _handle_item_added(self, msg):
         # Skip items which don't have index specified
-        slot_index = msg.item._type_attributes.get(self.__slot_index_attr_id)
+        slot_index = msg.item._type_attrs.get(self.__slot_index_attr_id)
         if slot_index is None:
             return
         self.__index_item_map.add_data_entry(slot_index, msg.item)
 
     def _handle_item_removed(self, msg):
-        slot_index = msg.item._type_attributes.get(self.__slot_index_attr_id)
+        slot_index = msg.item._type_attrs.get(self.__slot_index_attr_id)
         if slot_index is None:
             return
         self.__index_item_map.rm_data_entry(slot_index, msg.item)
@@ -86,7 +86,7 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttributeId.subsystem_slot)
+            self, msg_broker, AttrId.subsystem_slot)
 
     @property
     def type(self):
@@ -102,7 +102,7 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttributeId.implantness)
+            self, msg_broker, AttrId.implantness)
 
     @property
     def type(self):
@@ -118,7 +118,7 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
 
     def __init__(self, msg_broker):
         SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttributeId.boosterness)
+            self, msg_broker, AttrId.boosterness)
 
     @property
     def type(self):

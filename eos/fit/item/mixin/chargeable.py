@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import AttrId, EffectId
 from eos.fit.container import ItemDescriptor
 from eos.fit.item import Charge
 from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
@@ -68,8 +68,8 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         """
         if self.charge is None:
             return None
-        container_capacity = self.attributes.get(AttributeId.capacity)
-        charge_volume = self.charge.attributes.get(AttributeId.volume)
+        container_capacity = self.attrs.get(AttrId.capacity)
+        charge_volume = self.charge.attrs.get(AttrId.volume)
         if container_capacity is None or charge_volume is None:
             return None
         charges = _float_to_int(container_capacity / charge_volume)
@@ -88,38 +88,38 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         # presence of charge_rate attribute in item type (modified attribute
         # value is always possible to fetch, as it has base value, so it's not
         # reliable way to detect it)
-        if AttributeId.charge_rate in self._type_attributes:
+        if AttrId.charge_rate in self._type_attrs:
             return self.__get_ammo_cycles()
         # Detect crystal-based item types using effects
         if self._type_default_effect_id in (
-            EffectId.target_attack,
+            EffectId.tgt_attack,
             EffectId.mining_laser
         ):
             return self.__get_crystal_mean_cycles()
         return None
 
     def __get_ammo_cycles(self):
-        charge_rate = self.attributes.get(AttributeId.charge_rate)
+        charge_rate = self.attrs.get(AttrId.charge_rate)
         if not charge_rate or self.charge_quantity is None:
             return None
         cycles = self.charge_quantity // int(charge_rate)
         return cycles
 
     def __get_crystal_mean_cycles(self):
-        charge_attribs = self.charge.attributes
-        damageable = charge_attribs.get(AttributeId.crystals_get_damaged)
-        hp = charge_attribs.get(AttributeId.hp)
-        chance = charge_attribs.get(AttributeId.crystal_volatility_chance)
-        damage = charge_attribs.get(AttributeId.crystal_volatility_damage)
+        charge_attrs = self.charge.attrs
+        damageable = charge_attrs.get(AttrId.crystals_get_damaged)
+        hp = charge_attrs.get(AttrId.hp)
+        chance = charge_attrs.get(AttrId.crystal_volatility_chance)
+        dmg = charge_attrs.get(AttrId.crystal_volatility_dmg)
         if (
             not damageable or
             hp is None or
             chance is None or
-            damage is None or
+            dmg is None or
             self.charge_quantity is None
         ):
             return None
-        cycles = _float_to_int(hp / damage / chance) * self.charge_quantity
+        cycles = _float_to_int(hp / dmg / chance) * self.charge_quantity
         return cycles
 
     @volatile_property
@@ -128,11 +128,11 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         # Return hardcoded 1.0 if item type has target_attack effect (various
         # lasers), else fetch reload time attribute from item
         if self._type_default_effect_id in (
-            EffectId.target_attack,
+            EffectId.tgt_attack,
             EffectId.mining_laser
         ):
             return 1.0
-        reload_ms = self.attributes.get(AttributeId.reload_time)
+        reload_ms = self.attrs.get(AttrId.reload_time)
         if reload_ms is None:
             return None
         return reload_ms / 1000

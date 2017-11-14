@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.item import Drone, Ship
 from eos.fit.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
@@ -30,8 +30,8 @@ from ..exception import RestrictionValidationError
 
 
 ALLOWED_GROUP_ATTR_IDS = (
-    AttributeId.allowed_drone_group_1,
-    AttributeId.allowed_drone_group_2)
+    AttrId.allowed_drone_group_1,
+    AttrId.allowed_drone_group_2)
 
 
 DroneGroupErrorData = namedtuple(
@@ -77,7 +77,7 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         # Find out if we have restriction, and which drone groups it allows
         for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
-                allowed_group_id = ship._type_attributes[allowed_group_attr_id]
+                allowed_group_id = ship._type_attrs[allowed_group_attr_id]
             except KeyError:
                 continue
             else:

@@ -20,26 +20,26 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
-class TestTgtItemDomainTarget(CalculatorTestCase):
+class TestTgtItemDomainTgt(CalculatorTestCase):
 
     def test_no_effect(self):
         tgt_attr = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.target,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.target,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         influence_src = Ship(self.ch.type(
-            attributes={src_attr.id: 20}, effects=[effect]).id)
+            attrs={src_attr.id: 20}, effects=[effect]).id)
         # Action
         self.fit.ship = influence_src
         # No checks - nothing should happen

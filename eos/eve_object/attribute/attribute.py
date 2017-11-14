@@ -28,7 +28,7 @@ class Attribute(BaseCachable):
 
     Attributes:
         id: Identifier of the attribute.
-        max_attribute_id: When specified, value of current attribute on an item
+        max_attr_id: When specified, value of current attribute on an item
             cannot exceed value of attribute with this ID on the item.
         default_value: Base value for attribute. Used when value of the
             attribute with this ID is not specified on an item.
@@ -39,10 +39,10 @@ class Attribute(BaseCachable):
     """
 
     def __init__(
-            self, attribute_id, max_attribute_id=None, default_value=None,
+            self, attr_id, max_attr_id=None, default_value=None,
             high_is_good=True, stackable=True):
-        self.id = attribute_id
-        self.max_attribute_id = max_attribute_id
+        self.id = attr_id
+        self.max_attr_id = max_attr_id
         self.default_value = default_value
         self.high_is_good = bool(high_is_good)
         self.stackable = bool(stackable)
@@ -51,7 +51,7 @@ class Attribute(BaseCachable):
     def compress(self):
         return (
             self.id,
-            self.max_attribute_id,
+            self.max_attr_id,
             self.default_value,
             self.high_is_good,
             self.stackable)
@@ -59,8 +59,8 @@ class Attribute(BaseCachable):
     @classmethod
     def decompress(cls, cache_handler, compressed):
         return cls(
-            attribute_id=compressed[0],
-            max_attribute_id=compressed[1],
+            attr_id=compressed[0],
+            max_attr_id=compressed[1],
             default_value=compressed[2],
             high_is_good=compressed[3],
             stackable=compressed[4])

@@ -23,9 +23,9 @@ from copy import copy
 from logging import getLogger
 from math import ceil, floor
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import AttrId, EffectId
 from eos.fit.message import (
-    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDamageChanged,
+    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDmgChanged,
     EffectsStarted, EffectsStopped)
 from eos.util.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
@@ -41,16 +41,16 @@ SIG_DIGITS = 10
 # When equal damage is received across several damage types, those which come
 # earlier in this list will be picked as donors
 res_attr_ids = (
-    AttributeId.armor_em_damage_resonance,
-    AttributeId.armor_explosive_damage_resonance,
-    AttributeId.armor_kinetic_damage_resonance,
-    AttributeId.armor_thermal_damage_resonance)
+    AttrId.armor_em_dmg_resonance,
+    AttrId.armor_explosive_dmg_resonance,
+    AttrId.armor_kinetic_dmg_resonance,
+    AttrId.armor_thermal_dmg_resonance)
 # Format: {resonance attribute: damage profile field}
 attr_profile_map = {
-    AttributeId.armor_em_damage_resonance: 'em',
-    AttributeId.armor_thermal_damage_resonance: 'thermal',
-    AttributeId.armor_kinetic_damage_resonance: 'kinetic',
-    AttributeId.armor_explosive_damage_resonance: 'explosive'}
+    AttrId.armor_em_dmg_resonance: 'em',
+    AttrId.armor_thermal_dmg_resonance: 'thermal',
+    AttrId.armor_kinetic_dmg_resonance: 'kinetic',
+    AttrId.armor_explosive_dmg_resonance: 'explosive'}
 
 
 class RahState:
@@ -140,7 +140,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 # need to send notifications about all calculated values
                 for item in self.__data:
                     for attr_id in res_attr_ids:
-                        item.attributes._override_value_may_change(attr_id)
+                        item.attrs._override_value_may_change(attr_id)
                 self.__running = False
         return reso
 
@@ -152,7 +152,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # If there's no ship, simulation is meaningless - keep unsimulated
         # results
         try:
-            ship_attrs = self.__fit.ship.attributes
+            ship_attrs = self.__fit.ship.attrs
         except AttributeError:
             return
 
@@ -166,7 +166,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {frozenset(RAH history entries), ...}
         ticks_seen = set()
 
-        incoming_dmg = self.__fit.default_incoming_damage
+        incoming_dmg = self.__fit.default_incoming_dmg
 
         # Container for damage each RAH received during its cycle. May
         # span across several simulation ticks for multi-RAH setups
@@ -190,14 +190,14 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 # resonances
                 new_resos = self.__get_next_resos(
                     self.__data[item], cycle_dmg_data[item],
-                    item.attributes[AttributeId.resistance_shift_amount] / 100)
+                    item.attrs[AttrId.resist_shift_amount] / 100)
 
                 # Then write these resonances to dictionary with results and
                 # notify everyone about these changes. This is needed to get
                 # updated ship resonances next tick
                 self.__data[item].update(new_resos)
                 for attr_id in res_attr_ids:
-                    item.attributes._override_value_may_change(attr_id)
+                    item.attrs._override_value_may_change(attr_id)
 
                 # Reset damage counter for RAH which completed its cycle
                 for attr_id in res_attr_ids:
@@ -244,7 +244,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         """
         for item, resos in self.__data.items():
             for attr_id in res_attr_ids:
-                resos[attr_id] = item.attributes._get_without_overrides(attr_id)
+                resos[attr_id] = item.attrs._get_without_overrides(attr_id)
 
     def __sim_tick_iter(self, max_ticks):
         """Iterate over simulation ticks.
@@ -383,8 +383,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # Calculate how many cycles it would take for highest resistance
             # (lowest resonance) to be exhausted
             exhaustion_cycles[item] = max(ceil(
-                (1 - item.attributes._get_without_overrides(attr_id)) /
-                (item.attributes[AttributeId.resistance_shift_amount] / 100)
+                (1 - item.attrs._get_without_overrides(attr_id)) /
+                (item.attrs[AttrId.resist_shift_amount] / 100)
             ) for attr_id in res_attr_ids)
         # Slowest RAH is the one which takes the most time to exhaust its
         # highest resistance when it's used strictly as donor
@@ -420,7 +420,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def _handle_effects_started(self, msg):
         if EffectId.adaptive_armor_hardener in msg.effect_ids:
             for attr_id in res_attr_ids:
-                msg.item.attributes._set_override_callback(
+                msg.item.attrs._set_override_callback(
                     attr_id, (self.get_reso, (msg.item, attr_id), {}))
             self.__data.setdefault(msg.item, {})
             self.__clear_results()
@@ -428,7 +428,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def _handle_effects_stopped(self, msg):
         if EffectId.adaptive_armor_hardener in msg.effect_ids:
             for attr_id in res_attr_ids:
-                msg.item.attributes._del_override_callback(attr_id)
+                msg.item.attrs._del_override_callback(attr_id)
             try:
                 del self.__data[msg.item]
             except KeyError:
@@ -442,12 +442,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__clear_results()
         # RAH resistance shift or cycle time
         elif item in self.__data and (
-            msg.attr_id == AttributeId.resistance_shift_amount or
+            msg.attr_id == AttrId.resist_shift_amount or
             # Cycle time change invalidates results only when there're more than
             # 1 RAHs
             (
                 len(self.__data) > 1 and
-                msg.attr_id == self.__get_rah_effect(item).duration_attribute_id
+                msg.attr_id == self.__get_rah_effect(item).duration_attr_id
             )
         ):
             self.__clear_results()
@@ -460,7 +460,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         if msg.item in self.__data and msg.attr_id in res_attr_ids:
             self.__clear_results()
 
-    def _handle_changed_damage_profile(self, _):
+    def _handle_changed_dmg_profile(self, _):
         self.__clear_results()
 
     _handler_map = {
@@ -468,7 +468,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         EffectsStopped: _handle_effects_stopped,
         AttrValueChanged: _handle_attr_changed,
         AttrValueChangedMasked: _handle_attr_changed_masked,
-        DefaultIncomingDamageChanged: _handle_changed_damage_profile}
+        DefaultIncomingDmgChanged: _handle_changed_dmg_profile}
 
     def _notify(self, msg):
         # Do not react to messages while sim is running
@@ -496,4 +496,4 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         for item, resos in self.__data.items():
             resos.clear()
             for attr_id in res_attr_ids:
-                item.attributes._override_value_may_change(attr_id)
+                item.attrs._override_value_may_change(attr_id)

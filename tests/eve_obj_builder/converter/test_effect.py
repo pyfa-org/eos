@@ -29,7 +29,7 @@ class TestConversionEffect(EveObjBuilderTestCase):
 
     logger_name = 'eos.data.eve_obj_builder.converter'
 
-    @patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
+    @patch('eos.data.eve_obj_builder.converter.ModBuilder')
     def test_fields(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 112})
@@ -53,12 +53,12 @@ class TestConversionEffect(EveObjBuilderTestCase):
         self.assertEqual(effect.category_id, 111)
         self.assertIs(effect.is_offensive, True)
         self.assertIs(effect.is_assistance, False)
-        self.assertEqual(effect.duration_attribute_id, 781)
-        self.assertEqual(effect.discharge_attribute_id, 72)
-        self.assertEqual(effect.range_attribute_id, 2)
-        self.assertEqual(effect.falloff_attribute_id, 3)
-        self.assertEqual(effect.tracking_speed_attribute_id, 6)
-        self.assertEqual(effect.fitting_usage_chance_attribute_id, 96)
+        self.assertEqual(effect.duration_attr_id, 781)
+        self.assertEqual(effect.discharge_attr_id, 72)
+        self.assertEqual(effect.range_attr_id, 2)
+        self.assertEqual(effect.falloff_attr_id, 3)
+        self.assertEqual(effect.tracking_speed_attr_id, 6)
+        self.assertEqual(effect.fitting_usage_chance_attr_id, 96)
         self.assertEqual(effect.build_status, 29)
         self.assertIn(mod, effect.modifiers)
         self.assertEqual(len(self.get_log(name=self.logger_name)), 0)

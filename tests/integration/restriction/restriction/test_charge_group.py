@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -31,7 +31,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_group1(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_1: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -54,7 +54,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_group2(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_2: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_2: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -77,7 +77,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_group3(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_3: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_3: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -100,7 +100,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_group4(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_4: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_4: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -123,7 +123,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_group5(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_5: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_5: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -146,7 +146,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_charge_none(self):
         charge = Charge(self.ch.type(group_id=None).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_1: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -169,9 +169,9 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_multiple_same(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={
-                AttributeId.charge_group_3: 3,
-                AttributeId.charge_group_5: 3}).id,
+            self.ch.type(attrs={
+                AttrId.charge_group_3: 3,
+                AttrId.charge_group_5: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -194,9 +194,9 @@ class TestChargeGroup(RestrictionTestCase):
     def test_fail_multiple_different(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={
-                AttributeId.charge_group_3: 5,
-                AttributeId.charge_group_5: 3}).id,
+            self.ch.type(attrs={
+                AttrId.charge_group_3: 5,
+                AttrId.charge_group_5: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -219,7 +219,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_pass_match(self):
         charge = Charge(self.ch.type(group_id=3).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_1: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -240,9 +240,9 @@ class TestChargeGroup(RestrictionTestCase):
     def test_pass_multiple(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={
-                AttributeId.charge_group_3: 56,
-                AttributeId.charge_group_5: 1008}).id,
+            self.ch.type(attrs={
+                AttrId.charge_group_3: 56,
+                AttrId.charge_group_5: 1008}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -282,7 +282,7 @@ class TestChargeGroup(RestrictionTestCase):
     def test_pass_no_source(self):
         charge = Charge(self.ch.type(group_id=1008).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_group_1: 3}).id,
+            self.ch.type(attrs={AttrId.charge_group_1: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)

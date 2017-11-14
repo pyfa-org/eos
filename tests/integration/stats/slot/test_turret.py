@@ -20,8 +20,8 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
@@ -29,7 +29,7 @@ class TestTurretSlot(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.turret_slots_left)
+        self.ch.attr(attr_id=AttrId.turret_slots_left)
         self.effect = self.ch.effect(
             effect_id=EffectId.turret_fitted,
             category_id=EffectCategoryId.passive)
@@ -38,15 +38,15 @@ class TestTurretSlot(StatsTestCase):
         # Check that modified attribute of ship is used
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
-            tgt_attr_id=AttributeId.turret_slots_left,
-            operator=ModifierOperator.post_mul,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=AttrId.turret_slots_left,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         mod_effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 3, src_attr.id: 2},
+            attrs={AttrId.turret_slots_left: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.total, 6)
@@ -115,7 +115,7 @@ class TestTurretSlot(StatsTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 3}).id)
+            attrs={AttrId.turret_slots_left: 3}).id)
         self.fit.modules.high.append(
             ModuleHigh(self.ch.type(effects=[self.effect]).id))
         self.fit.modules.high.append(

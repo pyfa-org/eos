@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -36,34 +36,34 @@ class TestMapMethods(CalculatorTestCase):
         self.attr4 = self.ch.attr()
         self.attr5 = self.ch.attr()
         modifier1 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr1.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
         modifier2 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr2.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
         modifier3 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr3.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
         modifier4 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr4.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
             modifiers=(modifier1, modifier2, modifier3, modifier4))
         self.item = Implant(self.ch.type(
-            attributes={
+            attrs={
                 self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4},
             effects=[effect]).id)
         self.fit.implants.add(self.item)
@@ -72,17 +72,17 @@ class TestMapMethods(CalculatorTestCase):
         for attr in (
                 self.attr1.id, self.attr2.id, self.attr3.id, self.attr4.id,
                 self.attr5.id, *special):
-            self.item.attributes.get(attr)
+            self.item.attrs.get(attr)
 
     def test_getattr(self):
-        self.assertAlmostEqual(self.item.attributes[self.attr1.id], 20)
-        self.assertAlmostEqual(self.item.attributes[self.attr2.id], 40)
-        self.assertAlmostEqual(self.item.attributes[self.attr3.id], 44)
+        self.assertAlmostEqual(self.item.attrs[self.attr1.id], 20)
+        self.assertAlmostEqual(self.item.attrs[self.attr2.id], 40)
+        self.assertAlmostEqual(self.item.attrs[self.attr3.id], 44)
         with self.assertRaises(KeyError):
-            self.item.attributes[self.attr4.id]
-        self.assertAlmostEqual(self.item.attributes[self.attr5.id], 4)
+            self.item.attrs[self.attr4.id]
+        self.assertAlmostEqual(self.item.attrs[self.attr5.id], 4)
         with self.assertRaises(KeyError):
-            self.item.attributes[1008]
+            self.item.attrs[1008]
         self.assert_fit_buffers_empty(self.fit)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
@@ -91,17 +91,17 @@ class TestMapMethods(CalculatorTestCase):
     def test_getattr_no_source(self):
         self.fit.source = None
         with self.assertRaises(KeyError):
-            self.item.attributes[self.attr1.id]
+            self.item.attrs[self.attr1.id]
         with self.assertRaises(KeyError):
-            self.item.attributes[self.attr2.id]
+            self.item.attrs[self.attr2.id]
         with self.assertRaises(KeyError):
-            self.item.attributes[self.attr3.id]
+            self.item.attrs[self.attr3.id]
         with self.assertRaises(KeyError):
-            self.item.attributes[self.attr4.id]
+            self.item.attrs[self.attr4.id]
         with self.assertRaises(KeyError):
-            self.item.attributes[self.attr5.id]
+            self.item.attrs[self.attr5.id]
         with self.assertRaises(KeyError):
-            self.item.attributes[1008]
+            self.item.attrs[1008]
         self.assert_fit_buffers_empty(self.fit)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
@@ -110,13 +110,13 @@ class TestMapMethods(CalculatorTestCase):
     def test_get(self):
         # Make sure map's get method replicates functionality of dictionary get
         # method
-        self.assertAlmostEqual(self.item.attributes.get(self.attr1.id), 20)
-        self.assertAlmostEqual(self.item.attributes.get(self.attr2.id), 40)
-        self.assertAlmostEqual(self.item.attributes.get(self.attr3.id), 44)
-        self.assertIsNone(self.item.attributes.get(self.attr4.id))
-        self.assertAlmostEqual(self.item.attributes.get(self.attr5.id), 4)
-        self.assertIsNone(self.item.attributes.get(1008))
-        self.assertEqual(self.item.attributes.get(1008, 60), 60)
+        self.assertAlmostEqual(self.item.attrs.get(self.attr1.id), 20)
+        self.assertAlmostEqual(self.item.attrs.get(self.attr2.id), 40)
+        self.assertAlmostEqual(self.item.attrs.get(self.attr3.id), 44)
+        self.assertIsNone(self.item.attrs.get(self.attr4.id))
+        self.assertAlmostEqual(self.item.attrs.get(self.attr5.id), 4)
+        self.assertIsNone(self.item.attrs.get(1008))
+        self.assertEqual(self.item.attrs.get(1008, 60), 60)
         self.assert_fit_buffers_empty(self.fit)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
@@ -124,25 +124,25 @@ class TestMapMethods(CalculatorTestCase):
 
     def test_get_no_source(self):
         self.fit.source = None
-        self.assertIsNone(self.item.attributes.get(self.attr1.id))
-        self.assertIsNone(self.item.attributes.get(self.attr2.id))
-        self.assertIsNone(self.item.attributes.get(self.attr3.id))
-        self.assertIsNone(self.item.attributes.get(self.attr4.id))
-        self.assertIsNone(self.item.attributes.get(self.attr5.id))
-        self.assertIsNone(self.item.attributes.get(1008))
-        self.assertEqual(self.item.attributes.get(1008, 60), 60)
+        self.assertIsNone(self.item.attrs.get(self.attr1.id))
+        self.assertIsNone(self.item.attrs.get(self.attr2.id))
+        self.assertIsNone(self.item.attrs.get(self.attr3.id))
+        self.assertIsNone(self.item.attrs.get(self.attr4.id))
+        self.assertIsNone(self.item.attrs.get(self.attr5.id))
+        self.assertIsNone(self.item.attrs.get(1008))
+        self.assertEqual(self.item.attrs.get(1008, 60), 60)
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 7)
 
     def test_len(self):
         # Length should return length, counting unique IDs from both attribute
         # containers. First, values are not calculated
-        self.assertEqual(len(self.item.attributes), 3)
+        self.assertEqual(len(self.item.attrs), 3)
         # Force calculation
         self.calculate_attrs(special=[1008])
-        # Length should change, as it now includes attr which had no value on
-        # item but has default value
-        self.assertEqual(len(self.item.attributes), 4)
+        # Length should change, as it now includes attribute which had no value
+        # on item but has default value
+        self.assertEqual(len(self.item.attrs), 4)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         # Log entries are unrelated to this test
@@ -150,9 +150,9 @@ class TestMapMethods(CalculatorTestCase):
 
     def test_len_no_source(self):
         self.fit.source = None
-        self.assertEqual(len(self.item.attributes), 0)
+        self.assertEqual(len(self.item.attrs), 0)
         self.calculate_attrs(special=[1008])
-        self.assertEqual(len(self.item.attributes), 0)
+        self.assertEqual(len(self.item.attrs), 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 6)
@@ -160,19 +160,19 @@ class TestMapMethods(CalculatorTestCase):
     def test_contains(self):
         # Make sure map reacts positively to items contained in any attribute
         # container, and negatively for attributes which were not found
-        self.assertTrue(self.attr1.id in self.item.attributes)
-        self.assertTrue(self.attr2.id in self.item.attributes)
-        self.assertFalse(self.attr3.id in self.item.attributes)
-        self.assertFalse(self.attr4.id in self.item.attributes)
-        self.assertTrue(self.attr5.id in self.item.attributes)
-        self.assertFalse(1008 in self.item.attributes)
+        self.assertTrue(self.attr1.id in self.item.attrs)
+        self.assertTrue(self.attr2.id in self.item.attrs)
+        self.assertFalse(self.attr3.id in self.item.attrs)
+        self.assertFalse(self.attr4.id in self.item.attrs)
+        self.assertTrue(self.attr5.id in self.item.attrs)
+        self.assertFalse(1008 in self.item.attrs)
         self.calculate_attrs(special=[1008])
-        self.assertTrue(self.attr1.id in self.item.attributes)
-        self.assertTrue(self.attr2.id in self.item.attributes)
-        self.assertTrue(self.attr3.id in self.item.attributes)
-        self.assertFalse(self.attr4.id in self.item.attributes)
-        self.assertTrue(self.attr5.id in self.item.attributes)
-        self.assertFalse(1008 in self.item.attributes)
+        self.assertTrue(self.attr1.id in self.item.attrs)
+        self.assertTrue(self.attr2.id in self.item.attrs)
+        self.assertTrue(self.attr3.id in self.item.attrs)
+        self.assertFalse(self.attr4.id in self.item.attrs)
+        self.assertTrue(self.attr5.id in self.item.attrs)
+        self.assertFalse(1008 in self.item.attrs)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         # Log entries are unrelated to this test
@@ -180,19 +180,19 @@ class TestMapMethods(CalculatorTestCase):
 
     def test_contains_no_source(self):
         self.fit.source = None
-        self.assertFalse(self.attr1.id in self.item.attributes)
-        self.assertFalse(self.attr2.id in self.item.attributes)
-        self.assertFalse(self.attr3.id in self.item.attributes)
-        self.assertFalse(self.attr4.id in self.item.attributes)
-        self.assertFalse(self.attr5.id in self.item.attributes)
-        self.assertFalse(1008 in self.item.attributes)
+        self.assertFalse(self.attr1.id in self.item.attrs)
+        self.assertFalse(self.attr2.id in self.item.attrs)
+        self.assertFalse(self.attr3.id in self.item.attrs)
+        self.assertFalse(self.attr4.id in self.item.attrs)
+        self.assertFalse(self.attr5.id in self.item.attrs)
+        self.assertFalse(1008 in self.item.attrs)
         self.calculate_attrs(special=[1008])
-        self.assertFalse(self.attr1.id in self.item.attributes)
-        self.assertFalse(self.attr2.id in self.item.attributes)
-        self.assertFalse(self.attr3.id in self.item.attributes)
-        self.assertFalse(self.attr4.id in self.item.attributes)
-        self.assertFalse(self.attr5.id in self.item.attributes)
-        self.assertFalse(1008 in self.item.attributes)
+        self.assertFalse(self.attr1.id in self.item.attrs)
+        self.assertFalse(self.attr2.id in self.item.attrs)
+        self.assertFalse(self.attr3.id in self.item.attrs)
+        self.assertFalse(self.attr4.id in self.item.attrs)
+        self.assertFalse(self.attr5.id in self.item.attrs)
+        self.assertFalse(1008 in self.item.attrs)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 6)
@@ -201,11 +201,11 @@ class TestMapMethods(CalculatorTestCase):
         # When we request map keys, they should include all unique attribute IDs
         # w/o duplication
         self.assertCountEqual(
-            self.item.attributes.keys(),
+            self.item.attrs.keys(),
             (self.attr1.id, self.attr2.id, self.attr5.id))
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(
-            self.item.attributes.keys(),
+            self.item.attrs.keys(),
             (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -214,9 +214,9 @@ class TestMapMethods(CalculatorTestCase):
 
     def test_keys_no_source(self):
         self.fit.source = None
-        self.assertCountEqual(self.item.attributes.keys(), ())
+        self.assertCountEqual(self.item.attrs.keys(), ())
         self.calculate_attrs(special=[1008])
-        self.assertCountEqual(self.item.attributes.keys(), ())
+        self.assertCountEqual(self.item.attrs.keys(), ())
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 6)
@@ -225,11 +225,11 @@ class TestMapMethods(CalculatorTestCase):
         # As with keys, we include unique attribute IDs, plus their calculated
         # values
         self.assertCountEqual(
-            self.item.attributes.items(),
+            self.item.attrs.items(),
             ((self.attr1.id, 20), (self.attr2.id, 40), (self.attr5.id, 4)))
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(
-            self.item.attributes.items(), (
+            self.item.attrs.items(), (
                 (self.attr1.id, 20), (self.attr2.id, 40),
                 (self.attr3.id, 44), (self.attr5.id, 4)))
         # Cleanup
@@ -239,9 +239,9 @@ class TestMapMethods(CalculatorTestCase):
 
     def test_items_no_source(self):
         self.fit.source = None
-        self.assertCountEqual(self.item.attributes.items(), ())
+        self.assertCountEqual(self.item.attrs.items(), ())
         self.calculate_attrs(special=[1008])
-        self.assertCountEqual(self.item.attributes.items(), ())
+        self.assertCountEqual(self.item.attrs.items(), ())
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         # Log entries are unrelated to this test
@@ -252,10 +252,10 @@ class TestMapMethods(CalculatorTestCase):
         # iterable - we just check its contents here, w/o checking format of
         # returned data
         self.assertCountEqual(
-            self.item.attributes, (self.attr1.id, self.attr2.id, self.attr5.id))
+            self.item.attrs, (self.attr1.id, self.attr2.id, self.attr5.id))
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(
-            self.item.attributes,
+            self.item.attrs,
             (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -264,9 +264,9 @@ class TestMapMethods(CalculatorTestCase):
 
     def test_iter_no_source(self):
         self.fit.source = None
-        self.assertCountEqual(self.item.attributes, ())
+        self.assertCountEqual(self.item.attrs, ())
         self.calculate_attrs(special=[1008])
-        self.assertCountEqual(self.item.attributes, ())
+        self.assertCountEqual(self.item.attrs, ())
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 6)

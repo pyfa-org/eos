@@ -20,6 +20,6 @@
 
 
 from .message import (
-    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDamageChanged,
+    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDmgChanged,
     EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved, StatesActivated,
     StatesDeactivated)

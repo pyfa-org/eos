@@ -82,7 +82,7 @@ class EffectBuildStatus(IntEnum):
 
 
 @unique
-class ModifierTargetFilter(IntEnum):
+class ModTgtFilter(IntEnum):
     """Contains possible modifier target filter types.
 
     Used during attribute calculation.
@@ -95,7 +95,7 @@ class ModifierTargetFilter(IntEnum):
 
 
 @unique
-class ModifierDomain(IntEnum):
+class ModDomain(IntEnum):
     """Contains possible modifier domains.
 
     Used during attribute calculation.
@@ -108,7 +108,7 @@ class ModifierDomain(IntEnum):
 
 
 @unique
-class ModifierOperator(IntEnum):
+class ModOperator(IntEnum):
     """Contains possible modifier operator types.
 
     Used during attribute calculation. Must be ordered in this way to preserve

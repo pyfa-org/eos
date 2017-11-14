@@ -34,14 +34,14 @@ class TestForceRunOnline(EffectModeTestCase):
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.online)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -53,16 +53,16 @@ class TestForceRunOnline(EffectModeTestCase):
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.offline)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Action
         item.state = State.online
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -74,16 +74,16 @@ class TestForceRunOnline(EffectModeTestCase):
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.online)
         item.set_effect_mode(effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Action
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -93,14 +93,14 @@ class TestForceRunOnline(EffectModeTestCase):
             category_id=EffectCategoryId.online, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.online)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -112,7 +112,7 @@ class TestForceRunOnline(EffectModeTestCase):
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.online)
         item.set_effect_mode(effect.id, EffectMode.force_run)
@@ -120,7 +120,7 @@ class TestForceRunOnline(EffectModeTestCase):
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -132,14 +132,14 @@ class TestForceRunOnline(EffectModeTestCase):
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.offline)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

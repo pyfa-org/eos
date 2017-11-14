@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import AttrId, EffectId
 from eos.fit.item import Ship
 from eos.fit.message import (
     EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
@@ -46,7 +46,7 @@ class UnorderedShipSlotStatRegister(
     @volatile_property
     def total(self):
         try:
-            return int(self.__current_ship.attributes[self.__slot_attr_id])
+            return int(self.__current_ship.attrs[self.__slot_attr_id])
         except (AttributeError, KeyError):
             return None
 
@@ -81,14 +81,14 @@ class RigSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.rig_slot, AttributeId.rig_slots)
+            self, msg_broker, EffectId.rig_slot, AttrId.rig_slots)
 
 
 class SubsystemSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.subsystem, AttributeId.max_subsystems)
+            self, msg_broker, EffectId.subsystem, AttrId.max_subsystems)
 
 
 class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
@@ -96,7 +96,7 @@ class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
             self, msg_broker, EffectId.turret_fitted,
-            AttributeId.turret_slots_left)
+            AttrId.turret_slots_left)
 
 
 class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
@@ -104,4 +104,4 @@ class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
             self, msg_broker, EffectId.launcher_fitted,
-            AttributeId.launcher_slots_left)
+            AttrId.launcher_slots_left)

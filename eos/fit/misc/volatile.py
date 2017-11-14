@@ -23,7 +23,7 @@ from eos.util.volatile_cache import (
     CooperativeVolatileMixin, InheritableVolatileMixin)
 
 
-class VolatileManager:
+class VolatileMgr:
     """Manage on-fit objects with volatile data.
 
     Tracks objects which potentially may carry volatile data and clears volatile
@@ -54,8 +54,8 @@ class VolatileManager:
     def clear_volatile_attrs(self):
         """Clear volatile data.
 
-        Go through objects in internal storage and clear volatile attribs stored
-        on them.
+        Go through objects in internal storage and clear volatile attributes
+        stored on them.
         """
         for volatile in self.__volatile_objects:
             volatile._clear_volatile_attrs()

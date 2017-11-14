@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -53,7 +53,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         if not hasattr(msg.item, 'charge'):
             return
         # And without size specification
-        if AttributeId.charge_size not in msg.item._type_attributes:
+        if AttrId.charge_size not in msg.item._type_attrs:
             return
         self.__restricted_containers.add(msg.item)
 
@@ -72,8 +72,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             charge = container.charge
             if charge is None:
                 continue
-            container_size = container._type_attributes[AttributeId.charge_size]
-            charge_size = charge._type_attributes.get(AttributeId.charge_size)
+            container_size = container._type_attrs[AttrId.charge_size]
+            charge_size = charge._type_attrs.get(AttrId.charge_size)
             if container_size != charge_size:
                 tainted_items[charge] = ChargeSizeErrorData(
                     size=charge_size,

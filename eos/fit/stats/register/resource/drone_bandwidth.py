@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import State
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.item import Drone, Ship
 from eos.fit.message import (
     ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
@@ -41,13 +41,13 @@ class DroneBandwidthStatRegister(
     @volatile_property
     def used(self):
         return sum(
-            item.attributes[AttributeId.drone_bandwidth_used]
+            item.attrs[AttrId.drone_bandwidth_used]
             for item in self.__resource_users)
 
     @volatile_property
     def output(self):
         try:
-            return self.__current_ship.attributes[AttributeId.drone_bandwidth]
+            return self.__current_ship.attrs[AttrId.drone_bandwidth]
         except (AttributeError, KeyError):
             return None
 
@@ -67,7 +67,7 @@ class DroneBandwidthStatRegister(
         if (
             isinstance(msg.item, Drone) and
             State.online in msg.states and
-            AttributeId.drone_bandwidth_used in msg.item._type_attributes
+            AttrId.drone_bandwidth_used in msg.item._type_attrs
         ):
             self.__resource_users.add(msg.item)
 

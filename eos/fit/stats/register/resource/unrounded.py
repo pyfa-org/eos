@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import AttrId, EffectId
 from eos.fit.item import Ship
 from eos.fit.message import (
     EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
@@ -43,13 +43,13 @@ class UnroundedResourceStatRegister(
     @volatile_property
     def used(self):
         return sum(
-            item.attributes[self.__use_attr_id]
+            item.attrs[self.__use_attr_id]
             for item in self.__resource_users)
 
     @volatile_property
     def output(self):
         try:
-            return self.__current_ship.attributes[self.__output_attr_id]
+            return self.__current_ship.attrs[self.__output_attr_id]
         except (AttributeError, KeyError):
             return None
 
@@ -68,7 +68,7 @@ class UnroundedResourceStatRegister(
     def _handle_effects_started(self, msg):
         if (
             self.__use_effect_id in msg.effect_ids and
-            self.__use_attr_id in msg.item._type_attributes
+            self.__use_attr_id in msg.item._type_attrs
         ):
             self.__resource_users.add(msg.item)
 
@@ -87,5 +87,5 @@ class CalibrationStatRegister(UnroundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         UnroundedResourceStatRegister.__init__(
-            self, msg_broker, AttributeId.upgrade_capacity, EffectId.rig_slot,
-            AttributeId.upgrade_cost)
+            self, msg_broker, AttrId.upgrade_capacity, EffectId.rig_slot,
+            AttrId.upgrade_cost)

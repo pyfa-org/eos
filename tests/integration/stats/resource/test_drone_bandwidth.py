@@ -20,8 +20,8 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, EffectCategoryId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
@@ -29,22 +29,22 @@ class TestDroneBandwidth(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.drone_bandwidth)
-        self.ch.attr(attribute_id=AttributeId.drone_bandwidth_used)
+        self.ch.attr(attr_id=AttrId.drone_bandwidth)
+        self.ch.attr(attr_id=AttrId.drone_bandwidth_used)
 
     def test_output(self):
         # Check that modified attribute of ship is used
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
-            tgt_attr_id=AttributeId.drone_bandwidth,
-            operator=ModifierOperator.post_mul,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=AttrId.drone_bandwidth,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         mod_effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.drone_bandwidth: 200, src_attr.id: 2},
+            attrs={AttrId.drone_bandwidth: 200, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.output, 400)
@@ -71,8 +71,8 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_use_single_no_rounding(self):
         self.fit.drones.add(Drone(
-            self.ch.type(attributes={
-                AttributeId.drone_bandwidth_used: 55.5555555555}).id,
+            self.ch.type(attrs={
+                AttrId.drone_bandwidth_used: 55.5555555555}).id,
             state=State.online))
         # Verification
         self.assertAlmostEqual(
@@ -83,10 +83,10 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_use_multiple(self):
         self.fit.drones.add(Drone(
-            self.ch.type(attributes={AttributeId.drone_bandwidth_used: 50}).id,
+            self.ch.type(attrs={AttrId.drone_bandwidth_used: 50}).id,
             state=State.online))
         self.fit.drones.add(Drone(
-            self.ch.type(attributes={AttributeId.drone_bandwidth_used: 30}).id,
+            self.ch.type(attrs={AttrId.drone_bandwidth_used: 30}).id,
             state=State.online))
         # Verification
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 80)
@@ -96,10 +96,10 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_use_state(self):
         self.fit.drones.add(Drone(
-            self.ch.type(attributes={AttributeId.drone_bandwidth_used: 50}).id,
+            self.ch.type(attrs={AttrId.drone_bandwidth_used: 50}).id,
             state=State.online))
         self.fit.drones.add(Drone(
-            self.ch.type(attributes={AttributeId.drone_bandwidth_used: 30}).id,
+            self.ch.type(attrs={AttrId.drone_bandwidth_used: 30}).id,
             state=State.offline))
         # Verification
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 50)
@@ -116,12 +116,12 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.drone_bandwidth: 200}).id)
+            attrs={AttrId.drone_bandwidth: 200}).id)
         self.fit.drones.add(Drone(
-            self.ch.type(attributes={AttributeId.drone_bandwidth_used: 50}).id,
+            self.ch.type(attrs={AttrId.drone_bandwidth_used: 50}).id,
             state=State.online))
         self.fit.drones.add(Drone(
-            self.ch.type(attributes={AttributeId.drone_bandwidth_used: 30}).id,
+            self.ch.type(attrs={AttrId.drone_bandwidth_used: 30}).id,
             state=State.online))
         self.fit.source = None
         # Verification

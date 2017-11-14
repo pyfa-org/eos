@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -55,7 +55,7 @@ class ResourceRestriction(BaseRestriction):
             return
         tainted_items = {}
         for item in stats._users:
-            resource_use = item.attributes[self.__use_attr_id]
+            resource_use = item.attrs[self.__use_attr_id]
             # Ignore items which do not actually consume resource
             if resource_use <= 0:
                 continue
@@ -74,8 +74,7 @@ class CpuRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(
-            self, stats, 'cpu', AttributeId.cpu)
+        ResourceRestriction.__init__(self, stats, 'cpu', AttrId.cpu)
 
     @property
     def type(self):
@@ -91,7 +90,7 @@ class PowergridRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'powergrid', AttributeId.power)
+            self, stats, 'powergrid', AttrId.power)
 
     @property
     def type(self):
@@ -107,7 +106,7 @@ class CalibrationRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'calibration', AttributeId.upgrade_cost)
+            self, stats, 'calibration', AttrId.upgrade_cost)
 
     @property
     def type(self):
@@ -123,7 +122,7 @@ class DroneBayVolumeRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'dronebay', AttributeId.volume)
+            self, stats, 'dronebay', AttrId.volume)
 
     @property
     def type(self):
@@ -139,7 +138,7 @@ class DroneBandwidthRestriction(ResourceRestriction):
 
     def __init__(self, stats):
         ResourceRestriction.__init__(
-            self, stats, 'drone_bandwidth', AttributeId.drone_bandwidth_used)
+            self, stats, 'drone_bandwidth', AttrId.drone_bandwidth_used)
 
     @property
     def type(self):

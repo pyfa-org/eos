@@ -149,7 +149,8 @@ class EosTestCase(TestCase):
                 object_vars = []
                 # Get list of values this object exposes through iteration
                 available_values = list(value for value in object_)
-                # Try to find names for them and put named attribs to the list
+                # Try to find names for them and put named attributes to the
+                # list
                 for attr_name in dir(object_):
                     attr_value = getattr(object_, attr_name)
                     if attr_value not in available_values:
@@ -159,7 +160,7 @@ class EosTestCase(TestCase):
                 # For values without names, use None as name
                 for remaining_value in available_values:
                     object_vars.append((None, remaining_value))
-            # Do nothing if we have no idea what to do with object attribs
+            # Do nothing if we have no idea what to do with object attributes
             else:
                 return entry_count
         obj_classname = type(object_).__name__

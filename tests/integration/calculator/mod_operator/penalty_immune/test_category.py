@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import TypeCategoryId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -33,10 +33,10 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.tgt_attr = self.ch.attr(stackable=0)
         self.src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.domain,
-            tgt_domain=ModifierDomain.ship,
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=self.src_attr.id)
         self.effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
@@ -44,19 +44,19 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     def test_ship(self):
         influence_src1 = Implant(self.ch.type(
             category_id=TypeCategoryId.ship,
-            attributes={self.src_attr.id: 50},
+            attrs={self.src_attr.id: 50},
             effects=[self.effect]).id)
         influence_src2 = Implant(self.ch.type(
             category_id=TypeCategoryId.ship,
-            attributes={self.src_attr.id: 100},
+            attrs={self.src_attr.id: 100},
             effects=[self.effect]).id)
         self.fit.implants.add(influence_src1)
         self.fit.implants.add(influence_src2)
-        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(influence_tgt)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -64,19 +64,19 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     def test_charge(self):
         influence_src1 = Implant(self.ch.type(
             category_id=TypeCategoryId.charge,
-            attributes={self.src_attr.id: 50},
+            attrs={self.src_attr.id: 50},
             effects=[self.effect]).id)
         influence_src2 = Implant(self.ch.type(
             category_id=TypeCategoryId.charge,
-            attributes={self.src_attr.id: 100},
+            attrs={self.src_attr.id: 100},
             effects=[self.effect]).id)
         self.fit.implants.add(influence_src1)
         self.fit.implants.add(influence_src2)
-        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(influence_tgt)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -84,19 +84,19 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     def test_skill(self):
         influence_src1 = Implant(self.ch.type(
             category_id=TypeCategoryId.skill,
-            attributes={self.src_attr.id: 50},
+            attrs={self.src_attr.id: 50},
             effects=[self.effect]).id)
         influence_src2 = Implant(self.ch.type(
             category_id=TypeCategoryId.skill,
-            attributes={self.src_attr.id: 100},
+            attrs={self.src_attr.id: 100},
             effects=[self.effect]).id)
         self.fit.implants.add(influence_src1)
         self.fit.implants.add(influence_src2)
-        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(influence_tgt)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -104,19 +104,19 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     def test_implant(self):
         influence_src1 = Implant(self.ch.type(
             category_id=TypeCategoryId.implant,
-            attributes={self.src_attr.id: 50},
+            attrs={self.src_attr.id: 50},
             effects=[self.effect]).id)
         influence_src2 = Implant(self.ch.type(
             category_id=TypeCategoryId.implant,
-            attributes={self.src_attr.id: 100},
+            attrs={self.src_attr.id: 100},
             effects=[self.effect]).id)
         self.fit.implants.add(influence_src1)
         self.fit.implants.add(influence_src2)
-        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(influence_tgt)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -124,19 +124,19 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     def test_subsystem(self):
         influence_src1 = Implant(self.ch.type(
             category_id=TypeCategoryId.subsystem,
-            attributes={self.src_attr.id: 50},
+            attrs={self.src_attr.id: 50},
             effects=[self.effect]).id)
         influence_src2 = Implant(self.ch.type(
             category_id=TypeCategoryId.subsystem,
-            attributes={self.src_attr.id: 100},
+            attrs={self.src_attr.id: 100},
             effects=[self.effect]).id)
         self.fit.implants.add(influence_src1)
         self.fit.implants.add(influence_src2)
-        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(influence_tgt)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -144,19 +144,19 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     def test_mixed(self):
         influence_src1 = Implant(self.ch.type(
             category_id=TypeCategoryId.charge,
-            attributes={self.src_attr.id: 50},
+            attrs={self.src_attr.id: 50},
             effects=[self.effect]).id)
         influence_src2 = Implant(self.ch.type(
             category_id=TypeCategoryId.implant,
-            attributes={self.src_attr.id: 100},
+            attrs={self.src_attr.id: 100},
             effects=[self.effect]).id)
         self.fit.implants.add(influence_src1)
         self.fit.implants.add(influence_src2)
-        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(influence_tgt)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -164,19 +164,19 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
     def test_with_not_immune(self):
         influence_src1 = Implant(self.ch.type(
             category_id=TypeCategoryId.charge,
-            attributes={self.src_attr.id: 50},
+            attrs={self.src_attr.id: 50},
             effects=[self.effect]).id)
         influence_src2 = Implant(self.ch.type(
             category_id=None,
-            attributes={self.src_attr.id: 100},
+            attrs={self.src_attr.id: 100},
             effects=[self.effect]).id)
         self.fit.implants.add(influence_src1)
         self.fit.implants.add(influence_src2)
-        influence_tgt = Rig(self.ch.type(attributes={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
         # Action
         self.fit.rigs.add(influence_tgt)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 300)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

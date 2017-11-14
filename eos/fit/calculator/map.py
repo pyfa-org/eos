@@ -24,12 +24,12 @@ from itertools import chain
 from logging import getLogger
 from math import exp
 
-from eos.const.eos import ModifierOperator
-from eos.const.eve import AttributeId, TypeCategoryId
-from eos.data.cache_handler.exception import AttributeFetchError
+from eos.const.eos import ModOperator
+from eos.const.eve import AttrId, TypeCategoryId
+from eos.data.cache_handler.exception import AttrFetchError
 from eos.fit.message import AttrValueChanged, AttrValueChangedMasked
 from eos.util.keyed_storage import KeyedStorage
-from .exception import AttributeMetadataError, BaseValueError
+from .exception import AttrMetadataError, BaseValueError
 
 
 OverrideData = namedtuple('OverrideData', ('value', 'persistent'))
@@ -52,53 +52,53 @@ PENALTY_IMMUNE_CATEGORY_IDS = (
 
 # Tuple with penalizable operators
 PENALIZABLE_OPERATORS = (
-    ModifierOperator.pre_mul,
-    ModifierOperator.post_mul,
-    ModifierOperator.post_percent,
-    ModifierOperator.pre_div,
-    ModifierOperator.post_div)
+    ModOperator.pre_mul,
+    ModOperator.post_mul,
+    ModOperator.post_percent,
+    ModOperator.pre_div,
+    ModOperator.post_div)
 
 # Map which helps to normalize modifications
 NORMALIZATION_MAP = {
-    ModifierOperator.pre_assign: lambda val: val,
-    ModifierOperator.pre_mul: lambda val: val,
-    ModifierOperator.pre_div: lambda val: 1 / val,
-    ModifierOperator.mod_add: lambda val: val,
-    ModifierOperator.mod_sub: lambda val: -val,
-    ModifierOperator.post_mul: lambda val: val,
-    ModifierOperator.post_mul_immune: lambda val: val,
-    ModifierOperator.post_div: lambda val: 1 / val,
-    ModifierOperator.post_percent: lambda val: val / 100 + 1,
-    ModifierOperator.post_assign: lambda val: val}
+    ModOperator.pre_assign: lambda value: value,
+    ModOperator.pre_mul: lambda value: value,
+    ModOperator.pre_div: lambda value: 1 / value,
+    ModOperator.mod_add: lambda value: value,
+    ModOperator.mod_sub: lambda value: -value,
+    ModOperator.post_mul: lambda value: value,
+    ModOperator.post_mul_immune: lambda value: value,
+    ModOperator.post_div: lambda value: 1 / value,
+    ModOperator.post_percent: lambda value: value / 100 + 1,
+    ModOperator.post_assign: lambda value: value}
 
 # List operator types, according to their already normalized values
 ASSIGNMENT_OPERATORS = (
-    ModifierOperator.pre_assign,
-    ModifierOperator.post_assign)
+    ModOperator.pre_assign,
+    ModOperator.post_assign)
 ADDITION_OPERATORS = (
-    ModifierOperator.mod_add,
-    ModifierOperator.mod_sub)
+    ModOperator.mod_add,
+    ModOperator.mod_sub)
 MULTIPLICATION_OPERATORS = (
-    ModifierOperator.pre_mul,
-    ModifierOperator.pre_div,
-    ModifierOperator.post_mul,
-    ModifierOperator.post_mul_immune,
-    ModifierOperator.post_div,
-    ModifierOperator.post_percent)
+    ModOperator.pre_mul,
+    ModOperator.pre_div,
+    ModOperator.post_mul,
+    ModOperator.post_mul_immune,
+    ModOperator.post_div,
+    ModOperator.post_percent)
 
 # Following attributes have limited precision - only to second digit after
 # decimal separator
 LIMITED_PRECISION_ATTR_IDS = (
-    AttributeId.cpu,
-    AttributeId.power,
-    AttributeId.cpu_output,
-    AttributeId.power_output)
+    AttrId.cpu,
+    AttrId.power,
+    AttrId.cpu_output,
+    AttrId.power_output)
 
 # List of exceptions calculate method may throw
-CALCULATE_RAISABLE_EXCEPTIONS = (AttributeMetadataError, BaseValueError)
+CALCULATE_RAISABLE_EXCEPTIONS = (AttrMetadataError, BaseValueError)
 
 
-class MutableAttributeMap:
+class MutableAttrMap:
     """Map which contains modified attribute values.
 
     It provides some of facilities which help to calculate, store and provide
@@ -109,7 +109,7 @@ class MutableAttributeMap:
         self.__item = item
         # Actual container of calculated attributes.
         # Format: {attribute ID: value}
-        self.__modified_attributes = {}
+        self.__modified_attrs = {}
         # Override and cap maps are initialized as None to save memory, as they
         # are not needed most of the time
         self.__override_callbacks = None
@@ -127,16 +127,16 @@ class MutableAttributeMap:
         # If no override is set, use modified value. If value is stored in
         # modified map, it's considered valid
         try:
-            val = self.__modified_attributes[attr_id]
+            value = self.__modified_attrs[attr_id]
         # Else, we have to run full calculation process
         except KeyError:
             try:
-                val = self.__calculate(attr_id)
+                value = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS as e:
                 raise KeyError(attr_id) from e
             else:
-                self.__modified_attributes[attr_id] = val
-        return val
+                self.__modified_attrs[attr_id] = value
+        return value
 
     def __len__(self):
         return len(self.keys())
@@ -151,7 +151,7 @@ class MutableAttributeMap:
     def __delitem__(self, attr_id):
         # Clear the value in our calculated attributes dictionary
         try:
-            del self.__modified_attributes[attr_id]
+            del self.__modified_attrs[attr_id]
         # Do nothing if it wasn't calculated
         except KeyError:
             return
@@ -180,20 +180,20 @@ class MutableAttributeMap:
             callback, args, kwargs = self.__override_callbacks[attr_id]
             return callback(*args, **kwargs)
         try:
-            val = self.__modified_attributes[attr_id]
+            value = self.__modified_attrs[attr_id]
         except KeyError:
             try:
-                val = self.__calculate(attr_id)
+                value = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
             else:
-                self.__modified_attributes[attr_id] = val
-        return val
+                self.__modified_attrs[attr_id] = value
+        return value
 
     def keys(self):
         # Return union of attributes from base, modified and override dictionary
         return set(chain(
-            self.__item._type_attributes, self.__modified_attributes,
+            self.__item._type_attrs, self.__modified_attrs,
             self.__override_callbacks or {}))
 
     def items(self):
@@ -201,7 +201,7 @@ class MutableAttributeMap:
 
     def clear(self):
         """Reset map to its initial state"""
-        for attr_id in set(self.__modified_attributes):
+        for attr_id in set(self.__modified_attrs):
             del self[attr_id]
         self.__cap_map = None
 
@@ -215,7 +215,7 @@ class MutableAttributeMap:
             Calculated attribute value.
 
         Raises:
-            AttributeMetaError: If metadata of attribute being calculated cannot
+            AttrMetadataError: If metadata of attribute being calculated cannot
                 be fetched.
             BaseValueError: If base value for attribute being calculated cannot
                 be found.
@@ -223,24 +223,24 @@ class MutableAttributeMap:
         item = self.__item
         # Attribute object for attribute being calculated
         try:
-            attr = item._fit.source.cache_handler.get_attribute(attr_id)
+            attr = item._fit.source.cache_handler.get_attr(attr_id)
         # Raise error if we can't get metadata for requested attribute
-        except (AttributeError, AttributeFetchError) as e:
+        except (AttributeError, AttrFetchError) as e:
             msg = (
                 'unable to fetch metadata for attribute {}, '
                 'requested for item type {}'
             ).format(attr_id, item._type_id)
             logger.warning(msg)
-            raise AttributeMetadataError(attr_id) from e
+            raise AttrMetadataError(attr_id) from e
         # Base attribute value which we'll use for modification
         try:
-            result = item._type_attributes[attr_id]
+            value = item._type_attrs[attr_id]
         # If attribute isn't available on item type, base off its default value
         except KeyError:
-            result = attr.default_value
+            value = attr.default_value
             # If item type attribute is not specified and default value isn't
             # available, raise error - without valid base we can't keep going
-            if result is None:
+            if value is None:
                 msg = (
                     'unable to find base value for attribute {} on item type {}'
                 ).format(attr_id, item._type_id)
@@ -255,13 +255,6 @@ class MutableAttributeMap:
         # Now, go through all affectors affecting our item
         for mod_data in item._fit._calculator.get_modifications(item, attr_id):
             operator, mod_value, carrier_item = mod_data
-            # Decide if it should be stacking penalized or not, based on
-            # stackable property, carrier item type category and operator
-            penalize = (
-                not attr.stackable and
-                carrier_item._type.category_id not in
-                PENALTY_IMMUNE_CATEGORY_IDS and
-                operator in PENALIZABLE_OPERATORS)
             # Normalize operations to just three types: assignments, additions,
             # multiplications
             try:
@@ -274,90 +267,96 @@ class MutableAttributeMap:
                 logger.warning(msg)
                 continue
             mod_value = normalization_func(mod_value)
-            # Add value to appropriate dictionary
+            # Decide if modification should be stacking penalized or not
+            penalize = (
+                not attr.stackable and
+                carrier_item._type.category_id not in
+                PENALTY_IMMUNE_CATEGORY_IDS and
+                operator in PENALIZABLE_OPERATORS)
             if penalize:
-                mod_list = penalized_mods.setdefault(operator, [])
+                mod_values = penalized_mods.setdefault(operator, [])
             else:
-                mod_list = normal_mods.setdefault(operator, [])
-            mod_list.append(mod_value)
+                mod_values = normal_mods.setdefault(operator, [])
+            mod_values.append(mod_value)
         # When data gathering is complete, process penalized modifications. They
         # are penalized on per-operator basis
-        for operator, mod_list in penalized_mods.items():
-            penalized_value = self.__penalize_values(mod_list)
+        for operator, mod_values in penalized_mods.items():
+            penalized_value = self.__penalize_values(mod_values)
             normal_mods.setdefault(operator, []).append(penalized_value)
-        # Calculate result of normal dictionary, according to operator order
+        # Calculate value of non-penalized modifications, according to operator
+        # order
         for operator in sorted(normal_mods):
-            mod_list = normal_mods[operator]
+            mod_values = normal_mods[operator]
             # Pick best modification for assignments, based on high_is_good
             # value
             if operator in ASSIGNMENT_OPERATORS:
                 if attr.high_is_good:
-                    result = max(mod_list)
+                    value = max(mod_values)
                 else:
-                    result = min(mod_list)
+                    value = min(mod_values)
             elif operator in ADDITION_OPERATORS:
-                for mod_val in mod_list:
-                    result += mod_val
+                for mod_val in mod_values:
+                    value += mod_val
             elif operator in MULTIPLICATION_OPERATORS:
-                for mod_val in mod_list:
-                    result *= mod_val
+                for mod_val in mod_values:
+                    value *= mod_val
         # If attribute has upper cap, do not let its value to grow above it
-        if attr.max_attribute_id is not None:
+        if attr.max_attr_id is not None:
             try:
-                max_value = self[attr.max_attribute_id]
+                max_value = self[attr.max_attr_id]
             # If max value isn't available, don't cap anything
             except KeyError:
                 pass
             else:
-                result = min(result, max_value)
+                value = min(value, max_value)
                 # Let map know that capping attribute restricts current
                 # attribute
-                self._cap_set(attr.max_attribute_id, attr_id)
-        # Some of attributes are rounded for whatever reason, deal with it
-        # after all the calculations
+                self._cap_set(attr.max_attr_id, attr_id)
+        # Some of attributes are rounded for whatever reason, deal with it after
+        # all the calculations
         if attr_id in LIMITED_PRECISION_ATTR_IDS:
-            result = round(result, 2)
-        return result
+            value = round(value, 2)
+        return value
 
-    def __penalize_values(self, mod_list):
+    def __penalize_values(self, mod_values):
         """Calculate aggregated multiplier from list of multipliers.
 
         Assuming all multipliers received should be stacking penalized, and that
         they are normalized to multiplier form, calculate final multiplier.
 
         Args:
-            mod_list: Iterable with multipliers.
+            mod_values: Iterable with multipliers.
 
         Returns:
             Final aggregated multiplier.
         """
         # Gather positive multipliers into one chain, negative into another
-        chain_pos = []
-        chain_neg = []
-        for mod_val in mod_list:
+        chain_positive = []
+        chain_negative = []
+        for mod_value in mod_values:
             # Transform value into form of multiplier - 1 for ease of stacking
             # chain calculation
-            mod_val -= 1
-            if mod_val >= 0:
-                chain_pos.append(mod_val)
+            mod_value -= 1
+            if mod_value >= 0:
+                chain_positive.append(mod_value)
             else:
-                chain_neg.append(mod_val)
+                chain_negative.append(mod_value)
         # Strongest modifications always go first
-        chain_pos.sort(reverse=True)
-        chain_neg.sort()
+        chain_positive.sort(reverse=True)
+        chain_negative.sort()
         # Base final multiplier on 1
-        res = 1
-        for pen_chain in (chain_pos, chain_neg):
-            # Same for intermediate per-chain result
-            chain_res = 1
-            for pos, mod in enumerate(pen_chain):
+        value = 1
+        for penalization_chain in (chain_positive, chain_negative):
+            # Same for intermediate per-chain value
+            chain_value = 1
+            for pos, mod_value in enumerate(penalization_chain):
                 # Ignore 12th modification and further as non-significant
                 if pos > 10:
                     break
                 # Apply stacking penalty based on modification position
-                chain_res *= 1 + mod * PENALTY_BASE ** (pos ** 2)
-            res *= chain_res
-        return res
+                chain_value *= 1 + mod_value * PENALTY_BASE ** (pos ** 2)
+            value *= chain_value
+        return value
 
     # Override-related methods
     def _set_override_callback(self, attr_id, callback):
@@ -395,15 +394,15 @@ class MutableAttributeMap:
         """Get attribute value without using overrides."""
         # Partially borrowed from get() method
         try:
-            val = self.__modified_attributes[attr_id]
+            value = self.__modified_attrs[attr_id]
         except KeyError:
             try:
-                val = self.__calculate(attr_id)
+                value = self.__calculate(attr_id)
             except CALCULATE_RAISABLE_EXCEPTIONS:
                 return default
             else:
-                self.__modified_attributes[attr_id] = val
-        return val
+                self.__modified_attrs[attr_id] = value
+        return value
 
     # Cap-related methods
     @property

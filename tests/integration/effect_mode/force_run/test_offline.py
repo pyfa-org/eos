@@ -32,14 +32,14 @@ class TestForceRunOffline(EffectModeTestCase):
             category_id=EffectCategoryId.passive, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.offline)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -49,16 +49,16 @@ class TestForceRunOffline(EffectModeTestCase):
             category_id=EffectCategoryId.passive, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.offline)
         item.set_effect_mode(effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Action
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -67,11 +67,11 @@ class TestForceRunOffline(EffectModeTestCase):
         chance_attr = self.ch.attr()
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr.id,
+            fitting_usage_chance_attr_id=chance_attr.id,
             modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={
+                attrs={
                     self.tgt_attr.id: 10, self.src_attr.id: 2,
                     chance_attr.id: 1},
                 effects=[effect]).id,
@@ -80,7 +80,7 @@ class TestForceRunOffline(EffectModeTestCase):
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -36,34 +36,34 @@ class TestStateSwitching(CalculatorTestCase):
         src_attr4 = self.ch.attr()
         src_attr5 = self.ch.attr()
         modifier_off = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr1.id)
         modifier_on = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr2.id)
         modifier_act = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr3.id)
         modifier_over = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr4.id)
         modifier_disabled = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr3.id)
         effect_cat_offline = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier_off])
@@ -78,7 +78,7 @@ class TestStateSwitching(CalculatorTestCase):
         effect_disabled = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.ch.type(
-            attributes={
+            attrs={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2},
             effects=(
@@ -94,7 +94,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.fit.modules.high.append(self.item)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 110)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -105,7 +105,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.fit.modules.high.append(self.item)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -116,7 +116,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.fit.modules.high.append(self.item)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 214.5)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -127,7 +127,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.fit.modules.high.append(self.item)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 364.65)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -139,7 +139,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.item.state = State.online
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -151,7 +151,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.item.state = State.overload
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 364.65)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 364.65)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -163,7 +163,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.item.state = State.active
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 214.5)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 214.5)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -175,7 +175,7 @@ class TestStateSwitching(CalculatorTestCase):
         # Action
         self.item.state = State.offline
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 110)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 110)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

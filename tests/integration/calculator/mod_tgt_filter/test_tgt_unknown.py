@@ -22,7 +22,7 @@
 import logging
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -35,9 +35,9 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         self.src_attr = src_attr = self.ch.attr()
         self.invalid_modifier = self.mod(
             tgt_filter=26500,
-            tgt_domain=ModifierDomain.self,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
 
     def test_log(self):
@@ -45,7 +45,7 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             category_id=EffectCategoryId.passive,
             modifiers=(self.invalid_modifier,))
         item_type = self.ch.type(
-            attributes={self.src_attr.id: 20, self.tgt_attr: 100},
+            attrs={self.src_attr.id: 20, self.tgt_attr: 100},
             effects=[effect])
         item = Rig(item_type.id)
         # Action
@@ -65,22 +65,22 @@ class TestTgtFilterUnknown(CalculatorTestCase):
 
     def test_combination(self):
         valid_modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=self.src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
             modifiers=(self.invalid_modifier, valid_modifier))
         item = Rig(self.ch.type(
-            attributes={self.src_attr.id: 20, self.tgt_attr.id: 100},
+            attrs={self.src_attr.id: 20, self.tgt_attr.id: 100},
             effects=[effect]).id)
         # Action
         self.fit.rigs.add(item)
         # Verification
         # Invalid filter type in modifier should prevent proper processing of
         # other modifiers
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

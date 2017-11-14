@@ -22,7 +22,7 @@
 import logging
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -33,16 +33,16 @@ class TestTgtDomainSkillrqDomainOther(CalculatorTestCase):
         tgt_attr = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.domain_skillrq,
-            tgt_domain=ModifierDomain.other,
+            tgt_filter=ModTgtFilter.domain_skillrq,
+            tgt_domain=ModDomain.other,
             tgt_filter_extra_arg=56,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         influence_src_type = self.ch.type(
-            attributes={src_attr.id: 20}, effects=[effect])
+            attrs={src_attr.id: 20}, effects=[effect])
         influence_src = Rig(influence_src_type.id)
         # Action
         # Charge's container or module's charge can't be 'owner' of other items,
@@ -57,6 +57,6 @@ class TestTgtDomainSkillrqDomainOther(CalculatorTestCase):
             self.assertEqual(
                 log_record.msg,
                 'malformed modifier on item type {}: unsupported target '
-                'domain {}'.format(influence_src_type.id, ModifierDomain.other))
+                'domain {}'.format(influence_src_type.id, ModDomain.other))
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

@@ -26,7 +26,7 @@ __all__ = [
     'SlotTakenError',
     'Fit',
     'ValidationError',
-    'DamageProfile', 'ResistanceProfile',
+    'DmgProfile', 'ResistProfile',
     'JsonCacheHandler',
     'JsonDataHandler', 'SQLiteDataHandler',
     'Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon', 'FighterSquad',
@@ -42,7 +42,7 @@ from .data.source import SourceManager
 from .fit.container.exception import SlotTakenError
 from .fit.fit import Fit
 from .fit.restriction.exception import ValidationError
-from .fit.helper import DamageProfile, ResistanceProfile
+from .fit.helper import DmgProfile, ResistProfile
 from .data.cache_handler import JsonCacheHandler
 from .data.data_handler import JsonDataHandler, SQLiteDataHandler
 from .fit.item import (

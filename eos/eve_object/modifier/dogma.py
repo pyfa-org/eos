@@ -21,7 +21,7 @@
 
 from numbers import Integral
 
-from eos.const.eos import ModifierOperator
+from eos.const.eos import ModOperator
 from eos.data.cachable import BaseCachable
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
@@ -49,20 +49,20 @@ class DogmaModifier(BaseModifier, BaseCachable):
 
     def get_modification(self, carrier_item, _):
         try:
-            mod_value = carrier_item.attributes[self.src_attr_id]
+            value = carrier_item.attrs[self.src_attr_id]
         # In case attribute value cannot be fetched, just raise error,
         # all error logging is handled in attribute container
         except KeyError as e:
             raise ModificationCalculationError from e
         else:
-            return self.operator, mod_value
+            return self.operator, value
 
     # Validation-related methods
     @property
     def _valid(self):
         return all((
             self._validate_base(),
-            self.operator in ModifierOperator.__members__.values(),
+            self.operator in ModOperator.__members__.values(),
             isinstance(self.src_attr_id, Integral)))
 
     # Cache-related methods

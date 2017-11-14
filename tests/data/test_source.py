@@ -121,7 +121,7 @@ def test_get_unkown_source(mock_data_handler, mock_cache_handler):
         SourceManager.get('test')
 
 
-def test_list_sources_correctly(mock_data_handler, mock_cache_handler):
+def test_list_source_correctly(mock_data_handler, mock_cache_handler):
     SourceManager.add('source one', mock_data_handler, mock_cache_handler)
     SourceManager.add('source two', mock_data_handler, mock_cache_handler)
     SourceManager.add('source three', mock_data_handler, mock_cache_handler)

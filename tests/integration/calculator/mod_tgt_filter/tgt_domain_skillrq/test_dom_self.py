@@ -22,8 +22,8 @@
 import logging
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
@@ -34,45 +34,45 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         self.tgt_attr = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.domain_skillrq,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.domain_skillrq,
+            tgt_domain=ModDomain.self,
             tgt_filter_extra_arg=56,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.influence_src_type = self.ch.type(
-            attributes={src_attr.id: 20}, effects=[effect])
+            attrs={src_attr.id: 20}, effects=[effect])
 
     def test_ship(self):
         influence_src = Ship(self.influence_src_type.id)
-        influence_tgt = Rig(self.ch.type(attributes={
-            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-            AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Rig(self.ch.type(attrs={
+            self.tgt_attr.id: 100, AttrId.required_skill_1: 56,
+            AttrId.required_skill_1_level: 1}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.ship = influence_src
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
         # Action
         self.fit.ship = None
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_character(self):
         influence_src = Character(self.influence_src_type.id)
-        influence_tgt = Implant(self.ch.type(attributes={
-            self.tgt_attr.id: 100, AttributeId.required_skill_1: 56,
-            AttributeId.required_skill_1_level: 1}).id)
+        influence_tgt = Implant(self.ch.type(attrs={
+            self.tgt_attr.id: 100, AttrId.required_skill_1: 56,
+            AttrId.required_skill_1_level: 1}).id)
         self.fit.implants.add(influence_tgt)
         # Action
         self.fit.character = influence_src
         # Verification
-        self.assertAlmostEqual(influence_tgt.attributes[self.tgt_attr.id], 120)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

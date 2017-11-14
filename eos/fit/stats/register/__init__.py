@@ -22,7 +22,7 @@
 __all__ = [
     'CalibrationStatRegister',
     'CpuStatRegister',
-    'DamageDealerRegister',
+    'DmgDealerRegister',
     'DroneBandwidthStatRegister',
     'DronebayVolumeStatRegister',
     'HighSlotStatRegister',
@@ -37,7 +37,7 @@ __all__ = [
 ]
 
 
-from .damage_dealer import DamageDealerRegister
+from .dmg_dealer import DmgDealerRegister
 from .resource import (
     CalibrationStatRegister, CpuStatRegister, DroneBandwidthStatRegister,
     DronebayVolumeStatRegister, PowergridStatRegister)

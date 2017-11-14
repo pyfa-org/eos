@@ -29,11 +29,11 @@ from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import (
     ItemDescriptor, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
-from .helper import DamageTypes
+from .helper import DmgTypes
 from .item import *
-from .message import DefaultIncomingDamageChanged
+from .message import DefaultIncomingDmgChanged
 from .message.helper import MsgHelper
-from .misc.volatile import VolatileManager
+from .misc.volatile import VolatileMgr
 from .restriction import RestrictionService
 from .sim import *
 from .stats import StatService
@@ -71,7 +71,7 @@ class Fit(MsgBroker):
     def __init__(self, source=DEFAULT):
         MsgBroker.__init__(self)
         self.__source = None
-        self.__default_incoming_damage = DamageTypes(
+        self.__default_incoming_dmg = DmgTypes(
             em=25, thermal=25, kinetic=25, explosive=25)
         # Character-related item containers
         self.skills = ItemKeyedSet(self, Skill)
@@ -90,7 +90,7 @@ class Fit(MsgBroker):
         self._calculator = CalculationService(self)
         self.stats = StatService(self)
         self._restriction = RestrictionService(self, self.stats)
-        self._volatile_mgr = VolatileManager(self, volatiles=(self.stats,))
+        self._volatile_mgr = VolatileMgr(self, volatiles=(self.stats,))
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Initialize source
@@ -155,20 +155,20 @@ class Fit(MsgBroker):
             self._publish_bulk(msgs)
 
     @property
-    def default_incoming_damage(self):
+    def default_incoming_dmg(self):
         """Access point for default incoming damage pattern.
 
         This pattern will be used by default for things like EHP calculation,
         RAH adaptation, etc.
         """
-        return self.__default_incoming_damage
+        return self.__default_incoming_dmg
 
-    @default_incoming_damage.setter
-    def default_incoming_damage(self, new_profile):
-        old_profile = self.__default_incoming_damage
-        self.__default_incoming_damage = new_profile
+    @default_incoming_dmg.setter
+    def default_incoming_dmg(self, new_profile):
+        old_profile = self.__default_incoming_dmg
+        self.__default_incoming_dmg = new_profile
         if new_profile != old_profile:
-            self._publish(DefaultIncomingDamageChanged())
+            self._publish(DefaultIncomingDmgChanged())
             self._volatile_mgr.clear_volatile_attrs()
 
     @property
@@ -200,5 +200,5 @@ class Fit(MsgBroker):
         spec = [
             'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
             'fighters', 'character', 'skills', 'implants', 'boosters',
-            'effect_beacon', 'default_incoming_damage', 'source']
+            'effect_beacon', 'default_incoming_dmg', 'source']
         return make_repr_str(self, spec)

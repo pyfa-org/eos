@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import AttrId, EffectId
 from eos.fit.item import Ship
 from eos.fit.message import (
     EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
@@ -49,7 +49,7 @@ class OrderedShipSlotStatRegister(
     @volatile_property
     def total(self):
         try:
-            return int(self.__current_ship.attributes[self.__slot_attr_id])
+            return int(self.__current_ship.attrs[self.__slot_attr_id])
         except (AttributeError, KeyError):
             return None
 
@@ -84,18 +84,18 @@ class HighSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.hi_power, AttributeId.hi_slots)
+            self, msg_broker, EffectId.hi_power, AttrId.hi_slots)
 
 
 class MediumSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.med_power, AttributeId.med_slots)
+            self, msg_broker, EffectId.med_power, AttrId.med_slots)
 
 
 class LowSlotStatRegister(OrderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         OrderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.lo_power, AttributeId.low_slots)
+            self, msg_broker, EffectId.lo_power, AttrId.low_slots)

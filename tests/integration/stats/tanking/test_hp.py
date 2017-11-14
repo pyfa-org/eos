@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
@@ -28,15 +28,15 @@ class TestHp(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.hp)
-        self.ch.attr(attribute_id=AttributeId.armor_hp)
-        self.ch.attr(attribute_id=AttributeId.shield_capacity)
+        self.ch.attr(attr_id=AttrId.hp)
+        self.ch.attr(attr_id=AttrId.armor_hp)
+        self.ch.attr(attr_id=AttrId.shield_capacity)
 
     def test_relay(self):
         # Check that stats service relays hp stats properly
-        self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.hp: 10, AttributeId.armor_hp: 15,
-            AttributeId.shield_capacity: 20}).id)
+        self.fit.ship = Ship(self.ch.type(attrs={
+            AttrId.hp: 10, AttrId.armor_hp: 15,
+            AttrId.shield_capacity: 20}).id)
         # Action
         hp_stats = self.fit.stats.hp
         # Verification
@@ -63,9 +63,9 @@ class TestHp(StatsTestCase):
 
     def test_no_source(self):
         # Check that stats service relays hp stats properly
-        self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.hp: 10, AttributeId.armor_hp: 15,
-            AttributeId.shield_capacity: 20}).id)
+        self.fit.ship = Ship(self.ch.type(attrs={
+            AttrId.hp: 10, AttrId.armor_hp: 15,
+            AttrId.shield_capacity: 20}).id)
         self.fit.source = None
         # Action
         hp_stats = self.fit.stats.hp

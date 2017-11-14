@@ -20,90 +20,90 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
 class TestRounding(CalculatorTestCase):
 
     def test_cpu_down(self):
-        attr = self.ch.attr(attribute_id=AttributeId.cpu)
-        item = Implant(self.ch.type(attributes={attr.id: 2.3333}).id)
+        attr = self.ch.attr(attr_id=AttrId.cpu)
+        item = Implant(self.ch.type(attrs={attr.id: 2.3333}).id)
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[attr.id], 2.33)
+        self.assertAlmostEqual(item.attrs[attr.id], 2.33)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_up(self):
-        attr = self.ch.attr(attribute_id=AttributeId.cpu)
-        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        attr = self.ch.attr(attr_id=AttrId.cpu)
+        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[attr.id], 2.67)
+        self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_modified(self):
         src_attr = self.ch.attr()
-        tgt_attr = self.ch.attr(attribute_id=AttributeId.cpu)
+        tgt_attr = self.ch.attr(attr_id=AttrId.cpu)
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         item = Implant(self.ch.type(
-            attributes={src_attr.id: 20, tgt_attr.id: 1.9444},
+            attrs={src_attr.id: 20, tgt_attr.id: 1.9444},
             effects=[effect]).id)
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 2.33)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 2.33)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_output(self):
-        attr = self.ch.attr(attribute_id=AttributeId.cpu_output)
-        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        attr = self.ch.attr(attr_id=AttrId.cpu_output)
+        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[attr.id], 2.67)
+        self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power(self):
-        attr = self.ch.attr(attribute_id=AttributeId.power)
-        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        attr = self.ch.attr(attr_id=AttrId.power)
+        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[attr.id], 2.67)
+        self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power_output(self):
-        attr = self.ch.attr(attribute_id=AttributeId.power_output)
-        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        attr = self.ch.attr(attr_id=AttrId.power_output)
+        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[attr.id], 2.67)
+        self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_other(self):
         attr = self.ch.attr()
-        item = Implant(self.ch.type(attributes={attr.id: 2.6666}).id)
+        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[attr.id], 2.6666)
+        self.assertAlmostEqual(item.attrs[attr.id], 2.6666)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

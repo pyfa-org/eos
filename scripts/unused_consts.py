@@ -86,7 +86,7 @@ class ReferenceSeeker(ast.NodeVisitor):
             enum_name = rightmost
         else:
             return
-        # Get attr name
+        # Get attribute name
         attr_name = node.attr
         # If it's in enum, make sure it's marked as used
         if attr_name in self.enum_data[enum_name]:
@@ -98,7 +98,7 @@ class ReferenceSeeker(ast.NodeVisitor):
             return node.id
         elif isinstance(node, ast.Attribute):
             return self.__get_rightmost_value(node.value)
-        # We're not interested in any constructs besides obj1.obj2.obj3.attr,
+        # We're not interested in any constructs besides obj1.obj2.attribute,
         # which are composed of Attribute and Name nodes, thus we're not
         # handling any other node types
         else:

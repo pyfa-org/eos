@@ -36,7 +36,7 @@ class TestAttrValue(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': 5, 'value': 8})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
-        self.assertEqual(self.types[1].attributes[5], 8)
+        self.assertEqual(self.types[1].attrs[5], 8)
         self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
 
     def test_float(self):
@@ -45,7 +45,7 @@ class TestAttrValue(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': 5, 'value': 8.5})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
-        self.assertEqual(self.types[1].attributes[5], 8.5)
+        self.assertEqual(self.types[1].attrs[5], 8.5)
         self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
 
     def test_other(self):
@@ -55,7 +55,7 @@ class TestAttrValue(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
-        self.assertEqual(len(self.types[1].attributes), 0)
+        self.assertEqual(len(self.types[1].attrs), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]

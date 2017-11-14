@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction, State
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
 from eos.fit.message import (
     ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
@@ -64,7 +64,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         self.__group_item_map.add_data_entry(group_id, item)
         # To enter restriction container, item's type must have restriction
         # attribute
-        if self.__max_group_attr_id not in item._type_attributes:
+        if self.__max_group_attr_id not in item._type_attrs:
             return
         self.__restricted_items.add(item)
 
@@ -84,7 +84,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             group_id = item._type.group_id
             quantity = len(self.__group_item_map.get(group_id, ()))
             max_allowed_quantity = (
-                item._type_attributes[self.__max_group_attr_id])
+                item._type_attrs[self.__max_group_attr_id])
             if quantity > max_allowed_quantity:
                 tainted_items[item] = MaxGroupErrorData(
                     group_id=group_id,
@@ -104,7 +104,7 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_fitted)
+        MaxGroupRestrictionRegister.__init__(self, AttrId.max_group_fitted)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_item_added(self, msg):
@@ -131,7 +131,7 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_online)
+        MaxGroupRestrictionRegister.__init__(self, AttrId.max_group_online)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_states_activated(self, msg):
@@ -160,7 +160,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     """
 
     def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttributeId.max_group_active)
+        MaxGroupRestrictionRegister.__init__(self, AttrId.max_group_active)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_states_activated(self, msg):

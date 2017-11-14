@@ -20,8 +20,8 @@
 
 
 from eos import Fit
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
@@ -50,34 +50,34 @@ class RahSimTestCase(IntegrationTestCase):
         self.cycle_attr = self.ch.attr(high_is_good=False, stackable=True)
         self.heat_attr = self.ch.attr(high_is_good=False, stackable=True)
         self.shift_attr = self.ch.attr(
-            attribute_id=AttributeId.resistance_shift_amount, high_is_good=True,
+            attr_id=AttrId.resist_shift_amount, high_is_good=True,
             stackable=True)
         self.armor_em = self.ch.attr(
-            attribute_id=AttributeId.armor_em_damage_resonance,
-            max_attribute_id=self.max_attr.id, high_is_good=False,
+            attr_id=AttrId.armor_em_dmg_resonance,
+            max_attr_id=self.max_attr.id, high_is_good=False,
             stackable=False)
         self.armor_therm = self.ch.attr(
-            attribute_id=AttributeId.armor_thermal_damage_resonance,
-            max_attribute_id=self.max_attr.id, high_is_good=False,
+            attr_id=AttrId.armor_thermal_dmg_resonance,
+            max_attr_id=self.max_attr.id, high_is_good=False,
             stackable=False)
         self.armor_kin = self.ch.attr(
-            attribute_id=AttributeId.armor_kinetic_damage_resonance,
-            max_attribute_id=self.max_attr.id, high_is_good=False,
+            attr_id=AttrId.armor_kinetic_dmg_resonance,
+            max_attr_id=self.max_attr.id, high_is_good=False,
             stackable=False)
         self.armor_exp = self.ch.attr(
-            attribute_id=AttributeId.armor_explosive_damage_resonance,
-            max_attribute_id=self.max_attr.id, high_is_good=False,
+            attr_id=AttrId.armor_explosive_dmg_resonance,
+            max_attr_id=self.max_attr.id, high_is_good=False,
             stackable=False)
         # Effect setup
         self.rah_effect = self.ch.effect(
             effect_id=EffectId.adaptive_armor_hardener,
             category_id=EffectCategoryId.active,
-            duration_attribute_id=self.cycle_attr.id, customize=True)
+            duration_attr_id=self.cycle_attr.id, customize=True)
         heat_modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.cycle_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=self.heat_attr.id)
         self.heat_effect = self.ch.effect(
             category_id=EffectCategoryId.overload, modifiers=[heat_modifier])
@@ -89,7 +89,7 @@ class RahSimTestCase(IntegrationTestCase):
         attr_order = (
             self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
             self.armor_exp.id)
-        return self.ch.type(attributes=dict(zip(attr_order, resonances)))
+        return self.ch.type(attrs=dict(zip(attr_order, resonances)))
 
     def make_rah_type(
             self, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
@@ -99,7 +99,7 @@ class RahSimTestCase(IntegrationTestCase):
             self.armor_exp.id, self.shift_attr.id, self.cycle_attr.id,
             self.heat_attr.id)
         return self.ch.type(
-            attributes=dict(zip(
+            attrs=dict(zip(
                 attr_order,
                 (*resonances, shift_amount, cycle_time, heat_cycle_mod))),
             effects=(self.rah_effect, self.heat_effect),

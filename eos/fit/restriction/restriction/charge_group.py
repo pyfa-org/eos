@@ -22,18 +22,18 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
 ALLOWED_GROUP_ATTR_IDS = (
-    AttributeId.charge_group_1,
-    AttributeId.charge_group_2,
-    AttributeId.charge_group_3,
-    AttributeId.charge_group_4,
-    AttributeId.charge_group_5)
+    AttrId.charge_group_1,
+    AttrId.charge_group_2,
+    AttrId.charge_group_3,
+    AttrId.charge_group_4,
+    AttrId.charge_group_5)
 
 
 ChargeGroupErrorData = namedtuple(
@@ -65,7 +65,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
                 allowed_group_id = (
-                    msg.item._type_attributes[allowed_group_attr_id])
+                    msg.item._type_attrs[allowed_group_attr_id])
             except KeyError:
                 continue
             else:

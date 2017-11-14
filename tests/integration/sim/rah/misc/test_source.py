@@ -36,21 +36,21 @@ class TestRahSimSource(RahSimTestCase):
         self.fit.source = None
         # Verification
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_em.id]
+            rah.attrs[self.armor_em.id]
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_therm.id]
+            rah.attrs[self.armor_therm.id]
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_kin.id]
+            rah.attrs[self.armor_kin.id]
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_exp.id]
+            rah.attrs[self.armor_exp.id]
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_em.id]
+            rah.attrs[self.armor_em.id]
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_therm.id]
+            rah.attrs[self.armor_therm.id]
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_kin.id]
+            rah.attrs[self.armor_kin.id]
         with self.assertRaises(KeyError):
-            rah.attributes[self.armor_exp.id]
+            rah.attrs[self.armor_exp.id]
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

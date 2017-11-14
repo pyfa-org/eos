@@ -21,7 +21,7 @@
 
 from logging import getLogger
 
-from eos.const.eve import AttributeId, TypeGroupId, OperandId
+from eos.const.eve import AttrId, TypeGroupId, OperandId
 from eos.util.frozendict import frozendict
 
 
@@ -41,11 +41,11 @@ class Normalizer:
         Args:
             data: Dictionary in {table name: {table, rows}} format.
         """
-        Normalizer._move_attribs(data)
+        Normalizer._move_attrs(data)
         Normalizer._convert_expression_symbolic_references(data)
 
     @staticmethod
-    def _move_attribs(data):
+    def _move_attrs(data):
         """Normalize attribute value definitions.
 
         Some of item type attributes are defined in evetypes table. We do not
@@ -55,47 +55,39 @@ class Normalizer:
         Args:
             data: Dictionary in {table name: {table, rows}} format.
         """
-        attribute_map = {
-            'radius': AttributeId.radius,
-            'mass': AttributeId.mass,
-            'volume': AttributeId.volume,
-            'capacity': AttributeId.capacity}
-        attribute_ids = tuple(attribute_map.values())
+        attr_map = {
+            'radius': AttrId.radius,
+            'mass': AttrId.mass,
+            'volume': AttrId.volume,
+            'capacity': AttrId.capacity}
+        attr_ids = tuple(attr_map.values())
         # Here we will store pairs (typeID, attrID) already defined in
         # dgmtypeattribs
         defined_pairs = set()
         dgmtypeattribs = data['dgmtypeattribs']
         for row in dgmtypeattribs:
-            if row['attributeID'] not in attribute_ids:
+            if row['attributeID'] not in attr_ids:
                 continue
             defined_pairs.add((row['typeID'], row['attributeID']))
         attrs_skipped = 0
-        new_evetypes = set()
         for row in data['evetypes']:
             type_id = row['typeID']
-            new_row = {}
             for field, value in row.items():
-                if field in attribute_map:
+                if field in attr_map:
                     # If row didn't have such attribute defined, skip it
                     if value is None:
                         continue
                     # If such attribute already exists in dgmtypeattribs, do not
                     # modify it - values from dgmtypeattribs table have priority
-                    attribute_id = attribute_map[field]
-                    if (type_id, attribute_id) in defined_pairs:
+                    attr_id = attr_map[field]
+                    if (type_id, attr_id) in defined_pairs:
                         attrs_skipped += 1
                         continue
                     # Generate row and add it to proper attribute table
                     dgmtypeattribs.add(frozendict({
                         'typeID': type_id,
-                        'attributeID': attribute_id,
+                        'attributeID': attr_id,
                         'value': value}))
-                else:
-                    new_row[field] = value
-            new_evetypes.add(frozendict(new_row))
-        # Update evetypes with rows which do not contain attributes
-        data['evetypes'].clear()
-        data['evetypes'].update(new_evetypes)
         if attrs_skipped:
             msg = (
                 '{} built-in attributes already have had value '

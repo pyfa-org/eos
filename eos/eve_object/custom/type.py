@@ -20,12 +20,12 @@
 
 
 from eos.const.eve import TypeGroupId
-from .character_missile_damage import add_character_missile_damage_multiplier
+from .character_missile_dmg import add_char_missile_dmg_multiplier
 
 
 # Format: {type group ID: customization method}
 _group_id_map = {
-    TypeGroupId.character: add_character_missile_damage_multiplier}
+    TypeGroupId.character: add_char_missile_dmg_multiplier}
 
 
 def customize_type(item_type):

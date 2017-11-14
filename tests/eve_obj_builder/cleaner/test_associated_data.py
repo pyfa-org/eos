@@ -22,11 +22,11 @@
 import logging
 from unittest.mock import patch
 
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
-@patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
+@patch('eos.data.eve_obj_builder.converter.ModBuilder')
 class TestAssociatedData(EveObjBuilderTestCase):
     """Check that types, which passed filter, pull in all related data."""
 
@@ -36,7 +36,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeattribs'].append(
-            {'typeID': 1, 'attributeID': AttributeId.ammo_loaded, 'value': 4.0})
+            {'typeID': 1, 'attributeID': AttrId.ammo_loaded, 'value': 4.0})
         self.dh.data['dgmtypeeffects'].append(
             {'typeID': 1, 'effectID': 200, 'isDefault': True})
         self.dh.data['dgmtypeeffects'].append(
@@ -135,18 +135,18 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(self.types[3].category_id, 51)
         self.assertIn(4, self.types)
         self.assertEqual(self.types[4].category_id, 52)
-        self.assertEqual(len(self.attributes), 11)
-        self.assertIn(5, self.attributes)
-        self.assertIn(1000, self.attributes)
-        self.assertIn(1001, self.attributes)
-        self.assertIn(1002, self.attributes)
-        self.assertIn(1003, self.attributes)
-        self.assertIn(1004, self.attributes)
-        self.assertIn(1005, self.attributes)
-        self.assertIn(1006, self.attributes)
-        self.assertIn(1007, self.attributes)
-        self.assertIn(1008, self.attributes)
-        self.assertIn(1009, self.attributes)
+        self.assertEqual(len(self.attrs), 11)
+        self.assertIn(5, self.attrs)
+        self.assertIn(1000, self.attrs)
+        self.assertIn(1001, self.attrs)
+        self.assertIn(1002, self.attrs)
+        self.assertIn(1003, self.attrs)
+        self.assertIn(1004, self.attrs)
+        self.assertIn(1005, self.attrs)
+        self.assertIn(1006, self.attrs)
+        self.assertIn(1007, self.attrs)
+        self.assertIn(1008, self.attrs)
+        self.assertIn(1009, self.attrs)
         self.assertEqual(len(self.effects), 2)
         self.assertIn(200, self.effects)
         self.assertIn(201, self.effects)
@@ -171,7 +171,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
         mod_builder.return_value.build.return_value = ([], 0)
         self.run_builder()
         self.assertEqual(len(self.types), 0)
-        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.attrs), 0)
         self.assertEqual(len(self.effects), 0)
         self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
         log = self.get_log(name=self.logger_name)
@@ -189,7 +189,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.__generate_data()
         self.run_builder()
         self.assertEqual(len(self.types), 0)
-        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.attrs), 0)
         self.assertEqual(len(self.effects), 0)
         self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
         log = self.get_log(name=self.logger_name)
@@ -235,7 +235,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertIn(1, self.types)
         self.assertIn(2, self.types)
         self.assertIn(3, self.types)
-        self.assertEqual(len(self.attributes), 0)
+        self.assertEqual(len(self.attrs), 0)
         self.assertEqual(len(self.effects), 1)
         self.assertIn(100, self.effects)
         expressions = mod_builder.mock_calls[0][1][0]

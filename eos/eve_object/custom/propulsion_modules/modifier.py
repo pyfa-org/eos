@@ -21,8 +21,8 @@
 
 from logging import getLogger
 
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId
 from eos.fit.message import AttrValueChanged
 from ...modifier.exception import ModificationCalculationError
 from ...modifier.python import BasePythonModifier
@@ -35,42 +35,42 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.ship, tgt_filter_extra_arg=None,
-            tgt_attr_id=AttributeId.max_velocity)
+            self, tgt_filter=ModTgtFilter.item, tgt_domain=ModDomain.ship,
+            tgt_filter_extra_arg=None, tgt_attr_id=AttrId.max_velocity)
 
     def get_modification(self, carrier_item, ship):
         # If attribute values of any necessary items are not available, do not
         # calculate anything
         try:
-            mass = ship.attributes[AttributeId.mass]
-            speed_boost = carrier_item.attributes[AttributeId.speed_factor]
-            thrust = carrier_item.attributes[AttributeId.speed_boost_factor]
+            mass = ship.attrs[AttrId.mass]
+            speed_boost = carrier_item.attrs[AttrId.speed_factor]
+            thrust = carrier_item.attrs[AttrId.speed_boost_factor]
         except (AttributeError, KeyError) as e:
             raise ModificationCalculationError from e
         try:
-            ship_speed_percentage = speed_boost * thrust / mass
+            value = speed_boost * thrust / mass
         # Log warning for zero ship mass, as it's abnormal situation
         except ZeroDivisionError as e:
             msg = (
                 'cannot calculate propulsion speed boost due to zero ship mass')
             logger.warning(msg)
             raise ModificationCalculationError from e
-        return ModifierOperator.post_percent, ship_speed_percentage
+        else:
+            return ModOperator.post_percent, value
 
     def __revise_on_attr_changed(self, msg, carrier_item, ship):
         """
-        If any of the attribute values this modifier relies on is changed,
-        then modification value can be changed as well.
+        If any of the attribute values this modifier relies on is changed, then
+        modification value can be changed as well.
         """
         if (
-            (msg.item is ship and msg.attr == AttributeId.mass) or
+            (msg.item is ship and msg.attr_id == AttrId.mass) or
             (
                 msg.item is carrier_item and
-                msg.attr == AttributeId.speed_factor
+                msg.attr_id == AttrId.speed_factor
             ) or (
                 msg.item is carrier_item and
-                msg.attr == AttributeId.speed_boost_factor
+                msg.attr_id == AttrId.speed_boost_factor
             )
         ):
             return True

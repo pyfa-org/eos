@@ -112,16 +112,16 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 50, 'value': 100.0})
         self.run_builder()
-        type_attributes = self.types[1].attributes
-        self.assertEqual(type_attributes[100], 50.0)
-        self.assertEqual(type_attributes[50], 100.0)
+        type_attrs = self.types[1].attrs
+        self.assertEqual(type_attrs[100], 50.0)
+        self.assertEqual(type_attrs[50], 100.0)
         self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
 
     def test_dual_no_pk(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'value': 50.0})
         self.run_builder()
-        self.assertEqual(len(self.types[1].attributes), 0)
+        self.assertEqual(len(self.types[1].attrs), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -135,7 +135,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 100.1, 'value': 50.0})
         self.run_builder()
-        self.assertEqual(len(self.types[1].attributes), 0)
+        self.assertEqual(len(self.types[1].attrs), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -151,9 +151,9 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 100, 'value': 5.0})
         self.run_builder()
-        type_attributes = self.types[1].attributes
-        self.assertEqual(len(type_attributes), 1)
-        self.assertEqual(type_attributes[100], 50.0)
+        type_attrs = self.types[1].attrs
+        self.assertEqual(len(type_attrs), 1)
+        self.assertEqual(type_attrs[100], 50.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -187,9 +187,9 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['dgmtypeattribs'].append(
             {'typeID': 1, 'attributeID': 100, 'value': 50.0})
         self.run_builder()
-        type_attributes = self.types[1].attributes
-        self.assertEqual(len(type_attributes), 1)
-        self.assertEqual(type_attributes[100], 5.0)
+        type_attrs = self.types[1].attrs
+        self.assertEqual(len(type_attrs), 1)
+        self.assertEqual(type_attrs[100], 5.0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -225,8 +225,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['dgmattribs'].append(
             {'attributeID': 7, 'maxAttributeID': 55})
         self.run_builder()
-        self.assertEqual(len(self.attributes), 1)
-        self.assertEqual(self.attributes[7].max_attribute_id, 50)
+        self.assertEqual(len(self.attrs), 1)
+        self.assertEqual(self.attrs[7].max_attr_id, 50)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -270,7 +270,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
             log_record.msg,
             '1 rows in table dgmtypeeffects have invalid PKs, removing them')
 
-    @patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
+    @patch('eos.data.eve_obj_builder.converter.ModBuilder')
     def test_dgmexpressions(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append(

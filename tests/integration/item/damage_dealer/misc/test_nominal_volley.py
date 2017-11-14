@@ -20,46 +20,46 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
 
-class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
+class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.capacity)
-        self.ch.attr(attribute_id=AttributeId.volume)
-        self.ch.attr(attribute_id=AttributeId.charge_rate)
-        self.ch.attr(attribute_id=AttributeId.reload_time)
-        self.ch.attr(attribute_id=AttributeId.damage_multiplier)
-        self.ch.attr(attribute_id=AttributeId.em_damage)
-        self.ch.attr(attribute_id=AttributeId.thermal_damage)
-        self.ch.attr(attribute_id=AttributeId.kinetic_damage)
-        self.ch.attr(attribute_id=AttributeId.explosive_damage)
+        self.ch.attr(attr_id=AttrId.capacity)
+        self.ch.attr(attr_id=AttrId.volume)
+        self.ch.attr(attr_id=AttrId.charge_rate)
+        self.ch.attr(attr_id=AttrId.reload_time)
+        self.ch.attr(attr_id=AttrId.dmg_multiplier)
+        self.ch.attr(attr_id=AttrId.em_dmg)
+        self.ch.attr(attr_id=AttrId.thermal_dmg)
+        self.ch.attr(attr_id=AttrId.kinetic_dmg)
+        self.ch.attr(attr_id=AttrId.explosive_dmg)
         self.cycle_attr = self.ch.attr()
         self.effect = self.ch.effect(
             effect_id=EffectId.projectile_fired,
             category_id=EffectCategoryId.active,
-            duration_attribute_id=self.cycle_attr.id)
+            duration_attr_id=self.cycle_attr.id)
 
-    def test_no_attrib_single_em(self):
+    def test_no_attr_single_em(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -72,23 +72,23 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_attrib_single_therm(self):
+    def test_attr_single_therm(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -101,23 +101,23 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attrib_single_kin(self):
+    def test_no_attr_single_kin(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -130,23 +130,23 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attrib_single_expl(self):
+    def test_no_attr_single_expl(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.kinetic_damage: 7.4}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -159,20 +159,20 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attrib_all(self):
+    def test_no_attr_all(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
-            attributes={AttributeId.volume: 0.2}).id)
+            attrs={AttrId.volume: 0.2}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -185,20 +185,20 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_attrib_em(self):
+    def test_single_zero_attr_em(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
-            attributes={AttributeId.volume: 0.2, AttributeId.em_damage: 0}).id)
+            attrs={AttrId.volume: 0.2, AttrId.em_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -211,21 +211,21 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_attrib_therm(self):
+    def test_single_zero_attr_therm(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.thermal_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.thermal_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -238,21 +238,21 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_attrib_kin(self):
+    def test_single_zero_attr_kin(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.kinetic_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.kinetic_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -265,21 +265,21 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_attrib_expl(self):
+    def test_single_zero_attr_expl(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.explosive_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.explosive_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -296,25 +296,25 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -324,28 +324,28 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attrib_single_em(self):
+    def test_effective_no_attr_single_em(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -355,28 +355,28 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attrib_single_therm(self):
+    def test_effective_no_attr_single_therm(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertIsNone(volley.thermal)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -386,28 +386,28 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attrib_single_kin(self):
+    def test_effective_no_attr_single_kin(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertIsNone(volley.kinetic)
@@ -417,28 +417,28 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attrib_single_expl(self):
+    def test_effective_no_attr_single_expl(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.kinetic_damage: 7.4}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -448,25 +448,25 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attrib_all(self):
+    def test_effective_no_attr_all(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
-            attributes={AttributeId.volume: 0.2}).id)
+            attrs={AttrId.volume: 0.2}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -476,25 +476,25 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attrib_em(self):
+    def test_effective_single_zero_attr_em(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.ch.type(
-            attributes={AttributeId.volume: 0.2, AttributeId.em_damage: 0}).id)
+            attrs={AttrId.volume: 0.2, AttrId.em_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 0)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -504,26 +504,26 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attrib_therm(self):
+    def test_effective_single_zero_attr_therm(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.thermal_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.thermal_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertAlmostEqual(volley.thermal, 0)
         self.assertIsNone(volley.kinetic)
@@ -533,25 +533,25 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attrib_kin(self):
+    def test_effective_single_zero_attr_kin(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2, AttributeId.kinetic_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2, AttrId.kinetic_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertAlmostEqual(volley.kinetic, 0)
@@ -561,25 +561,25 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attrib_expl(self):
+    def test_effective_single_zero_attr_expl(self):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2, AttributeId.explosive_damage: 0}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2, AttrId.explosive_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistanceProfile(
+        profile = ResistProfile(
             em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
-        volley = item.get_nominal_volley(target_resistances=profile)
+        volley = item.get_nominal_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -593,20 +593,20 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 2.1,
-            AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 2.1,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_nominal_volley()
@@ -623,20 +623,20 @@ class TestItemDamageMiscNominalVolley(ItemMixinTestCase):
         fit = Fit()
         item = ModuleHigh(
             self.ch.type(
-                attributes={
-                    AttributeId.damage_multiplier: 2.5,
-                    AttributeId.capacity: 2.0,
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
-                    AttributeId.charge_rate: 1.0,
-                    AttributeId.reload_time: 5000},
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect], default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attributes={
-            AttributeId.volume: 0.2,
-            AttributeId.em_damage: 5.2,
-            AttributeId.thermal_damage: 6.3,
-            AttributeId.kinetic_damage: 7.4,
-            AttributeId.explosive_damage: 8.5}).id)
+        item.charge = Charge(self.ch.type(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         fit.source = None
         # Verification

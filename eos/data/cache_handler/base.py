@@ -34,7 +34,7 @@ class BaseCacheHandler(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def get_attribute(self, attr_id):
+    def get_attr(self, attr_id):
         ...
 
     @abstractmethod
@@ -51,8 +51,7 @@ class BaseCacheHandler(metaclass=ABCMeta):
 
         Args:
             eve_objects: Tuple with data to cache. Should be in form of three
-                dictionaries, which contain types, attributes and effects, keyed
-                against their respective IDs.
+                iterables, which contain types, attributes and effects.
             fingerprint: Unique ID of data in the form of string
         """
         ...

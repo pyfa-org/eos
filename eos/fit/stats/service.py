@@ -21,8 +21,8 @@
 
 import math
 
-from eos.const.eve import AttributeId
-from eos.fit.helper import DamageTypes, TankingLayers, TankingLayersTotal
+from eos.const.eve import AttrId
+from eos.fit.helper import DmgTypes, TankingLayers, TankingLayersTotal
 from eos.fit.item import Ship
 from eos.fit.message import ItemAdded, ItemRemoved
 from eos.util.pubsub.subscriber import BaseSubscriber
@@ -42,7 +42,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         BaseSubscriber.__init__(self)
         InheritableVolatileMixin.__init__(self)
         self.__current_ship = None
-        self.__dd_reg = DamageDealerRegister(msg_broker)
+        self.__dd_reg = DmgDealerRegister(msg_broker)
         # Initialize sub-containers
         self.cpu = CpuStatRegister(msg_broker)
         self.powergrid = PowergridStatRegister(msg_broker)
@@ -87,34 +87,34 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             return TankingLayersTotal(hull=None, armor=None, shield=None)
 
     @volatile_property
-    def resistances(self):
+    def resists(self):
         """Fetch ship resistances.
 
         Returns:
             TankingLayers helper container instance, whose attributes are
-            DamageTypes helper container instances. If ship data cannot be
-            fetched, resistance values will be None.
+            DmgTypes helper container instances. If ship data cannot be fetched,
+            resistance values will be None.
         """
         try:
-            return self.__current_ship.resistances
+            return self.__current_ship.resists
         except AttributeError:
-            empty = DamageTypes(
+            empty = DmgTypes(
                 em=None, thermal=None, kinetic=None, explosive=None)
             return TankingLayers(hull=empty, armor=empty, shield=empty)
 
-    def get_ehp(self, damage_profile=None):
+    def get_ehp(self, dmg_profile=None):
         """Get effective HP of an item against passed damage profile.
 
         Args:
-            damage_profile (optional): DamageProfile helper container instance.
-                If not specified, default on-fit damage profile is used.
+            dmg_profile (optional): DmgProfile helper container instance. If
+                not specified, default on-fit damage profile is used.
 
         Returns:
             TankingLayersTotal helper container instance. If ship data cannot be
             fetched, EHP values will be None.
         """
         try:
-            return self.__current_ship.get_ehp(damage_profile)
+            return self.__current_ship.get_ehp(dmg_profile)
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None)
 
@@ -134,7 +134,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         except AttributeError:
             return TankingLayersTotal(hull=None, armor=None, shield=None)
 
-    def get_nominal_volley(self, item_filter=None, target_resistances=None):
+    def get_nominal_volley(self, item_filter=None, tgt_resists=None):
         """
         Get nominal volley of the fit.
 
@@ -143,19 +143,18 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
                 is called. If evaluated as True, this item is taken into
                 consideration, else not. If argument is None, all items 'pass
                 filter'. By default None.
-            target_resistances (optional): ResistanceProfile helper container
-                instance. If specified, effective damage against these
-                resistances is calculated.
+            tgt_resists (optional): ResistanceProfile helper container instance.
+                If specified, effective damage against these  resistances is
+                calculated.
 
         Returns:
-            DamageTypesTotal helper container instance.
+            DmgTypesTotal helper container instance.
         """
-        return self.__dd_reg._collect_damage_stats(
-            item_filter, 'get_nominal_volley',
-            target_resistances=target_resistances)
+        return self.__dd_reg._collect_dmg_stats(
+            item_filter, 'get_nominal_volley', tgt_resists=tgt_resists)
 
     def get_nominal_dps(
-            self, item_filter=None, target_resistances=None, reload=False):
+            self, item_filter=None, tgt_resists=None, reload=False):
         """
         Get nominal DPS of the fit.
 
@@ -164,24 +163,24 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
                 is called. If evaluated as True, this item is taken into
                 consideration, else not. If argument is None, all items 'pass
                 filter'. By default None.
-            target_resistances (optional): ResistanceProfile helper container
-                instance. If specified, effective damage against these
-                resistances is calculated.
+            tgt_resists (optional): ResistanceProfile helper container instance.
+                If specified, effective damage against these resistances is
+                calculated.
             reload (optional): Boolean flag which controls if reload should be
                 taken into consideration or not. By default, reload is ignored.
 
         Returns:
-            DamageTypesTotal helper container instance.
+            DmgTypesTotal helper container instance.
         """
-        return self.__dd_reg._collect_damage_stats(
+        return self.__dd_reg._collect_dmg_stats(
             item_filter, 'get_nominal_dps',
-            target_resistances=target_resistances, reload=reload)
+            tgt_resists=tgt_resists, reload=reload)
 
     @volatile_property
     def agility_factor(self):
         try:
-            agility = self.__current_ship.attributes[AttributeId.agility]
-            mass = self.__current_ship.attributes[AttributeId.mass]
+            agility = self.__current_ship.attrs[AttrId.agility]
+            mass = self.__current_ship.attrs[AttrId.mass]
         except (AttributeError, KeyError):
             return None
         real_agility = -math.log(0.25) * agility * mass / 1000000

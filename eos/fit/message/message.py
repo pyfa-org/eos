@@ -112,7 +112,7 @@ class AttrValueChangedMasked:
         return make_repr_str(self, spec)
 
 
-class DefaultIncomingDamageChanged:
+class DefaultIncomingDmgChanged:
 
     def __repr__(self):
         return make_repr_str(self)

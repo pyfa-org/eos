@@ -19,8 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import ModifierDomain, State
-from eos.const.eve import AttributeId
+from eos.const.eos import ModDomain, State
+from eos.const.eve import AttrId
 from eos.util.repr import make_repr_str
 from .mixin.state import ImmutableStateMixin
 
@@ -37,8 +37,8 @@ class Skill(ImmutableStateMixin):
     def __init__(self, type_id, level=0):
         super().__init__(type_id=type_id, state=State.offline)
         self.__level = level
-        self.attributes._set_override_callback(
-            AttributeId.skill_level, (getattr, (self, 'level'), {}))
+        self.attrs._set_override_callback(
+            AttrId.skill_level, (getattr, (self, 'level'), {}))
 
     @property
     def level(self):
@@ -51,13 +51,13 @@ class Skill(ImmutableStateMixin):
         if new_lvl == old_lvl:
             return
         self.__level = new_lvl
-        self.attributes._override_value_may_change(AttributeId.skill_level)
+        self.attrs._override_value_may_change(AttrId.skill_level)
         fit = self._fit
         if fit is not None:
             fit._volatile_mgr.clear_volatile_attrs()
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = ModifierDomain.character
+    _parent_modifier_domain = ModDomain.character
     _owner_modifiable = False
 
     # Auxiliary methods

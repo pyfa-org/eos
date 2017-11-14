@@ -31,7 +31,7 @@ logger = getLogger(__name__)
 class EffectStatusResolver:
 
     @staticmethod
-    def get_effects_status_updates(item):
+    def get_effect_status_updates(item):
         """Get changes needed to actualize effect running statuses.
 
         Args:
@@ -111,7 +111,7 @@ class EffectStatusResolver:
             return False
         # Offline effects must NOT specify fitting usage chance
         if effect_state == State.offline:
-            return effect.fitting_usage_chance_attribute_id is None
+            return effect.fitting_usage_chance_attr_id is None
         # Online effects depend on 'online' effect
         elif effect_state == State.online:
             # If we've been requested 'online' effect status, it has no

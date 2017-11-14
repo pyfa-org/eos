@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,9 +30,9 @@ class TestChargeSize(RestrictionTestCase):
 
     def test_fail_lesser(self):
         charge = Charge(self.ch.type(
-            attributes={AttributeId.charge_size: 2}).id)
+            attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_size: 3}).id,
+            self.ch.type(attrs={AttrId.charge_size: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -54,9 +54,9 @@ class TestChargeSize(RestrictionTestCase):
 
     def test_fail_greater(self):
         charge = Charge(self.ch.type(
-            attributes={AttributeId.charge_size: 2}).id)
+            attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_size: 1}).id,
+            self.ch.type(attrs={AttrId.charge_size: 1}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -76,10 +76,10 @@ class TestChargeSize(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_charge_no_attrib(self):
+    def test_fail_charge_no_attr(self):
         charge = Charge(self.ch.type().id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_size: 3}).id,
+            self.ch.type(attrs={AttrId.charge_size: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -101,9 +101,9 @@ class TestChargeSize(RestrictionTestCase):
 
     def test_pass_equal(self):
         charge = Charge(self.ch.type(
-            attributes={AttributeId.charge_size: 2}).id)
+            attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_size: 2}).id,
+            self.ch.type(attrs={AttrId.charge_size: 2}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -121,9 +121,9 @@ class TestChargeSize(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_container_attrib(self):
+    def test_pass_no_container_attr(self):
         charge = Charge(self.ch.type(
-            attributes={AttributeId.charge_size: 2}).id)
+            attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(self.ch.type().id, state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
@@ -143,9 +143,9 @@ class TestChargeSize(RestrictionTestCase):
 
     def test_pass_no_source(self):
         charge = Charge(self.ch.type(
-            attributes={AttributeId.charge_size: 2}).id)
+            attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(
-            self.ch.type(attributes={AttributeId.charge_size: 3}).id,
+            self.ch.type(attrs={AttrId.charge_size: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)

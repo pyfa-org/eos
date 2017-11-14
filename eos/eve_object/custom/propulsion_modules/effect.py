@@ -22,8 +22,8 @@
 from logging import getLogger
 
 from eos.const.eos import (
-    EffectBuildStatus, ModifierDomain, ModifierOperator, ModifierTargetFilter)
-from eos.const.eve import AttributeId
+    EffectBuildStatus, ModDomain, ModOperator, ModTgtFilter)
+from eos.const.eve import AttrId
 from .modifier import PropulsionModuleVelocityBoostModifier
 from ...modifier import DogmaModifier
 
@@ -36,11 +36,11 @@ def add_ab_modifiers(effect):
         msg = 'afterburner effect has modifiers, overwriting them'
         logger.info(msg)
     mass_modifier = DogmaModifier(
-        tgt_filter=ModifierTargetFilter.item,
-        tgt_domain=ModifierDomain.ship,
-        tgt_attr_id=AttributeId.mass,
-        operator=ModifierOperator.mod_add,
-        src_attr_id=AttributeId.mass_addition)
+        tgt_filter=ModTgtFilter.item,
+        tgt_domain=ModDomain.ship,
+        tgt_attr_id=AttrId.mass,
+        operator=ModOperator.mod_add,
+        src_attr_id=AttrId.mass_addition)
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, velocity_modifier)
     effect.build_status = EffectBuildStatus.custom
@@ -51,17 +51,17 @@ def add_mwd_modifiers(effect):
         msg = 'microwarpdrive effect has modifiers, overwriting them'
         logger.info(msg)
     mass_modifier = DogmaModifier(
-        tgt_filter=ModifierTargetFilter.item,
-        tgt_domain=ModifierDomain.ship,
-        tgt_attr_id=AttributeId.mass,
-        operator=ModifierOperator.mod_add,
-        src_attr_id=AttributeId.mass_addition)
+        tgt_filter=ModTgtFilter.item,
+        tgt_domain=ModDomain.ship,
+        tgt_attr_id=AttrId.mass,
+        operator=ModOperator.mod_add,
+        src_attr_id=AttrId.mass_addition)
     signature_modifier = DogmaModifier(
-        tgt_filter=ModifierTargetFilter.item,
-        tgt_domain=ModifierDomain.ship,
-        tgt_attr_id=AttributeId.signature_radius,
-        operator=ModifierOperator.post_percent,
-        src_attr_id=AttributeId.signature_radius_bonus)
+        tgt_filter=ModTgtFilter.item,
+        tgt_domain=ModDomain.ship,
+        tgt_attr_id=AttrId.signature_radius,
+        operator=ModOperator.post_percent,
+        src_attr_id=AttrId.signature_radius_bonus)
     velocity_modifier = PropulsionModuleVelocityBoostModifier()
     effect.modifiers = (mass_modifier, signature_modifier, velocity_modifier)
     effect.build_status = EffectBuildStatus.custom

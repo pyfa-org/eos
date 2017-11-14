@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -35,22 +35,22 @@ class TestEffectToggling(CalculatorTestCase):
         src_attr2 = self.ch.attr()
         src_attr3 = self.ch.attr()
         modifier1 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr1.id)
         modifier2 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr2.id)
         modifier_active = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr3.id)
         self.effect1 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier1])
@@ -59,7 +59,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.effect_active = self.ch.effect(
             category_id=EffectCategoryId.active, modifiers=[modifier_active])
         self.item = ModuleHigh(self.ch.type(
-            attributes={
+            attrs={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 2},
             effects=(self.effect1, self.effect2, self.effect_active),
@@ -72,7 +72,7 @@ class TestEffectToggling(CalculatorTestCase):
         # Action
         self.item.set_effect_mode(self.effect1.id, EffectMode.force_stop)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 130)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 130)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -86,7 +86,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.set_effect_mode(self.effect2.id, EffectMode.force_stop)
         self.item.set_effect_mode(self.effect_active.id, EffectMode.force_stop)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -99,7 +99,7 @@ class TestEffectToggling(CalculatorTestCase):
         # Action
         self.item.set_effect_mode(self.effect1.id, EffectMode.state_compliance)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -116,7 +116,7 @@ class TestEffectToggling(CalculatorTestCase):
         self.item.set_effect_mode(
             self.effect_active.id, EffectMode.state_compliance)
         # Verification
-        self.assertAlmostEqual(self.item.attributes[self.tgt_attr.id], 143)
+        self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

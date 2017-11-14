@@ -42,12 +42,12 @@ class EveObjBuilderTestCase(EosTestCase):
         Default data handler is passed to builder as data source, and results
         are and stored on test instance as following attributes:
             types: Map in {type ID: type} format.
-            attributes: Map in {attribute ID: attribute} format.
+            attrs: Map in {attribute ID: attribute} format.
             effects: Map in {effect ID: effect} format.
         """
-        types, attributes, effects = EveObjBuilder.run(self.dh)
+        types, attrs, effects = EveObjBuilder.run(self.dh)
         self.types = {t.id: t for t in types}
-        self.attributes = {a.id: a for a in attributes}
+        self.attrs = {a.id: a for a in attrs}
         self.effects = {e.id: e for e in effects}
 
     def mod(self, *args, **kwargs):

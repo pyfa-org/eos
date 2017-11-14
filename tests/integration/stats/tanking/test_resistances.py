@@ -20,44 +20,44 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
-class TestResistances(StatsTestCase):
+class TestResists(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.em_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.thermal_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.kinetic_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.explosive_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.armor_em_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.armor_thermal_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.armor_kinetic_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.armor_explosive_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.shield_em_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.shield_thermal_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.shield_kinetic_damage_resonance)
-        self.ch.attr(attribute_id=AttributeId.shield_explosive_damage_resonance)
+        self.ch.attr(attr_id=AttrId.em_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.thermal_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.kinetic_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.explosive_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.armor_em_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.armor_thermal_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.armor_kinetic_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.shield_em_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.shield_thermal_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.shield_kinetic_dmg_resonance)
+        self.ch.attr(attr_id=AttrId.shield_explosive_dmg_resonance)
 
     def test_relay(self):
         # Check that stats service relays resistance stats properly
-        self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.em_damage_resonance: 0.05,
-            AttributeId.thermal_damage_resonance: 0.06,
-            AttributeId.kinetic_damage_resonance: 0.07,
-            AttributeId.explosive_damage_resonance: 0.08,
-            AttributeId.armor_em_damage_resonance: 0.09,
-            AttributeId.armor_thermal_damage_resonance: 0.1,
-            AttributeId.armor_kinetic_damage_resonance: 0.11,
-            AttributeId.armor_explosive_damage_resonance: 0.12,
-            AttributeId.shield_em_damage_resonance: 0.13,
-            AttributeId.shield_thermal_damage_resonance: 0.14,
-            AttributeId.shield_kinetic_damage_resonance: 0.15,
-            AttributeId.shield_explosive_damage_resonance: 0.16}).id)
+        self.fit.ship = Ship(self.ch.type(attrs={
+            AttrId.em_dmg_resonance: 0.05,
+            AttrId.thermal_dmg_resonance: 0.06,
+            AttrId.kinetic_dmg_resonance: 0.07,
+            AttrId.explosive_dmg_resonance: 0.08,
+            AttrId.armor_em_dmg_resonance: 0.09,
+            AttrId.armor_thermal_dmg_resonance: 0.1,
+            AttrId.armor_kinetic_dmg_resonance: 0.11,
+            AttrId.armor_explosive_dmg_resonance: 0.12,
+            AttrId.shield_em_dmg_resonance: 0.13,
+            AttrId.shield_thermal_dmg_resonance: 0.14,
+            AttrId.shield_kinetic_dmg_resonance: 0.15,
+            AttrId.shield_explosive_dmg_resonance: 0.16}).id)
         # Action
-        res_stats = self.fit.stats.resistances
+        res_stats = self.fit.stats.resists
         # Verification
         self.assertAlmostEqual(res_stats.hull.em, 0.95)
         self.assertAlmostEqual(res_stats.hull.thermal, 0.94)
@@ -78,7 +78,7 @@ class TestResistances(StatsTestCase):
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
         # Action
-        res_stats = self.fit.stats.resistances
+        res_stats = self.fit.stats.resists
         # Verification
         self.assertIsNone(res_stats.hull.em)
         self.assertIsNone(res_stats.hull.thermal)
@@ -97,22 +97,22 @@ class TestResistances(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(attributes={
-            AttributeId.em_damage_resonance: 0.05,
-            AttributeId.thermal_damage_resonance: 0.06,
-            AttributeId.kinetic_damage_resonance: 0.07,
-            AttributeId.explosive_damage_resonance: 0.08,
-            AttributeId.armor_em_damage_resonance: 0.09,
-            AttributeId.armor_thermal_damage_resonance: 0.1,
-            AttributeId.armor_kinetic_damage_resonance: 0.11,
-            AttributeId.armor_explosive_damage_resonance: 0.12,
-            AttributeId.shield_em_damage_resonance: 0.13,
-            AttributeId.shield_thermal_damage_resonance: 0.14,
-            AttributeId.shield_kinetic_damage_resonance: 0.15,
-            AttributeId.shield_explosive_damage_resonance: 0.16}).id)
+        self.fit.ship = Ship(self.ch.type(attrs={
+            AttrId.em_dmg_resonance: 0.05,
+            AttrId.thermal_dmg_resonance: 0.06,
+            AttrId.kinetic_dmg_resonance: 0.07,
+            AttrId.explosive_dmg_resonance: 0.08,
+            AttrId.armor_em_dmg_resonance: 0.09,
+            AttrId.armor_thermal_dmg_resonance: 0.1,
+            AttrId.armor_kinetic_dmg_resonance: 0.11,
+            AttrId.armor_explosive_dmg_resonance: 0.12,
+            AttrId.shield_em_dmg_resonance: 0.13,
+            AttrId.shield_thermal_dmg_resonance: 0.14,
+            AttrId.shield_kinetic_dmg_resonance: 0.15,
+            AttrId.shield_explosive_dmg_resonance: 0.16}).id)
         self.fit.source = None
         # Action
-        res_stats = self.fit.stats.resistances
+        res_stats = self.fit.stats.resists
         # Verification
         self.assertIsNone(res_stats.hull.em)
         self.assertIsNone(res_stats.hull.thermal)

@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -32,25 +32,25 @@ class TestOperatorPostPercent(CalculatorTestCase):
         self.tgt_attr = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.domain,
-            tgt_domain=ModifierDomain.ship,
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.influence_src1 = Implant(self.ch.type(
-            attributes={src_attr.id: 20}, effects=[effect]).id)
+            attrs={src_attr.id: 20}, effects=[effect]).id)
         self.influence_src2 = Implant(self.ch.type(
-            attributes={src_attr.id: 50}, effects=[effect]).id)
+            attrs={src_attr.id: 50}, effects=[effect]).id)
         self.influence_src3 = Implant(self.ch.type(
-            attributes={src_attr.id: -90}, effects=[effect]).id)
+            attrs={src_attr.id: -90}, effects=[effect]).id)
         self.influence_src4 = Implant(self.ch.type(
-            attributes={src_attr.id: -25}, effects=[effect]).id)
+            attrs={src_attr.id: -25}, effects=[effect]).id)
         self.influence_src5 = Implant(self.ch.type(
-            attributes={src_attr.id: 400}, effects=[effect]).id)
+            attrs={src_attr.id: 400}, effects=[effect]).id)
         self.influence_tgt = Rig(self.ch.type(
-            attributes={self.tgt_attr.id: 100}).id)
+            attrs={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(self.influence_src1)
         self.fit.implants.add(self.influence_src2)
         self.fit.implants.add(self.influence_src3)
@@ -62,7 +62,7 @@ class TestOperatorPostPercent(CalculatorTestCase):
         self.tgt_attr.stackable = True
         # Verification
         self.assertAlmostEqual(
-            self.influence_tgt.attributes[self.tgt_attr.id], 67.5)
+            self.influence_tgt.attrs[self.tgt_attr.id], 67.5)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -71,7 +71,7 @@ class TestOperatorPostPercent(CalculatorTestCase):
         self.tgt_attr.stackable = False
         # Verification
         self.assertAlmostEqual(
-            self.influence_tgt.attributes[self.tgt_attr.id], 62.55, places=3)
+            self.influence_tgt.attrs[self.tgt_attr.id], 62.55, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

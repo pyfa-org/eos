@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId, EffectId
+from eos.const.eve import AttrId, EffectId
 from eos.fit.item import Ship
 from eos.fit.message import (
     EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
@@ -58,7 +58,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
     def _handle_effects_started(self, msg):
         if (
             EffectId.rig_slot in msg.effect_ids and
-            AttributeId.rig_size in msg.item._type_attributes
+            AttrId.rig_size in msg.item._type_attrs
         ):
             self.__restricted_items.add(msg.item)
 
@@ -77,12 +77,12 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         # doesn't have restriction attribute
         try:
             allowed_rig_size = (
-                self.__current_ship._type_attributes[AttributeId.rig_size])
+                self.__current_ship._type_attrs[AttrId.rig_size])
         except (AttributeError, KeyError):
             return
         tainted_items = {}
         for item in self.__restricted_items:
-            rig_size = item._type_attributes[AttributeId.rig_size]
+            rig_size = item._type_attrs[AttrId.rig_size]
             # If rig size specification on item and ship differs, then item is
             # tainted
             if rig_size != allowed_rig_size:

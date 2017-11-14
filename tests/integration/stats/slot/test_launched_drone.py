@@ -20,8 +20,8 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
-from eos.const.eve import AttributeId, EffectCategoryId
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eve import AttrId, EffectCategoryId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
@@ -29,20 +29,20 @@ class TestLaunchedDrone(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.max_active_drones)
+        self.ch.attr(attr_id=AttrId.max_active_drones)
 
     def test_output(self):
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
-            tgt_attr_id=AttributeId.max_active_drones,
-            operator=ModifierOperator.post_mul,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=AttrId.max_active_drones,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         mod_effect = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         self.fit.character = Character(self.ch.type(
-            attributes={AttributeId.max_active_drones: 3, src_attr.id: 2},
+            attrs={AttrId.max_active_drones: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
         self.assertEqual(self.fit.stats.launched_drones.total, 6)
@@ -103,7 +103,7 @@ class TestLaunchedDrone(StatsTestCase):
 
     def test_no_source(self):
         self.fit.character = Character(self.ch.type(
-            attributes={AttributeId.max_active_drones: 3}).id)
+            attrs={AttrId.max_active_drones: 3}).id)
         self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
         self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
         self.fit.source = None

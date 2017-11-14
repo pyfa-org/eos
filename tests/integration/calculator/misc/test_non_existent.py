@@ -28,15 +28,15 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestNonExistent(CalculatorTestCase):
     """Test return value when requesting attribute which isn't set."""
 
-    def test_attribute_data_error(self):
+    def test_attr_data_error(self):
         # Check case when attribute value is available, but cache handler
         # doesn't know about such attribute
-        item_type = self.ch.type(attributes={105: 20})
+        item_type = self.ch.type(attrs={105: 20})
         item = Implant(item_type.id)
         self.fit.implants.add(item)
         # Action
         with self.assertRaises(KeyError):
-            item.attributes[105]
+            item.attrs[105]
         # Verification
         log = self.get_log()
         self.assertEqual(len(log), 1)
@@ -59,7 +59,7 @@ class TestNonExistent(CalculatorTestCase):
         self.fit.implants.add(item)
         # Action
         with self.assertRaises(KeyError):
-            item.attributes[attr.id]
+            item.attrs[attr.id]
         # Verification
         log = self.get_log()
         self.assertEqual(len(log), 1)
@@ -81,7 +81,7 @@ class TestNonExistent(CalculatorTestCase):
         # Action
         self.fit.implants.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[attr.id], 5.6)
+        self.assertAlmostEqual(item.attrs[attr.id], 5.6)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

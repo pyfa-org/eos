@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
@@ -34,17 +34,17 @@ class TestSourceSwitch(CalculatorTestCase):
         # it wasn't cleared, we wouldn't be able to get refreshed value of
         # attribute
         # Setup
-        src_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attr(attribute_id=src_attr_id)
-        self.ch2.attr(attribute_id=src_attr_id)
-        tgt_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attr(attribute_id=tgt_attr_id)
-        self.ch2.attr(attribute_id=tgt_attr_id)
+        src_attr_id = self.allocate_attr_id(self.ch, self.ch2)
+        self.ch.attr(attr_id=src_attr_id)
+        self.ch2.attr(attr_id=src_attr_id)
+        tgt_attr_id = self.allocate_attr_id(self.ch, self.ch2)
+        self.ch.attr(attr_id=tgt_attr_id)
+        self.ch2.attr(attr_id=tgt_attr_id)
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.domain,
-            tgt_domain=ModifierDomain.ship,
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
             tgt_attr_id=tgt_attr_id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr_id)
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
         effect_src1 = self.ch.effect(
@@ -55,26 +55,26 @@ class TestSourceSwitch(CalculatorTestCase):
             modifiers=[modifier])
         ship_type_id = self.allocate_type_id(self.ch, self.ch2)
         ship1 = Ship(self.ch.type(
-            type_id=ship_type_id, attributes={src_attr_id: 10},
+            type_id=ship_type_id, attrs={src_attr_id: 10},
             effects=[effect_src1]).id)
         ship2 = Ship(self.ch2.type(
-            type_id=ship_type_id, attributes={src_attr_id: 20},
+            type_id=ship_type_id, attrs={src_attr_id: 20},
             effects=[effect_src2]).id)
         item_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.type(type_id=item_type_id, attributes={tgt_attr_id: 50})
-        self.ch2.type(type_id=item_type_id, attributes={tgt_attr_id: 50})
+        self.ch.type(type_id=item_type_id, attrs={tgt_attr_id: 50})
+        self.ch2.type(type_id=item_type_id, attrs={tgt_attr_id: 50})
         item = Rig(item_type_id)
         fit1 = Fit('src1')
         fit1.ship = ship1
         fit2 = Fit('src2')
         fit2.ship = ship2
         fit1.rigs.add(item)
-        self.assertAlmostEqual(item.attributes.get(tgt_attr_id), 55)
+        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 55)
         # Action
         fit1.rigs.remove(item)
         fit2.rigs.add(item)
         # Verification
-        self.assertAlmostEqual(item.attributes.get(tgt_attr_id), 60)
+        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 60)
         # Cleanup
         self.assert_fit_buffers_empty(fit1)
         self.assert_fit_buffers_empty(fit2)
@@ -84,20 +84,20 @@ class TestSourceSwitch(CalculatorTestCase):
         # Here we check if attributes are updated if fit gets new source
         # instance
         # Setup
-        src_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attr(attribute_id=src_attr_id)
-        self.ch2.attr(attribute_id=src_attr_id)
-        tgt_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        max_attr_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attr(attribute_id=tgt_attr_id, max_attribute_id=max_attr_id)
-        self.ch2.attr(attribute_id=tgt_attr_id, max_attribute_id=max_attr_id)
-        self.ch.attr(attribute_id=max_attr_id, default_value=54.5)
-        self.ch2.attr(attribute_id=max_attr_id, default_value=88)
+        src_attr_id = self.allocate_attr_id(self.ch, self.ch2)
+        self.ch.attr(attr_id=src_attr_id)
+        self.ch2.attr(attr_id=src_attr_id)
+        tgt_attr_id = self.allocate_attr_id(self.ch, self.ch2)
+        max_attr_id = self.allocate_attr_id(self.ch, self.ch2)
+        self.ch.attr(attr_id=tgt_attr_id, max_attr_id=max_attr_id)
+        self.ch2.attr(attr_id=tgt_attr_id, max_attr_id=max_attr_id)
+        self.ch.attr(attr_id=max_attr_id, default_value=54.5)
+        self.ch2.attr(attr_id=max_attr_id, default_value=88)
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.domain,
-            tgt_domain=ModifierDomain.ship,
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
             tgt_attr_id=tgt_attr_id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr_id)
         effect_id = self.allocate_effect_id(self.ch, self.ch2)
         effect_src1 = self.ch.effect(
@@ -108,26 +108,26 @@ class TestSourceSwitch(CalculatorTestCase):
             modifiers=[modifier])
         ship_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(
-            type_id=ship_type_id, attributes={src_attr_id: 10},
+            type_id=ship_type_id, attrs={src_attr_id: 10},
             effects=[effect_src1])
         self.ch2.type(
-            type_id=ship_type_id, attributes={src_attr_id: 20},
+            type_id=ship_type_id, attrs={src_attr_id: 20},
             effects=[effect_src2])
         item_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.type(type_id=item_type_id, attributes={tgt_attr_id: 50})
-        self.ch2.type(type_id=item_type_id, attributes={tgt_attr_id: 75})
+        self.ch.type(type_id=item_type_id, attrs={tgt_attr_id: 50})
+        self.ch2.type(type_id=item_type_id, attrs={tgt_attr_id: 75})
         fit = Fit()
         ship = Ship(ship_type_id)
         item = Rig(item_type_id)
         fit.ship = ship
         fit.rigs.add(item)
         # 50 * 1.1, but capped at 54.5
-        self.assertAlmostEqual(item.attributes.get(tgt_attr_id), 54.5)
+        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 54.5)
         # Action
         fit.source = 'src2'
         # Verification
         # 75 * 1.2, but capped at 88
-        self.assertAlmostEqual(item.attributes.get(tgt_attr_id), 88)
+        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 88)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

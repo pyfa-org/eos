@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.item.item_testcase import ItemMixinTestCase
 
@@ -33,22 +33,22 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr2 = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=chance_attr2.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect1 = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr1.id)
+            fitting_usage_chance_attr_id=chance_attr1.id)
         effect2 = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr2.id)
+            fitting_usage_chance_attr_id=chance_attr2.id)
         effect3 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         fit = Fit()
         item = Booster(self.ch.type(
-            attributes={
+            attrs={
                 chance_attr1.id: 0.5, chance_attr2.id: 0.1, src_attr.id: -25},
             effects=(effect1, effect2, effect3)).id)
         fit.boosters.add(item)
@@ -76,22 +76,22 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         chance_attr2 = self.ch.attr()
         src_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=chance_attr2.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect1 = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr1.id)
+            fitting_usage_chance_attr_id=chance_attr1.id)
         effect2 = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr2.id)
+            fitting_usage_chance_attr_id=chance_attr2.id)
         effect3 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         fit = Fit(source=None)
         item = Booster(self.ch.type(
-            attributes={
+            attrs={
                 chance_attr1.id: 0.5, chance_attr2.id: 0.1, src_attr.id: -25},
             effects=(effect1, effect2, effect3)).id)
         fit.boosters.add(item)
@@ -110,25 +110,25 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # disabled anymore, everything runs as expected, and when this effect
         # appears again - it's disabled
         # Setup
-        chance_attr1_id = self.allocate_attribute_id(self.ch, self.ch2)
-        self.ch.attr(attribute_id=chance_attr1_id)
-        self.ch2.attr(attribute_id=chance_attr1_id)
+        chance_attr1_id = self.allocate_attr_id(self.ch, self.ch2)
+        self.ch.attr(attr_id=chance_attr1_id)
+        self.ch2.attr(attr_id=chance_attr1_id)
         chance_attr2 = self.ch.attr()
         chance_attr3 = self.ch.attr()
         # 1st effect exists as side-effect in both sources
         effect1_id = self.allocate_effect_id(self.ch, self.ch2)
         effect1_src1 = self.ch.effect(
             effect_id=effect1_id, category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr1_id)
+            fitting_usage_chance_attr_id=chance_attr1_id)
         effect1_src2 = self.ch2.effect(
             effect_id=effect1_id, category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr1_id)
+            fitting_usage_chance_attr_id=chance_attr1_id)
         # 2nd effect exists as side-effect in src1, and as regular effect in
         # src2
         effect2_id = self.allocate_effect_id(self.ch, self.ch2)
         effect2_src1 = self.ch.effect(
             effect_id=effect2_id, category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr2.id)
+            fitting_usage_chance_attr_id=chance_attr2.id)
         effect2_src2 = self.ch2.effect(
             effect_id=effect2_id, category_id=EffectCategoryId.passive)
         # 3rd effect exists as side-effect in src1 and doesn't exist in src2 at
@@ -136,15 +136,15 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         effect3_id = self.allocate_effect_id(self.ch, self.ch2)
         effect3_src1 = self.ch.effect(
             effect_id=effect3_id, category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr3.id)
+            fitting_usage_chance_attr_id=chance_attr3.id)
         item_type_id = self.allocate_type_id(self.ch, self.ch2)
         self.ch.type(
-            type_id=item_type_id, attributes={
+            type_id=item_type_id, attrs={
                 chance_attr1_id: 0.2, chance_attr2.id: 0.3,
                 chance_attr3.id: 0.4},
             effects=(effect1_src1, effect2_src1, effect3_src1))
         self.ch2.type(
-            type_id=item_type_id, attributes={chance_attr1_id: 0.7},
+            type_id=item_type_id, attrs={chance_attr1_id: 0.7},
             effects=(effect1_src2, effect2_src2))
         fit = Fit()
         item = Booster(item_type_id)
@@ -192,27 +192,27 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         src_attr = self.ch.attr()
         tgt_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr.id,
+            fitting_usage_chance_attr_id=chance_attr.id,
             modifiers=[modifier])
         fit = Fit()
         item = Booster(self.ch.type(
-            attributes={
+            attrs={
                 chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2},
             effects=[effect]).id)
         fit.boosters.add(item)
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)
         # Action
         item.set_side_effect_status(effect.id, True)
         # Verification
         self.assertIs(item.side_effects[effect.id].status, True)
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -223,18 +223,18 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         src_attr = self.ch.attr()
         tgt_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr.id,
+            fitting_usage_chance_attr_id=chance_attr.id,
             modifiers=[modifier])
         fit = Fit()
         item = Booster(self.ch.type(
-            attributes={
+            attrs={
                 chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2},
             effects=[effect]).id)
         item.set_side_effect_status(effect.id, True)
@@ -242,7 +242,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         fit.boosters.add(item)
         # Verification
         self.assertIs(item.side_effects[effect.id].status, True)
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -253,28 +253,28 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         src_attr = self.ch.attr()
         tgt_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr.id,
+            fitting_usage_chance_attr_id=chance_attr.id,
             modifiers=[modifier])
         fit = Fit()
         item = Booster(self.ch.type(
-            attributes={
+            attrs={
                 chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2},
             effects=[effect]).id)
         fit.boosters.add(item)
         item.set_side_effect_status(effect.id, True)
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 120)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Action
         item.set_side_effect_status(effect.id, False)
         # Verification
         self.assertIs(item.side_effects[effect.id].status, False)
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -285,18 +285,18 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         src_attr = self.ch.attr()
         tgt_attr = self.ch.attr()
         modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attribute_id=chance_attr.id,
+            fitting_usage_chance_attr_id=chance_attr.id,
             modifiers=[modifier])
         fit = Fit()
         item = Booster(self.ch.type(
-            attributes={
+            attrs={
                 chance_attr.id: 0.5, tgt_attr.id: 100, src_attr.id: 1.2},
             effects=[effect]).id)
         item.set_side_effect_status(effect.id, True)
@@ -305,7 +305,7 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         fit.boosters.add(item)
         # Verification
         self.assertIs(item.side_effects[effect.id].status, False)
-        self.assertAlmostEqual(item.attributes[tgt_attr.id], 100)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

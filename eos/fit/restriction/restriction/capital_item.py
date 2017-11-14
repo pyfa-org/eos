@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed, Ship
 from eos.fit.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
@@ -60,7 +60,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # Ignore items with no volume attribute and items with volume which
         # satisfies us regardless of ship type
         try:
-            item_volume = msg.item._type_attributes[AttributeId.volume]
+            item_volume = msg.item._type_attrs[AttrId.volume]
         except KeyError:
             return
         if item_volume <= MAX_SUBCAP_VOLUME:
@@ -82,7 +82,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         ship = self.__current_ship
         if (
             ship is not None and
-            ship._type_attributes.get(AttributeId.is_capital_size)
+            ship._type_attrs.get(AttrId.is_capital_size)
         ):
             return
         # If we got here, then we're dealing with non-capital ship, and all
@@ -90,7 +90,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         if self.__capital_items:
             tainted_items = {}
             for item in self.__capital_items:
-                item_type_volume = item._type_attributes[AttributeId.volume]
+                item_type_volume = item._type_attrs[AttrId.volume]
                 tainted_items[item] = CapitalItemErrorData(
                     item_volume=item_type_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME)

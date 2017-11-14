@@ -20,7 +20,7 @@
 
 
 from eos import Fit
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from tests.integration.integration_testcase import IntegrationTestCase
 
 
@@ -44,10 +44,10 @@ class EffectModeTestCase(IntegrationTestCase):
         self.src_attr = self.ch.attr()
         self.tgt_attr = self.ch.attr()
         self.modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
-            operator=ModifierOperator.mod_add,
+            operator=ModOperator.mod_add,
             src_attr_id=self.src_attr.id)
 
     def get_log(self, name='eos.fit*'):

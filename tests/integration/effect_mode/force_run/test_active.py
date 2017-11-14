@@ -32,14 +32,14 @@ class TestForceRunActive(EffectModeTestCase):
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect], default_effect=effect).id,
             state=State.active)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -49,16 +49,16 @@ class TestForceRunActive(EffectModeTestCase):
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect], default_effect=effect).id,
             state=State.online)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Action
         item.state = State.active
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -68,16 +68,16 @@ class TestForceRunActive(EffectModeTestCase):
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect], default_effect=effect).id,
             state=State.active)
         item.set_effect_mode(effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Action
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -88,7 +88,7 @@ class TestForceRunActive(EffectModeTestCase):
         default_effect = self.ch.effect(category_id=EffectCategoryId.active)
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, default_effect],
                 default_effect=default_effect).id,
             state=State.active)
@@ -96,7 +96,7 @@ class TestForceRunActive(EffectModeTestCase):
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -106,14 +106,14 @@ class TestForceRunActive(EffectModeTestCase):
             category_id=EffectCategoryId.active, modifiers=[self.modifier])
         item = ModuleHigh(
             self.ch.type(
-                attributes={self.tgt_attr.id: 10, self.src_attr.id: 2},
+                attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect], default_effect=effect).id,
             state=State.online)
         item.set_effect_mode(effect.id, EffectMode.force_run)
         # Action
         self.fit.modules.high.append(item)
         # Verification
-        self.assertAlmostEqual(item.attributes[self.tgt_attr.id], 12)
+        self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -59,10 +59,10 @@ class TestConversionType(EveObjBuilderTestCase):
         item_type = self.types[1]
         self.assertEqual(item_type.group_id, 6)
         self.assertEqual(item_type.category_id, 16)
-        type_attributes = item_type.attributes
-        self.assertEqual(len(type_attributes), 2)
-        self.assertEqual(type_attributes[5], 10.0)
-        self.assertEqual(type_attributes[80], 180.0)
+        type_attrs = item_type.attrs
+        self.assertEqual(len(type_attrs), 2)
+        self.assertEqual(type_attrs[5], 10.0)
+        self.assertEqual(type_attrs[80], 180.0)
         type_effects = item_type.effects
         self.assertEqual(len(type_effects), 2)
         self.assertIn(111, type_effects)

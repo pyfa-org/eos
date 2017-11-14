@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,7 +30,7 @@ class TestSubsystemSlot(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.max_subsystems)
+        self.ch.attr(attr_id=AttrId.max_subsystems)
         self.effect = self.ch.effect(
             effect_id=EffectId.subsystem, category_id=EffectCategoryId.passive)
 
@@ -38,7 +38,7 @@ class TestSubsystemSlot(RestrictionTestCase):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 0}).id)
+            attrs={AttrId.max_subsystems: 0}).id)
         item = Subsystem(self.ch.type(effects=[self.effect]).id)
         self.fit.subsystems.add(item)
         # Action
@@ -71,7 +71,7 @@ class TestSubsystemSlot(RestrictionTestCase):
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 1}).id)
+            attrs={AttrId.max_subsystems: 1}).id)
         item_type = self.ch.type(effects=[self.effect])
         item1 = Subsystem(item_type.id)
         item2 = Subsystem(item_type.id)
@@ -97,7 +97,7 @@ class TestSubsystemSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 2}).id)
+            attrs={AttrId.max_subsystems: 2}).id)
         item_type = self.ch.type(effects=[self.effect])
         item1 = Subsystem(item_type.id)
         item2 = Subsystem(item_type.id)
@@ -119,7 +119,7 @@ class TestSubsystemSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 5}).id)
+            attrs={AttrId.max_subsystems: 5}).id)
         item_type = self.ch.type(effects=[self.effect])
         item1 = Subsystem(item_type.id)
         item2 = Subsystem(item_type.id)
@@ -141,7 +141,7 @@ class TestSubsystemSlot(RestrictionTestCase):
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 0}).id)
+            attrs={AttrId.max_subsystems: 0}).id)
         item = Subsystem(self.ch.type(effects=[self.effect]).id)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.subsystems.add(item)
@@ -156,7 +156,7 @@ class TestSubsystemSlot(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.max_subsystems: 0}).id)
+            attrs={AttrId.max_subsystems: 0}).id)
         item = Subsystem(self.ch.type(effects=[self.effect]).id)
         self.fit.subsystems.add(item)
         self.fit.source = None

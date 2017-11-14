@@ -29,7 +29,7 @@ from eos.eve_object.effect import Effect
 from eos.eve_object.type import Type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
-from .exception import AttributeFetchError, EffectFetchError, TypeFetchError
+from .exception import AttrFetchError, EffectFetchError, TypeFetchError
 
 
 logger = getLogger(__name__)
@@ -51,7 +51,7 @@ class JsonCacheHandler(BaseCacheHandler):
         self._cache_path = os.path.abspath(cache_path)
         # Initialize storage for objects
         self.__type_storage = {}
-        self.__attribute_storage = {}
+        self.__attr_storage = {}
         self.__effect_storage = {}
         self.__fingerprint = None
         # Fill memory cache with data, if possible
@@ -68,16 +68,16 @@ class JsonCacheHandler(BaseCacheHandler):
             raise TypeFetchError(type_id) from e
         return item_type
 
-    def get_attribute(self, attr_id):
+    def get_attr(self, attr_id):
         try:
             attr_id = int(attr_id)
         except TypeError as e:
-            raise AttributeFetchError(attr_id) from e
+            raise AttrFetchError(attr_id) from e
         try:
-            attribute = self.__attribute_storage[attr_id]
+            attr = self.__attr_storage[attr_id]
         except KeyError as e:
-            raise AttributeFetchError(attr_id) from e
-        return attribute
+            raise AttrFetchError(attr_id) from e
+        return attr
 
     def get_effect(self, effect_id):
         try:
@@ -113,10 +113,10 @@ class JsonCacheHandler(BaseCacheHandler):
             self.__update_memory_cache(cache_data)
 
     def update_cache(self, eve_objects, fingerprint):
-        types, attributes, effects = eve_objects
+        types, attrs, effects = eve_objects
         cache_data = {
             'types': [item_type.compress() for item_type in types],
-            'attributes': [attr.compress() for attr in attributes],
+            'attrs': [attr.compress() for attr in attrs],
             'effects': [effect.compress() for effect in effects],
             'fingerprint': fingerprint}
         self.__update_persistent_cache(cache_data)
@@ -135,7 +135,7 @@ class JsonCacheHandler(BaseCacheHandler):
         """Replace existing memory cache data with passed data."""
         # Clear storage to make sure objects composed from old data are gone
         self.__type_storage.clear()
-        self.__attribute_storage.clear()
+        self.__attr_storage.clear()
         self.__effect_storage.clear()
         # Process effects first, as item types rely on effects being available
         for effect_data in cache_data['effects']:
@@ -144,9 +144,9 @@ class JsonCacheHandler(BaseCacheHandler):
         for type_data in cache_data['types']:
             item_type = Type.decompress(self, type_data)
             self.__type_storage[item_type.id] = item_type
-        for attribute_data in cache_data['attributes']:
-            attribute = Attribute.decompress(self, attribute_data)
-            self.__attribute_storage[attribute.id] = attribute
+        for attr_data in cache_data['attrs']:
+            attr = Attribute.decompress(self, attr_data)
+            self.__attr_storage[attr.id] = attr
         self.__fingerprint = cache_data['fingerprint']
 
     def __repr__(self):

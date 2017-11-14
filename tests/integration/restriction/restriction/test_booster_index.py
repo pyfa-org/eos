@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,12 +30,12 @@ class TestBoosterIndex(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.index_attr = self.ch.attr(attribute_id=AttributeId.boosterness)
+        self.index_attr = self.ch.attr(attr_id=AttrId.boosterness)
 
     def test_fail(self):
         # Check that if 2 or more items are put into single slot index, error is
         # raised
-        item_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item_type = self.ch.type(attrs={self.index_attr.id: 120})
         item1 = Booster(item_type.id)
         item2 = Booster(item_type.id)
         self.fit.boosters.add(item1)
@@ -56,7 +56,7 @@ class TestBoosterIndex(RestrictionTestCase):
 
     def test_fail_other_item_class(self):
         # Make sure items of all classes are affected
-        item_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item_type = self.ch.type(attrs={self.index_attr.id: 120})
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
@@ -79,7 +79,7 @@ class TestBoosterIndex(RestrictionTestCase):
 
     def test_pass(self):
         # Single item which takes some slot shouldn't trigger any errors
-        item = Booster(self.ch.type(attributes={self.index_attr.id: 120}).id)
+        item = Booster(self.ch.type(attrs={self.index_attr.id: 120}).id)
         self.fit.boosters.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -92,8 +92,8 @@ class TestBoosterIndex(RestrictionTestCase):
 
     def test_pass_different(self):
         # Items taking different slots shouldn't trigger any errors
-        item1 = Booster(self.ch.type(attributes={self.index_attr.id: 120}).id)
-        item2 = Booster(self.ch.type(attributes={self.index_attr.id: 121}).id)
+        item1 = Booster(self.ch.type(attrs={self.index_attr.id: 120}).id)
+        item2 = Booster(self.ch.type(attrs={self.index_attr.id: 121}).id)
         self.fit.boosters.add(item1)
         self.fit.boosters.add(item2)
         # Action
@@ -111,7 +111,7 @@ class TestBoosterIndex(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        item_type = self.ch.type(attributes={self.index_attr.id: 120})
+        item_type = self.ch.type(attrs={self.index_attr.id: 120})
         item1 = Booster(item_type.id)
         item2 = Booster(item_type.id)
         self.fit.boosters.add(item1)

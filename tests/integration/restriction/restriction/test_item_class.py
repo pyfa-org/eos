@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eve import (
-    AttributeId, TypeCategoryId, EffectId, EffectCategoryId, TypeGroupId)
+    AttrId, TypeCategoryId, EffectId, EffectCategoryId, TypeGroupId)
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -32,7 +32,7 @@ class TestItemClass(RestrictionTestCase):
     def test_booster_pass_no_source(self):
         # Make sure fit without a source doesn't cause any failures
         item = Booster(self.ch.type(
-            category_id=1008, attributes={AttributeId.boosterness: 3}).id)
+            category_id=1008, attrs={AttrId.boosterness: 3}).id)
         self.fit.boosters.add(item)
         self.fit.source = None
         # Action
@@ -47,7 +47,7 @@ class TestItemClass(RestrictionTestCase):
     def test_booster_pass(self):
         item = Booster(self.ch.type(
             category_id=TypeCategoryId.implant,
-            attributes={AttributeId.boosterness: 3}).id)
+            attrs={AttrId.boosterness: 3}).id)
         self.fit.boosters.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -60,7 +60,7 @@ class TestItemClass(RestrictionTestCase):
 
     def test_booster_fail_category(self):
         item = Booster(self.ch.type(
-            category_id=1008, attributes={AttributeId.boosterness: 3}).id)
+            category_id=1008, attrs={AttrId.boosterness: 3}).id)
         self.fit.boosters.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -198,7 +198,7 @@ class TestItemClass(RestrictionTestCase):
     def test_fighter_squad_pass(self):
         item = FighterSquad(self.ch.type(
             category_id=TypeCategoryId.fighter,
-            attributes={AttributeId.fighter_squadron_is_heavy: 1.0}).id)
+            attrs={AttrId.fighter_squadron_is_heavy: 1.0}).id)
         self.fit.fighters.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -212,7 +212,7 @@ class TestItemClass(RestrictionTestCase):
     def test_fighter_squad_fail_category(self):
         item = FighterSquad(self.ch.type(
             category_id=1008,
-            attributes={AttributeId.fighter_squadron_is_heavy: 1.0}).id)
+            attrs={AttrId.fighter_squadron_is_heavy: 1.0}).id)
         self.fit.fighters.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -242,7 +242,7 @@ class TestItemClass(RestrictionTestCase):
     def test_implant_pass(self):
         item = Implant(self.ch.type(
             category_id=TypeCategoryId.implant,
-            attributes={AttributeId.implantness: 3}).id)
+            attrs={AttrId.implantness: 3}).id)
         self.fit.implants.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -255,7 +255,7 @@ class TestItemClass(RestrictionTestCase):
 
     def test_implant_fail_category(self):
         item = Implant(self.ch.type(
-            category_id=1008, attributes={AttributeId.implantness: 3}).id)
+            category_id=1008, attrs={AttrId.implantness: 3}).id)
         self.fit.implants.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -684,7 +684,7 @@ class TestItemClass(RestrictionTestCase):
     def test_single_replacement(self):
         item = Implant(self.ch.type(
             category_id=TypeCategoryId.implant,
-            attributes={AttributeId.boosterness: 3}).id)
+            attrs={AttrId.boosterness: 3}).id)
         self.fit.implants.add(item)
         # Action
         restriction_error = self.get_restriction_error(
@@ -700,9 +700,9 @@ class TestItemClass(RestrictionTestCase):
     def test_multiple_replacements(self):
         item = Drone(self.ch.type(
             category_id=TypeCategoryId.implant,
-            attributes={
-                AttributeId.boosterness: 3,
-                AttributeId.implantness: 1}).id)
+            attrs={
+                AttrId.boosterness: 3,
+                AttrId.implantness: 1}).id)
         self.fit.drones.add(item)
         # Action
         restriction_error = self.get_restriction_error(

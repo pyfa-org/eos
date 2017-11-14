@@ -19,6 +19,5 @@
 # ==============================================================================
 
 
-from .damage_types import (
-    DamageTypes, DamageTypesTotal, DamageProfile, ResistanceProfile)
+from .dmg_types import DmgTypes, DmgTypesTotal, DmgProfile, ResistProfile
 from .tanking_layers import TankingLayers, TankingLayersTotal

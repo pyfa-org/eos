@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.restriction.restriction_testcase import (
     RestrictionTestCase)
 
@@ -30,7 +30,7 @@ class TestTurretSlot(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.turret_slots_left)
+        self.ch.attr(attr_id=AttrId.turret_slots_left)
         self.effect = self.ch.effect(
             effect_id=EffectId.turret_fitted,
             category_id=EffectCategoryId.passive)
@@ -39,7 +39,7 @@ class TestTurretSlot(RestrictionTestCase):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 0}).id)
+            attrs={AttrId.turret_slots_left: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
         # Action
@@ -72,7 +72,7 @@ class TestTurretSlot(RestrictionTestCase):
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 1}).id)
+            attrs={AttrId.turret_slots_left: 1}).id)
         item_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
@@ -98,7 +98,7 @@ class TestTurretSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 2}).id)
+            attrs={AttrId.turret_slots_left: 2}).id)
         item_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
@@ -120,7 +120,7 @@ class TestTurretSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 5}).id)
+            attrs={AttrId.turret_slots_left: 5}).id)
         item_type = self.ch.type(effects=[self.effect])
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
@@ -142,7 +142,7 @@ class TestTurretSlot(RestrictionTestCase):
 
     def test_pass_disabled_effect(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 0}).id)
+            attrs={AttrId.turret_slots_left: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item)
@@ -157,7 +157,7 @@ class TestTurretSlot(RestrictionTestCase):
 
     def test_pass_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.turret_slots_left: 0}).id)
+            attrs={AttrId.turret_slots_left: 0}).id)
         item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
         self.fit.source = None

@@ -20,35 +20,35 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 
 
-class TestTargetAttribute(CalculatorTestCase):
+class TestTgtAttr(CalculatorTestCase):
 
-    def test_target_attributes(self):
+    def test_tgt_attrs(self):
         tgt_attr1 = self.ch.attr()
         tgt_attr2 = self.ch.attr()
         tgt_attr3 = self.ch.attr()
         src_attr = self.ch.attr()
         modifier1 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr1.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         modifier2 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr2.id,
-            operator=ModifierOperator.post_percent,
+            operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.ch.effect(
             category_id=EffectCategoryId.passive,
             modifiers=(modifier1, modifier2))
         item = Rig(self.ch.type(
-            attributes={
+            attrs={
                 tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100,
                 src_attr.id: 20},
             effects=[effect]).id)
@@ -56,11 +56,11 @@ class TestTargetAttribute(CalculatorTestCase):
         self.fit.rigs.add(item)
         # Verification
         # First attribute should be modified by modifier1
-        self.assertAlmostEqual(item.attributes[tgt_attr1.id], 60)
+        self.assertAlmostEqual(item.attrs[tgt_attr1.id], 60)
         # Second should be modified by modifier2
-        self.assertAlmostEqual(item.attributes[tgt_attr2.id], 96)
+        self.assertAlmostEqual(item.attrs[tgt_attr2.id], 96)
         # Third should stay unmodified
-        self.assertAlmostEqual(item.attributes[tgt_attr3.id], 100)
+        self.assertAlmostEqual(item.attrs[tgt_attr3.id], 100)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

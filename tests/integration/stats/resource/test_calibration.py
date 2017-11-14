@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eve import AttributeId, EffectId, EffectCategoryId
+from eos.const.eve import AttrId, EffectId, EffectCategoryId
 from tests.integration.stats.stats_testcase import StatsTestCase
 
 
@@ -28,15 +28,15 @@ class TestCalibration(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attribute_id=AttributeId.upgrade_capacity)
-        self.ch.attr(attribute_id=AttributeId.upgrade_cost)
+        self.ch.attr(attr_id=AttrId.upgrade_capacity)
+        self.ch.attr(attr_id=AttrId.upgrade_cost)
         self.effect = self.ch.effect(
             effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.upgrade_capacity: 350}).id)
+            attrs={AttrId.upgrade_capacity: 350}).id)
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.output, 350)
         # Cleanup
@@ -62,7 +62,7 @@ class TestCalibration(StatsTestCase):
 
     def test_use_single_no_rounding(self):
         self.fit.rigs.add(Rig(self.ch.type(
-            attributes={AttributeId.upgrade_cost: 55.5555555555},
+            attrs={AttrId.upgrade_cost: 55.5555555555},
             effects=[self.effect]).id))
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 55.5555555555)
@@ -72,10 +72,10 @@ class TestCalibration(StatsTestCase):
 
     def test_use_multiple(self):
         self.fit.rigs.add(Rig(self.ch.type(
-            attributes={AttributeId.upgrade_cost: 50},
+            attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id))
         self.fit.rigs.add(Rig(self.ch.type(
-            attributes={AttributeId.upgrade_cost: 30},
+            attrs={AttrId.upgrade_cost: 30},
             effects=[self.effect]).id))
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 80)
@@ -85,10 +85,10 @@ class TestCalibration(StatsTestCase):
 
     def test_use_disabled_effect(self):
         item1 = Rig(self.ch.type(
-            attributes={AttributeId.upgrade_cost: 50},
+            attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id)
         item2 = Rig(self.ch.type(
-            attributes={AttributeId.upgrade_cost: 30},
+            attrs={AttrId.upgrade_cost: 30},
             effects=[self.effect]).id)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.rigs.add(item1)
@@ -108,12 +108,12 @@ class TestCalibration(StatsTestCase):
 
     def test_no_source(self):
         self.fit.ship = Ship(self.ch.type(
-            attributes={AttributeId.upgrade_capacity: 350}).id)
+            attrs={AttrId.upgrade_capacity: 350}).id)
         self.fit.rigs.add(Rig(self.ch.type(
-            attributes={AttributeId.upgrade_cost: 50},
+            attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id))
         self.fit.rigs.add(Rig(self.ch.type(
-            attributes={AttributeId.upgrade_cost: 30},
+            attrs={AttrId.upgrade_cost: 30},
             effects=[self.effect]).id))
         self.fit.source = None
         # Verification

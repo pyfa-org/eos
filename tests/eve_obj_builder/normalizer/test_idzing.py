@@ -26,7 +26,7 @@ from eos.const.eve import OperandId
 from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
 
 
-@patch('eos.data.eve_obj_builder.converter.ModifierBuilder')
+@patch('eos.data.eve_obj_builder.converter.ModBuilder')
 class TestNormalizationIdzing(EveObjBuilderTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 

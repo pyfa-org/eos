@@ -20,7 +20,7 @@
 
 
 from eos import *
-from eos.const.eos import ModifierDomain, ModifierOperator, ModifierTargetFilter
+from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import EffectId, EffectCategoryId
 from eos.eve_object.modifier import ModificationCalculationError
 from eos.eve_object.modifier.python import BasePythonModifier
@@ -41,18 +41,18 @@ class TestModifierPython(CalculatorTestCase):
             def __init__(self):
                 BasePythonModifier.__init__(
                     self,
-                    tgt_filter=ModifierTargetFilter.item,
-                    tgt_domain=ModifierDomain.self,
+                    tgt_filter=ModTgtFilter.item,
+                    tgt_domain=ModDomain.self,
                     tgt_filter_extra_arg=None,
                     tgt_attr_id=attr1.id)
 
             def get_modification(self, carrier_item, ship):
                 try:
-                    carrier_mul = carrier_item.attributes[attr2.id]
-                    ship_mul = ship.attributes[attr3.id]
+                    carrier_mul = carrier_item.attrs[attr2.id]
+                    ship_mul = ship.attrs[attr3.id]
                 except (AttributeError, KeyError) as e:
                     raise ModificationCalculationError from e
-                return ModifierOperator.post_mul, carrier_mul * ship_mul
+                return ModOperator.post_mul, carrier_mul * ship_mul
 
             @property
             def revise_msg_types(self):
@@ -71,18 +71,18 @@ class TestModifierPython(CalculatorTestCase):
             modifiers=(TestPythonModifier(),))
         self.online_effect = self.ch.effect(
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
-        self.fit.ship = Ship(self.ch.type(attributes={attr3.id: 3}).id)
+        self.fit.ship = Ship(self.ch.type(attrs={attr3.id: 3}).id)
 
     def test_enabling(self):
         item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2},
+            attrs={self.attr1.id: 100, self.attr2.id: 2},
             effects=(self.python_effect, self.online_effect)).id)
         self.fit.modules.high.append(item)
-        self.assertAlmostEqual(item.attributes[self.attr1.id], 100)
+        self.assertAlmostEqual(item.attrs[self.attr1.id], 100)
         # Action
         item.state = State.online
         # Verification
-        self.assertAlmostEqual(item.attributes[self.attr1.id], 600)
+        self.assertAlmostEqual(item.attrs[self.attr1.id], 600)
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
@@ -90,44 +90,44 @@ class TestModifierPython(CalculatorTestCase):
 
     def test_disabling(self):
         item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2},
+            attrs={self.attr1.id: 100, self.attr2.id: 2},
             effects=(self.python_effect, self.online_effect)).id)
         self.fit.modules.high.append(item)
         item.state = State.online
-        self.assertAlmostEqual(item.attributes[self.attr1.id], 600)
+        self.assertAlmostEqual(item.attrs[self.attr1.id], 600)
         # Action
         item.state = State.offline
         # Verification
-        self.assertAlmostEqual(item.attributes[self.attr1.id], 100)
+        self.assertAlmostEqual(item.attrs[self.attr1.id], 100)
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_target_recalc_attr_change(self):
+    def test_tgt_recalc_attr_change(self):
         # Here dogma modifier changes value of one of attributes which are used
         # as source by python modifier, and sees if python modifier target value
         # is updated
         attr4 = self.ch.attr()
         dogma_modifier = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr2.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=attr4.id)
         dogma_effect = self.ch.effect(
             category_id=EffectCategoryId.active, modifiers=[dogma_modifier])
         item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5},
+            attrs={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5},
             effects=(self.python_effect, self.online_effect, dogma_effect),
             default_effect=dogma_effect).id)
         self.fit.modules.high.append(item)
         item.state = State.online
-        self.assertAlmostEqual(item.attributes[self.attr1.id], 600)
+        self.assertAlmostEqual(item.attrs[self.attr1.id], 600)
         # Action
         item.state = State.active
         # Verification
-        self.assertAlmostEqual(item.attributes[self.attr1.id], 3000)
+        self.assertAlmostEqual(item.attrs[self.attr1.id], 3000)
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)
@@ -137,41 +137,41 @@ class TestModifierPython(CalculatorTestCase):
         # Make sure that when python modifier unsubscribes from message type
         # needed by calculator, calculator still receives that message type
         dogma_modifier1 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr1.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=self.attr2.id)
         dogma_effect1 = self.ch.effect(
             category_id=EffectCategoryId.passive, modifiers=[dogma_modifier1])
         dogma_modifier2 = self.mod(
-            tgt_filter=ModifierTargetFilter.item,
-            tgt_domain=ModifierDomain.self,
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr2.id,
-            operator=ModifierOperator.post_mul,
+            operator=ModOperator.post_mul,
             src_attr_id=self.attr3.id)
         dogma_effect2 = self.ch.effect(
             category_id=EffectCategoryId.online, modifiers=[dogma_modifier2])
         python_item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2},
+            attrs={self.attr1.id: 100, self.attr2.id: 2},
             effects=(self.python_effect, self.online_effect)).id)
         dogma_item = ModuleHigh(self.ch.type(
-            attributes={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3},
+            attrs={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3},
             effects=(dogma_effect1, dogma_effect2, self.online_effect)).id)
         self.fit.modules.high.append(python_item)
-        self.assertAlmostEqual(python_item.attributes[self.attr1.id], 100)
+        self.assertAlmostEqual(python_item.attrs[self.attr1.id], 100)
         python_item.state = State.online
-        self.assertAlmostEqual(python_item.attributes[self.attr1.id], 600)
-        # Here modifier is unsubscribed from attr change events
+        self.assertAlmostEqual(python_item.attrs[self.attr1.id], 600)
+        # Here modifier is unsubscribed from attribute change events
         self.fit.modules.high.remove(python_item)
         self.fit.modules.high.append(dogma_item)
-        self.assertAlmostEqual(dogma_item.attributes[self.attr1.id], 200)
+        self.assertAlmostEqual(dogma_item.attrs[self.attr1.id], 200)
         # Action
         dogma_item.state = State.online
         # Verification
         # If value is updated, then calculator service received attribute
         # updated message
-        self.assertAlmostEqual(dogma_item.attributes[self.attr1.id], 600)
+        self.assertAlmostEqual(dogma_item.attrs[self.attr1.id], 600)
         # Cleanup
         self.fit.ship = None
         self.assert_fit_buffers_empty(self.fit)

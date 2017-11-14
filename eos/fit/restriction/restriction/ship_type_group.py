@@ -22,7 +22,7 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttributeId
+from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed, Ship
 from eos.fit.message import ItemAdded, ItemRemoved
 from .base import BaseRestrictionRegister
@@ -32,38 +32,38 @@ from ..exception import RestrictionValidationError
 TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
 # Containers for attribute IDs which are used to restrict fitting
 ALLOWED_TYPE_ATTR_IDS = (
-    AttributeId.can_fit_ship_type_1,
-    AttributeId.can_fit_ship_type_2,
-    AttributeId.can_fit_ship_type_3,
-    AttributeId.can_fit_ship_type_4,
-    AttributeId.can_fit_ship_type_5,
-    AttributeId.can_fit_ship_type_6,
-    AttributeId.can_fit_ship_type_7,
-    AttributeId.can_fit_ship_type_8,
-    AttributeId.can_fit_ship_type_9,
-    AttributeId.can_fit_ship_type_10,
-    AttributeId.fits_to_shiptype)
+    AttrId.can_fit_ship_type_1,
+    AttrId.can_fit_ship_type_2,
+    AttrId.can_fit_ship_type_3,
+    AttrId.can_fit_ship_type_4,
+    AttrId.can_fit_ship_type_5,
+    AttrId.can_fit_ship_type_6,
+    AttrId.can_fit_ship_type_7,
+    AttrId.can_fit_ship_type_8,
+    AttrId.can_fit_ship_type_9,
+    AttrId.can_fit_ship_type_10,
+    AttrId.fits_to_shiptype)
 ALLOWED_GROUP_ATTR_IDS = (
-    AttributeId.can_fit_ship_group_1,
-    AttributeId.can_fit_ship_group_2,
-    AttributeId.can_fit_ship_group_3,
-    AttributeId.can_fit_ship_group_4,
-    AttributeId.can_fit_ship_group_5,
-    AttributeId.can_fit_ship_group_6,
-    AttributeId.can_fit_ship_group_7,
-    AttributeId.can_fit_ship_group_8,
-    AttributeId.can_fit_ship_group_9,
-    AttributeId.can_fit_ship_group_10,
-    AttributeId.can_fit_ship_group_11,
-    AttributeId.can_fit_ship_group_12,
-    AttributeId.can_fit_ship_group_13,
-    AttributeId.can_fit_ship_group_14,
-    AttributeId.can_fit_ship_group_15,
-    AttributeId.can_fit_ship_group_16,
-    AttributeId.can_fit_ship_group_17,
-    AttributeId.can_fit_ship_group_18,
-    AttributeId.can_fit_ship_group_19,
-    AttributeId.can_fit_ship_group_20)
+    AttrId.can_fit_ship_group_1,
+    AttrId.can_fit_ship_group_2,
+    AttrId.can_fit_ship_group_3,
+    AttrId.can_fit_ship_group_4,
+    AttrId.can_fit_ship_group_5,
+    AttrId.can_fit_ship_group_6,
+    AttrId.can_fit_ship_group_7,
+    AttrId.can_fit_ship_group_8,
+    AttrId.can_fit_ship_group_9,
+    AttrId.can_fit_ship_group_10,
+    AttrId.can_fit_ship_group_11,
+    AttrId.can_fit_ship_group_12,
+    AttrId.can_fit_ship_group_13,
+    AttrId.can_fit_ship_group_14,
+    AttrId.can_fit_ship_group_15,
+    AttrId.can_fit_ship_group_16,
+    AttrId.can_fit_ship_group_17,
+    AttrId.can_fit_ship_group_18,
+    AttrId.can_fit_ship_group_19,
+    AttrId.can_fit_ship_group_20)
 
 
 ShipTypeGroupErrorData = namedtuple(
@@ -114,7 +114,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             # Cycle through IDs of known restriction attributes
             for allowed_attr_id in allowed_attr_ids:
                 try:
-                    allowed_value = msg.item._type_attributes[allowed_attr_id]
+                    allowed_value = msg.item._type_attrs[allowed_attr_id]
                 except KeyError:
                     continue
                 else:
