@@ -362,12 +362,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
                 rah_resos_used = rahs_resos_used.setdefault(rah_state.item, [])
                 rah_resos_used.append(rah_state.resos)
         # Calculate average values
-        avgd_resos = {}
+        avg_resos = {}
         for item, resos in rahs_resos_used.items():
-            avgd_resos[item] = {
+            avg_resos[item] = {
                 attr_id: sum(r[attr_id] for r in resos) / len(resos)
                 for attr_id in res_attr_ids}
-        return avgd_resos
+        return avg_resos
 
     def __estimate_initial_adaptation_ticks(self, tick_states):
         """Estimate how much time RAH takes for initial adaptation.

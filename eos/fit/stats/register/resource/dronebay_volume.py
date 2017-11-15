@@ -38,9 +38,7 @@ class DronebayVolumeStatRegister(
 
     @volatile_property
     def used(self):
-        return sum(
-            item.attrs[AttrId.volume]
-            for item in self.__resource_users)
+        return sum(item.attrs[AttrId.volume] for item in self.__resource_users)
 
     @volatile_property
     def output(self):

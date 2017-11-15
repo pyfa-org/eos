@@ -175,8 +175,7 @@ class DmgDealerMixin(
                         expl *= multiplier
                     except TypeError:
                         pass
-            base_volleys[effect_id] = DmgTypesTotal(
-                em=em, thermal=therm, kinetic=kin, explosive=expl)
+            base_volleys[effect_id] = DmgTypesTotal(em, therm, kin, expl)
         return base_volleys
 
     def get_nominal_volley(self, tgt_resists=None):
@@ -244,8 +243,7 @@ class DmgDealerMixin(
                 expl *= expl_resonance
             except TypeError:
                 expl = None
-        return DmgTypesTotal(
-            em=em, thermal=therm, kinetic=kin, explosive=expl)
+        return DmgTypesTotal(em, therm, kin, expl)
 
     def get_nominal_dps(self, tgt_resists=None, reload=False):
         """
@@ -310,8 +308,7 @@ class DmgDealerMixin(
             expl = volley.explosive / full_cycle_time
         except TypeError:
             expl = None
-        return DmgTypesTotal(
-            em=em, thermal=therm, kinetic=kin, explosive=expl)
+        return DmgTypesTotal(em, therm, kin, expl)
 
     def get_volley_vs_tgt(self, tgt_data=None, tgt_resists=None):
         # TODO

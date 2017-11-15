@@ -87,8 +87,7 @@ class CpuStatRegister(RoundedResourceStatRegister):
 
     def __init__(self, msg_broker):
         RoundedResourceStatRegister.__init__(
-            self, msg_broker, AttrId.cpu_output, EffectId.online,
-            AttrId.cpu)
+            self, msg_broker, AttrId.cpu_output, EffectId.online, AttrId.cpu)
 
 
 class PowergridStatRegister(RoundedResourceStatRegister):

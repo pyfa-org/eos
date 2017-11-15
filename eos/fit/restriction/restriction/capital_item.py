@@ -80,10 +80,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         # Skip validation only if ship has special special attribute set value
         # which is evaluated as True
         ship = self.__current_ship
-        if (
-            ship is not None and
-            ship._type_attrs.get(AttrId.is_capital_size)
-        ):
+        if ship is not None and ship._type_attrs.get(AttrId.is_capital_size):
             return
         # If we got here, then we're dealing with non-capital ship, and all
         # registered items are tainted

@@ -49,7 +49,7 @@ class EffectStatusResolver:
         if EffectId.online in effects:
             online_running = EffectStatusResolver.resolve_effect_status(
                 item, effects[EffectId.online], None)
-            if online_running is True:
+            if online_running:
                 new_running_effect_ids.add(EffectId.online)
         else:
             online_running = False

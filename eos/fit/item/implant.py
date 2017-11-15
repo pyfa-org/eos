@@ -42,7 +42,7 @@ class Implant(ImmutableStateMixin):
         return self._type_attrs.get(AttrId.implantness)
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = ModDomain.character
+    _modifier_domain = ModDomain.character
     _owner_modifiable = False
 
     # Auxiliary methods

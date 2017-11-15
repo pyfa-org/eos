@@ -102,5 +102,4 @@ class DmgDealerRegister(BaseStatRegister):
             except TypeError:
                 if expl is None:
                     expl = stat.explosive
-        return DmgTypesTotal(
-            em=em, thermal=therm, kinetic=kin, explosive=expl)
+        return DmgTypesTotal(em, therm, kin, expl)

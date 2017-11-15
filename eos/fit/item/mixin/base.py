@@ -124,7 +124,7 @@ class BaseItemMixin(metaclass=ABCMeta):
     # Properties used by attribute calculator
     @property
     @abstractmethod
-    def _parent_modifier_domain(self):
+    def _modifier_domain(self):
         ...
 
     @property
@@ -143,6 +143,12 @@ class BaseItemMixin(metaclass=ABCMeta):
     # Effect methods
     @property
     def effects(self):
+        """Expose item's effects with item-specific data.
+
+        Returns:
+            Map in format {effect ID: (effect, effect run mode, effect run
+            status)}.
+        """
         effects = {}
         for effect_id, effect in self._type_effects.items():
             mode = self.get_effect_mode(effect_id)
@@ -151,13 +157,14 @@ class BaseItemMixin(metaclass=ABCMeta):
         return effects
 
     def get_effect_mode(self, effect_id):
+        """Get effect's run mode for this item."""
         if self.__effect_mode_overrides is None:
             return DEFAULT_EFFECT_MODE
-        return self.__effect_mode_overrides.get(
-            effect_id, DEFAULT_EFFECT_MODE)
+        return self.__effect_mode_overrides.get(effect_id, DEFAULT_EFFECT_MODE)
 
-    def set_effect_mode(self, effect_id, new_mode):
-        self._set_effects_modes({effect_id: new_mode})
+    def set_effect_mode(self, effect_id, effect_mode):
+        """Set effect's run mode for this item."""
+        self._set_effects_modes({effect_id: effect_mode})
 
     def _set_effects_modes(self, effects_modes):
         """

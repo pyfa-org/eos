@@ -76,8 +76,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         # Do not apply restriction when fit doesn't have ship and when ship
         # doesn't have restriction attribute
         try:
-            allowed_rig_size = (
-                self.__current_ship._type_attrs[AttrId.rig_size])
+            allowed_rig_size = self.__current_ship._type_attrs[AttrId.rig_size]
         except (AttributeError, KeyError):
             return
         tainted_items = {}

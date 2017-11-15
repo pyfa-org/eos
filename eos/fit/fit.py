@@ -29,7 +29,7 @@ from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import (
     ItemDescriptor, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
-from .helper import DmgTypes
+from .helper import DmgProfile
 from .item import *
 from .message import DefaultIncomingDmgChanged
 from .message.helper import MsgHelper
@@ -71,8 +71,7 @@ class Fit(MsgBroker):
     def __init__(self, source=DEFAULT):
         MsgBroker.__init__(self)
         self.__source = None
-        self.__default_incoming_dmg = DmgTypes(
-            em=25, thermal=25, kinetic=25, explosive=25)
+        self.__default_incoming_dmg = DmgProfile(25, 25, 25, 25)
         # Character-related item containers
         self.skills = ItemKeyedSet(self, Skill)
         self.implants = ItemSet(self, Implant)

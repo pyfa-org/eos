@@ -89,8 +89,7 @@ class PowergridRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(
-            self, stats, 'powergrid', AttrId.power)
+        ResourceRestriction.__init__(self, stats, 'powergrid', AttrId.power)
 
     @property
     def type(self):
@@ -121,8 +120,7 @@ class DroneBayVolumeRestriction(ResourceRestriction):
     """
 
     def __init__(self, stats):
-        ResourceRestriction.__init__(
-            self, stats, 'dronebay', AttrId.volume)
+        ResourceRestriction.__init__(self, stats, 'dronebay', AttrId.volume)
 
     @property
     def type(self):

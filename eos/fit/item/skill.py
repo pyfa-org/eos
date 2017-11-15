@@ -57,7 +57,7 @@ class Skill(ImmutableStateMixin):
             fit._volatile_mgr.clear_volatile_attrs()
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = ModDomain.character
+    _modifier_domain = ModDomain.character
     _owner_modifiable = False
 
     # Auxiliary methods

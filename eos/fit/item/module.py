@@ -42,7 +42,7 @@ class Module(
         return delay_ms / 1000
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = ModDomain.ship
+    _modifier_domain = ModDomain.ship
     _owner_modifiable = False
 
     # Auxiliary methods

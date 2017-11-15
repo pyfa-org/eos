@@ -37,7 +37,7 @@ class Ship(ImmutableStateMixin, BufferTankingMixin):
         super().__init__(type_id=type_id, state=State.offline)
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = None
+    _modifier_domain = None
     _owner_modifiable = False
 
     # Auxiliary methods

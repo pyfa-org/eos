@@ -65,10 +65,12 @@ class MsgHelper:
         msgs = []
         for item in items:
             # Effects
-            running_effect_ids = set(item._running_effect_ids)
+            running_effect_ids = item._running_effect_ids
             if running_effect_ids:
-                msgs.append(EffectsStopped(item, running_effect_ids))
-                item._running_effect_ids.clear()
+                # Copy set to make sure messages keep full data despite it being
+                # cleared on the next line
+                msgs.append(EffectsStopped(item, set(running_effect_ids)))
+                running_effect_ids.clear()
             # States
             states = {s for s in State if s <= item.state}
             msgs.append(StatesDeactivated(item, states))

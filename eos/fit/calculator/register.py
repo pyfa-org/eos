@@ -204,7 +204,7 @@ class AffectionRegister:
             (key, affectee map) format.
         """
         affectee_maps = []
-        domain = tgt_item._parent_modifier_domain
+        domain = tgt_item._modifier_domain
         if domain is not None:
             # Domain
             affectee_maps.append((domain, self.__affectee_domain))
@@ -308,7 +308,7 @@ class AffectionRegister:
         affectors = set()
         # Item
         affectors.update(self.__affector_item_active.get(tgt_item, ()))
-        domain = tgt_item._parent_modifier_domain
+        domain = tgt_item._modifier_domain
         if domain is not None:
             # Domain
             affectors.update(self.__affector_domain.get(domain, ()))

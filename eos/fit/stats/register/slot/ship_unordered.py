@@ -95,8 +95,7 @@ class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
 
     def __init__(self, msg_broker):
         UnorderedShipSlotStatRegister.__init__(
-            self, msg_broker, EffectId.turret_fitted,
-            AttrId.turret_slots_left)
+            self, msg_broker, EffectId.turret_fitted, AttrId.turret_slots_left)
 
 
 class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):

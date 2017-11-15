@@ -45,7 +45,7 @@ class FighterSquad(
         super().__init__(type_id=type_id, state=state)
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = None
+    _modifier_domain = None
     _owner_modifiable = True
 
     # Auxiliary methods

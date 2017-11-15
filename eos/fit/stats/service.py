@@ -84,7 +84,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         try:
             return self.__current_ship.hp
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None)
+            return TankingLayersTotal(None, None, None)
 
     @volatile_property
     def resists(self):
@@ -98,9 +98,8 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         try:
             return self.__current_ship.resists
         except AttributeError:
-            empty = DmgTypes(
-                em=None, thermal=None, kinetic=None, explosive=None)
-            return TankingLayers(hull=empty, armor=empty, shield=empty)
+            empty = DmgTypes(None, None, None, None)
+            return TankingLayers(empty, empty, empty)
 
     def get_ehp(self, dmg_profile=None):
         """Get effective HP of an item against passed damage profile.
@@ -116,7 +115,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         try:
             return self.__current_ship.get_ehp(dmg_profile)
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None)
+            return TankingLayersTotal(None, None, None)
 
     @volatile_property
     def worst_case_ehp(self):
@@ -132,7 +131,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         try:
             return self.__current_ship.worst_case_ehp
         except AttributeError:
-            return TankingLayersTotal(hull=None, armor=None, shield=None)
+            return TankingLayersTotal(None, None, None)
 
     def get_nominal_volley(self, item_filter=None, tgt_resists=None):
         """
@@ -183,8 +182,8 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             mass = self.__current_ship.attrs[AttrId.mass]
         except (AttributeError, KeyError):
             return None
-        real_agility = -math.log(0.25) * agility * mass / 1000000
-        return real_agility
+        agility_factor = -math.log(0.25) * agility * mass / 1000000
+        return agility_factor
 
     @volatile_property
     def align_time(self):

@@ -43,7 +43,7 @@ class Booster(ImmutableStateMixin, SideEffectMixin):
         return self._type_attrs.get(AttrId.boosterness)
 
     # Attribute calculation-related properties
-    _parent_modifier_domain = ModDomain.character
+    _modifier_domain = ModDomain.character
     _owner_modifiable = False
 
     # Auxiliary methods

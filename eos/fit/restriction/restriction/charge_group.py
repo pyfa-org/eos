@@ -64,16 +64,14 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         allowed_group_ids = set()
         for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
-                allowed_group_id = (
-                    msg.item._type_attrs[allowed_group_attr_id])
+                allowed_group_id = msg.item._type_attrs[allowed_group_attr_id]
             except KeyError:
                 continue
             else:
                 allowed_group_ids.add(allowed_group_id)
         # Only if groups were specified, consider restriction enabled
         if allowed_group_ids:
-            self.__restricted_containers[msg.item] = (
-                tuple(allowed_group_ids))
+            self.__restricted_containers[msg.item] = tuple(allowed_group_ids)
 
     def _handle_item_removed(self, msg):
         if msg.item in self.__restricted_containers:
