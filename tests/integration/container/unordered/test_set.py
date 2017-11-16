@@ -38,7 +38,7 @@ class TestContainerSet(ContainerTestCase):
 
     def test_add_item(self):
         fit = Fit()
-        item = Implant(self.ch.type().id)
+        item = Implant(self.mktype().id)
         # Action
         fit.implants.add(item)
         # Verification
@@ -51,7 +51,7 @@ class TestContainerSet(ContainerTestCase):
 
     def test_add_item_type_failure(self):
         fit = Fit()
-        item = Booster(self.ch.type().id)
+        item = Booster(self.mktype().id)
         # Action
         with self.assertRaises(TypeError):
             fit.implants.add(item)
@@ -66,7 +66,7 @@ class TestContainerSet(ContainerTestCase):
     def test_add_item_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        item = Implant(self.ch.type().id)
+        item = Implant(self.mktype().id)
         fit_other.implants.add(item)
         # Action
         with self.assertRaises(ValueError):
@@ -83,7 +83,7 @@ class TestContainerSet(ContainerTestCase):
 
     def test_remove_item(self):
         fit = Fit()
-        item = Implant(self.ch.type().id)
+        item = Implant(self.mktype().id)
         fit.implants.add(item)
         # Action
         fit.implants.remove(item)
@@ -95,7 +95,7 @@ class TestContainerSet(ContainerTestCase):
 
     def test_remove_item_failure(self):
         fit = Fit()
-        item = Implant(self.ch.type().id)
+        item = Implant(self.mktype().id)
         # Action
         with self.assertRaises(KeyError):
             fit.implants.remove(item)
@@ -107,8 +107,8 @@ class TestContainerSet(ContainerTestCase):
 
     def test_clear(self):
         fit = Fit()
-        item1 = Implant(self.ch.type().id)
-        item2 = Implant(self.ch.type().id)
+        item1 = Implant(self.mktype().id)
+        item2 = Implant(self.mktype().id)
         fit.implants.add(item1)
         fit.implants.add(item2)
         # Action

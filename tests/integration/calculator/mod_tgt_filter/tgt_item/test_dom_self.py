@@ -29,19 +29,20 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.tgt_attr = self.ch.attr()
-        self.src_attr = self.ch.attr()
-        modifier = self.mod(
+        self.tgt_attr = self.mkattr()
+        self.src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=self.src_attr.id)
-        self.effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
+        self.effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
 
     def test_independent(self):
-        item = Ship(self.ch.type(
+        item = Ship(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
         # Action
@@ -53,7 +54,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_parent_domain_character(self):
-        item = Implant(self.ch.type(
+        item = Implant(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
         # Action
@@ -65,7 +66,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_parent_domain_ship(self):
-        item = Rig(self.ch.type(
+        item = Rig(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
         # Action
@@ -81,10 +82,10 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         # nothing else is affected. We position item as character and check
         # another item which has character modifier domain to ensure that items
         # 'belonging' to self are not affected too
-        influence_src = Character(self.ch.type(
+        influence_src = Character(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
-        item = Implant(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
+        item = Implant(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(item)
         # Action
         self.fit.character = influence_src

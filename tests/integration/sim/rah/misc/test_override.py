@@ -29,21 +29,23 @@ class TestRahSimAttrOverride(RahSimTestCase):
 
     def test_rah_modified_resonance_update(self):
         # Setup
-        skill_attr = self.ch.attr(high_is_good=False, stackable=False)
+        skill_attr = self.mkattr(high_is_good=False, stackable=False)
         skill_modifiers = tuple(
-            self.mod(
+            self.mkmod(
                 tgt_filter=ModTgtFilter.domain,
                 tgt_domain=ModDomain.ship,
                 tgt_attr_id=attr,
                 operator=ModOperator.post_mul,
                 src_attr_id=skill_attr.id)
             for attr in (
-                self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
-                self.armor_exp.id))
-        skill_effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=skill_modifiers)
-        skill_type = self.ch.type(
-            attrs={skill_attr.id: 0.5}, effects=[skill_effect])
+                self.armor_em.id, self.armor_therm.id,
+                self.armor_kin.id, self.armor_exp.id))
+        skill_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=skill_modifiers)
+        skill_type = self.mktype(
+            attrs={skill_attr.id: 0.5},
+            effects=[skill_effect])
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship
         rah = ModuleLow(

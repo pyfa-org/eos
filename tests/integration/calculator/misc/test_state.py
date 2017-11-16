@@ -29,55 +29,55 @@ class TestStateSwitching(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.tgt_attr = self.ch.attr(stackable=1)
-        src_attr1 = self.ch.attr()
-        src_attr2 = self.ch.attr()
-        src_attr3 = self.ch.attr()
-        src_attr4 = self.ch.attr()
-        src_attr5 = self.ch.attr()
-        modifier_off = self.mod(
+        self.tgt_attr = self.mkattr(stackable=1)
+        src_attr1 = self.mkattr()
+        src_attr2 = self.mkattr()
+        src_attr3 = self.mkattr()
+        src_attr4 = self.mkattr()
+        src_attr5 = self.mkattr()
+        modifier_off = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr1.id)
-        modifier_on = self.mod(
+        modifier_on = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr2.id)
-        modifier_act = self.mod(
+        modifier_act = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr3.id)
-        modifier_over = self.mod(
+        modifier_over = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr4.id)
-        modifier_disabled = self.mod(
+        modifier_disabled = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr3.id)
-        effect_cat_offline = self.ch.effect(
+        effect_cat_offline = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier_off])
-        effect_cat_online = self.ch.effect(
+        effect_cat_online = self.mkeffect(
             category_id=EffectCategoryId.online, modifiers=[modifier_on])
-        effect_cat_active = self.ch.effect(
+        effect_cat_active = self.mkeffect(
             category_id=EffectCategoryId.active, modifiers=[modifier_act])
-        effect_cat_overload = self.ch.effect(
+        effect_cat_overload = self.mkeffect(
             category_id=EffectCategoryId.overload, modifiers=[modifier_over])
-        online_effect = self.ch.effect(
+        online_effect = self.mkeffect(
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
-        effect_disabled = self.ch.effect(
+        effect_disabled = self.mkeffect(
             category_id=EffectCategoryId.online, modifiers=[modifier_disabled])
-        self.item = ModuleHigh(self.ch.type(
+        self.item = ModuleHigh(self.mktype(
             attrs={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
                 src_attr3.id: 1.5, src_attr4.id: 1.7, src_attr5.id: 2},
@@ -85,8 +85,7 @@ class TestStateSwitching(CalculatorTestCase):
                 effect_cat_offline, effect_cat_online, effect_cat_active,
                 effect_cat_overload, online_effect, effect_disabled),
             default_effect=effect_cat_active).id)
-        self.item.set_effect_mode(
-            effect_disabled.id, EffectMode.force_stop)
+        self.item.set_effect_mode(effect_disabled.id, EffectMode.force_stop)
 
     def test_fit_offline(self):
         # Setup

@@ -28,18 +28,18 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.capacity)
-        self.ch.attr(attr_id=AttrId.volume)
-        self.ch.attr(attr_id=AttrId.charge_rate)
-        self.ch.attr(attr_id=AttrId.reload_time)
-        self.ch.attr(attr_id=AttrId.dmg_multiplier)
-        self.ch.attr(attr_id=AttrId.em_dmg)
-        self.ch.attr(attr_id=AttrId.thermal_dmg)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg)
-        self.ch.attr(attr_id=AttrId.explosive_dmg)
-        self.ch.attr(attr_id=AttrId.module_reactivation_delay)
-        self.cycle_attr = self.ch.attr()
-        self.effect = self.ch.effect(
+        self.mkattr(attr_id=AttrId.capacity)
+        self.mkattr(attr_id=AttrId.volume)
+        self.mkattr(attr_id=AttrId.charge_rate)
+        self.mkattr(attr_id=AttrId.reload_time)
+        self.mkattr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.em_dmg)
+        self.mkattr(attr_id=AttrId.thermal_dmg)
+        self.mkattr(attr_id=AttrId.kinetic_dmg)
+        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.mkattr(attr_id=AttrId.module_reactivation_delay)
+        self.cycle_attr = self.mkattr()
+        self.effect = self.mkeffect(
             effect_id=EffectId.projectile_fired,
             category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
@@ -47,16 +47,17 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
     def test_effective(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -64,8 +65,7 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        profile = ResistProfile(
-            em=0.2, thermal=0.2, kinetic=0.8, explosive=1)
+        profile = ResistProfile(0.2, 0.2, 0.8, 1)
         dps = item.get_nominal_dps(tgt_resists=profile)
         self.assertAlmostEqual(dps.em, 20.8)
         self.assertAlmostEqual(dps.thermal, 25.2)
@@ -79,7 +79,7 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
     def test_reactivation_shorter_than_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
@@ -87,9 +87,10 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 6500,
                     AttrId.module_reactivation_delay: 1500},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -110,7 +111,7 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
     def test_reactivation_longer_than_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
@@ -118,9 +119,10 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 6500,
                     AttrId.module_reactivation_delay: 19500},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -141,16 +143,17 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
     def test_no_source(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,

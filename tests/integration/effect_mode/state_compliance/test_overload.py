@@ -28,10 +28,11 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 class TestStateComplianceOverload(EffectModeTestCase):
 
     def test_started_on_add(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.overload, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.overload,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.overload)
@@ -45,10 +46,11 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_on_state_switch(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.overload, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.overload,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.active)
@@ -64,10 +66,11 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_on_mode_switch(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.overload, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.overload,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.overload)
@@ -83,10 +86,11 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state_on_add(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.overload, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.overload,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.active)
@@ -100,10 +104,11 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state_on_state_switch(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.overload, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.overload,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.overload)
@@ -119,10 +124,11 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state_on_mode_switch(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.overload, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.overload,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.active)

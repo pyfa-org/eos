@@ -29,21 +29,22 @@ class TestDroneBandwidth(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.drone_bandwidth)
-        self.ch.attr(attr_id=AttrId.drone_bandwidth_used)
+        self.mkattr(attr_id=AttrId.drone_bandwidth)
+        self.mkattr(attr_id=AttrId.drone_bandwidth_used)
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=AttrId.drone_bandwidth,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        mod_effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.fit.ship = Ship(self.ch.type(
+        mod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.drone_bandwidth: 200, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
@@ -62,7 +63,7 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         # Verification
         self.assertIsNone(self.fit.stats.drone_bandwidth.output)
         # Cleanup
@@ -71,8 +72,7 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_use_single_no_rounding(self):
         self.fit.drones.add(Drone(
-            self.ch.type(attrs={
-                AttrId.drone_bandwidth_used: 55.5555555555}).id,
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 55.5555555555}).id,
             state=State.online))
         # Verification
         self.assertAlmostEqual(
@@ -83,10 +83,10 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_use_multiple(self):
         self.fit.drones.add(Drone(
-            self.ch.type(attrs={AttrId.drone_bandwidth_used: 50}).id,
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 50}).id,
             state=State.online))
         self.fit.drones.add(Drone(
-            self.ch.type(attrs={AttrId.drone_bandwidth_used: 30}).id,
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 30}).id,
             state=State.online))
         # Verification
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 80)
@@ -96,10 +96,10 @@ class TestDroneBandwidth(StatsTestCase):
 
     def test_use_state(self):
         self.fit.drones.add(Drone(
-            self.ch.type(attrs={AttrId.drone_bandwidth_used: 50}).id,
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 50}).id,
             state=State.online))
         self.fit.drones.add(Drone(
-            self.ch.type(attrs={AttrId.drone_bandwidth_used: 30}).id,
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 30}).id,
             state=State.offline))
         # Verification
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 50)
@@ -115,13 +115,13 @@ class TestDroneBandwidth(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.drone_bandwidth: 200}).id)
         self.fit.drones.add(Drone(
-            self.ch.type(attrs={AttrId.drone_bandwidth_used: 50}).id,
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 50}).id,
             state=State.online))
         self.fit.drones.add(Drone(
-            self.ch.type(attrs={AttrId.drone_bandwidth_used: 30}).id,
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 30}).id,
             state=State.online))
         self.fit.source = None
         # Verification

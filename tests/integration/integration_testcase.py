@@ -26,6 +26,8 @@ from eos.data.source import Source, SourceManager
 from eos.eve_object.modifier import DogmaModifier
 from tests.eos_testcase import EosTestCase
 
+from .environment import CacheHandler
+
 
 class IntegrationTestCase(EosTestCase):
     """Test case class is used by integration tests.
@@ -36,12 +38,15 @@ class IntegrationTestCase(EosTestCase):
     Sets up two sources for fit, src1 (default) and src2.
 
     Attributes:
+        ch: Cache handler for default source.
         ch2: Cache handler for second source.
     """
 
     def setUp(self):
         EosTestCase.setUp(self)
-        self.ch2 = self._make_cache_handler()
+        # Add two cache handlers to each test case
+        self.ch = CacheHandler()
+        self.ch2 = CacheHandler()
         # Replace existing sources with test source
         self.__backup_sources = copy(SourceManager._sources)
         self.__backup_default_source = SourceManager.default
@@ -63,11 +68,24 @@ class IntegrationTestCase(EosTestCase):
         if make_default is True:
             SourceManager.default = source
         # Instantiate character type, as it's used in every test
-        cache_handler.type(
-            type_id=TypeId.character_static, group_id=TypeGroupId.character)
+        cache_handler.mktype(
+            type_id=TypeId.character_static,
+            group_id=TypeGroupId.character)
         return source
 
-    def mod(self, *args, **kwargs):
+    def mktype(self, *args, **kwargs):
+        """Make item type and add it to default source."""
+        return self.ch.mktype(*args, **kwargs)
+
+    def mkattr(self, *args, **kwargs):
+        """Make attribute and add it to default source."""
+        return self.ch.mkattr(*args, **kwargs)
+
+    def mkeffect(self, *args, **kwargs):
+        """Make effect and add it to default source."""
+        return self.ch.mkeffect(*args, **kwargs)
+
+    def mkmod(self, *args, **kwargs):
         """Shortcut to instantiating dogma modifier."""
         return DogmaModifier(*args, **kwargs)
 
@@ -97,9 +115,9 @@ class IntegrationTestCase(EosTestCase):
         # make sure it's ignored for assertion purposes
         fit._volatile_mgr._VolatileMgr__volatile_objects.remove(
             fit.stats)
-        entry_num += self._get_object_buffer_entry_count(
+        entry_num += self._get_obj_buffer_entry_count(
             fit,
-            ignore_objects=[fit],
+            ignore_objs=[fit],
             ignore_attrs=(
                 ('Fit', '_Fit__source'),
                 ('Fit', '_Fit__default_incoming_dmg'),

@@ -28,22 +28,24 @@ from tests.integration.item.item_testcase import ItemMixinTestCase
 class TestItemMixinDefEffProxy(ItemMixinTestCase):
 
     def make_item_with_defeff_attr(self, defeff_attr_name):
-        attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        mod_effect1 = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        mod_effect2 = self.ch.effect(
-            category_id=EffectCategoryId.online, modifiers=[modifier])
-        def_effect = self.ch.effect(
+        mod_effect1 = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        mod_effect2 = self.mkeffect(
+            category_id=EffectCategoryId.online,
+            modifiers=[modifier])
+        def_effect = self.mkeffect(
             category_id=EffectCategoryId.active,
             **{defeff_attr_name: attr.id})
-        item = ModuleHigh(self.ch.type(
+        item = ModuleHigh(self.mktype(
             attrs={attr.id: 50, src_attr.id: 2},
             effects=(mod_effect1, mod_effect2, def_effect),
             default_effect=def_effect).id)
@@ -102,11 +104,12 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal_no_defeff(self):
-        attr = self.ch.attr()
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.active, range_attr_id=attr.id)
+        attr = self.mkattr()
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.active,
+            range_attr_id=attr.id)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
+        item = ModuleHigh(self.mktype(
             attrs={attr.id: 50}, effects=[effect]).id)
         fit.modules.high.append(item)
         # Verification
@@ -116,11 +119,12 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal_no_description(self):
-        attr = self.ch.attr()
-        effect = self.ch.effect(category_id=EffectCategoryId.active)
+        attr = self.mkattr()
+        effect = self.mkeffect(category_id=EffectCategoryId.active)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            attrs={attr.id: 50}, effects=[effect],
+        item = ModuleHigh(self.mktype(
+            attrs={attr.id: 50},
+            effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -130,12 +134,14 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal_no_attr(self):
-        attr = self.ch.attr()
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.active, range_attr_id=attr.id)
+        attr = self.mkattr()
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.active,
+            range_attr_id=attr.id)
         fit = Fit()
-        item = ModuleHigh(self.ch.type(
-            effects=[effect], default_effect=effect).id)
+        item = ModuleHigh(self.mktype(
+            effects=[effect],
+            default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.optimal_range)

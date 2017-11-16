@@ -28,22 +28,22 @@ class TestItemMixinTankingResists(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_explosive_dmg_resonance)
 
     def test_generic(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.01,
             AttrId.thermal_dmg_resonance: 0.02,
             AttrId.kinetic_dmg_resonance: 0.03,
@@ -76,7 +76,7 @@ class TestItemMixinTankingResists(ItemMixinTestCase):
 
     def test_no_attr(self):
         fit = Fit()
-        item = Ship(self.ch.type().id)
+        item = Ship(self.mktype().id)
         fit.ship = item
         # Verification
         self.assertIsNone(item.resists.hull.em)
@@ -97,7 +97,7 @@ class TestItemMixinTankingResists(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit(source=None)
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.01,
             AttrId.thermal_dmg_resonance: 0.02,
             AttrId.kinetic_dmg_resonance: 0.03,

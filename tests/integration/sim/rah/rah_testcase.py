@@ -45,51 +45,64 @@ class RahSimTestCase(IntegrationTestCase):
     def setUp(self):
         IntegrationTestCase.setUp(self)
         # Attribute setup
-        self.max_attr = self.ch.attr(
-            default_value=1.0, high_is_good=False, stackable=False)
-        self.cycle_attr = self.ch.attr(high_is_good=False, stackable=True)
-        self.heat_attr = self.ch.attr(high_is_good=False, stackable=True)
-        self.shift_attr = self.ch.attr(
-            attr_id=AttrId.resist_shift_amount, high_is_good=True,
+        self.max_attr = self.mkattr(
+            default_value=1.0,
+            high_is_good=False,
+            stackable=False)
+        self.cycle_attr = self.mkattr(
+            high_is_good=False,
             stackable=True)
-        self.armor_em = self.ch.attr(
+        self.heat_attr = self.mkattr(
+            high_is_good=False,
+            stackable=True)
+        self.shift_attr = self.mkattr(
+            attr_id=AttrId.resist_shift_amount,
+            high_is_good=True,
+            stackable=True)
+        self.armor_em = self.mkattr(
             attr_id=AttrId.armor_em_dmg_resonance,
-            max_attr_id=self.max_attr.id, high_is_good=False,
+            max_attr_id=self.max_attr.id,
+            high_is_good=False,
             stackable=False)
-        self.armor_therm = self.ch.attr(
+        self.armor_therm = self.mkattr(
             attr_id=AttrId.armor_thermal_dmg_resonance,
-            max_attr_id=self.max_attr.id, high_is_good=False,
+            max_attr_id=self.max_attr.id,
+            high_is_good=False,
             stackable=False)
-        self.armor_kin = self.ch.attr(
+        self.armor_kin = self.mkattr(
             attr_id=AttrId.armor_kinetic_dmg_resonance,
-            max_attr_id=self.max_attr.id, high_is_good=False,
+            max_attr_id=self.max_attr.id,
+            high_is_good=False,
             stackable=False)
-        self.armor_exp = self.ch.attr(
+        self.armor_exp = self.mkattr(
             attr_id=AttrId.armor_explosive_dmg_resonance,
-            max_attr_id=self.max_attr.id, high_is_good=False,
+            max_attr_id=self.max_attr.id,
+            high_is_good=False,
             stackable=False)
         # Effect setup
-        self.rah_effect = self.ch.effect(
+        self.rah_effect = self.mkeffect(
             effect_id=EffectId.adaptive_armor_hardener,
             category_id=EffectCategoryId.active,
-            duration_attr_id=self.cycle_attr.id, customize=True)
-        heat_modifier = self.mod(
+            duration_attr_id=self.cycle_attr.id,
+            customize=True)
+        heat_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.cycle_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=self.heat_attr.id)
-        self.heat_effect = self.ch.effect(
-            category_id=EffectCategoryId.overload, modifiers=[heat_modifier])
+        self.heat_effect = self.mkeffect(
+            category_id=EffectCategoryId.overload,
+            modifiers=[heat_modifier])
         # Miscellateous setup
         self.fit = Fit()
 
     def make_ship_type(self, resonances):
         """Create ship type with specified resonances."""
         attr_order = (
-            self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
-            self.armor_exp.id)
-        return self.ch.type(attrs=dict(zip(attr_order, resonances)))
+            self.armor_em.id, self.armor_therm.id,
+            self.armor_kin.id, self.armor_exp.id)
+        return self.mktype(attrs=dict(zip(attr_order, resonances)))
 
     def make_rah_type(
             self, resonances, shift_amount, cycle_time, heat_cycle_mod=-15):
@@ -98,7 +111,7 @@ class RahSimTestCase(IntegrationTestCase):
             self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
             self.armor_exp.id, self.shift_attr.id, self.cycle_attr.id,
             self.heat_attr.id)
-        return self.ch.type(
+        return self.mktype(
             attrs=dict(zip(
                 attr_order,
                 (*resonances, shift_amount, cycle_time, heat_cycle_mod))),

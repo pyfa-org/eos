@@ -29,40 +29,38 @@ class TestCalculationChain(CalculatorTestCase):
     """Check that calculation process uses modified attributes."""
 
     def test_calculation(self):
-        attr1 = self.ch.attr()
-        attr2 = self.ch.attr()
-        attr3 = self.ch.attr()
-        attr4 = self.ch.attr()
-        modifier1 = self.mod(
+        attr1 = self.mkattr()
+        attr2 = self.mkattr()
+        attr3 = self.mkattr()
+        attr4 = self.mkattr()
+        modifier1 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=attr2.id,
             operator=ModOperator.post_mul,
             src_attr_id=attr1.id)
-        effect1 = self.ch.effect(
+        effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier1])
-        modifier2 = self.mod(
+        modifier2 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.ship,
             tgt_attr_id=attr3.id,
             operator=ModOperator.post_percent,
             src_attr_id=attr2.id)
-        effect2 = self.ch.effect(
+        effect2 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier2])
-        modifier3 = self.mod(
+        modifier3 = self.mkmod(
             tgt_filter=ModTgtFilter.domain,
             tgt_domain=ModDomain.ship,
             tgt_attr_id=attr4.id,
             operator=ModOperator.post_percent,
             src_attr_id=attr3.id)
-        effect3 = self.ch.effect(
+        effect3 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier3])
-        implant = Implant(self.ch.type(
-            attrs={attr1.id: 5, attr2.id: 20},
-            effects=(effect1, effect2)).id)
-        ship = Ship(self.ch.type(
-            attrs={attr3.id: 150}, effects=[effect3]).id)
-        rig = Rig(self.ch.type(attrs={attr4.id: 12.5}).id)
+        implant = Implant(self.mktype(
+            attrs={attr1.id: 5, attr2.id: 20}, effects=(effect1, effect2)).id)
+        ship = Ship(self.mktype(attrs={attr3.id: 150}, effects=[effect3]).id)
+        rig = Rig(self.mktype(attrs={attr4.id: 12.5}).id)
         self.fit.implants.add(implant)
         self.fit.ship = ship
         # Action

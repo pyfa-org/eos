@@ -28,18 +28,20 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtItemDomainTgt(CalculatorTestCase):
 
     def test_no_effect(self):
-        tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.target,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        influence_src = Ship(self.ch.type(
-            attrs={src_attr.id: 20}, effects=[effect]).id)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        influence_src = Ship(self.mktype(
+            attrs={src_attr.id: 20},
+            effects=[effect]).id)
         # Action
         self.fit.ship = influence_src
         # No checks - nothing should happen

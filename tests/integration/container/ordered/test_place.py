@@ -27,8 +27,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_item_outside(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         # Action
         fit.modules.high.place(3, item2)
@@ -46,7 +46,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_none_outside(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item)
         # Action
         with self.assertRaises(TypeError):
@@ -61,9 +61,9 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_item_onto_none(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
-        item3 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
+        item3 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.insert(3, item2)
         # Action
@@ -83,8 +83,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_none_onto_none(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.insert(3, item2)
         # Action
@@ -104,8 +104,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_item_onto_item(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         # Action
         with self.assertRaises(SlotTakenError):
@@ -120,7 +120,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_none_onto_item(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item)
         # Action
         with self.assertRaises(TypeError):
@@ -135,7 +135,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_item_outside_type_failure(self):
         fit = Fit()
-        item = ModuleMed(self.ch.type().id)
+        item = ModuleMed(self.mktype().id)
         # Action
         with self.assertRaises(TypeError):
             fit.modules.high.place(2, item)
@@ -150,7 +150,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
     def test_item_outside_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         fit_other.modules.high.append(item)
         # Action
         with self.assertRaises(ValueError):
@@ -167,8 +167,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
 
     def test_item_onto_none_type_failure(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleMed(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleMed(self.mktype().id)
         fit.modules.high.insert(1, item1)
         # Action
         with self.assertRaises(TypeError):
@@ -187,8 +187,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
     def test_item_onto_none_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.insert(1, item1)
         fit_other.modules.high.append(item2)
         # Action

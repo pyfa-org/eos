@@ -28,13 +28,13 @@ class TestSubsystem(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.max_subsystems)
-        self.effect = self.ch.effect(
-            effect_id=EffectId.subsystem, category_id=EffectCategoryId.passive)
+        self.mkattr(attr_id=AttrId.max_subsystems)
+        self.effect = self.mkeffect(
+            effect_id=EffectId.subsystem,
+            category_id=EffectCategoryId.passive)
 
     def test_output(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.max_subsystems: 3}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 3}).id)
         # Verification
         self.assertEqual(self.fit.stats.subsystem_slots.total, 3)
         # Cleanup
@@ -51,7 +51,7 @@ class TestSubsystem(StatsTestCase):
 
     def test_output_no_attr(self):
         # None for slot quantity when no attribute on ship
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         # Verification
         self.assertIsNone(self.fit.stats.subsystem_slots.total)
         # Cleanup
@@ -67,9 +67,9 @@ class TestSubsystem(StatsTestCase):
 
     def test_use_multiple(self):
         self.fit.subsystems.add(
-            Subsystem(self.ch.type(effects=[self.effect]).id))
+            Subsystem(self.mktype(effects=[self.effect]).id))
         self.fit.subsystems.add(
-            Subsystem(self.ch.type(effects=[self.effect]).id))
+            Subsystem(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.subsystem_slots.used, 2)
         # Cleanup
@@ -77,8 +77,8 @@ class TestSubsystem(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_disabled_effect(self):
-        item1 = Subsystem(self.ch.type(effects=[self.effect]).id)
-        item2 = Subsystem(self.ch.type(effects=[self.effect]).id)
+        item1 = Subsystem(self.mktype(effects=[self.effect]).id)
+        item2 = Subsystem(self.mktype(effects=[self.effect]).id)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.subsystems.add(item1)
         self.fit.subsystems.add(item2)
@@ -90,7 +90,7 @@ class TestSubsystem(StatsTestCase):
 
     def test_use_other_item_class(self):
         self.fit.modules.med.append(
-            ModuleMed(self.ch.type(effects=[self.effect]).id))
+            ModuleMed(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.subsystem_slots.used, 1)
         # Cleanup
@@ -98,12 +98,11 @@ class TestSubsystem(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.max_subsystems: 3}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 3}).id)
         self.fit.subsystems.add(
-            Subsystem(self.ch.type(effects=[self.effect]).id))
+            Subsystem(self.mktype(effects=[self.effect]).id))
         self.fit.subsystems.add(
-            Subsystem(self.ch.type(effects=[self.effect]).id))
+            Subsystem(self.mktype(effects=[self.effect]).id))
         self.fit.source = None
         # Verification
         self.assertEqual(self.fit.stats.subsystem_slots.used, 0)

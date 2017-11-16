@@ -27,8 +27,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def test_len(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         self.assertEqual(len(fit.modules.high), 0)
         fit.modules.high.append(item1)
         self.assertEqual(len(fit.modules.high), 1)
@@ -44,8 +44,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def test_contains(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         self.assertFalse(item1 in fit.modules.high)
         self.assertFalse(None in fit.modules.high)
         self.assertFalse(item2 in fit.modules.high)
@@ -71,8 +71,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def test_iter(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         self.assertEqual(list(item for item in fit.modules.high), [])
         fit.modules.high.append(item1)
         self.assertEqual(list(item for item in fit.modules.high), [item1])
@@ -90,8 +90,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def test_clear(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.place(3, item2)
         # Action
@@ -104,8 +104,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def test_slice(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.place(3, item2)
         slice_full = fit.modules.high[:]
@@ -134,8 +134,8 @@ class TestContainerOrderedMisc(ContainerTestCase):
 
     def test_item_view(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         view = fit.modules.high.items()
         self.assertEqual(len(view), 0)
         self.assertEqual(list(view), [])

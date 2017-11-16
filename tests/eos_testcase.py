@@ -27,8 +27,6 @@ from logging.handlers import BufferingHandler
 from unittest import TestCase
 from unittest.mock import DEFAULT
 
-from .environment import CacheHandler
-
 
 class TestLogHandler(BufferingHandler):
     """Custom logging handler class for testing.
@@ -48,11 +46,7 @@ class TestLogHandler(BufferingHandler):
 
 
 class EosTestCase(TestCase):
-    """Test case class is used by all eos tests.
-
-    Attributes:
-        ch: Default cache handler.
-    """
+    """Test case class is used by all eos tests."""
 
     def setUp(self):
         """Set up environment for tests.
@@ -72,8 +66,6 @@ class EosTestCase(TestCase):
         # Place test logger instead of them
         self.__test_log_handler = TestLogHandler()
         logger.addHandler(self.__test_log_handler)
-        # Add cache handler to each test case
-        self.ch = self._make_cache_handler()
 
     def tearDown(self):
         """Do clean-up jobs.
@@ -106,25 +98,21 @@ class EosTestCase(TestCase):
                 log.append(log_entry)
         return log
 
-    def _make_cache_handler(self):
-        return CacheHandler()
-
-    def assert_object_buffers_empty(
-            self, object_, ignore_objects=(), ignore_attrs=()):
+    def assert_obj_buffers_empty(self, obj, ignore_objs=(), ignore_attrs=()):
         """Checks if buffers of passed object are clear.
 
         Fails test if there's something remaining in buffers. Useful to detect
         memory leaks.
 
         Args:
-            object_: Object to check.
-            ignore_objects (optional): Iterable with objects which should be
+            obj: Object to check.
+            ignore_objs (optional): Iterable with objects which should be
                 ignored during check.
             ignore_attrs: Iterable with attribute names which should be ignored
                 during check.
         """
-        entry_num = self._get_object_buffer_entry_count(
-            object_, ignore_objects, ignore_attrs)
+        entry_num = self._get_obj_buffer_entry_count(
+            obj, ignore_objs, ignore_attrs)
         # Raise error if we found any data in any attached storage
         if entry_num:
             plu = 'y' if entry_num == 1 else 'ies'
@@ -132,39 +120,38 @@ class EosTestCase(TestCase):
                 entry_num, plu)
             self.fail(msg=msg)
 
-    def _get_object_buffer_entry_count(
-            self, object_, ignore_objects=(), ignore_attrs=(),
-            checked_objects=None):
+    def _get_obj_buffer_entry_count(
+            self, obj, ignore_objs=(), ignore_attrs=(), checked_objs=None):
         entry_count = 0
         # Initialize variables for initial call
-        if checked_objects is None:
-            checked_objects = set()
+        if checked_objs is None:
+            checked_objs = set()
         # Fetch attributes of the passed instance and check all of them
         try:
-            object_vars = tuple(vars(object_).items())
+            obj_vars = tuple(vars(obj).items())
         # If we cannot get attributes of an instance, try just iterating over it
         except TypeError:
             # Anything iterable but string
-            if isinstance(object_, Iterable) and not isinstance(object_, str):
-                object_vars = []
+            if isinstance(obj, Iterable) and not isinstance(obj, str):
+                obj_vars = []
                 # Get list of values this object exposes through iteration
-                available_values = list(value for value in object_)
+                available_values = list(value for value in obj)
                 # Try to find names for them and put named attributes to the
                 # list
-                for attr_name in dir(object_):
-                    attr_value = getattr(object_, attr_name)
+                for attr_name in dir(obj):
+                    attr_value = getattr(obj, attr_name)
                     if attr_value not in available_values:
                         continue
-                    object_vars.append((attr_name, attr_value))
+                    obj_vars.append((attr_name, attr_value))
                     available_values.remove(attr_value)
                 # For values without names, use None as name
                 for remaining_value in available_values:
-                    object_vars.append((None, remaining_value))
+                    obj_vars.append((None, remaining_value))
             # Do nothing if we have no idea what to do with object attributes
             else:
                 return entry_count
-        obj_classname = type(object_).__name__
-        for attr_name, attr_val in object_vars:
+        obj_classname = type(obj).__name__
+        for attr_name, attr_val in obj_vars:
             # Skip internal python attributes
             if (
                 attr_name is not None and
@@ -173,16 +160,16 @@ class EosTestCase(TestCase):
             ):
                 continue
             # Skip attributes with values we've already investigated
-            if id(attr_val) in checked_objects:
+            if id(attr_val) in checked_objs:
                 continue
             # Skip attributes with names we should ignore
             if (obj_classname, attr_name) in ignore_attrs:
                 continue
             # Skip attributes with values we should ignore
-            if attr_val in ignore_objects:
+            if attr_val in ignore_objs:
                 continue
             # From here we consider that we're checking this attribute
-            checked_objects.add(id(attr_val))
+            checked_objs.add(id(attr_val))
             # Ignore strings, as Eos doesn't deal with them - they are mostly
             # used to refer various attributes and are stored on object
             # permanently
@@ -202,9 +189,9 @@ class EosTestCase(TestCase):
                 attr_val_module.startswith('eos.') or
                 isinstance(attr_val, Iterable)
             ):
-                entry_count += self._get_object_buffer_entry_count(
-                    attr_val, ignore_objects=ignore_objects,
-                    ignore_attrs=ignore_attrs, checked_objects=checked_objects)
+                entry_count += self._get_obj_buffer_entry_count(
+                    attr_val, ignore_objs=ignore_objs,
+                    ignore_attrs=ignore_attrs, checked_objs=checked_objs)
         return entry_count
 
     def _setup_args_capture(self, mock_obj, arg_list):

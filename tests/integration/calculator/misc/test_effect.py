@@ -30,38 +30,38 @@ class TestEffectToggling(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.tgt_attr = self.ch.attr(stackable=1)
-        src_attr1 = self.ch.attr()
-        src_attr2 = self.ch.attr()
-        src_attr3 = self.ch.attr()
-        modifier1 = self.mod(
+        self.tgt_attr = self.mkattr(stackable=1)
+        src_attr1 = self.mkattr()
+        src_attr2 = self.mkattr()
+        src_attr3 = self.mkattr()
+        modifier1 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr1.id)
-        modifier2 = self.mod(
+        modifier2 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr2.id)
-        modifier_active = self.mod(
+        modifier_active = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr3.id)
-        self.effect1 = self.ch.effect(
+        self.effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier1])
-        self.effect2 = self.ch.effect(
+        self.effect2 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier2])
-        self.effect_active = self.ch.effect(
+        self.effect_active = self.mkeffect(
             category_id=EffectCategoryId.active, modifiers=[modifier_active])
-        self.item = ModuleHigh(self.ch.type(
+        self.item = ModuleHigh(self.mktype(
             attrs={
-                self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,
-                src_attr3.id: 2},
+                self.tgt_attr.id: 100, src_attr1.id: 1.1,
+                src_attr2.id: 1.3, src_attr3.id: 2},
             effects=(self.effect1, self.effect2, self.effect_active),
             default_effect=self.effect_active).id)
 

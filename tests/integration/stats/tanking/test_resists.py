@@ -28,22 +28,22 @@ class TestResists(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_explosive_dmg_resonance)
 
     def test_relay(self):
         # Check that stats service relays resistance stats properly
-        self.fit.ship = Ship(self.ch.type(attrs={
+        self.fit.ship = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.05,
             AttrId.thermal_dmg_resonance: 0.06,
             AttrId.kinetic_dmg_resonance: 0.07,
@@ -97,7 +97,7 @@ class TestResists(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(attrs={
+        self.fit.ship = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.05,
             AttrId.thermal_dmg_resonance: 0.06,
             AttrId.kinetic_dmg_resonance: 0.07,

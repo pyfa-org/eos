@@ -28,25 +28,25 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.hp)
-        self.ch.attr(attr_id=AttrId.em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_hp)
-        self.ch.attr(attr_id=AttrId.armor_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_capacity)
-        self.ch.attr(attr_id=AttrId.shield_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.hp)
+        self.mkattr(attr_id=AttrId.em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_hp)
+        self.mkattr(attr_id=AttrId.armor_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_capacity)
+        self.mkattr(attr_id=AttrId.shield_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_explosive_dmg_resonance)
 
     def test_uniform(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -64,8 +64,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.2}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        results = item.get_ehp(DmgProfile(1, 1, 1, 1))
         self.assertAlmostEqual(results.hull, 1.25)
         self.assertAlmostEqual(results.armor, 25)
         self.assertAlmostEqual(results.shield, 500)
@@ -76,7 +75,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_non_uniform(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -94,8 +93,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
@@ -106,7 +104,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_hp_hull(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
             AttrId.kinetic_dmg_resonance: 0.7,
@@ -123,8 +121,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertIsNone(results.hull)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
@@ -135,7 +132,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_hp_armor(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -152,8 +149,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertIsNone(results.armor)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
@@ -164,7 +160,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_hp_shield(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -181,8 +177,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertIsNone(results.shield)
@@ -193,7 +188,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_hp_all(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
             AttrId.kinetic_dmg_resonance: 0.7,
@@ -208,8 +203,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertIsNone(results.hull)
         self.assertIsNone(results.armor)
         self.assertIsNone(results.shield)
@@ -220,7 +214,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_resist_em(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -237,8 +231,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertAlmostEqual(results.armor, 55.760, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
@@ -249,7 +242,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_resist_thermal(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -266,8 +259,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 663.012, places=3)
@@ -278,7 +270,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_resist_kinetic(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -295,8 +287,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.132, places=3)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
@@ -307,7 +298,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_resist_explosive(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -324,8 +315,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertAlmostEqual(results.armor, 94.828, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
@@ -336,7 +326,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_none_resist_all(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.9,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -350,8 +340,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_capacity: 600}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=25, thermal=6, kinetic=8.333, explosive=1))
+        results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 600, places=3)
@@ -362,7 +351,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit(source=None)
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -380,8 +369,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.2}).id)
         fit.ship = item
         # Verification
-        results = item.get_ehp(
-            DmgProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        results = item.get_ehp(DmgProfile(1, 1, 1, 1))
         self.assertIsNone(results.hull)
         self.assertIsNone(results.armor)
         self.assertIsNone(results.shield)

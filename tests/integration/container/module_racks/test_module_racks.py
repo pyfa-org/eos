@@ -27,13 +27,13 @@ class TestContainerModuleRacks(ContainerTestCase):
 
     def setUp(self):
         ContainerTestCase.setUp(self)
-        self.mod_high1 = ModuleHigh(self.ch.type().id)
-        self.mod_high2 = ModuleHigh(self.ch.type().id)
-        self.mod_med1 = ModuleMed(self.ch.type().id)
-        self.mod_med2 = ModuleMed(self.ch.type().id)
-        self.mod_low1 = ModuleLow(self.ch.type().id)
-        self.mod_low2 = ModuleLow(self.ch.type().id)
-        self.mod_low3 = ModuleLow(self.ch.type().id)
+        self.mod_high1 = ModuleHigh(self.mktype().id)
+        self.mod_high2 = ModuleHigh(self.mktype().id)
+        self.mod_med1 = ModuleMed(self.mktype().id)
+        self.mod_med2 = ModuleMed(self.mktype().id)
+        self.mod_low1 = ModuleLow(self.mktype().id)
+        self.mod_low2 = ModuleLow(self.mktype().id)
+        self.mod_low3 = ModuleLow(self.mktype().id)
         self.fit = Fit()
         self.fit.modules.high.place(0, self.mod_high1)
         self.fit.modules.high.place(3, self.mod_high2)
@@ -59,21 +59,27 @@ class TestContainerModuleRacks(ContainerTestCase):
     def test_items_iter(self):
         module_items = self.fit.modules.items()
         expected = [
-            self.mod_high1, self.mod_high2, self.mod_med1, self.mod_med2,
+            self.mod_high1, self.mod_high2,
+            self.mod_med1, self.mod_med2,
             self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.high.remove(self.mod_high1)
         expected = [
-            self.mod_high2, self.mod_med1, self.mod_med2, self.mod_low1,
-            self.mod_low2]
+            self.mod_high2, self.mod_med1,
+            self.mod_med2,
+            self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.med.remove(self.mod_med1)
-        expected = [self.mod_high2, self.mod_med2, self.mod_low1, self.mod_low2]
+        expected = [
+            self.mod_high2,
+            self.mod_med2,
+            self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.low.append(self.mod_low3)
         expected = [
-            self.mod_high2, self.mod_med2, self.mod_low1, self.mod_low2,
-            self.mod_low3]
+            self.mod_high2,
+            self.mod_med2,
+            self.mod_low1, self.mod_low2, self.mod_low3]
         self.assertEqual(list(module_items), expected)
         # Cleanup
         self.assertEqual(len(self.get_log()), 0)

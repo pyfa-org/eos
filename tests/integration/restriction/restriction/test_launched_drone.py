@@ -30,22 +30,21 @@ class TestLaunchedDrone(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.max_active_drones)
+        self.mkattr(attr_id=AttrId.max_active_drones)
 
     def test_fail_excess_single(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by char
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
-        item = Drone(self.ch.type().id, state=State.online)
+        item = Drone(self.mktype().id, state=State.online)
         self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launched_drone)
+        error = self.get_error(item, Restriction.launched_drone)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.used, 1)
-        self.assertEqual(restriction_error.total, 0)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -54,100 +53,92 @@ class TestLaunchedDrone(RestrictionTestCase):
         # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
         self.fit.character = None
-        item = Drone(self.ch.type().id, state=State.online)
+        item = Drone(self.mktype().id, state=State.online)
         self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launched_drone)
+        error = self.get_error(item, Restriction.launched_drone)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.used, 1)
-        self.assertEqual(restriction_error.total, 0)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 1}).id)
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item1 = Drone(item_type.id, state=State.online)
         item2 = Drone(item_type.id, state=State.online)
         self.fit.drones.add(item1)
         self.fit.drones.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.launched_drone)
+        error1 = self.get_error(item1, Restriction.launched_drone)
         # Verification
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.used, 2)
-        self.assertEqual(restriction_error1.total, 1)
+        self.assertIsNotNone(error1)
+        self.assertEqual(error1.used, 2)
+        self.assertEqual(error1.total, 1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.launched_drone)
+        error2 = self.get_error(item2, Restriction.launched_drone)
         # Verification
-        self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.used, 2)
-        self.assertEqual(restriction_error2.total, 1)
+        self.assertIsNotNone(error2)
+        self.assertEqual(error2.used, 2)
+        self.assertEqual(error2.total, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 2}).id)
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item1 = Drone(item_type.id, state=State.online)
         item2 = Drone(item_type.id, state=State.online)
         self.fit.drones.add(item1)
         self.fit.drones.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.launched_drone)
+        error1 = self.get_error(item1, Restriction.launched_drone)
         # Verification
-        self.assertIsNone(restriction_error1)
+        self.assertIsNone(error1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.launched_drone)
+        error2 = self.get_error(item2, Restriction.launched_drone)
         # Verification
-        self.assertIsNone(restriction_error2)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 5}).id)
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item1 = Drone(item_type.id, state=State.online)
         item2 = Drone(item_type.id, state=State.online)
         self.fit.drones.add(item1)
         self.fit.drones.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.launched_drone)
+        error1 = self.get_error(item1, Restriction.launched_drone)
         # Verification
-        self.assertIsNone(restriction_error1)
+        self.assertIsNone(error1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.launched_drone)
+        error2 = self.get_error(item2, Restriction.launched_drone)
         # Verification
-        self.assertIsNone(restriction_error2)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_state(self):
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
-        item = Drone(self.ch.type().id, state=State.offline)
+        item = Drone(self.mktype().id, state=State.offline)
         self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launched_drone)
+        error = self.get_error(item, Restriction.launched_drone)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -155,30 +146,28 @@ class TestLaunchedDrone(RestrictionTestCase):
     def test_pass_other_item_class(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by char
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
-        item = ModuleHigh(self.ch.type().id, state=State.online)
+        item = ModuleHigh(self.mktype().id, state=State.online)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launched_drone)
+        error = self.get_error(item, Restriction.launched_drone)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
-        item = Drone(self.ch.type().id, state=State.online)
+        item = Drone(self.mktype().id, state=State.online)
         self.fit.drones.add(item)
         self.fit.source = None
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launched_drone)
+        error = self.get_error(item, Restriction.launched_drone)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

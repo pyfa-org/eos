@@ -28,10 +28,11 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 class TestForceRunOffline(EffectModeTestCase):
 
     def test_started_on_add(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.offline)
@@ -45,10 +46,11 @@ class TestForceRunOffline(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_on_mode_switch(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.offline)
@@ -64,15 +66,16 @@ class TestForceRunOffline(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_chance_based(self):
-        chance_attr = self.ch.attr()
-        effect = self.ch.effect(
+        chance_attr = self.mkattr()
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr.id,
             modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
-                    self.tgt_attr.id: 10, self.src_attr.id: 2,
+                    self.tgt_attr.id: 10,
+                    self.src_attr.id: 2,
                     chance_attr.id: 1},
                 effects=[effect]).id,
             state=State.offline)

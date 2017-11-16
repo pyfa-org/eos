@@ -28,14 +28,15 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.hp)
-        self.ch.attr(attr_id=AttrId.armor_hp)
-        self.ch.attr(attr_id=AttrId.shield_capacity)
+        self.mkattr(attr_id=AttrId.hp)
+        self.mkattr(attr_id=AttrId.armor_hp)
+        self.mkattr(attr_id=AttrId.shield_capacity)
 
     def test_generic(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
-            AttrId.hp: 8, AttrId.armor_hp: 10,
+        item = Ship(self.mktype(attrs={
+            AttrId.hp: 8,
+            AttrId.armor_hp: 10,
             AttrId.shield_capacity: 12}).id)
         fit.ship = item
         # Verification
@@ -49,7 +50,7 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def test_unspecified(self):
         fit = Fit()
-        item = Ship(self.ch.type().id)
+        item = Ship(self.mktype().id)
         fit.ship = item
         # Verification
         self.assertIsNone(item.hp.hull)
@@ -62,8 +63,9 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit(source=None)
-        item = Ship(self.ch.type(attrs={
-            AttrId.hp: 8, AttrId.armor_hp: 10,
+        item = Ship(self.mktype(attrs={
+            AttrId.hp: 8,
+            AttrId.armor_hp: 10,
             AttrId.shield_capacity: 12}).id)
         fit.ship = item
         # Verification

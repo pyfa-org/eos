@@ -30,37 +30,37 @@ class TestRigSize(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.effect = self.ch.effect(
-            effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)
+        self.effect = self.mkeffect(
+            effect_id=EffectId.rig_slot,
+            category_id=EffectCategoryId.passive)
 
     def test_fail_mismatch(self):
         # Error should be raised when mismatching rig size is added to ship
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.rig_size: 6}).id)
-        item = Rig(self.ch.type(
-            attrs={AttrId.rig_size: 10}, effects=[self.effect]).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
+        item = Rig(self.mktype(
+            attrs={AttrId.rig_size: 10},
+            effects=[self.effect]).id)
         self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.rig_size)
+        error = self.get_error(item, Restriction.rig_size)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.size, 10)
-        self.assertEqual(restriction_error.allowed_size, 6)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.size, 10)
+        self.assertEqual(error.allowed_size, 6)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_ship(self):
         # When no ship is assigned, no restriction should be applied to ships
-        item = Rig(self.ch.type(
-            attrs={AttrId.rig_size: 10}, effects=[self.effect]).id)
+        item = Rig(self.mktype(
+            attrs={AttrId.rig_size: 10},
+            effects=[self.effect]).id)
         self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.rig_size)
+        error = self.get_error(item, Restriction.rig_size)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -68,47 +68,45 @@ class TestRigSize(RestrictionTestCase):
     def test_pass_ship_no_attr(self):
         # If ship doesn't have rig size attribute, no restriction is applied
         # onto rigs
-        self.fit.ship = Ship(self.ch.type().id)
-        item = Rig(self.ch.type(
-            attrs={AttrId.rig_size: 10}, effects=[self.effect]).id)
+        self.fit.ship = Ship(self.mktype().id)
+        item = Rig(self.mktype(
+            attrs={AttrId.rig_size: 10},
+            effects=[self.effect]).id)
         self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.rig_size)
+        error = self.get_error(item, Restriction.rig_size)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_disabled_effect(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.rig_size: 6}).id)
-        item = Rig(self.ch.type(
-            attrs={AttrId.rig_size: 10}, effects=[self.effect]).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
+        item = Rig(self.mktype(
+            attrs={AttrId.rig_size: 10},
+            effects=[self.effect]).id)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.rig_size)
+        error = self.get_error(item, Restriction.rig_size)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.rig_size: 6}).id)
-        item = Rig(self.ch.type(
-            attrs={AttrId.rig_size: 10}, effects=[self.effect]).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
+        item = Rig(self.mktype(
+            attrs={AttrId.rig_size: 10},
+            effects=[self.effect]).id)
         self.fit.rigs.add(item)
         self.fit.source = None
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.rig_size)
+        error = self.get_error(item, Restriction.rig_size)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

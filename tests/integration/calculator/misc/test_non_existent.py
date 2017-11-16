@@ -31,7 +31,7 @@ class TestNonExistent(CalculatorTestCase):
     def test_attr_data_error(self):
         # Check case when attribute value is available, but cache handler
         # doesn't know about such attribute
-        item_type = self.ch.type(attrs={105: 20})
+        item_type = self.mktype(attrs={105: 20})
         item = Implant(item_type.id)
         self.fit.implants.add(item)
         # Action
@@ -53,8 +53,8 @@ class TestNonExistent(CalculatorTestCase):
     def test_absent_base_value_error(self):
         # Check case when default value of attribute cannot be determined. and
         # item type doesn't define any value either
-        attr = self.ch.attr()
-        item_type = self.ch.type()
+        attr = self.mkattr()
+        item_type = self.mktype()
         item = Implant(item_type.id)
         self.fit.implants.add(item)
         # Action
@@ -76,8 +76,8 @@ class TestNonExistent(CalculatorTestCase):
     def test_absent_default_value(self):
         # Default value should be used if attribute value is not available on
         # item type
-        attr = self.ch.attr(default_value=5.6)
-        item = Implant(self.ch.type().id)
+        attr = self.mkattr(default_value=5.6)
+        item = Implant(self.mktype().id)
         # Action
         self.fit.implants.add(item)
         # Verification

@@ -31,25 +31,25 @@ class TestSrcAttr(CalculatorTestCase):
 
     def test_absent_attr_combination(self):
         # Check how calculator reacts to source attribute which is absent
-        tgt_attr = self.ch.attr()
-        abs_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        invalid_modifier = self.mod(
+        tgt_attr = self.mkattr()
+        abs_attr = self.mkattr()
+        src_attr = self.mkattr()
+        invalid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=abs_attr.id)
-        valid_modifier = self.mod(
+        valid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
-        item_type = self.ch.type(
+        item_type = self.mktype(
             attrs={src_attr.id: 1.5, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_type.id)
         # Action

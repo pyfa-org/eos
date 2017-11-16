@@ -29,23 +29,26 @@ class TestTgtDomainGroupDomainShip(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        self.tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.domain_group,
             tgt_domain=ModDomain.ship,
             tgt_filter_extra_arg=35,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.influence_src = Implant(self.ch.type(
-            attrs={src_attr.id: 20}, effects=[effect]).id)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        self.influence_src = Implant(self.mktype(
+            attrs={src_attr.id: 20},
+            effects=[effect]).id)
 
     def test_parent_domain_ship(self):
-        influence_tgt = Rig(self.ch.type(
-            group_id=35, attrs={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.mktype(
+            group_id=35,
+            attrs={self.tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)
@@ -60,8 +63,9 @@ class TestTgtDomainGroupDomainShip(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_parent_domain_other(self):
-        influence_tgt = Booster(self.ch.type(
-            group_id=35, attrs={self.tgt_attr.id: 100}).id)
+        influence_tgt = Booster(self.mktype(
+            group_id=35,
+            attrs={self.tgt_attr.id: 100}).id)
         self.fit.boosters.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)
@@ -72,8 +76,9 @@ class TestTgtDomainGroupDomainShip(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_group_other(self):
-        influence_tgt = Rig(self.ch.type(
-            group_id=3, attrs={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.mktype(
+            group_id=3,
+            attrs={self.tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.implants.add(self.influence_src)

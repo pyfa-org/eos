@@ -28,26 +28,28 @@ class TestItemDmgSmartbomb(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.em_dmg)
-        self.ch.attr(attr_id=AttrId.thermal_dmg)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg)
-        self.ch.attr(attr_id=AttrId.explosive_dmg)
-        self.cycle_attr = self.ch.attr()
-        self.effect = self.ch.effect(
-            effect_id=EffectId.emp_wave, category_id=EffectCategoryId.active,
+        self.mkattr(attr_id=AttrId.em_dmg)
+        self.mkattr(attr_id=AttrId.thermal_dmg)
+        self.mkattr(attr_id=AttrId.kinetic_dmg)
+        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.cycle_attr = self.mkattr()
+        self.effect = self.mkeffect(
+            effect_id=EffectId.emp_wave,
+            category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
 
     def test_nominal_volley_generic(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
                     AttrId.thermal_dmg: 63,
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
@@ -62,10 +64,10 @@ class TestItemDmgSmartbomb(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_multiplier(self):
-        self.ch.attr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.dmg_multiplier)
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
                     AttrId.thermal_dmg: 63,
@@ -73,7 +75,8 @@ class TestItemDmgSmartbomb(ItemMixinTestCase):
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 5000,
                     AttrId.dmg_multiplier: 5.5},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
@@ -90,14 +93,15 @@ class TestItemDmgSmartbomb(ItemMixinTestCase):
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
                     AttrId.thermal_dmg: 63,
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.online)
         fit.modules.high.append(item)
         # Verification
@@ -114,14 +118,15 @@ class TestItemDmgSmartbomb(ItemMixinTestCase):
     def test_nominal_volley_disabled_effect(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
                     AttrId.thermal_dmg: 63,
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         fit.modules.high.append(item)
@@ -139,14 +144,15 @@ class TestItemDmgSmartbomb(ItemMixinTestCase):
     def test_nominal_dps_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
                     AttrId.thermal_dmg: 63,
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
@@ -163,14 +169,15 @@ class TestItemDmgSmartbomb(ItemMixinTestCase):
     def test_nominal_dps_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
                     AttrId.thermal_dmg: 63,
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification

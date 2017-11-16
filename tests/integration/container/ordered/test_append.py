@@ -38,8 +38,8 @@ class TestContainerOrderedAppend(ContainerTestCase):
 
     def test_item(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         # Action
         fit.modules.high.append(item1)
         # Verification
@@ -59,7 +59,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
 
     def test_item_type_failure(self):
         fit = Fit()
-        item = ModuleMed(self.ch.type().id)
+        item = ModuleMed(self.mktype().id)
         # Action
         with self.assertRaises(TypeError):
             fit.modules.high.append(item)
@@ -74,7 +74,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
     def test_item_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         fit_other.modules.high.append(item)
         # Action
         with self.assertRaises(ValueError):

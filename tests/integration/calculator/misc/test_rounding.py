@@ -28,8 +28,8 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestRounding(CalculatorTestCase):
 
     def test_cpu_down(self):
-        attr = self.ch.attr(attr_id=AttrId.cpu)
-        item = Implant(self.ch.type(attrs={attr.id: 2.3333}).id)
+        attr = self.mkattr(attr_id=AttrId.cpu)
+        item = Implant(self.mktype(attrs={attr.id: 2.3333}).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.33)
@@ -38,8 +38,8 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_up(self):
-        attr = self.ch.attr(attr_id=AttrId.cpu)
-        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
+        attr = self.mkattr(attr_id=AttrId.cpu)
+        item = Implant(self.mktype(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
@@ -48,19 +48,18 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_modified(self):
-        src_attr = self.ch.attr()
-        tgt_attr = self.ch.attr(attr_id=AttrId.cpu)
-        modifier = self.mod(
+        src_attr = self.mkattr()
+        tgt_attr = self.mkattr(attr_id=AttrId.cpu)
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
-        item = Implant(self.ch.type(
-            attrs={src_attr.id: 20, tgt_attr.id: 1.9444},
-            effects=[effect]).id)
+        item = Implant(self.mktype(
+            attrs={src_attr.id: 20, tgt_attr.id: 1.9444}, effects=[effect]).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 2.33)
@@ -69,8 +68,8 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_output(self):
-        attr = self.ch.attr(attr_id=AttrId.cpu_output)
-        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
+        attr = self.mkattr(attr_id=AttrId.cpu_output)
+        item = Implant(self.mktype(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
@@ -79,8 +78,8 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power(self):
-        attr = self.ch.attr(attr_id=AttrId.power)
-        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
+        attr = self.mkattr(attr_id=AttrId.power)
+        item = Implant(self.mktype(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
@@ -89,8 +88,8 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power_output(self):
-        attr = self.ch.attr(attr_id=AttrId.power_output)
-        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
+        attr = self.mkattr(attr_id=AttrId.power_output)
+        item = Implant(self.mktype(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
@@ -99,8 +98,8 @@ class TestRounding(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_other(self):
-        attr = self.ch.attr()
-        item = Implant(self.ch.type(attrs={attr.id: 2.6666}).id)
+        attr = self.mkattr()
+        item = Implant(self.mktype(attrs={attr.id: 2.6666}).id)
         self.fit.implants.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.6666)

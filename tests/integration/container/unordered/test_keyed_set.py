@@ -38,7 +38,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_add_item(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item = Skill(item_type.id)
         # Action
         fit.skills.add(item)
@@ -54,7 +54,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_add_item_type_failure(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item = Implant(item_type.id)
         # Action
         with self.assertRaises(TypeError):
@@ -72,7 +72,7 @@ class TestContainerKeyedSet(ContainerTestCase):
     def test_add_item_value_failure_has_fit(self):
         fit = Fit()
         fit_other = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item = Skill(item_type.id)
         fit_other.skills.add(item)
         # Action
@@ -91,7 +91,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_add_item_value_failure_existing_type_id(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item1 = Skill(item_type.id)
         item2 = Skill(item_type.id)
         fit.skills.add(item1)
@@ -112,7 +112,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_remove_item(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item = Skill(item_type.id)
         fit.skills.add(item)
         # Action
@@ -127,7 +127,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_remove_item_failure(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item = Skill(item_type.id)
         # Action
         with self.assertRaises(KeyError):
@@ -144,7 +144,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_delitem_item(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item = Skill(item_type.id)
         fit.skills.add(item)
         # Action
@@ -159,7 +159,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_delitem_item_failure(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item = Skill(item_type.id)
         fit.skills.add(item)
         # Action
@@ -176,7 +176,7 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_key_integrity(self):
         fit = Fit()
-        item_type = self.ch.type()
+        item_type = self.mktype()
         item1 = Skill(item_type.id)
         item2 = Skill(item_type.id)
         fit.skills.add(item1)
@@ -191,9 +191,9 @@ class TestContainerKeyedSet(ContainerTestCase):
 
     def test_clear(self):
         fit = Fit()
-        item1_type = self.ch.type()
+        item1_type = self.mktype()
         item1 = Skill(item1_type.id)
-        item2_type = self.ch.type()
+        item2_type = self.mktype()
         item2 = Skill(item2_type.id)
         fit.skills.add(item1)
         fit.skills.add(item2)

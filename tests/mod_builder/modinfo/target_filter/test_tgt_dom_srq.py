@@ -39,8 +39,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(
-            modifier.tgt_filter, ModTgtFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModDomain.self)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr_id, 22)
@@ -54,8 +53,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(
-            modifier.tgt_filter, ModTgtFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModDomain.self)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr_id, 22)
@@ -84,8 +82,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(
-            modifier.tgt_filter, ModTgtFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModDomain.ship)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr_id, 22)
@@ -99,8 +96,7 @@ class TestBuilderModinfoTgtDomSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(
-            modifier.tgt_filter, ModTgtFilter.domain_skillrq)
+        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain_skillrq)
         self.assertEqual(modifier.tgt_domain, ModDomain.target)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr_id, 22)

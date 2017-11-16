@@ -31,17 +31,17 @@ class TestOperatorUnknown(CalculatorTestCase):
 
     def test_log_other(self):
         # Check how unknown operator value influences attribute calculator
-        tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        invalid_modifier = self.mod(
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        invalid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=1008,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[invalid_modifier])
-        item_type = self.ch.type(
+        item_type = self.mktype(
             attrs={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
         item = Rig(item_type.id)
         # Action
@@ -63,25 +63,26 @@ class TestOperatorUnknown(CalculatorTestCase):
     def test_log_unorderable_combination(self):
         # Check how non-orderable operator value influences attribute
         # calculator. Previously, bug in calculation method made it to crash
-        tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        invalid_modifier = self.mod(
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        invalid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=None,
             src_attr_id=src_attr.id)
-        valid_modifier = self.mod(
+        valid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
-        item_type = self.ch.type(
-            attrs={src_attr.id: 1.2, tgt_attr.id: 100}, effects=[effect])
+        item_type = self.mktype(
+            attrs={src_attr.id: 1.2, tgt_attr.id: 100},
+            effects=[effect])
         item = Rig(item_type.id)
         # Action
         self.fit.rigs.add(item)
@@ -100,24 +101,24 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_combination(self):
-        tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        invalid_modifier = self.mod(
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        invalid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=1008,
             src_attr_id=src_attr.id)
-        valid_modifier = self.mod(
+        valid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
-        item = Rig(self.ch.type(
+        item = Rig(self.mktype(
             attrs={src_attr.id: 1.5, tgt_attr.id: 100},
             effects=[effect]).id)
         # Action

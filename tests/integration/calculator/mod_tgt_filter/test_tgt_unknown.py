@@ -31,9 +31,9 @@ class TestTgtFilterUnknown(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.tgt_attr = tgt_attr = self.ch.attr()
-        self.src_attr = src_attr = self.ch.attr()
-        self.invalid_modifier = self.mod(
+        self.tgt_attr = tgt_attr = self.mkattr()
+        self.src_attr = src_attr = self.mkattr()
+        self.invalid_modifier = self.mkmod(
             tgt_filter=26500,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
@@ -41,10 +41,10 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             src_attr_id=src_attr.id)
 
     def test_log(self):
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(self.invalid_modifier,))
-        item_type = self.ch.type(
+        item_type = self.mktype(
             attrs={self.src_attr.id: 20, self.tgt_attr: 100},
             effects=[effect])
         item = Rig(item_type.id)
@@ -64,16 +64,16 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
 
     def test_combination(self):
-        valid_modifier = self.mod(
+        valid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=self.src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(self.invalid_modifier, valid_modifier))
-        item = Rig(self.ch.type(
+        item = Rig(self.mktype(
             attrs={self.src_attr.id: 20, self.tgt_attr.id: 100},
             effects=[effect]).id)
         # Action

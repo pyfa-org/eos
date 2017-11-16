@@ -28,25 +28,25 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.hp)
-        self.ch.attr(attr_id=AttrId.em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_hp)
-        self.ch.attr(attr_id=AttrId.armor_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_capacity)
-        self.ch.attr(attr_id=AttrId.shield_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.hp)
+        self.mkattr(attr_id=AttrId.em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_hp)
+        self.mkattr(attr_id=AttrId.armor_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_capacity)
+        self.mkattr(attr_id=AttrId.shield_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_explosive_dmg_resonance)
 
     def test_equal(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -74,7 +74,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_worst_em(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.7,
@@ -102,7 +102,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_worst_thermal(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.7,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -130,7 +130,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_worst_kinetic(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.7,
             AttrId.thermal_dmg_resonance: 0.7,
@@ -158,7 +158,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_worst_explosive(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.7,
             AttrId.thermal_dmg_resonance: 0.7,
@@ -186,7 +186,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_mixed(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.7,
@@ -214,7 +214,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_hp_hull(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
             AttrId.kinetic_dmg_resonance: 0.8,
@@ -241,7 +241,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_hp_armor(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -268,7 +268,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_hp_shield(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -295,7 +295,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_hp_all(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
             AttrId.kinetic_dmg_resonance: 0.8,
@@ -320,7 +320,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_resist_em(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.thermal_dmg_resonance: 0.8,
             AttrId.kinetic_dmg_resonance: 0.8,
@@ -347,7 +347,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_resist_thermal(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -374,7 +374,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_resist_kinetic(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -401,7 +401,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_resist_explosive(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -428,7 +428,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_none_resist_all(self):
         fit = Fit()
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,
@@ -452,7 +452,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit(source=None)
-        item = Ship(self.ch.type(attrs={
+        item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
             AttrId.em_dmg_resonance: 0.8,
             AttrId.thermal_dmg_resonance: 0.8,

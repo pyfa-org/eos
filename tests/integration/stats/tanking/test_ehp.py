@@ -28,25 +28,25 @@ class TestEhp(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.hp)
-        self.ch.attr(attr_id=AttrId.em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_hp)
-        self.ch.attr(attr_id=AttrId.armor_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.armor_explosive_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_capacity)
-        self.ch.attr(attr_id=AttrId.shield_em_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_thermal_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_kinetic_dmg_resonance)
-        self.ch.attr(attr_id=AttrId.shield_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.hp)
+        self.mkattr(attr_id=AttrId.em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_hp)
+        self.mkattr(attr_id=AttrId.armor_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_capacity)
+        self.mkattr(attr_id=AttrId.shield_em_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_thermal_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_kinetic_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_explosive_dmg_resonance)
 
     def test_relay(self):
         # Check that stats service relays ehp stats properly
-        self.fit.ship = Ship(self.ch.type(attrs={
+        self.fit.ship = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.5,
             AttrId.thermal_dmg_resonance: 0.5,
@@ -63,8 +63,7 @@ class TestEhp(StatsTestCase):
             AttrId.shield_kinetic_dmg_resonance: 0.5,
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         # Action
-        ehp_stats = self.fit.stats.get_ehp(
-            DmgProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        ehp_stats = self.fit.stats.get_ehp(DmgProfile(1, 1, 1, 1))
         # Verification
         self.assertAlmostEqual(ehp_stats.hull, 20)
         self.assertAlmostEqual(ehp_stats.armor, 30)
@@ -77,8 +76,7 @@ class TestEhp(StatsTestCase):
     def test_no_ship(self):
         # Check that something sane is returned in case of no ship
         # Action
-        ehp_stats = self.fit.stats.get_ehp(
-            DmgProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        ehp_stats = self.fit.stats.get_ehp(DmgProfile(1, 1, 1, 1))
         # Verification
         self.assertIsNone(ehp_stats.hull)
         self.assertIsNone(ehp_stats.armor)
@@ -89,7 +87,7 @@ class TestEhp(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(attrs={
+        self.fit.ship = Ship(self.mktype(attrs={
             AttrId.hp: 10,
             AttrId.em_dmg_resonance: 0.5,
             AttrId.thermal_dmg_resonance: 0.5,
@@ -107,8 +105,7 @@ class TestEhp(StatsTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.5}).id)
         self.fit.source = None
         # Action
-        ehp_stats = self.fit.stats.get_ehp(
-            DmgProfile(em=1, thermal=1, kinetic=1, explosive=1))
+        ehp_stats = self.fit.stats.get_ehp(DmgProfile(1, 1, 1, 1))
         # Verification
         self.assertIsNone(ehp_stats.hull)
         self.assertIsNone(ehp_stats.armor)

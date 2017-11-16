@@ -28,20 +28,22 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtItemAwaitingDomainShip(CalculatorTestCase):
 
     def test_ship(self):
-        tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.ship,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        influence_src = Implant(self.ch.type(
-            attrs={src_attr.id: 20}, effects=[effect]).id)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        influence_src = Implant(self.mktype(
+            attrs={src_attr.id: 20},
+            effects=[effect]).id)
         self.fit.implants.add(influence_src)
-        influence_tgt = Ship(self.ch.type(attrs={tgt_attr.id: 100}).id)
+        influence_tgt = Ship(self.mktype(attrs={tgt_attr.id: 100}).id)
         # Action
         # Here we add influence target after adding source, to make sure
         # modifiers wait for target to appear, and then are applied onto it

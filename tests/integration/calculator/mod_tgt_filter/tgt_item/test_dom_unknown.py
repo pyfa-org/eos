@@ -28,24 +28,24 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtItemDomainUnknown(CalculatorTestCase):
 
     def test_combination(self):
-        tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        invalid_modifier = self.mod(
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        invalid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=1972,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        valid_modifier = self.mod(
+        valid_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
-        item = Ship(self.ch.type(
+        item = Ship(self.mktype(
             attrs={src_attr.id: 20, tgt_attr.id: 100},
             effects=[effect]).id)
         # Action

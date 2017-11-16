@@ -38,7 +38,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
 
     def test_item_to_empty(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         # Action
         fit.modules.high.equip(item)
         # Verification
@@ -51,7 +51,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
 
     def test_item_type_failure(self):
         fit = Fit()
-        item = ModuleMed(self.ch.type().id)
+        item = ModuleMed(self.mktype().id)
         # Action
         with self.assertRaises(TypeError):
             fit.modules.high.equip(item)
@@ -66,7 +66,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
     def test_item_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         fit_other.modules.high.equip(item)
         # Action
         with self.assertRaises(ValueError):
@@ -84,9 +84,9 @@ class TestContainerOrderedEquip(ContainerTestCase):
     def test_item_solid(self):
         fit = Fit()
         # Check case when all slots of list are filled
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
-        item3 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
+        item3 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Action
@@ -104,10 +104,10 @@ class TestContainerOrderedEquip(ContainerTestCase):
     def test_item_first_hole(self):
         fit = Fit()
         # Check that leftmost empty slot is taken
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
-        item3 = ModuleHigh(self.ch.type().id)
-        item4 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
+        item3 = ModuleHigh(self.mktype().id)
+        item4 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.insert(3, item2)
         fit.modules.high.insert(6, item3)

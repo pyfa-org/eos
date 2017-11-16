@@ -32,9 +32,9 @@ class TestModifierPython(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.attr1 = attr1 = self.ch.attr()
-        self.attr2 = attr2 = self.ch.attr()
-        self.attr3 = attr3 = self.ch.attr()
+        self.attr1 = attr1 = self.mkattr()
+        self.attr2 = attr2 = self.mkattr()
+        self.attr3 = attr3 = self.mkattr()
 
         class TestPythonModifier(BasePythonModifier):
 
@@ -66,15 +66,15 @@ class TestModifierPython(CalculatorTestCase):
                     return True
                 return False
 
-        self.python_effect = self.ch.effect(
+        self.python_effect = self.mkeffect(
             category_id=EffectCategoryId.online,
             modifiers=(TestPythonModifier(),))
-        self.online_effect = self.ch.effect(
+        self.online_effect = self.mkeffect(
             effect_id=EffectId.online, category_id=EffectCategoryId.online)
-        self.fit.ship = Ship(self.ch.type(attrs={attr3.id: 3}).id)
+        self.fit.ship = Ship(self.mktype(attrs={attr3.id: 3}).id)
 
     def test_enabling(self):
-        item = ModuleHigh(self.ch.type(
+        item = ModuleHigh(self.mktype(
             attrs={self.attr1.id: 100, self.attr2.id: 2},
             effects=(self.python_effect, self.online_effect)).id)
         self.fit.modules.high.append(item)
@@ -89,7 +89,7 @@ class TestModifierPython(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_disabling(self):
-        item = ModuleHigh(self.ch.type(
+        item = ModuleHigh(self.mktype(
             attrs={self.attr1.id: 100, self.attr2.id: 2},
             effects=(self.python_effect, self.online_effect)).id)
         self.fit.modules.high.append(item)
@@ -108,16 +108,16 @@ class TestModifierPython(CalculatorTestCase):
         # Here dogma modifier changes value of one of attributes which are used
         # as source by python modifier, and sees if python modifier target value
         # is updated
-        attr4 = self.ch.attr()
-        dogma_modifier = self.mod(
+        attr4 = self.mkattr()
+        dogma_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr2.id,
             operator=ModOperator.post_mul,
             src_attr_id=attr4.id)
-        dogma_effect = self.ch.effect(
+        dogma_effect = self.mkeffect(
             category_id=EffectCategoryId.active, modifiers=[dogma_modifier])
-        item = ModuleHigh(self.ch.type(
+        item = ModuleHigh(self.mktype(
             attrs={self.attr1.id: 100, self.attr2.id: 2, attr4.id: 5},
             effects=(self.python_effect, self.online_effect, dogma_effect),
             default_effect=dogma_effect).id)
@@ -136,26 +136,26 @@ class TestModifierPython(CalculatorTestCase):
     def test_unsubscription(self):
         # Make sure that when python modifier unsubscribes from message type
         # needed by calculator, calculator still receives that message type
-        dogma_modifier1 = self.mod(
+        dogma_modifier1 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr1.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.attr2.id)
-        dogma_effect1 = self.ch.effect(
+        dogma_effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[dogma_modifier1])
-        dogma_modifier2 = self.mod(
+        dogma_modifier2 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr2.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.attr3.id)
-        dogma_effect2 = self.ch.effect(
+        dogma_effect2 = self.mkeffect(
             category_id=EffectCategoryId.online, modifiers=[dogma_modifier2])
-        python_item = ModuleHigh(self.ch.type(
+        python_item = ModuleHigh(self.mktype(
             attrs={self.attr1.id: 100, self.attr2.id: 2},
             effects=(self.python_effect, self.online_effect)).id)
-        dogma_item = ModuleHigh(self.ch.type(
+        dogma_item = ModuleHigh(self.mktype(
             attrs={self.attr1.id: 100, self.attr2.id: 2, self.attr3.id: 3},
             effects=(dogma_effect1, dogma_effect2, self.online_effect)).id)
         self.fit.modules.high.append(python_item)

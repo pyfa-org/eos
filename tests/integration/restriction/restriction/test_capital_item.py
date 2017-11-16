@@ -32,33 +32,31 @@ class TestCapitalItem(RestrictionTestCase):
         # Check that error is raised on attempt to add capital item to fit w/o
         # ship
         item = ModuleHigh(
-            self.ch.type(attrs={AttrId.volume: 3501}).id,
+            self.mktype(attrs={AttrId.volume: 3501}).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.item_volume, 3501)
-        self.assertEqual(restriction_error.max_subcap_volume, 3500)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.item_volume, 3501)
+        self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_subcap(self):
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         item = ModuleHigh(
-            self.ch.type(attrs={AttrId.volume: 3501}).id,
+            self.mktype(attrs={AttrId.volume: 3501}).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.item_volume, 3501)
-        self.assertEqual(restriction_error.max_subcap_volume, 3500)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.item_volume, 3501)
+        self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -66,19 +64,18 @@ class TestCapitalItem(RestrictionTestCase):
     def test_fail_subcap_capattr_zero(self):
         # Make sure that mere presence of isCapital attr on a ship (with zero
         # value) doesn't make it capital
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.is_capital_size: 0.0}).id)
         item = ModuleHigh(
-            self.ch.type(attrs={AttrId.volume: 3501}).id,
+            self.mktype(attrs={AttrId.volume: 3501}).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.item_volume, 3501)
-        self.assertEqual(restriction_error.max_subcap_volume, 3500)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.item_volume, 3501)
+        self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -86,14 +83,13 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_subcap_volume_subcap(self):
         # Make sure no error raised when non-capital item is added to fit
         item = ModuleHigh(
-            self.ch.type(attrs={AttrId.volume: 3500}).id,
+            self.mktype(attrs={AttrId.volume: 3500}).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -101,60 +97,56 @@ class TestCapitalItem(RestrictionTestCase):
     def test_pass_subcap_volume_not_specified(self):
         # Check that items with no volume attribute on item type are not
         # restricted
-        item = ModuleHigh(self.ch.type().id, state=State.offline)
+        item = ModuleHigh(self.mktype().id, state=State.offline)
         self.fit.modules.high.append(item)
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_capital(self):
         # Check that capital items can be added to capital ship
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.is_capital_size: 1.0}).id)
         item = ModuleHigh(
-            self.ch.type(attrs={AttrId.volume: 3501}).id,
+            self.mktype(attrs={AttrId.volume: 3501}).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_other_class(self):
-        self.fit.ship = Ship(self.ch.type().id)
-        item = Rig(self.ch.type(attrs={AttrId.volume: 3501}).id)
+        self.fit.ship = Ship(self.mktype().id)
+        item = Rig(self.mktype(attrs={AttrId.volume: 3501}).id)
         self.fit.rigs.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         item = ModuleHigh(
-            self.ch.type(attrs={AttrId.volume: 3501}).id,
+            self.mktype(attrs={AttrId.volume: 3501}).id,
             state=State.offline)
         self.fit.modules.high.append(item)
         self.fit.source = None
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.capital_item)
+        error = self.get_error(item, Restriction.capital_item)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

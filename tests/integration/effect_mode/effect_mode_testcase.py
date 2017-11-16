@@ -41,9 +41,9 @@ class EffectModeTestCase(IntegrationTestCase):
     def setUp(self):
         IntegrationTestCase.setUp(self)
         self.fit = Fit()
-        self.src_attr = self.ch.attr()
-        self.tgt_attr = self.ch.attr()
-        self.modifier = self.mod(
+        self.src_attr = self.mkattr()
+        self.tgt_attr = self.mkattr()
+        self.modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,

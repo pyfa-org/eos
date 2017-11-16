@@ -29,19 +29,20 @@ class TestLaunchedDrone(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.max_active_drones)
+        self.mkattr(attr_id=AttrId.max_active_drones)
 
     def test_output(self):
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=AttrId.max_active_drones,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        mod_effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.fit.character = Character(self.ch.type(
+        mod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
@@ -61,7 +62,7 @@ class TestLaunchedDrone(StatsTestCase):
 
     def test_output_no_attr(self):
         # None for slot quantity when no attribute on ship
-        self.fit.character = Character(self.ch.type().id)
+        self.fit.character = Character(self.mktype().id)
         # Verification
         self.assertIsNone(self.fit.stats.launched_drones.total)
         # Cleanup
@@ -76,8 +77,8 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
-        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
-        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
+        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
         # Verification
         self.assertEqual(self.fit.stats.launched_drones.used, 2)
         # Cleanup
@@ -85,7 +86,7 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_state(self):
-        self.fit.subsystems.add(Subsystem(self.ch.type().id))
+        self.fit.subsystems.add(Subsystem(self.mktype().id))
         # Verification
         self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
@@ -94,7 +95,7 @@ class TestLaunchedDrone(StatsTestCase):
 
     def test_use_other_item_class(self):
         self.fit.modules.med.append(
-            ModuleMed(self.ch.type().id, state=State.online))
+            ModuleMed(self.mktype().id, state=State.online))
         # Verification
         self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
@@ -102,10 +103,10 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.character = Character(self.ch.type(
+        self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 3}).id)
-        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
-        self.fit.drones.add(Drone(self.ch.type().id, state=State.online))
+        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
+        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
         self.fit.source = None
         # Verification
         self.assertEqual(self.fit.stats.launched_drones.used, 0)

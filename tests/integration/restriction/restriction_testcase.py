@@ -35,7 +35,7 @@ class RestrictionTestCase(IntegrationTestCase):
         IntegrationTestCase.setUp(self)
         self.fit = Fit()
 
-    def get_restriction_error(self, item, restriction):
+    def get_error(self, item, restriction):
         """Get restriction error for passed item of passed restriction type.
 
         Args:

@@ -29,52 +29,52 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 class TestModeMultiset(EffectModeTestCase):
 
     def test_active(self):
-        src_attr_fullcomp = self.ch.attr()
-        tgt_attr_fullcomp = self.ch.attr()
-        modifier_fullcomp = self.mod(
+        src_attr_fullcomp = self.mkattr()
+        tgt_attr_fullcomp = self.mkattr()
+        modifier_fullcomp = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr_fullcomp.id,
             operator=ModOperator.mod_add,
             src_attr_id=src_attr_fullcomp.id)
-        effect_fullcomp = self.ch.effect(
+        effect_fullcomp = self.mkeffect(
             category_id=EffectCategoryId.active,
             modifiers=[modifier_fullcomp])
-        src_attr_statecomp = self.ch.attr()
-        tgt_attr_statecomp = self.ch.attr()
-        modifier_statecomp = self.mod(
+        src_attr_statecomp = self.mkattr()
+        tgt_attr_statecomp = self.mkattr()
+        modifier_statecomp = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr_statecomp.id,
             operator=ModOperator.mod_add,
             src_attr_id=src_attr_statecomp.id)
-        effect_statecomp = self.ch.effect(
+        effect_statecomp = self.mkeffect(
             category_id=EffectCategoryId.active,
             modifiers=[modifier_statecomp])
-        src_attr_forcerun = self.ch.attr()
-        tgt_attr_forcerun = self.ch.attr()
-        modifier_forcerun = self.mod(
+        src_attr_forcerun = self.mkattr()
+        tgt_attr_forcerun = self.mkattr()
+        modifier_forcerun = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr_forcerun.id,
             operator=ModOperator.mod_add,
             src_attr_id=src_attr_forcerun.id)
-        effect_forcerun = self.ch.effect(
+        effect_forcerun = self.mkeffect(
             category_id=EffectCategoryId.overload,
             modifiers=[modifier_forcerun])
-        src_attr_forcestop = self.ch.attr()
-        tgt_attr_forcestop = self.ch.attr()
-        modifier_forcestop = self.mod(
+        src_attr_forcestop = self.mkattr()
+        tgt_attr_forcestop = self.mkattr()
+        modifier_forcestop = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr_forcestop.id,
             operator=ModOperator.mod_add,
             src_attr_id=src_attr_forcestop.id)
-        effect_forcestop = self.ch.effect(
+        effect_forcestop = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_forcestop])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     tgt_attr_fullcomp.id: 10, src_attr_fullcomp.id: 2,
                     tgt_attr_statecomp.id: 10, src_attr_statecomp.id: 2,

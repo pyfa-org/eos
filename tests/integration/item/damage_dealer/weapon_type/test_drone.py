@@ -28,13 +28,13 @@ class TestItemDmgDrone(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.dmg_multiplier)
-        self.ch.attr(attr_id=AttrId.em_dmg)
-        self.ch.attr(attr_id=AttrId.thermal_dmg)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg)
-        self.ch.attr(attr_id=AttrId.explosive_dmg)
-        self.cycle_attr = self.ch.attr()
-        self.effect = self.ch.effect(
+        self.mkattr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.em_dmg)
+        self.mkattr(attr_id=AttrId.thermal_dmg)
+        self.mkattr(attr_id=AttrId.kinetic_dmg)
+        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.cycle_attr = self.mkattr()
+        self.effect = self.mkeffect(
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
@@ -42,7 +42,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
     def test_nominal_volley_generic(self):
         fit = Fit()
         item = Drone(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.em_dmg: 52,
@@ -50,7 +50,8 @@ class TestItemDmgDrone(ItemMixinTestCase):
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)
         # Verification
@@ -67,14 +68,15 @@ class TestItemDmgDrone(ItemMixinTestCase):
     def test_no_multiplier(self):
         fit = Fit()
         item = Drone(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
                     AttrId.thermal_dmg: 63,
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)
         # Verification
@@ -91,7 +93,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
         item = Drone(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.em_dmg: 52,
@@ -99,7 +101,8 @@ class TestItemDmgDrone(ItemMixinTestCase):
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.online)
         fit.drones.add(item)
         # Verification
@@ -116,7 +119,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
     def test_nominal_voley_disabled_effect(self):
         fit = Fit()
         item = Drone(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.em_dmg: 52,
@@ -124,7 +127,8 @@ class TestItemDmgDrone(ItemMixinTestCase):
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         fit.drones.add(item)
@@ -142,7 +146,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
     def test_nominal_dps_no_reload(self):
         fit = Fit()
         item = Drone(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.em_dmg: 52,
@@ -150,7 +154,8 @@ class TestItemDmgDrone(ItemMixinTestCase):
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)
         # Verification
@@ -167,7 +172,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
     def test_nominal_dps_reload(self):
         fit = Fit()
         item = Drone(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.em_dmg: 52,
@@ -175,7 +180,8 @@ class TestItemDmgDrone(ItemMixinTestCase):
                     AttrId.kinetic_dmg: 74,
                     AttrId.explosive_dmg: 85,
                     self.cycle_attr.id: 4000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.drones.add(item)
         # Verification

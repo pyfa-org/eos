@@ -39,7 +39,7 @@ class CacheHandler:
         self.__allocated_attr_id = 0
         self.__allocated_effect_id = 0
 
-    def type(self, type_id=None, customize=False, **kwargs):
+    def mktype(self, type_id=None, customize=False, **kwargs):
         # Allocate & verify ID
         if type_id is None:
             type_id = self.allocate_type_id()
@@ -50,7 +50,7 @@ class CacheHandler:
         self.__type_data[item_type.id] = item_type
         return item_type
 
-    def attr(self, attr_id=None, **kwargs):
+    def mkattr(self, attr_id=None, **kwargs):
         # Allocate & verify ID
         if attr_id is None:
             attr_id = self.allocate_attr_id()
@@ -61,7 +61,7 @@ class CacheHandler:
         self.__attr_data[attr.id] = attr
         return attr
 
-    def effect(self, effect_id=None, customize=False, **kwargs):
+    def mkeffect(self, effect_id=None, customize=False, **kwargs):
         # Allocate & verify ID
         if effect_id is None:
             effect_id = self.allocate_effect_id()

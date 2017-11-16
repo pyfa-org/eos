@@ -27,8 +27,8 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_none(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Action
@@ -53,8 +53,8 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_item(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Action
@@ -73,8 +73,8 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_item_failure(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         # Action
         with self.assertRaises(ValueError):
@@ -95,9 +95,9 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_item_after_nones(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
-        item3 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
+        item3 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.place(3, item2)
         fit.modules.high.place(6, item3)
@@ -124,8 +124,8 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_index_item(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Action
@@ -144,7 +144,7 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_index_none(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         fit.modules.high.place(1, item)
         # Action
         fit.modules.high.free(0)
@@ -159,9 +159,9 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_index_after_nones(self):
         fit = Fit()
-        item1 = ModuleHigh(self.ch.type().id)
-        item2 = ModuleHigh(self.ch.type().id)
-        item3 = ModuleHigh(self.ch.type().id)
+        item1 = ModuleHigh(self.mktype().id)
+        item2 = ModuleHigh(self.mktype().id)
+        item3 = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.place(3, item2)
         fit.modules.high.place(6, item3)
@@ -188,7 +188,7 @@ class TestContainerOrderedFree(ContainerTestCase):
 
     def test_index_outside(self):
         fit = Fit()
-        item = ModuleHigh(self.ch.type().id)
+        item = ModuleHigh(self.mktype().id)
         fit.modules.high.append(item)
         # Action
         with self.assertRaises(IndexError):

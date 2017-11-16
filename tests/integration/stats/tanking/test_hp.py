@@ -28,14 +28,15 @@ class TestHp(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.hp)
-        self.ch.attr(attr_id=AttrId.armor_hp)
-        self.ch.attr(attr_id=AttrId.shield_capacity)
+        self.mkattr(attr_id=AttrId.hp)
+        self.mkattr(attr_id=AttrId.armor_hp)
+        self.mkattr(attr_id=AttrId.shield_capacity)
 
     def test_relay(self):
         # Check that stats service relays hp stats properly
-        self.fit.ship = Ship(self.ch.type(attrs={
-            AttrId.hp: 10, AttrId.armor_hp: 15,
+        self.fit.ship = Ship(self.mktype(attrs={
+            AttrId.hp: 10,
+            AttrId.armor_hp: 15,
             AttrId.shield_capacity: 20}).id)
         # Action
         hp_stats = self.fit.stats.hp
@@ -63,8 +64,9 @@ class TestHp(StatsTestCase):
 
     def test_no_source(self):
         # Check that stats service relays hp stats properly
-        self.fit.ship = Ship(self.ch.type(attrs={
-            AttrId.hp: 10, AttrId.armor_hp: 15,
+        self.fit.ship = Ship(self.mktype(attrs={
+            AttrId.hp: 10,
+            AttrId.armor_hp: 15,
             AttrId.shield_capacity: 20}).id)
         self.fit.source = None
         # Action

@@ -30,101 +30,92 @@ class TestBoosterIndex(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.index_attr = self.ch.attr(attr_id=AttrId.boosterness)
+        self.index_attr = self.mkattr(attr_id=AttrId.boosterness)
 
     def test_fail(self):
         # Check that if 2 or more items are put into single slot index, error is
         # raised
-        item_type = self.ch.type(attrs={self.index_attr.id: 120})
+        item_type = self.mktype(attrs={self.index_attr.id: 120})
         item1 = Booster(item_type.id)
         item2 = Booster(item_type.id)
         self.fit.boosters.add(item1)
         self.fit.boosters.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.booster_index)
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.slot_index, 120)
+        error1 = self.get_error(item1, Restriction.booster_index)
+        self.assertIsNotNone(error1)
+        self.assertEqual(error1.slot_index, 120)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.booster_index)
-        self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.slot_index, 120)
+        error2 = self.get_error(item2, Restriction.booster_index)
+        self.assertIsNotNone(error2)
+        self.assertEqual(error2.slot_index, 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_other_item_class(self):
         # Make sure items of all classes are affected
-        item_type = self.ch.type(attrs={self.index_attr.id: 120})
+        item_type = self.mktype(attrs={self.index_attr.id: 120})
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.booster_index)
+        error1 = self.get_error(item1, Restriction.booster_index)
         # Verification
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.slot_index, 120)
+        self.assertIsNotNone(error1)
+        self.assertEqual(error1.slot_index, 120)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.booster_index)
+        error2 = self.get_error(item2, Restriction.booster_index)
         # Verification
-        self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.slot_index, 120)
+        self.assertIsNotNone(error2)
+        self.assertEqual(error2.slot_index, 120)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
         # Single item which takes some slot shouldn't trigger any errors
-        item = Booster(self.ch.type(attrs={self.index_attr.id: 120}).id)
+        item = Booster(self.mktype(attrs={self.index_attr.id: 120}).id)
         self.fit.boosters.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.booster_index)
+        error = self.get_error(item, Restriction.booster_index)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_different(self):
         # Items taking different slots shouldn't trigger any errors
-        item1 = Booster(self.ch.type(attrs={self.index_attr.id: 120}).id)
-        item2 = Booster(self.ch.type(attrs={self.index_attr.id: 121}).id)
+        item1 = Booster(self.mktype(attrs={self.index_attr.id: 120}).id)
+        item2 = Booster(self.mktype(attrs={self.index_attr.id: 121}).id)
         self.fit.boosters.add(item1)
         self.fit.boosters.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.booster_index)
+        error1 = self.get_error(item1, Restriction.booster_index)
         # Verification
-        self.assertIsNone(restriction_error1)
+        self.assertIsNone(error1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.booster_index)
+        error2 = self.get_error(item2, Restriction.booster_index)
         # Verification
-        self.assertIsNone(restriction_error2)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        item_type = self.ch.type(attrs={self.index_attr.id: 120})
+        item_type = self.mktype(attrs={self.index_attr.id: 120})
         item1 = Booster(item_type.id)
         item2 = Booster(item_type.id)
         self.fit.boosters.add(item1)
         self.fit.boosters.add(item2)
         self.fit.source = None
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.booster_index)
-        self.assertIsNone(restriction_error1)
+        error1 = self.get_error(item1, Restriction.booster_index)
+        self.assertIsNone(error1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.booster_index)
-        self.assertIsNone(restriction_error2)
+        error2 = self.get_error(item2, Restriction.booster_index)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

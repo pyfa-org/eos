@@ -29,22 +29,23 @@ class TestMedSlot(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.med_slots)
-        self.effect = self.ch.effect(
+        self.mkattr(attr_id=AttrId.med_slots)
+        self.effect = self.mkeffect(
             effect_id=EffectId.med_power, category_id=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=AttrId.med_slots,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        mod_effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.fit.ship = Ship(self.ch.type(
+        mod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.med_slots: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
@@ -63,7 +64,7 @@ class TestMedSlot(StatsTestCase):
 
     def test_output_no_attr(self):
         # None for slot quantity when no attribute on ship
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         # Verification
         self.assertIsNone(self.fit.stats.med_slots.total)
         # Cleanup
@@ -79,9 +80,9 @@ class TestMedSlot(StatsTestCase):
 
     def test_use_multiple(self):
         self.fit.modules.med.append(
-            ModuleMed(self.ch.type(effects=[self.effect]).id))
+            ModuleMed(self.mktype(effects=[self.effect]).id))
         self.fit.modules.med.append(
-            ModuleMed(self.ch.type(effects=[self.effect]).id))
+            ModuleMed(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.med_slots.used, 2)
         # Cleanup
@@ -90,9 +91,9 @@ class TestMedSlot(StatsTestCase):
 
     def test_use_multiple_with_none(self):
         self.fit.modules.med.place(
-            1, ModuleMed(self.ch.type(effects=[self.effect]).id))
+            1, ModuleMed(self.mktype(effects=[self.effect]).id))
         self.fit.modules.med.place(
-            3, ModuleMed(self.ch.type(effects=[self.effect]).id))
+            3, ModuleMed(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.med_slots.used, 4)
         # Cleanup
@@ -100,8 +101,8 @@ class TestMedSlot(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_disabled_effect(self):
-        item1 = ModuleMed(self.ch.type(effects=[self.effect]).id)
-        item2 = ModuleMed(self.ch.type(effects=[self.effect]).id)
+        item1 = ModuleMed(self.mktype(effects=[self.effect]).id)
+        item2 = ModuleMed(self.mktype(effects=[self.effect]).id)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.modules.med.append(item1)
         self.fit.modules.med.append(item2)
@@ -113,7 +114,7 @@ class TestMedSlot(StatsTestCase):
 
     def test_use_other_item_class(self):
         self.fit.modules.low.place(
-            3, ModuleLow(self.ch.type(effects=[self.effect]).id))
+            3, ModuleLow(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.med_slots.used, 4)
         # Cleanup
@@ -121,12 +122,11 @@ class TestMedSlot(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.med_slots: 3}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 3}).id)
         self.fit.modules.med.append(
-            ModuleMed(self.ch.type(effects=[self.effect]).id))
+            ModuleMed(self.mktype(effects=[self.effect]).id))
         self.fit.modules.med.append(
-            ModuleMed(self.ch.type(effects=[self.effect]).id))
+            ModuleMed(self.mktype(effects=[self.effect]).id))
         self.fit.source = None
         # Verification
         self.assertEqual(self.fit.stats.med_slots.used, 0)

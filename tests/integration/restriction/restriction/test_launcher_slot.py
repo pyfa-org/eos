@@ -30,25 +30,24 @@ class TestLauncherSlot(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.launcher_slots_left)
-        self.effect = self.ch.effect(
+        self.mkattr(attr_id=AttrId.launcher_slots_left)
+        self.effect = self.mkeffect(
             effect_id=EffectId.launcher_fitted,
             category_id=EffectCategoryId.passive)
 
     def test_fail_excess_single(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 0}).id)
-        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
+        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launcher_slot)
+        error = self.get_error(item, Restriction.launcher_slot)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.used, 1)
-        self.assertEqual(restriction_error.total, 0)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -56,116 +55,107 @@ class TestLauncherSlot(RestrictionTestCase):
     def test_fail_excess_single_no_ship(self):
         # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
-        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
+        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launcher_slot)
+        error = self.get_error(item, Restriction.launcher_slot)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.used, 1)
-        self.assertEqual(restriction_error.total, 0)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 1}).id)
-        item_type = self.ch.type(effects=[self.effect])
+        item_type = self.mktype(effects=[self.effect])
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.launcher_slot)
+        error1 = self.get_error(item1, Restriction.launcher_slot)
         # Verification
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.used, 2)
-        self.assertEqual(restriction_error1.total, 1)
+        self.assertIsNotNone(error1)
+        self.assertEqual(error1.used, 2)
+        self.assertEqual(error1.total, 1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.launcher_slot)
+        error2 = self.get_error(item2, Restriction.launcher_slot)
         # Verification
-        self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.used, 2)
-        self.assertEqual(restriction_error2.total, 1)
+        self.assertIsNotNone(error2)
+        self.assertEqual(error2.used, 2)
+        self.assertEqual(error2.total, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 2}).id)
-        item_type = self.ch.type(effects=[self.effect])
+        item_type = self.mktype(effects=[self.effect])
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.launcher_slot)
+        error1 = self.get_error(item1, Restriction.launcher_slot)
         # Verification
-        self.assertIsNone(restriction_error1)
+        self.assertIsNone(error1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.launcher_slot)
+        error2 = self.get_error(item2, Restriction.launcher_slot)
         # Verification
-        self.assertIsNone(restriction_error2)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 5}).id)
-        item_type = self.ch.type(effects=[self.effect])
+        item_type = self.mktype(effects=[self.effect])
         item1 = ModuleHigh(item_type.id)
         item2 = ModuleHigh(item_type.id)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.launcher_slot)
+        error1 = self.get_error(item1, Restriction.launcher_slot)
         # Verification
-        self.assertIsNone(restriction_error1)
+        self.assertIsNone(error1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.launcher_slot)
+        error2 = self.get_error(item2, Restriction.launcher_slot)
         # Verification
-        self.assertIsNone(restriction_error2)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_disabled_effect(self):
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 0}).id)
-        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
+        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launcher_slot)
+        error = self.get_error(item, Restriction.launcher_slot)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 0}).id)
-        item = ModuleHigh(self.ch.type(effects=[self.effect]).id)
+        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
         self.fit.modules.high.append(item)
         self.fit.source = None
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.launcher_slot)
+        error = self.get_error(item, Restriction.launcher_slot)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -29,23 +29,25 @@ class TestCpu(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.cpu_output)
-        self.ch.attr(attr_id=AttrId.cpu)
-        self.effect = self.ch.effect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        self.mkattr(attr_id=AttrId.cpu_output)
+        self.mkattr(attr_id=AttrId.cpu)
+        self.effect = self.mkeffect(
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=AttrId.cpu_output,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        mod_effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.fit.ship = Ship(self.ch.type(
+        mod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.cpu_output: 200, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
@@ -64,7 +66,7 @@ class TestCpu(StatsTestCase):
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         # Verification
         self.assertIsNone(self.fit.stats.cpu.output)
         # Cleanup
@@ -73,17 +75,18 @@ class TestCpu(StatsTestCase):
 
     def test_use_single(self):
         # Check that modified consumption attribute is used
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=AttrId.cpu,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        mod_effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
+        mod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={AttrId.cpu: 100, src_attr.id: 0.5},
                 effects=(self.effect, mod_effect)).id,
             state=State.online))
@@ -95,7 +98,7 @@ class TestCpu(StatsTestCase):
 
     def test_use_single_rounding(self):
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={AttrId.cpu: 55.5555555555},
                 effects=[self.effect]).id,
             state=State.online))
@@ -107,12 +110,10 @@ class TestCpu(StatsTestCase):
 
     def test_use_multiple(self):
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
             state=State.online))
         # Verification
         self.assertAlmostEqual(self.fit.stats.cpu.used, 80)
@@ -122,12 +123,10 @@ class TestCpu(StatsTestCase):
 
     def test_use_state(self):
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
             state=State.offline))
         # Verification
         self.assertAlmostEqual(self.fit.stats.cpu.used, 50)
@@ -137,12 +136,10 @@ class TestCpu(StatsTestCase):
 
     def test_use_disabled_effect(self):
         item1 = ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
             state=State.online)
         item2 = ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
             state=State.online)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item1)
@@ -161,15 +158,12 @@ class TestCpu(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.cpu_output: 200}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.cpu_output: 200}).id)
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
             state=State.online))
         self.fit.modules.high.append(ModuleHigh(
-            self.ch.type(
-                attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
+            self.mktype(attrs={AttrId.cpu: 30}, effects=[self.effect]).id,
             state=State.online))
         self.fit.source = None
         # Verification

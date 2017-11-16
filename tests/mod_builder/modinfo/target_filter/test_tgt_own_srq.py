@@ -53,8 +53,7 @@ class TestBuilderModinfoTgtOwnSrq(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(
-            modifier.tgt_filter, ModTgtFilter.owner_skillrq)
+        self.assertEqual(modifier.tgt_filter, ModTgtFilter.owner_skillrq)
         self.assertEqual(modifier.tgt_domain, ModDomain.character)
         self.assertEqual(modifier.tgt_filter_extra_arg, 55)
         self.assertEqual(modifier.tgt_attr_id, 22)

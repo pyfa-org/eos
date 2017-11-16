@@ -30,24 +30,24 @@ class TestCap(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.capping_attr = self.ch.attr(default_value=5)
-        self.capped_attr = self.ch.attr(max_attr_id=self.capping_attr.id)
-        self.src_attr = self.ch.attr()
+        self.capping_attr = self.mkattr(default_value=5)
+        self.capped_attr = self.mkattr(max_attr_id=self.capping_attr.id)
+        self.src_attr = self.mkattr()
         # Just to make sure cap is applied to final value, not base, make some
         # basic modification modifier
-        modifier = self.mod(
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.capped_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.src_attr.id)
-        self.effect = self.ch.effect(
+        self.effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
 
     def test_cap_default(self):
         # Check that cap is applied properly when item doesn't have base value
         # of capping attribute
-        item = Implant(self.ch.type(
+        item = Implant(self.mktype(
             attrs={self.capped_attr.id: 3, self.src_attr.id: 6},
             effects=[self.effect]).id)
         self.fit.implants.add(item)
@@ -59,7 +59,7 @@ class TestCap(CalculatorTestCase):
 
     def test_cap_attr_unmodified(self):
         # Make sure that item's own specified attribute value is taken as cap
-        item = Implant(self.ch.type(
+        item = Implant(self.mktype(
             attrs={
                 self.capped_attr.id: 3, self.src_attr.id: 6,
                 self.capping_attr.id: 2},
@@ -74,15 +74,15 @@ class TestCap(CalculatorTestCase):
     def test_cap_attr_modified(self):
         # Make sure that item's own specified attribute value is taken as cap,
         # and it's taken with all modifications applied onto it
-        modifier = self.mod(
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.capping_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
-        item = Implant(self.ch.type(
+        item = Implant(self.mktype(
             attrs={
                 self.capped_attr.id: 3, self.src_attr.id: 6,
                 self.capping_attr.id: 0.1},
@@ -97,7 +97,7 @@ class TestCap(CalculatorTestCase):
 
     def test_cap_update(self):
         # If cap updates, capped attributes should be updated too
-        item = Rig(self.ch.type(
+        item = Rig(self.mktype(
             attrs={
                 self.capped_attr.id: 3, self.src_attr.id: 6,
                 self.capping_attr.id: 2},
@@ -106,15 +106,15 @@ class TestCap(CalculatorTestCase):
         # Check attribute vs initial cap
         self.assertAlmostEqual(item.attrs[self.capped_attr.id], 2)
         # Add something which changes capping attribute
-        modifier = self.mod(
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.domain,
             tgt_domain=ModDomain.ship,
             tgt_attr_id=self.capping_attr.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
-        cap_updater = Implant(self.ch.type(
+        cap_updater = Implant(self.mktype(
             attrs={self.src_attr.id: 3.5}, effects=[effect]).id)
         self.fit.implants.add(cap_updater)
         # Verification

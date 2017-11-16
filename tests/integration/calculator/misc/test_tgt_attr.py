@@ -28,29 +28,29 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtAttr(CalculatorTestCase):
 
     def test_tgt_attrs(self):
-        tgt_attr1 = self.ch.attr()
-        tgt_attr2 = self.ch.attr()
-        tgt_attr3 = self.ch.attr()
-        src_attr = self.ch.attr()
-        modifier1 = self.mod(
+        tgt_attr1 = self.mkattr()
+        tgt_attr2 = self.mkattr()
+        tgt_attr3 = self.mkattr()
+        src_attr = self.mkattr()
+        modifier1 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr1.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        modifier2 = self.mod(
+        modifier2 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=tgt_attr2.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(modifier1, modifier2))
-        item = Rig(self.ch.type(
+        item = Rig(self.mktype(
             attrs={
-                tgt_attr1.id: 50, tgt_attr2.id: 80, tgt_attr3.id: 100,
-                src_attr.id: 20},
+                tgt_attr1.id: 50, tgt_attr2.id: 80,
+                tgt_attr3.id: 100, src_attr.id: 20},
             effects=[effect]).id)
         # Action
         self.fit.rigs.add(item)

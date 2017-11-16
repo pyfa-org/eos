@@ -30,24 +30,22 @@ class TestDroneBayVolume(RestrictionTestCase):
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.volume)
-        self.ch.attr(attr_id=AttrId.drone_capacity)
+        self.mkattr(attr_id=AttrId.volume)
+        self.mkattr(attr_id=AttrId.drone_capacity)
 
     def test_fail_excess_single(self):
         # When ship provides dronebay volume output, but single consumer demands
         # for more, error should be raised
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.drone_capacity: 40}).id)
-        item = Drone(self.ch.type(attrs={AttrId.volume: 50}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 40}).id)
+        item = Drone(self.mktype(attrs={AttrId.volume: 50}).id)
         self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.dronebay_volume)
+        error = self.get_error(item, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.output, 40)
-        self.assertEqual(restriction_error.total_use, 50)
-        self.assertEqual(restriction_error.item_use, 50)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 40)
+        self.assertEqual(error.total_use, 50)
+        self.assertEqual(error.item_use, 50)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -55,16 +53,15 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_fail_excess_single_undefined_output(self):
         # When stats module does not specify output, make sure it's assumed to
         # be 0
-        item = Drone(self.ch.type(attrs={AttrId.volume: 5}).id)
+        item = Drone(self.mktype(attrs={AttrId.volume: 5}).id)
         self.fit.drones.add(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.dronebay_volume)
+        error = self.get_error(item, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNotNone(restriction_error)
-        self.assertEqual(restriction_error.output, 0)
-        self.assertEqual(restriction_error.total_use, 5)
-        self.assertEqual(restriction_error.item_use, 5)
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 5)
+        self.assertEqual(error.item_use, 5)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -73,28 +70,25 @@ class TestDroneBayVolume(RestrictionTestCase):
         # When multiple consumers require less than dronebay volume output
         # alone, but in sum want more than total output, it should be erroneous
         # situation
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.drone_capacity: 40}).id)
-        item1 = Drone(self.ch.type(attrs={AttrId.volume: 25}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 40}).id)
+        item1 = Drone(self.mktype(attrs={AttrId.volume: 25}).id)
         self.fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attrs={AttrId.volume: 20}).id)
+        item2 = Drone(self.mktype(attrs={AttrId.volume: 20}).id)
         self.fit.drones.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.dronebay_volume)
+        error1 = self.get_error(item1, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.output, 40)
-        self.assertEqual(restriction_error1.total_use, 45)
-        self.assertEqual(restriction_error1.item_use, 25)
+        self.assertIsNotNone(error1)
+        self.assertEqual(error1.output, 40)
+        self.assertEqual(error1.total_use, 45)
+        self.assertEqual(error1.item_use, 25)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.dronebay_volume)
+        error2 = self.get_error(item2, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNotNone(restriction_error2)
-        self.assertEqual(restriction_error2.output, 40)
-        self.assertEqual(restriction_error2.total_use, 45)
-        self.assertEqual(restriction_error2.item_use, 20)
+        self.assertIsNotNone(error2)
+        self.assertEqual(error2.output, 40)
+        self.assertEqual(error2.total_use, 45)
+        self.assertEqual(error2.item_use, 20)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -102,77 +96,67 @@ class TestDroneBayVolume(RestrictionTestCase):
     def test_mix_usage_zero(self):
         # If some item has zero usage and dronebay volume error is still raised,
         # check it's not raised for item with zero usage
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.drone_capacity: 50}).id)
-        item1 = Drone(self.ch.type(attrs={AttrId.volume: 100}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 50}).id)
+        item1 = Drone(self.mktype(attrs={AttrId.volume: 100}).id)
         self.fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attrs={AttrId.volume: 0}).id)
+        item2 = Drone(self.mktype(attrs={AttrId.volume: 0}).id)
         self.fit.drones.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.dronebay_volume)
+        error1 = self.get_error(item1, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNotNone(restriction_error1)
-        self.assertEqual(restriction_error1.output, 50)
-        self.assertEqual(restriction_error1.total_use, 100)
-        self.assertEqual(restriction_error1.item_use, 100)
+        self.assertIsNotNone(error1)
+        self.assertEqual(error1.output, 50)
+        self.assertEqual(error1.total_use, 100)
+        self.assertEqual(error1.item_use, 100)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.dronebay_volume)
+        error2 = self.get_error(item2, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNone(restriction_error2)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
         # When total consumption is less than output, no errors should be raised
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.drone_capacity: 50}).id)
-        item1 = Drone(self.ch.type(attrs={AttrId.volume: 25}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 50}).id)
+        item1 = Drone(self.mktype(attrs={AttrId.volume: 25}).id)
         self.fit.drones.add(item1)
-        item2 = Drone(self.ch.type(attrs={AttrId.volume: 20}).id)
+        item2 = Drone(self.mktype(attrs={AttrId.volume: 20}).id)
         self.fit.drones.add(item2)
         # Action
-        restriction_error1 = self.get_restriction_error(
-            item1, Restriction.dronebay_volume)
+        error1 = self.get_error(item1, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNone(restriction_error1)
+        self.assertIsNone(error1)
         # Action
-        restriction_error2 = self.get_restriction_error(
-            item2, Restriction.dronebay_volume)
+        error2 = self.get_error(item2, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNone(restriction_error2)
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_other_class(self):
         # Make sure non-drones are not affected
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.drone_capacity: 40}).id)
-        item = ModuleHigh(self.ch.type(attrs={AttrId.volume: 50}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 40}).id)
+        item = ModuleHigh(self.mktype(attrs={AttrId.volume: 50}).id)
         self.fit.modules.high.append(item)
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.dronebay_volume)
+        error = self.get_error(item, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.drone_capacity: 40}).id)
-        item = Drone(self.ch.type(attrs={AttrId.volume: 50}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 40}).id)
+        item = Drone(self.mktype(attrs={AttrId.volume: 50}).id)
         self.fit.drones.add(item)
         self.fit.source = None
         # Action
-        restriction_error = self.get_restriction_error(
-            item, Restriction.dronebay_volume)
+        error = self.get_error(item, Restriction.dronebay_volume)
         # Verification
-        self.assertIsNone(restriction_error)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

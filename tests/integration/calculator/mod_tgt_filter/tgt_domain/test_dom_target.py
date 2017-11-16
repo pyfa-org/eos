@@ -28,19 +28,21 @@ from tests.integration.calculator.calculator_testcase import CalculatorTestCase
 class TestTgtDomainDomainTgt(CalculatorTestCase):
 
     def test_no_effect(self):
-        tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.domain,
             tgt_domain=ModDomain.target,
             tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        influence_src = Implant(self.ch.type(
-            attrs={src_attr.id: 20}, effects=[effect]).id)
-        influence_tgt = Rig(self.ch.type(attrs={tgt_attr.id: 100}).id)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        influence_src = Implant(self.mktype(
+            attrs={src_attr.id: 20},
+            effects=[effect]).id)
+        influence_tgt = Rig(self.mktype(attrs={tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.implants.add(influence_src)

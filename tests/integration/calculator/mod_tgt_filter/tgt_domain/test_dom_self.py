@@ -31,22 +31,24 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.tgt_attr = self.ch.attr()
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        self.tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.domain,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.influence_src_type = self.ch.type(
-            attrs={src_attr.id: 20}, effects=[effect])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        self.influence_src_type = self.mktype(
+            attrs={src_attr.id: 20},
+            effects=[effect])
 
     def test_ship(self):
         influence_src = Ship(self.influence_src_type.id)
-        influence_tgt = Rig(self.ch.type(attrs={self.tgt_attr.id: 100}).id)
+        influence_tgt = Rig(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
         self.fit.ship = influence_src
@@ -62,8 +64,7 @@ class TestTgtDomainDomainSelf(CalculatorTestCase):
 
     def test_character(self):
         influence_src = Character(self.influence_src_type.id)
-        influence_tgt = Implant(self.ch.type(
-            attrs={self.tgt_attr.id: 100}).id)
+        influence_tgt = Implant(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(influence_tgt)
         # Action
         self.fit.character = influence_src

@@ -28,17 +28,17 @@ class TestItemDmgTurret(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.capacity)
-        self.ch.attr(attr_id=AttrId.volume)
-        self.ch.attr(attr_id=AttrId.charge_rate)
-        self.ch.attr(attr_id=AttrId.reload_time)
-        self.ch.attr(attr_id=AttrId.dmg_multiplier)
-        self.ch.attr(attr_id=AttrId.em_dmg)
-        self.ch.attr(attr_id=AttrId.thermal_dmg)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg)
-        self.ch.attr(attr_id=AttrId.explosive_dmg)
-        self.cycle_attr = self.ch.attr()
-        self.effect = self.ch.effect(
+        self.mkattr(attr_id=AttrId.capacity)
+        self.mkattr(attr_id=AttrId.volume)
+        self.mkattr(attr_id=AttrId.charge_rate)
+        self.mkattr(attr_id=AttrId.reload_time)
+        self.mkattr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.em_dmg)
+        self.mkattr(attr_id=AttrId.thermal_dmg)
+        self.mkattr(attr_id=AttrId.kinetic_dmg)
+        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.cycle_attr = self.mkattr()
+        self.effect = self.mkeffect(
             effect_id=EffectId.projectile_fired,
             category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
@@ -46,16 +46,17 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_nominal_volley_generic(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -76,15 +77,16 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_no_multiplier(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -105,16 +107,17 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.online)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -135,17 +138,18 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_nominal_volley_disabled_effect(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -166,14 +170,15 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_nominal_volley_no_charge(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
@@ -190,14 +195,15 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_nominal_volley_onitem_dmg_stats(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.em_dmg: 5.2,
                     AttrId.thermal_dmg: 6.3,
                     AttrId.kinetic_dmg: 7.4,
                     AttrId.explosive_dmg: 8.5, self.cycle_attr.id: 500},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
@@ -214,16 +220,17 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_nominal_dps_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,
@@ -244,16 +251,17 @@ class TestItemDmgTurret(ItemMixinTestCase):
     def test_nominal_dps_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 5000},
-                effects=[self.effect], default_effect=self.effect).id,
+                effects=[self.effect],
+                default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(attrs={
+        item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
             AttrId.thermal_dmg: 6.3,

@@ -28,12 +28,14 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 class TestForceStopOnline(EffectModeTestCase):
 
     def test_stopped_on_add(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.online, modifiers=[self.modifier])
-        online_effect = self.ch.effect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.online,
+            modifiers=[self.modifier])
+        online_effect = self.mkeffect(
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.online)
@@ -47,12 +49,14 @@ class TestForceStopOnline(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_on_state_switch(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.online, modifiers=[self.modifier])
-        online_effect = self.ch.effect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.online,
+            modifiers=[self.modifier])
+        online_effect = self.mkeffect(
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.offline)
@@ -68,12 +72,14 @@ class TestForceStopOnline(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_on_mode_switch(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.online, modifiers=[self.modifier])
-        online_effect = self.ch.effect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.online,
+            modifiers=[self.modifier])
+        online_effect = self.mkeffect(
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.online)
@@ -89,10 +95,11 @@ class TestForceStopOnline(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_no_online_effect(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.online, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.online,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.online)
@@ -106,12 +113,14 @@ class TestForceStopOnline(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_disabled_online_effect(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.online, modifiers=[self.modifier])
-        online_effect = self.ch.effect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.online,
+            modifiers=[self.modifier])
+        online_effect = self.mkeffect(
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.online)
@@ -126,12 +135,14 @@ class TestForceStopOnline(EffectModeTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.online, modifiers=[self.modifier])
-        online_effect = self.ch.effect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.online,
+            modifiers=[self.modifier])
+        online_effect = self.mkeffect(
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect, online_effect]).id,
             state=State.offline)

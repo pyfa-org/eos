@@ -30,41 +30,40 @@ class TestMapMethods(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.attr1 = self.ch.attr()
-        self.attr2 = self.ch.attr()
-        self.attr3 = self.ch.attr(default_value=11)
-        self.attr4 = self.ch.attr()
-        self.attr5 = self.ch.attr()
-        modifier1 = self.mod(
+        self.attr1 = self.mkattr()
+        self.attr2 = self.mkattr()
+        self.attr3 = self.mkattr(default_value=11)
+        self.attr4 = self.mkattr()
+        self.attr5 = self.mkattr()
+        modifier1 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr1.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
-        modifier2 = self.mod(
+        modifier2 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr2.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
-        modifier3 = self.mod(
+        modifier3 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr3.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
-        modifier4 = self.mod(
+        modifier4 = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=self.attr4.id,
             operator=ModOperator.post_mul,
             src_attr_id=self.attr5.id)
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(modifier1, modifier2, modifier3, modifier4))
-        self.item = Implant(self.ch.type(
-            attrs={
-                self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4},
+        self.item = Implant(self.mktype(
+            attrs={self.attr1.id: 5, self.attr2.id: 10, self.attr5.id: 4},
             effects=[effect]).id)
         self.fit.implants.add(self.item)
 

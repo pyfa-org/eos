@@ -28,37 +28,38 @@ class TestItemDmgBomb(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.capacity)
-        self.ch.attr(attr_id=AttrId.volume)
-        self.ch.attr(attr_id=AttrId.charge_rate)
-        self.ch.attr(attr_id=AttrId.reload_time)
-        self.ch.attr(attr_id=AttrId.module_reactivation_delay)
-        self.ch.attr(attr_id=AttrId.em_dmg)
-        self.ch.attr(attr_id=AttrId.thermal_dmg)
-        self.ch.attr(attr_id=AttrId.kinetic_dmg)
-        self.ch.attr(attr_id=AttrId.explosive_dmg)
-        self.cycle_attr = self.ch.attr()
-        self.effect_item = self.ch.effect(
+        self.mkattr(attr_id=AttrId.capacity)
+        self.mkattr(attr_id=AttrId.volume)
+        self.mkattr(attr_id=AttrId.charge_rate)
+        self.mkattr(attr_id=AttrId.reload_time)
+        self.mkattr(attr_id=AttrId.module_reactivation_delay)
+        self.mkattr(attr_id=AttrId.em_dmg)
+        self.mkattr(attr_id=AttrId.thermal_dmg)
+        self.mkattr(attr_id=AttrId.kinetic_dmg)
+        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.cycle_attr = self.mkattr()
+        self.effect_item = self.mkeffect(
             effect_id=EffectId.use_missiles,
             category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
-        self.effect_charge = self.ch.effect(
+        self.effect_charge = self.mkeffect(
             effect_id=EffectId.bomb_launching,
             category_id=EffectCategoryId.passive)
 
     def test_nominal_volley_generic(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(
+        item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 30.0,
                 AttrId.em_dmg: 5200,
@@ -80,10 +81,10 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_nominal_volley_multiplier(self):
-        self.ch.attr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.dmg_multiplier)
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
@@ -91,9 +92,10 @@ class TestItemDmgBomb(ItemMixinTestCase):
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000,
                     AttrId.dmg_multiplier: 5.5},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(
+        item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 30.0,
                 AttrId.em_dmg: 5200,
@@ -117,16 +119,17 @@ class TestItemDmgBomb(ItemMixinTestCase):
     def test_nominal_volley_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.online)
-        item.charge = Charge(self.ch.type(
+        item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 30.0,
                 AttrId.em_dmg: 5200,
@@ -150,17 +153,18 @@ class TestItemDmgBomb(ItemMixinTestCase):
     def test_nominal_volley_disabled_item_effect(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
         item.set_effect_mode(self.effect_item.id, EffectMode.force_stop)
-        item.charge = Charge(self.ch.type(
+        item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 30.0,
                 AttrId.em_dmg: 5200,
@@ -184,16 +188,17 @@ class TestItemDmgBomb(ItemMixinTestCase):
     def test_nominal_volley_disabled_charge_effect(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(
+        item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 30.0,
                 AttrId.em_dmg: 5200,
@@ -219,14 +224,15 @@ class TestItemDmgBomb(ItemMixinTestCase):
     def test_nominal_volley_no_charge(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
@@ -243,16 +249,17 @@ class TestItemDmgBomb(ItemMixinTestCase):
     def test_nominal_dps_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(
+        item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 30.0,
                 AttrId.em_dmg: 5200,
@@ -276,16 +283,17 @@ class TestItemDmgBomb(ItemMixinTestCase):
     def test_nominal_dps_reload(self):
         fit = Fit()
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={
                     AttrId.capacity: 60.0,
                     self.cycle_attr.id: 5000,
                     AttrId.charge_rate: 1.0,
                     AttrId.reload_time: 10000,
                     AttrId.module_reactivation_delay: 120000},
-                effects=[self.effect_item], default_effect=self.effect_item).id,
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
-        item.charge = Charge(self.ch.type(
+        item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 30.0,
                 AttrId.em_dmg: 5200,

@@ -29,22 +29,24 @@ class TestHighSlot(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.hi_slots)
-        self.effect = self.ch.effect(
-            effect_id=EffectId.hi_power, category_id=EffectCategoryId.passive)
+        self.mkattr(attr_id=AttrId.hi_slots)
+        self.effect = self.mkeffect(
+            effect_id=EffectId.hi_power,
+            category_id=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        src_attr = self.ch.attr()
-        modifier = self.mod(
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
             tgt_attr_id=AttrId.hi_slots,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
-        mod_effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
-        self.fit.ship = Ship(self.ch.type(
+        mod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.hi_slots: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
@@ -63,7 +65,7 @@ class TestHighSlot(StatsTestCase):
 
     def test_output_no_attr(self):
         # None for slot quantity when no attribute on ship
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         # Verification
         self.assertIsNone(self.fit.stats.high_slots.total)
         # Cleanup
@@ -79,9 +81,9 @@ class TestHighSlot(StatsTestCase):
 
     def test_use_multiple(self):
         self.fit.modules.high.append(
-            ModuleHigh(self.ch.type(effects=[self.effect]).id))
+            ModuleHigh(self.mktype(effects=[self.effect]).id))
         self.fit.modules.high.append(
-            ModuleHigh(self.ch.type(effects=[self.effect]).id))
+            ModuleHigh(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.high_slots.used, 2)
         # Cleanup
@@ -90,9 +92,9 @@ class TestHighSlot(StatsTestCase):
 
     def test_use_multiple_with_none(self):
         self.fit.modules.high.place(
-            1, ModuleHigh(self.ch.type(effects=[self.effect]).id))
+            1, ModuleHigh(self.mktype(effects=[self.effect]).id))
         self.fit.modules.high.place(
-            3, ModuleHigh(self.ch.type(effects=[self.effect]).id))
+            3, ModuleHigh(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.high_slots.used, 4)
         # Cleanup
@@ -100,8 +102,8 @@ class TestHighSlot(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_disabled_effect(self):
-        item1 = ModuleHigh(self.ch.type(effects=[self.effect]).id)
-        item2 = ModuleHigh(self.ch.type(effects=[self.effect]).id)
+        item1 = ModuleHigh(self.mktype(effects=[self.effect]).id)
+        item2 = ModuleHigh(self.mktype(effects=[self.effect]).id)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
         self.fit.modules.high.append(item1)
         self.fit.modules.high.append(item2)
@@ -113,7 +115,7 @@ class TestHighSlot(StatsTestCase):
 
     def test_use_other_item_class(self):
         self.fit.modules.med.place(
-            3, ModuleMed(self.ch.type(effects=[self.effect]).id))
+            3, ModuleMed(self.mktype(effects=[self.effect]).id))
         # Verification
         self.assertEqual(self.fit.stats.high_slots.used, 4)
         # Cleanup
@@ -121,12 +123,11 @@ class TestHighSlot(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
-            attrs={AttrId.hi_slots: 3}).id)
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.hi_slots: 3}).id)
         self.fit.modules.high.append(
-            ModuleHigh(self.ch.type(effects=[self.effect]).id))
+            ModuleHigh(self.mktype(effects=[self.effect]).id))
         self.fit.modules.high.append(
-            ModuleHigh(self.ch.type(effects=[self.effect]).id))
+            ModuleHigh(self.mktype(effects=[self.effect]).id))
         self.fit.source = None
         # Verification
         self.assertEqual(self.fit.stats.high_slots.used, 0)

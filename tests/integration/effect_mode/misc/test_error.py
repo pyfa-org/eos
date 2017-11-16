@@ -30,10 +30,11 @@ from tests.integration.effect_mode.effect_mode_testcase import (
 class TestEffectModeErrors(EffectModeTestCase):
 
     def test_unknown_mode(self):
-        effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[self.modifier])
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[self.modifier])
         item = ModuleHigh(
-            self.ch.type(
+            self.mktype(
                 attrs={self.tgt_attr.id: 10, self.src_attr.id: 2},
                 effects=[effect]).id,
             state=State.offline)

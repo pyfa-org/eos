@@ -29,22 +29,23 @@ class TestTgtItemDomainOther(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
-        self.tgt_attr = self.ch.attr()
-        self.src_attr = self.ch.attr()
-        modifier = self.mod(
+        self.tgt_attr = self.mkattr()
+        self.src_attr = self.mkattr()
+        modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.other,
             tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=self.src_attr.id)
-        self.effect = self.ch.effect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier])
+        self.effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
 
     def test_other_domain_container(self):
-        influence_src = ModuleHigh(self.ch.type(
-            attrs={self.src_attr.id: 20}, effects=[self.effect]).id)
-        influence_tgt = Charge(self.ch.type(
-            attrs={self.tgt_attr.id: 100}).id)
+        influence_src = ModuleHigh(self.mktype(
+            attrs={self.src_attr.id: 20},
+            effects=[self.effect]).id)
+        influence_tgt = Charge(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         influence_src.charge = influence_tgt
         # Action
         self.fit.modules.high.append(influence_src)
@@ -55,9 +56,10 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_other_domain_charge(self):
-        influence_src = Charge(self.ch.type(
-            attrs={self.src_attr.id: 20}, effects=[self.effect]).id)
-        influence_tgt = ModuleHigh(self.ch.type(
+        influence_src = Charge(self.mktype(
+            attrs={self.src_attr.id: 20},
+            effects=[self.effect]).id)
+        influence_tgt = ModuleHigh(self.mktype(
             attrs={self.tgt_attr.id: 100}).id)
         self.fit.modules.high.append(influence_tgt)
         # Action
@@ -74,11 +76,10 @@ class TestTgtItemDomainOther(CalculatorTestCase):
 
     def test_self(self):
         # Check that source item isn't modified
-        influence_src = ModuleHigh(self.ch.type(
+        influence_src = ModuleHigh(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
-        influence_tgt = Charge(self.ch.type(
-            attrs={self.tgt_attr.id: 100}).id)
+        influence_tgt = Charge(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         influence_src.charge = influence_tgt
         # Action
         self.fit.modules.high.append(influence_src)
@@ -90,10 +91,10 @@ class TestTgtItemDomainOther(CalculatorTestCase):
 
     def test_other_item(self):
         # Here we check some "random" item, w/o linking items
-        influence_src = ModuleHigh(self.ch.type(
-            attrs={self.src_attr.id: 20}, effects=[self.effect]).id)
-        influence_tgt = Ship(self.ch.type(
-            attrs={self.tgt_attr.id: 100}).id)
+        influence_src = ModuleHigh(self.mktype(
+            attrs={self.src_attr.id: 20},
+            effects=[self.effect]).id)
+        influence_tgt = Ship(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         self.fit.ship = influence_tgt
         # Action
         self.fit.modules.high.append(influence_src)

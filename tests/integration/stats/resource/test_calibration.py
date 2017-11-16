@@ -28,14 +28,15 @@ class TestCalibration(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.upgrade_capacity)
-        self.ch.attr(attr_id=AttrId.upgrade_cost)
-        self.effect = self.ch.effect(
-            effect_id=EffectId.rig_slot, category_id=EffectCategoryId.passive)
+        self.mkattr(attr_id=AttrId.upgrade_capacity)
+        self.mkattr(attr_id=AttrId.upgrade_cost)
+        self.effect = self.mkeffect(
+            effect_id=EffectId.rig_slot,
+            category_id=EffectCategoryId.passive)
 
     def test_output(self):
         # Check that modified attribute of ship is used
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.upgrade_capacity: 350}).id)
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.output, 350)
@@ -53,7 +54,7 @@ class TestCalibration(StatsTestCase):
 
     def test_output_no_attr(self):
         # None for output when no attribute on ship
-        self.fit.ship = Ship(self.ch.type().id)
+        self.fit.ship = Ship(self.mktype().id)
         # Verification
         self.assertIsNone(self.fit.stats.calibration.output)
         # Cleanup
@@ -61,7 +62,7 @@ class TestCalibration(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_single_no_rounding(self):
-        self.fit.rigs.add(Rig(self.ch.type(
+        self.fit.rigs.add(Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 55.5555555555},
             effects=[self.effect]).id))
         # Verification
@@ -71,10 +72,10 @@ class TestCalibration(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
-        self.fit.rigs.add(Rig(self.ch.type(
+        self.fit.rigs.add(Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id))
-        self.fit.rigs.add(Rig(self.ch.type(
+        self.fit.rigs.add(Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 30},
             effects=[self.effect]).id))
         # Verification
@@ -84,10 +85,10 @@ class TestCalibration(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_disabled_effect(self):
-        item1 = Rig(self.ch.type(
+        item1 = Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id)
-        item2 = Rig(self.ch.type(
+        item2 = Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 30},
             effects=[self.effect]).id)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
@@ -107,12 +108,12 @@ class TestCalibration(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.ship = Ship(self.ch.type(
+        self.fit.ship = Ship(self.mktype(
             attrs={AttrId.upgrade_capacity: 350}).id)
-        self.fit.rigs.add(Rig(self.ch.type(
+        self.fit.rigs.add(Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id))
-        self.fit.rigs.add(Rig(self.ch.type(
+        self.fit.rigs.add(Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 30},
             effects=[self.effect]).id))
         self.fit.source = None

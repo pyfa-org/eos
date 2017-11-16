@@ -37,7 +37,7 @@ class TestDirectItemShip(ContainerTestCase):
 
     def test_none_to_item(self):
         fit = Fit()
-        item = Ship(self.ch.type().id)
+        item = Ship(self.mktype().id)
         # Action
         fit.ship = item
         # Verification
@@ -49,7 +49,7 @@ class TestDirectItemShip(ContainerTestCase):
 
     def test_none_to_item_type_failure(self):
         fit = Fit()
-        item = Stance(self.ch.type().id)
+        item = Stance(self.mktype().id)
         # Action
         with self.assertRaises(TypeError):
             fit.ship = item
@@ -66,7 +66,7 @@ class TestDirectItemShip(ContainerTestCase):
     def test_none_to_item_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        item = Ship(self.ch.type().id)
+        item = Ship(self.mktype().id)
         fit_other.ship = item
         # Action
         with self.assertRaises(ValueError):
@@ -82,7 +82,7 @@ class TestDirectItemShip(ContainerTestCase):
 
     def test_item_to_item(self):
         fit = Fit()
-        ship_type = self.ch.type()
+        ship_type = self.mktype()
         item1 = Ship(ship_type.id)
         item2 = Ship(ship_type.id)
         fit.ship = item1
@@ -97,8 +97,8 @@ class TestDirectItemShip(ContainerTestCase):
 
     def test_item_to_item_type_failure(self):
         fit = Fit()
-        item1 = Ship(self.ch.type().id)
-        item2 = Stance(self.ch.type().id)
+        item1 = Ship(self.mktype().id)
+        item2 = Stance(self.mktype().id)
         fit.ship = item1
         # Action
         with self.assertRaises(TypeError):
@@ -115,7 +115,7 @@ class TestDirectItemShip(ContainerTestCase):
     def test_item_to_item_value_failure(self):
         fit = Fit()
         fit_other = Fit()
-        ship_type = self.ch.type()
+        ship_type = self.mktype()
         item1 = Ship(ship_type.id)
         item2 = Ship(ship_type.id)
         fit.ship = item1
@@ -135,7 +135,7 @@ class TestDirectItemShip(ContainerTestCase):
 
     def test_item_to_none(self):
         fit = Fit()
-        item = Ship(self.ch.type().id)
+        item = Ship(self.mktype().id)
         fit.ship = item
         # Action
         fit.ship = None

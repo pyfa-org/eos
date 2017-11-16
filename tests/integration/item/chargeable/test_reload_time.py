@@ -28,13 +28,14 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.ch.attr(attr_id=AttrId.reload_time)
+        self.mkattr(attr_id=AttrId.reload_time)
 
     def test_generic(self):
         fit = Fit()
-        effect = self.ch.effect(category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
+        effect = self.mkeffect(category_id=EffectCategoryId.active)
+        item = ModuleHigh(self.mktype(
+            attrs={AttrId.reload_time: 5000.0},
+            effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -45,9 +46,10 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_generic_no_attr(self):
         fit = Fit()
-        effect = self.ch.effect(category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            effects=[effect], default_effect=effect).id)
+        effect = self.mkeffect(category_id=EffectCategoryId.active)
+        item = ModuleHigh(self.mktype(
+            effects=[effect],
+            default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.reload_time)
@@ -57,9 +59,10 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_generic_no_default_effect(self):
         fit = Fit()
-        effect = self.ch.effect(category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            attrs={AttrId.reload_time: 5000.0}, effects=[effect]).id)
+        effect = self.mkeffect(category_id=EffectCategoryId.active)
+        item = ModuleHigh(self.mktype(
+            attrs={AttrId.reload_time: 5000.0},
+            effects=[effect]).id)
         fit.modules.high.append(item)
         # Verification
         self.assertAlmostEqual(item.reload_time, 5.0)
@@ -69,11 +72,12 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_combat_combat_laser(self):
         fit = Fit()
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
+        item = ModuleHigh(self.mktype(
+            attrs={AttrId.reload_time: 5000.0},
+            effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -84,11 +88,12 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_combat_mining_laser(self):
         fit = Fit()
-        effect = self.ch.effect(
+        effect = self.mkeffect(
             effect_id=EffectId.mining_laser,
             category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
+        item = ModuleHigh(self.mktype(
+            attrs={AttrId.reload_time: 5000.0},
+            effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         # Verification
@@ -99,9 +104,10 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
 
     def test_no_source(self):
         fit = Fit()
-        effect = self.ch.effect(category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.ch.type(
-            attrs={AttrId.reload_time: 5000.0}, effects=[effect],
+        effect = self.mkeffect(category_id=EffectCategoryId.active)
+        item = ModuleHigh(self.mktype(
+            attrs={AttrId.reload_time: 5000.0},
+            effects=[effect],
             default_effect=effect).id)
         fit.modules.high.append(item)
         fit.source = None
