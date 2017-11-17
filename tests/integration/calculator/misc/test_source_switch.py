@@ -34,35 +34,43 @@ class TestSourceSwitch(CalculatorTestCase):
         # it wasn't cleared, we wouldn't be able to get refreshed value of
         # attribute
         # Setup
-        src_attr_id = self.allocate_attr_id(self.ch, self.ch2)
-        self.ch.mkattr(attr_id=src_attr_id)
-        self.ch2.mkattr(attr_id=src_attr_id)
-        tgt_attr_id = self.allocate_attr_id(self.ch, self.ch2)
-        self.ch.mkattr(attr_id=tgt_attr_id)
-        self.ch2.mkattr(attr_id=tgt_attr_id)
+        src_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=src_attr_id)
+        self.mkattr(src='src2', attr_id=src_attr_id)
+        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=tgt_attr_id)
+        self.mkattr(src='src2', attr_id=tgt_attr_id)
         modifier = self.mkmod(
             tgt_filter=ModTgtFilter.domain,
             tgt_domain=ModDomain.ship,
             tgt_attr_id=tgt_attr_id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr_id)
-        effect_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect_src1 = self.ch.mkeffect(
-            effect_id=effect_id, category_id=EffectCategoryId.passive,
+        effect_id = self.allocate_effect_id('src1', 'src2')
+        effect_src1 = self.mkeffect(
+            src='src1',
+            effect_id=effect_id,
+            category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        effect_src2 = self.ch2.mkeffect(
-            effect_id=effect_id, category_id=EffectCategoryId.passive,
+        effect_src2 = self.mkeffect(
+            src='src2',
+            effect_id=effect_id,
+            category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        ship_type_id = self.allocate_type_id(self.ch, self.ch2)
-        ship1 = Ship(self.ch.mktype(
-            type_id=ship_type_id, attrs={src_attr_id: 10},
+        ship_type_id = self.allocate_type_id('src1', 'src2')
+        ship1 = Ship(self.mktype(
+            src='src1',
+            type_id=ship_type_id,
+            attrs={src_attr_id: 10},
             effects=[effect_src1]).id)
-        ship2 = Ship(self.ch2.mktype(
-            type_id=ship_type_id, attrs={src_attr_id: 20},
+        ship2 = Ship(self.mktype(
+            src='src2',
+            type_id=ship_type_id,
+            attrs={src_attr_id: 20},
             effects=[effect_src2]).id)
-        item_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.mktype(type_id=item_type_id, attrs={tgt_attr_id: 50})
-        self.ch2.mktype(type_id=item_type_id, attrs={tgt_attr_id: 50})
+        item_type_id = self.allocate_type_id('src1', 'src2')
+        self.mktype(src='src1', type_id=item_type_id, attrs={tgt_attr_id: 50})
+        self.mktype(src='src2', type_id=item_type_id, attrs={tgt_attr_id: 50})
         item = Rig(item_type_id)
         fit1 = Fit('src1')
         fit1.ship = ship1
@@ -84,38 +92,46 @@ class TestSourceSwitch(CalculatorTestCase):
         # Here we check if attributes are updated if fit gets new source
         # instance
         # Setup
-        src_attr_id = self.allocate_attr_id(self.ch, self.ch2)
-        self.ch.mkattr(attr_id=src_attr_id)
-        self.ch2.mkattr(attr_id=src_attr_id)
-        tgt_attr_id = self.allocate_attr_id(self.ch, self.ch2)
-        max_attr_id = self.allocate_attr_id(self.ch, self.ch2)
-        self.ch.mkattr(attr_id=tgt_attr_id, max_attr_id=max_attr_id)
-        self.ch2.mkattr(attr_id=tgt_attr_id, max_attr_id=max_attr_id)
-        self.ch.mkattr(attr_id=max_attr_id, default_value=54.5)
-        self.ch2.mkattr(attr_id=max_attr_id, default_value=88)
+        src_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=src_attr_id)
+        self.mkattr(src='src2', attr_id=src_attr_id)
+        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
+        max_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=tgt_attr_id, max_attr_id=max_attr_id)
+        self.mkattr(src='src2', attr_id=tgt_attr_id, max_attr_id=max_attr_id)
+        self.mkattr(src='src1', attr_id=max_attr_id, default_value=54.5)
+        self.mkattr(src='src2', attr_id=max_attr_id, default_value=88)
         modifier = self.mkmod(
             tgt_filter=ModTgtFilter.domain,
             tgt_domain=ModDomain.ship,
             tgt_attr_id=tgt_attr_id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr_id)
-        effect_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect_src1 = self.ch.mkeffect(
-            effect_id=effect_id, category_id=EffectCategoryId.passive,
+        effect_id = self.allocate_effect_id('src1', 'src2')
+        effect_src1 = self.mkeffect(
+            src='src1',
+            effect_id=effect_id,
+            category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        effect_src2 = self.ch2.mkeffect(
-            effect_id=effect_id, category_id=EffectCategoryId.passive,
+        effect_src2 = self.mkeffect(
+            src='src2',
+            effect_id=effect_id,
+            category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        ship_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.mktype(
-            type_id=ship_type_id, attrs={src_attr_id: 10},
+        ship_type_id = self.allocate_type_id('src1', 'src2')
+        self.mktype(
+            src='src1',
+            type_id=ship_type_id,
+            attrs={src_attr_id: 10},
             effects=[effect_src1])
-        self.ch2.mktype(
-            type_id=ship_type_id, attrs={src_attr_id: 20},
+        self.mktype(
+            src='src2',
+            type_id=ship_type_id,
+            attrs={src_attr_id: 20},
             effects=[effect_src2])
-        item_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.mktype(type_id=item_type_id, attrs={tgt_attr_id: 50})
-        self.ch2.mktype(type_id=item_type_id, attrs={tgt_attr_id: 75})
+        item_type_id = self.allocate_type_id('src1', 'src2')
+        self.mktype(src='src1', type_id=item_type_id, attrs={tgt_attr_id: 50})
+        self.mktype(src='src2', type_id=item_type_id, attrs={tgt_attr_id: 75})
         fit = Fit()
         ship = Ship(ship_type_id)
         item = Rig(item_type_id)

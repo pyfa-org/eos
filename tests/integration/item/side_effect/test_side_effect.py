@@ -116,46 +116,54 @@ class TestItemMixinSideEffect(ItemMixinTestCase):
         # disabled anymore, everything runs as expected, and when this effect
         # appears again - it's disabled
         # Setup
-        chance_attr1_id = self.allocate_attr_id(self.ch, self.ch2)
-        self.ch.mkattr(attr_id=chance_attr1_id)
-        self.ch2.mkattr(attr_id=chance_attr1_id)
-        chance_attr2 = self.ch.mkattr()
-        chance_attr3 = self.ch.mkattr()
+        chance_attr1_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=chance_attr1_id)
+        self.mkattr(src='src2', attr_id=chance_attr1_id)
+        chance_attr2 = self.mkattr(src='src1')
+        chance_attr3 = self.mkattr(src='src1')
         # 1st effect exists as side-effect in both sources
-        effect1_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect1_src1 = self.ch.mkeffect(
+        effect1_id = self.allocate_effect_id('src1', 'src2')
+        effect1_src1 = self.mkeffect(
+            src='src1',
             effect_id=effect1_id,
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr1_id)
-        effect1_src2 = self.ch2.mkeffect(
+        effect1_src2 = self.mkeffect(
+            src='src2',
             effect_id=effect1_id,
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr1_id)
         # 2nd effect exists as side-effect in src1, and as regular effect in
         # src2
-        effect2_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect2_src1 = self.ch.mkeffect(
+        effect2_id = self.allocate_effect_id('src1', 'src2')
+        effect2_src1 = self.mkeffect(
+            src='src1',
             effect_id=effect2_id,
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr2.id)
-        effect2_src2 = self.ch2.mkeffect(
-            effect_id=effect2_id, category_id=EffectCategoryId.passive)
+        effect2_src2 = self.mkeffect(
+            src='src2',
+            effect_id=effect2_id,
+            category_id=EffectCategoryId.passive)
         # 3rd effect exists as side-effect in src1 and doesn't exist in src2 at
         # all
-        effect3_id = self.allocate_effect_id(self.ch, self.ch2)
-        effect3_src1 = self.ch.mkeffect(
+        effect3_id = self.allocate_effect_id('src1', 'src2')
+        effect3_src1 = self.mkeffect(
+            src='src1',
             effect_id=effect3_id,
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr3.id)
-        item_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.mktype(
+        item_type_id = self.allocate_type_id('src1', 'src2')
+        self.mktype(
+            src='src1',
             type_id=item_type_id,
             attrs={
                 chance_attr1_id: 0.2,
                 chance_attr2.id: 0.3,
                 chance_attr3.id: 0.4},
             effects=(effect1_src1, effect2_src1, effect3_src1))
-        self.ch2.mktype(
+        self.mktype(
+            src='src2',
             type_id=item_type_id,
             attrs={chance_attr1_id: 0.7},
             effects=(effect1_src2, effect2_src2))

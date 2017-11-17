@@ -91,22 +91,22 @@ class CacheHandler:
             raise EffectFetchError(effect_id)
 
     def allocate_type_id(self):
-        allocated = max((
+        allocated_id = max((
             TEST_ID_START - 1, self.__allocated_type_id,
             *self.__type_data.keys())) + 1
-        self.__allocated_type_id = allocated
-        return allocated
+        self.__allocated_type_id = allocated_id
+        return allocated_id
 
     def allocate_attr_id(self):
-        allocated = max((
+        allocated_id = max((
             TEST_ID_START - 1, self.__allocated_attr_id,
             *self.__attr_data.keys())) + 1
-        self.__allocated_attr_id = allocated
-        return allocated
+        self.__allocated_attr_id = allocated_id
+        return allocated_id
 
     def allocate_effect_id(self):
-        allocated = max((
+        allocated_id = max((
             TEST_ID_START - 1, self.__allocated_effect_id,
             *self.__effect_data.keys())) + 1
-        self.__allocated_effect_id = allocated
-        return allocated
+        self.__allocated_effect_id = allocated_id
+        return allocated_id

@@ -36,23 +36,16 @@ class IntegrationTestCase(EosTestCase):
     handler and eve object builder outside of scope.
 
     Sets up two sources for fit, src1 (default) and src2.
-
-    Attributes:
-        ch: Cache handler for default source.
-        ch2: Cache handler for second source.
     """
 
     def setUp(self):
         EosTestCase.setUp(self)
-        # Add two cache handlers to each test case
-        self.ch = CacheHandler()
-        self.ch2 = CacheHandler()
         # Replace existing sources with test source
         self.__backup_sources = copy(SourceManager._sources)
         self.__backup_default_source = SourceManager.default
         SourceManager._sources.clear()
-        self.__make_source('src1', self.ch, make_default=True)
-        self.__make_source('src2', self.ch2)
+        self.__make_source('src1', CacheHandler(), make_default=True)
+        self.__make_source('src2', CacheHandler())
 
     def tearDown(self):
         # Revert source change
@@ -73,30 +66,114 @@ class IntegrationTestCase(EosTestCase):
             group_id=TypeGroupId.character)
         return source
 
-    def mktype(self, *args, **kwargs):
-        """Make item type and add it to default source."""
-        return self.ch.mktype(*args, **kwargs)
+    def mktype(self, *args, src=None, **kwargs):
+        """Make item type and add it to source.
 
-    def mkattr(self, *args, **kwargs):
-        """Make attribute and add it to default source."""
-        return self.ch.mkattr(*args, **kwargs)
+        Args:
+            src (optional): Source alias to which type should be added. Default
+                source is used by default.
+            *args: Arguments which will be used to instantiate item type.
+            **kwargs: Keyword arguments which will be used to instantiate item
+                type.
 
-    def mkeffect(self, *args, **kwargs):
-        """Make effect and add it to default source."""
-        return self.ch.mkeffect(*args, **kwargs)
+        Returns:
+            Item type.
+        """
+        if src is None:
+            src = SourceManager.default
+        else:
+            src = SourceManager.get(src)
+        return src.cache_handler.mktype(*args, **kwargs)
+
+    def mkattr(self, *args, src=None, **kwargs):
+        """Make attribute and add it to default source.
+
+        Args:
+            src (optional): Source alias to which attribute should be added.
+                Default source is used by default.
+            *args: Arguments which will be used to instantiate attribute.
+            **kwargs: Keyword arguments which will be used to instantiate
+                attribute.
+
+        Returns:
+            Attribute.
+        """
+        if src is None:
+            src = SourceManager.default
+        else:
+            src = SourceManager.get(src)
+        return src.cache_handler.mkattr(*args, **kwargs)
+
+    def mkeffect(self, *args, src=None, **kwargs):
+        """Make effect and add it to default source.
+
+        Args:
+            src (optional): Source alias to which effect should be added.
+                Default source is used by default.
+            *args: Arguments which will be used to instantiate effect.
+            **kwargs: Keyword arguments which will be used to instantiate
+                effect.
+
+        Returns:
+            Effect.
+        """
+        if src is None:
+            src = SourceManager.default
+        else:
+            src = SourceManager.get(src)
+        return src.cache_handler.mkeffect(*args, **kwargs)
 
     def mkmod(self, *args, **kwargs):
-        """Shortcut to instantiating dogma modifier."""
+        """Shortcut to instantiating dogma modifier.
+
+        Args:
+            *args: Arguments which will be used to instantiate modifier.
+            **kwargs: Keyword arguments which will be used to instantiate
+                modifier.
+
+        Returns:
+            Dogma modifier.
+        """
         return DogmaModifier(*args, **kwargs)
 
-    def allocate_type_id(self, *cache_handlers):
-        return max(ch.allocate_type_id() for ch in cache_handlers)
+    def allocate_type_id(self, *srcs):
+        """Allocate item type ID which is not taken in specified sources.
 
-    def allocate_attr_id(self, *cache_handlers):
-        return max(ch.allocate_attr_id() for ch in cache_handlers)
+        Args:
+            *srcs: List of source aliases.
 
-    def allocate_effect_id(self, *cache_handlers):
-        return max(ch.allocate_effect_id() for ch in cache_handlers)
+        Returns:
+            Allocated item type ID.
+        """
+        return max(
+            SourceManager.get(src).cache_handler.allocate_type_id()
+            for src in srcs)
+
+    def allocate_attr_id(self, *srcs):
+        """Allocate attribute ID which is not taken in specified sources.
+
+        Args:
+            *srcs: List of source aliases.
+
+        Returns:
+            Allocated attribute ID.
+        """
+        return max(
+            SourceManager.get(src).cache_handler.allocate_attr_id()
+            for src in srcs)
+
+    def allocate_effect_id(self, *srcs):
+        """Allocate effect ID which is not taken in specified sources.
+
+        Args:
+            *srcs: List of source aliases.
+
+        Returns:
+            Allocated effect ID.
+        """
+        return max(
+            SourceManager.get(src).cache_handler.allocate_effect_id()
+            for src in srcs)
 
     def assert_fit_buffers_empty(self, fit, clear_all=True):
         """Checks if fit contains anything in object containers.

@@ -30,12 +30,12 @@ class TestSourceSwitchItemClass(SourceTestCase):
 
     def setUp(self):
         SourceTestCase.setUp(self)
-        self.src_attr_id = self.allocate_attr_id(self.ch, self.ch2)
-        self.tgt_attr_id = self.allocate_attr_id(self.ch, self.ch2)
-        self.ch.mkattr(self.src_attr_id)
-        self.ch2.mkattr(self.src_attr_id)
-        self.ch.mkattr(self.tgt_attr_id)
-        self.ch2.mkattr(self.tgt_attr_id)
+        self.src_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.tgt_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=self.src_attr_id)
+        self.mkattr(src='src2', attr_id=self.src_attr_id)
+        self.mkattr(src='src1', attr_id=self.tgt_attr_id)
+        self.mkattr(src='src2', attr_id=self.tgt_attr_id)
 
     def prepare_item_type(self):
         """Prepare item type for source switch test.
@@ -61,18 +61,22 @@ class TestSourceSwitchItemClass(SourceTestCase):
             tgt_attr_id=self.tgt_attr_id,
             operator=ModOperator.post_mul,
             src_attr_id=self.src_attr_id)
-        effect_src1 = self.ch.mkeffect(
+        effect_src1 = self.mkeffect(
+            src='src1',
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_src1])
-        effect_src2 = self.ch.mkeffect(
+        effect_src2 = self.mkeffect(
+            src='src2',
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_src2])
-        item_type_id = self.allocate_type_id(self.ch, self.ch2)
-        self.ch.mktype(
+        item_type_id = self.allocate_type_id('src1', 'src2')
+        self.mktype(
+            src='src1',
             type_id=item_type_id,
             attrs={self.src_attr_id: 5, self.tgt_attr_id: 13},
             effects=[effect_src1])
-        self.ch2.mktype(
+        self.mktype(
+            src='src2',
             type_id=item_type_id,
             attrs={self.src_attr_id: 2, self.tgt_attr_id: 7},
             effects=[effect_src2])
