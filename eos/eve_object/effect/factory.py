@@ -19,19 +19,34 @@
 # ==============================================================================
 
 
-from abc import ABCMeta, abstractmethod
+from .effect import Effect
 
 
-class BaseCachable(metaclass=ABCMeta):
-    """Abstract base class for all objects which can be stored in cache"""
+class EffectFactory:
+    """Produces eve effects."""
 
-    @abstractmethod
-    def compress(self):
-        """Compress object into python primitive"""
-        ...
+    _effect_id_map = {}
 
     @classmethod
-    @abstractmethod
-    def decompress(cls, cache_handler, compressed):
-        """Construct object from python primitive"""
-        ...
+    def make(cls, effect_id, *args, **kwargs):
+        """Produce an effect.
+
+        Args:
+            effect_id: ID of the effect to produce.
+            *args: Arguments to pass to the effect constructor.
+            **kwargs: Keyword arguments to pass to the effect constructor.
+
+        Returns:
+            Effect instance.
+        """
+        effect_class = cls._effect_id_map.get(effect_id, Effect)
+        effect = effect_class(effect_id, *args, **kwargs)
+        return effect
+
+    @classmethod
+    def register(cls, effect_id, effect_class):
+        """Register effect class against effect ID."""
+        if effect_id in cls._effect_id_map:
+            raise KeyError('effect ID {} is taken'.format(effect_id))
+        cls._effect_id_map[effect_id] = effect_class
+

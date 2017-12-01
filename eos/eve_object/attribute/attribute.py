@@ -19,11 +19,10 @@
 # ==============================================================================
 
 
-from eos.data.cachable import BaseCachable
 from eos.util.repr import make_repr_str
 
 
-class Attribute(BaseCachable):
+class Attribute:
     """Represents eve attribute with all its metadata.
 
     Attributes:
@@ -46,24 +45,6 @@ class Attribute(BaseCachable):
         self.default_value = default_value
         self.high_is_good = bool(high_is_good)
         self.stackable = bool(stackable)
-
-    # Cache-related methods
-    def compress(self):
-        return (
-            self.id,
-            self.max_attr_id,
-            self.default_value,
-            self.high_is_good,
-            self.stackable)
-
-    @classmethod
-    def decompress(cls, cache_handler, compressed):
-        return cls(
-            attr_id=compressed[0],
-            max_attr_id=compressed[1],
-            default_value=compressed[2],
-            high_is_good=compressed[3],
-            stackable=compressed[4])
 
     # Auxiliary methods
     def __repr__(self):

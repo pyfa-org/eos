@@ -21,14 +21,13 @@
 
 from eos.const.eos import State
 from eos.const.eve import EffectCategoryId
-from eos.data.cachable import BaseCachable
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 from ..custom.effect import customize_effect
 from ..modifier import DogmaModifier
 
 
-class Effect(BaseCachable):
+class Effect:
     """Represents single eve effect.
 
     Effects are the building blocks which describe what its carrier does with
@@ -133,43 +132,6 @@ class Effect(BaseCachable):
         if attr_id is None:
             return None
         return item.attrs.get(attr_id)
-
-    # Cache-related methods
-    def compress(self):
-        return (
-            self.id,
-            self.category_id,
-            self.is_offensive,
-            self.is_assistance,
-            self.duration_attr_id,
-            self.discharge_attr_id,
-            self.range_attr_id,
-            self.falloff_attr_id,
-            self.tracking_speed_attr_id,
-            self.fitting_usage_chance_attr_id,
-            self.build_status,
-            tuple(
-                m.compress()
-                for m in self.modifiers
-                if isinstance(m, DogmaModifier)))
-
-    @classmethod
-    def decompress(cls, cache_handler, compressed):
-        return cls(
-            effect_id=compressed[0],
-            category_id=compressed[1],
-            is_offensive=compressed[2],
-            is_assistance=compressed[3],
-            duration_attr_id=compressed[4],
-            discharge_attr_id=compressed[5],
-            range_attr_id=compressed[6],
-            falloff_attr_id=compressed[7],
-            tracking_speed_attr_id=compressed[8],
-            fitting_usage_chance_attr_id=compressed[9],
-            build_status=compressed[10],
-            modifiers=tuple(
-                DogmaModifier.decompress(cache_handler, cm)
-                for cm in compressed[11]))
 
     # Auxiliary methods
     def __repr__(self):

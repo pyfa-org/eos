@@ -20,7 +20,7 @@
 
 
 from eos.eve_object.attribute import Attribute
-from eos.eve_object.effect import Effect
+from eos.eve_object.effect import EffectFactory
 from eos.eve_object.type import Type
 from .mod_builder import ModBuilder
 
@@ -81,7 +81,7 @@ class Converter:
         mod_builder = ModBuilder(data['dgmexpressions'])
         for row in data['dgmeffects']:
             modifiers, build_status = mod_builder.build(row)
-            effects.append(Effect(
+            effects.append(EffectFactory.make(
                 effect_id=row['effectID'],
                 category_id=row.get('effectCategory'),
                 is_offensive=row.get('isOffensive'),

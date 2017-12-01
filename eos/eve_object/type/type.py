@@ -23,7 +23,6 @@ from collections import namedtuple
 
 from eos.const.eos import State
 from eos.const.eve import AttrId
-from eos.data.cachable import BaseCachable
 from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
@@ -34,7 +33,7 @@ FighterAbility = namedtuple(
     'FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))
 
 
-class Type(BaseCachable):
+class Type:
     """Represents item type with all its metadata.
 
     All characters, ships, incursion system-wide effects are based on item
@@ -120,35 +119,6 @@ class Type(BaseCachable):
         for effect in self.effects.values():
             max_state = max(max_state, effect._state)
         return max_state
-
-    # Cache-related methods
-    def compress(self):
-        return (
-            self.id,
-            self.group_id,
-            self.category_id,
-            tuple(self.attrs.items()),
-            tuple(self.effects.keys()),
-            None if self.default_effect is None else self.default_effect.id,
-            tuple(self.fighter_abilities.items()))
-
-    @classmethod
-    def decompress(cls, cache_handler, compressed):
-        default_effect_id = compressed[5]
-        if default_effect_id is None:
-            default_effect = None
-        else:
-            default_effect = cache_handler.get_effect(default_effect_id)
-        return cls(
-            type_id=compressed[0],
-            group_id=compressed[1],
-            category_id=compressed[2],
-            attrs={k: v for k, v in compressed[3]},
-            effects=tuple(
-                cache_handler.get_effect(eid)
-                for eid in compressed[4]),
-            default_effect=default_effect,
-            fighter_abilities={k: v for k, v in compressed[6]})
 
     # Auxiliary methods
     def __repr__(self):

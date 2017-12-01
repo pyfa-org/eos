@@ -22,13 +22,12 @@
 from numbers import Integral
 
 from eos.const.eos import ModOperator
-from eos.data.cachable import BaseCachable
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
 from .exception import ModificationCalculationError
 
 
-class DogmaModifier(BaseModifier, BaseCachable):
+class DogmaModifier(BaseModifier):
     """Defines one of modifier types, dogma modifier.
 
     Dogma modifiers are the most typical modifier type. They always take
@@ -64,26 +63,6 @@ class DogmaModifier(BaseModifier, BaseCachable):
             self._validate_base(),
             self.operator in ModOperator.__members__.values(),
             isinstance(self.src_attr_id, Integral)))
-
-    # Cache-related methods
-    def compress(self):
-        return (
-            self.tgt_filter,
-            self.tgt_domain,
-            self.tgt_filter_extra_arg,
-            self.tgt_attr_id,
-            self.operator,
-            self.src_attr_id)
-
-    @classmethod
-    def decompress(cls, cache_handler, compressed):
-        return cls(
-            tgt_filter=compressed[0],
-            tgt_domain=compressed[1],
-            tgt_filter_extra_arg=compressed[2],
-            tgt_attr_id=compressed[3],
-            operator=compressed[4],
-            src_attr_id=compressed[5])
 
     # Auxiliary methods
     def __repr__(self):

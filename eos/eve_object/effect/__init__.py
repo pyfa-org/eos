@@ -20,3 +20,4 @@
 
 
 from .effect import Effect
+from .factory import EffectFactory

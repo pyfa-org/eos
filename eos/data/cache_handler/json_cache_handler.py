@@ -25,7 +25,8 @@ import os.path
 from logging import getLogger
 
 from eos.eve_object.attribute import Attribute
-from eos.eve_object.effect import Effect
+from eos.eve_object.effect import EffectFactory
+from eos.eve_object.modifier import DogmaModifier
 from eos.eve_object.type import Type
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
@@ -115,9 +116,9 @@ class JsonCacheHandler(BaseCacheHandler):
     def update_cache(self, eve_objects, fingerprint):
         types, attrs, effects = eve_objects
         cache_data = {
-            'types': [item_type.compress() for item_type in types],
-            'attrs': [attr.compress() for attr in attrs],
-            'effects': [effect.compress() for effect in effects],
+            'types': [self.__type_compress(item_type) for item_type in types],
+            'attrs': [self.__attr_compress(attr) for attr in attrs],
+            'effects': [self.__effect_compress(effect) for effect in effects],
             'fingerprint': fingerprint}
         self.__update_persistent_cache(cache_data)
         self.__update_memory_cache(cache_data)
@@ -139,16 +140,131 @@ class JsonCacheHandler(BaseCacheHandler):
         self.__effect_storage.clear()
         # Process effects first, as item types rely on effects being available
         for effect_data in cache_data['effects']:
-            effect = Effect.decompress(self, effect_data)
+            effect = self.__effect_decompress(effect_data)
             self.__effect_storage[effect.id] = effect
         for type_data in cache_data['types']:
-            item_type = Type.decompress(self, type_data)
+            item_type = self.__type_decompress(type_data)
             self.__type_storage[item_type.id] = item_type
         for attr_data in cache_data['attrs']:
-            attr = Attribute.decompress(self, attr_data)
+            attr = self.__attr_decompress(attr_data)
             self.__attr_storage[attr.id] = attr
         self.__fingerprint = cache_data['fingerprint']
 
+    # Entity compression/decompression methods
+    def __type_compress(self, item_type):
+        """Compress item type into python primitives."""
+        if item_type.default_effect is not None:
+            default_effect_id = item_type.default_effect.id
+        else:
+            default_effect_id = None
+        type_data = (
+            item_type.id,
+            item_type.group_id,
+            item_type.category_id,
+            tuple(item_type.attrs.items()),
+            tuple(item_type.effects.keys()),
+            default_effect_id,
+            tuple(item_type.fighter_abilities.items()))
+        return type_data
+
+    def __type_decompress(self, type_data):
+        """Reconstruct item type from python primitives."""
+        default_effect_id = type_data[5]
+        if default_effect_id is None:
+            default_effect = None
+        else:
+            default_effect = self.get_effect(default_effect_id)
+        item_type = Type(
+            type_id=type_data[0],
+            group_id=type_data[1],
+            category_id=type_data[2],
+            attrs={k: v for k, v in type_data[3]},
+            effects=tuple(self.get_effect(eid) for eid in type_data[4]),
+            default_effect=default_effect,
+            fighter_abilities={k: v for k, v in type_data[6]})
+        return item_type
+
+    def __attr_compress(self, attr):
+        """Compress attribute into python primitives."""
+        attr_data = (
+            attr.id,
+            attr.max_attr_id,
+            attr.default_value,
+            attr.high_is_good,
+            attr.stackable)
+        return attr_data
+
+    def __attr_decompress(self, attr_data):
+        """Reconstruct attribute from python primitives."""
+        attr = Attribute(
+            attr_id=attr_data[0],
+            max_attr_id=attr_data[1],
+            default_value=attr_data[2],
+            high_is_good=attr_data[3],
+            stackable=attr_data[4])
+        return attr
+
+    def __effect_compress(self, effect):
+        """Compress effect into python primitives."""
+        effect_data = (
+            effect.id,
+            effect.category_id,
+            effect.is_offensive,
+            effect.is_assistance,
+            effect.duration_attr_id,
+            effect.discharge_attr_id,
+            effect.range_attr_id,
+            effect.falloff_attr_id,
+            effect.tracking_speed_attr_id,
+            effect.fitting_usage_chance_attr_id,
+            effect.build_status,
+            tuple(
+                self.__modifier_compress(m)
+                for m in effect.modifiers))
+        return effect_data
+
+    def __effect_decompress(self, effect_data):
+        """Reconstruct effect from python primitives."""
+        effect = EffectFactory.make(
+            effect_id=effect_data[0],
+            category_id=effect_data[1],
+            is_offensive=effect_data[2],
+            is_assistance=effect_data[3],
+            duration_attr_id=effect_data[4],
+            discharge_attr_id=effect_data[5],
+            range_attr_id=effect_data[6],
+            falloff_attr_id=effect_data[7],
+            tracking_speed_attr_id=effect_data[8],
+            fitting_usage_chance_attr_id=effect_data[9],
+            build_status=effect_data[10],
+            modifiers=tuple(
+                self.__modifier_decompress(md)
+                for md in effect_data[11]))
+        return effect
+
+    def __modifier_compress(self, modifier):
+        """Compress dogma modifier into python primitives."""
+        modifier_data = (
+            modifier.tgt_filter,
+            modifier.tgt_domain,
+            modifier.tgt_filter_extra_arg,
+            modifier.tgt_attr_id,
+            modifier.operator,
+            modifier.src_attr_id)
+        return modifier_data
+
+    def __modifier_decompress(self, modifier_data):
+        """Reconstruct dogma modifier from python primitives."""
+        modifier = DogmaModifier(
+            tgt_filter=modifier_data[0],
+            tgt_domain=modifier_data[1],
+            tgt_filter_extra_arg=modifier_data[2],
+            tgt_attr_id=modifier_data[3],
+            operator=modifier_data[4],
+            src_attr_id=modifier_data[5])
+        return modifier
+
+    # Auxiliary methods
     def __repr__(self):
         spec = [['cache_path', '_cache_path']]
         return make_repr_str(self, spec)
