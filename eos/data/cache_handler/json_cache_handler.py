@@ -23,11 +23,8 @@ import bz2
 import json
 import os.path
 from logging import getLogger
-
-from eos.eve_object.attribute import AttrFactory
-from eos.eve_object.effect import EffectFactory
-from eos.eve_object.modifier import DogmaModifier
-from eos.eve_object.type import TypeFactory
+from eos.eve_object import (
+    AttrFactory, DogmaModifier, EffectFactory, TypeFactory)
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
 from .exception import AttrFetchError, EffectFetchError, TypeFetchError

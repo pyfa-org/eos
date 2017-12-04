@@ -23,8 +23,6 @@ from eos.const.eos import State
 from eos.const.eve import EffectCategoryId
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
-from ..custom.effect import customize_effect
-from ..modifier import DogmaModifier
 
 
 class Effect:
@@ -65,7 +63,7 @@ class Effect:
             discharge_attr_id=None, range_attr_id=None,
             falloff_attr_id=None, tracking_speed_attr_id=None,
             fitting_usage_chance_attr_id=None, build_status=None,
-            modifiers=(), customize=True):
+            modifiers=()):
         self.id = effect_id
         self.category_id = category_id
         self.is_offensive = bool(is_offensive)
@@ -78,8 +76,6 @@ class Effect:
         self.fitting_usage_chance_attr_id = fitting_usage_chance_attr_id
         self.build_status = build_status
         self.modifiers = modifiers
-        if customize:
-            customize_effect(self)
 
     # Format: {effect category ID: state ID}
     __effect_state_map = {

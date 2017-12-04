@@ -21,3 +21,4 @@
 
 from .dogma import DogmaModifier
 from .exception import ModificationCalculationError
+from .python import BasePythonModifier

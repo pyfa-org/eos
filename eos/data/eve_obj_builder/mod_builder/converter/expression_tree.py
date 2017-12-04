@@ -21,7 +21,7 @@
 
 from eos.const.eos import EosTypeId, ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import OperandId
-from eos.eve_object.modifier import DogmaModifier
+from eos.eve_object import DogmaModifier
 from eos.util.attrdict import attrdict
 from ..exception import UnknownEtreeRootOperandError
 

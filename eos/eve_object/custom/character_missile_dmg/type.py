@@ -22,8 +22,8 @@
 from eos.const.eos import (
     EffectBuildStatus, EosEffectId, ModDomain, ModOperator, ModTgtFilter)
 from eos.const.eve import AttrId, EffectCategoryId, TypeId
-from ...effect import Effect
-from ...modifier import DogmaModifier
+from eos.eve_object.effect import Effect
+from eos.eve_object.modifier import DogmaModifier
 
 
 def add_char_missile_dmg_multiplier(item_type):

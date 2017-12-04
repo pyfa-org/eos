@@ -26,7 +26,6 @@ from eos.const.eve import AttrId
 from eos.util.cached_property import cached_property
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
-from ..custom.type import customize_type
 
 
 FighterAbility = namedtuple(
@@ -56,8 +55,7 @@ class Type:
 
     def __init__(
             self, type_id, group_id=None, category_id=None, attrs=DEFAULT,
-            effects=(), default_effect=None, fighter_abilities=DEFAULT,
-            customize=True):
+            effects=(), default_effect=None, fighter_abilities=DEFAULT):
         self.id = type_id
         self.group_id = group_id
         self.category_id = category_id
@@ -71,8 +69,6 @@ class Type:
             self.fighter_abilities = {}
         else:
             self.fighter_abilities = fighter_abilities
-        if customize:
-            customize_type(self)
 
     # Define attributes which describe item type skill requirement details
     # Format: {skill type attribute ID: skill level attribute ID}

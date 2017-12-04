@@ -21,9 +21,9 @@
 
 from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
 from eos.const.eve import AttrId, TypeId
+from eos.eve_object.modifier.exception import ModificationCalculationError
+from eos.eve_object.modifier.python import BasePythonModifier
 from eos.fit.message import AttrValueChanged, ItemAdded, ItemRemoved
-from ...modifier.exception import ModificationCalculationError
-from ...modifier.python import BasePythonModifier
 
 
 class AncillaryRepAmountModifier(BasePythonModifier):

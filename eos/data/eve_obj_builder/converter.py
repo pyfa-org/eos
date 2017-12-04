@@ -19,9 +19,7 @@
 # ==============================================================================
 
 
-from eos.eve_object.attribute import AttrFactory
-from eos.eve_object.effect import EffectFactory
-from eos.eve_object.type import TypeFactory
+from eos.eve_object import AttrFactory, EffectFactory, TypeFactory
 from .mod_builder import ModBuilder
 
 

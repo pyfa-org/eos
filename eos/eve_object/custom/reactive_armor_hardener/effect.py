@@ -24,7 +24,7 @@ from logging import getLogger
 from eos.const.eos import (
     EffectBuildStatus, ModDomain, ModOperator, ModTgtFilter)
 from eos.const.eve import AttrId
-from ...modifier import DogmaModifier
+from eos.eve_object.modifier import DogmaModifier
 
 
 logger = getLogger(__name__)

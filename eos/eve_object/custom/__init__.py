@@ -23,3 +23,12 @@
 This package contains all the customizations which should be
 applied to eve objects.
 """
+
+
+import pkgutil
+
+
+def register_customizations():
+    """Walk through customization folder and load all modules within it."""
+    for loader, name, is_pkg in pkgutil.iter_modules(__path__):
+        loader.find_module(name).load_module(name)
