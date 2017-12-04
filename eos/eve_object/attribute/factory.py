@@ -20,4 +20,21 @@
 
 
 from .attribute import Attribute
-from .factory import AttrFactory
+
+
+class AttrFactory:
+    """Produces attributes."""
+
+    @classmethod
+    def make(cls, *args, **kwargs):
+        """Produce an attribute.
+
+        Args:
+            *args: Arguments to pass to the attribute constructor.
+            **kwargs: Keyword arguments to pass to the attribute constructor.
+
+        Returns:
+            Attribute instance.
+        """
+        attr = Attribute(*args, **kwargs)
+        return attr

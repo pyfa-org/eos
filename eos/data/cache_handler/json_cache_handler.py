@@ -24,10 +24,10 @@ import json
 import os.path
 from logging import getLogger
 
-from eos.eve_object.attribute import Attribute
+from eos.eve_object.attribute import AttrFactory
 from eos.eve_object.effect import EffectFactory
 from eos.eve_object.modifier import DogmaModifier
-from eos.eve_object.type import Type
+from eos.eve_object.type import TypeFactory
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
 from .exception import AttrFetchError, EffectFetchError, TypeFetchError
@@ -174,7 +174,7 @@ class JsonCacheHandler(BaseCacheHandler):
             default_effect = None
         else:
             default_effect = self.get_effect(default_effect_id)
-        item_type = Type(
+        item_type = TypeFactory.make(
             type_id=type_data[0],
             group_id=type_data[1],
             category_id=type_data[2],
@@ -196,7 +196,7 @@ class JsonCacheHandler(BaseCacheHandler):
 
     def __attr_decompress(self, attr_data):
         """Reconstruct attribute from python primitives."""
-        attr = Attribute(
+        attr = AttrFactory.make(
             attr_id=attr_data[0],
             max_attr_id=attr_data[1],
             default_value=attr_data[2],

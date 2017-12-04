@@ -23,7 +23,7 @@ from .effect import Effect
 
 
 class EffectFactory:
-    """Produces eve effects."""
+    """Produces effects."""
 
     _effect_id_map = {}
 
@@ -44,7 +44,7 @@ class EffectFactory:
         return effect
 
     @classmethod
-    def register(cls, effect_id, effect_class):
+    def register_class(cls, effect_id, effect_class):
         """Register effect class against effect ID."""
         if effect_id in cls._effect_id_map:
             raise KeyError('effect ID {} is taken'.format(effect_id))

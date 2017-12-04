@@ -19,4 +19,5 @@
 # ==============================================================================
 
 
+from .factory import TypeFactory
 from .type import Type

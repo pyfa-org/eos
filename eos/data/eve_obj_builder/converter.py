@@ -19,9 +19,9 @@
 # ==============================================================================
 
 
-from eos.eve_object.attribute import Attribute
+from eos.eve_object.attribute import AttrFactory
 from eos.eve_object.effect import EffectFactory
-from eos.eve_object.type import Type
+from eos.eve_object.type import TypeFactory
 from .mod_builder import ModBuilder
 
 
@@ -69,7 +69,7 @@ class Converter:
         # Convert attributes
         attrs = []
         for row in data['dgmattribs']:
-            attrs.append(Attribute(
+            attrs.append(AttrFactory.make(
                 attr_id=row['attributeID'],
                 max_attr_id=row.get('maxAttributeID'),
                 default_value=row.get('defaultValue'),
@@ -105,7 +105,7 @@ class Converter:
             type_group = row.get('groupID')
             type_effect_ids = types_effects.get(type_id, set())
             type_effect_ids.intersection_update(effect_map)
-            types.append(Type(
+            types.append(TypeFactory.make(
                 type_id=type_id,
                 group_id=type_group,
                 category_id=groups_keyed.get(type_group, {}).get('categoryID'),

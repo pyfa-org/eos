@@ -19,5 +19,22 @@
 # ==============================================================================
 
 
-from .attribute import Attribute
-from .factory import AttrFactory
+from .type import Type
+
+
+class TypeFactory:
+    """Produces item types."""
+
+    @classmethod
+    def make(cls, *args, **kwargs):
+        """Produce an item type.
+
+        Args:
+            *args: Arguments to pass to the item type constructor.
+            **kwargs: Keyword arguments to pass to the item type constructor.
+
+        Returns:
+            Item type instance.
+        """
+        item_type = Type(*args, **kwargs)
+        return item_type
