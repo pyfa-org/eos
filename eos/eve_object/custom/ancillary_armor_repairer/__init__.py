@@ -19,4 +19,12 @@
 # ==============================================================================
 
 
+from eos.const.eve import EffectId
+from eos.eve_object import EffectFactory
 from .effect import add_aar_modifier
+
+
+EffectFactory.reg_cust_instance_by_id(
+    EffectId.fueled_armor_repair, add_aar_modifier)
+EffectFactory.reg_cust_instance_by_id(
+    EffectId.module_bonus_ancillary_remote_armor_repairer, add_aar_modifier)

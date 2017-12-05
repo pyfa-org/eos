@@ -20,8 +20,8 @@
 
 
 from eos.const.eos import ModDomain
-from eos.eve_object.modifier import DogmaModifier, ModificationCalculationError
-from eos.eve_object.modifier.python import BasePythonModifier
+from eos.eve_object.modifier import (
+    BasePythonModifier, DogmaModifier, ModificationCalculationError)
 from eos.fit.item import Character, Ship
 from eos.fit.message import (
     AttrValueChanged, EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)

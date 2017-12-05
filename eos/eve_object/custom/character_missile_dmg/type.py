@@ -22,8 +22,7 @@
 from eos.const.eos import (
     EffectBuildStatus, EosEffectId, ModDomain, ModOperator, ModTgtFilter)
 from eos.const.eve import AttrId, EffectCategoryId, TypeId
-from eos.eve_object.effect import Effect
-from eos.eve_object.modifier import DogmaModifier
+from eos.eve_object import DogmaModifier, EffectFactory
 
 
 def add_char_missile_dmg_multiplier(item_type):
@@ -49,7 +48,7 @@ def add_char_missile_dmg_multiplier(item_type):
             tgt_attr_id=dmg_attr_id,
             operator=ModOperator.pre_mul,
             src_attr_id=AttrId.missile_dmg_multiplier))
-    effect = Effect(
+    effect = EffectFactory.make(
         effect_id=EosEffectId.char_missile_dmg,
         category_id=EffectCategoryId.passive,
         is_offensive=False,

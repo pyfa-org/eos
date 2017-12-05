@@ -21,9 +21,7 @@
 
 from eos.data.cache_handler.exception import (
     AttrFetchError, EffectFetchError, TypeFetchError)
-from eos.eve_object.attribute import Attribute
-from eos.eve_object.effect import Effect
-from eos.eve_object.type import Type
+from eos.eve_object import AttrFactory, EffectFactory, TypeFactory
 
 
 TEST_ID_START = 1000000
@@ -46,7 +44,8 @@ class CacheHandler:
         if type_id in self.__type_data:
             raise KeyError(type_id)
         # Create, store and return type
-        item_type = Type(type_id=type_id, customize=customize, **kwargs)
+        item_type = TypeFactory.make(
+            type_id=type_id, customize=customize, **kwargs)
         self.__type_data[item_type.id] = item_type
         return item_type
 
@@ -57,7 +56,7 @@ class CacheHandler:
         if attr_id in self.__attr_data:
             raise KeyError(attr_id)
         # Create, store and return attribute
-        attr = Attribute(attr_id=attr_id, **kwargs)
+        attr = AttrFactory.make(attr_id=attr_id, **kwargs)
         self.__attr_data[attr.id] = attr
         return attr
 
@@ -68,7 +67,8 @@ class CacheHandler:
         if effect_id in self.__effect_data:
             raise KeyError(effect_id)
         # Create, store and return effect
-        effect = Effect(effect_id=effect_id, customize=customize, **kwargs)
+        effect = EffectFactory.make(
+            effect_id=effect_id, customize=customize, **kwargs)
         self.__effect_data[effect.id] = effect
         return effect
 

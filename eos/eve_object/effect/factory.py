@@ -25,7 +25,10 @@ from .effect import Effect
 class EffectFactory:
     """Produces effects."""
 
-    _effect_id_map = {}
+    # Format: {effect ID: effect class}
+    _class_id_map = {}
+    # Format: {effect ID: {customizing, functions}}
+    _instance_id_map = {}
 
     @classmethod
     def make(cls, effect_id, *args, **kwargs):
@@ -39,14 +42,21 @@ class EffectFactory:
         Returns:
             Effect instance.
         """
-        effect_class = cls._effect_id_map.get(effect_id, Effect)
+        effect_class = cls._class_id_map.get(effect_id, Effect)
         effect = effect_class(effect_id, *args, **kwargs)
+        for cust_func in cls._instance_id_map.get(effect.id, ()):
+            cust_func(effect)
         return effect
 
     @classmethod
-    def register_class(cls, effect_id, effect_class):
-        """Register effect class against effect ID."""
-        if effect_id in cls._effect_id_map:
+    def reg_cust_class_by_id(cls, effect_id, effect_class):
+        """Register custom effect class against effect ID."""
+        if effect_id in cls._class_id_map:
             raise KeyError('effect ID {} is taken'.format(effect_id))
-        cls._effect_id_map[effect_id] = effect_class
+        cls._class_id_map[effect_id] = effect_class
 
+    @classmethod
+    def reg_cust_instance_by_id(cls, effect_id, cust_func):
+        """Register instance customizer against effect ID."""
+        cust_funcs = cls._instance_id_map.setdefault(effect_id, set())
+        cust_funcs.add(cust_func)
