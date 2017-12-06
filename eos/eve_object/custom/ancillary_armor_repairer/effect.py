@@ -19,18 +19,17 @@
 # ==============================================================================
 
 
-from logging import getLogger
-
+from eos.const.eve import EffectCategoryId
 from eos.const.eos import EffectBuildStatus
+from eos.const.eos import EosEffectId
+from eos.eve_object import EffectFactory
 from .modifier import AncillaryRepAmountModifier
 
 
-logger = getLogger(__name__)
-
-
-def add_aar_modifier(effect):
-    if effect.modifiers:
-        msg = 'ancillary armor repair effect has modifiers, overwriting them'
-        logger.info(msg)
-    effect.modifiers = (AncillaryRepAmountModifier(),)
-    effect.build_status = EffectBuildStatus.custom
+paste_effect = EffectFactory.make(
+        effect_id=EosEffectId.ancillary_paste_armor_rep_boost,
+        category_id=EffectCategoryId.passive,
+        is_offensive=False,
+        is_assistance=False,
+        build_status=EffectBuildStatus.custom,
+        modifiers=(AncillaryRepAmountModifier(),))

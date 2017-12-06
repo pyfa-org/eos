@@ -180,3 +180,4 @@ class EosEffectId(IntEnum):
     Any values defined here must not overlap with regular effect IDs.
     """
     char_missile_dmg = -1
+    ancillary_paste_armor_rep_boost = -2

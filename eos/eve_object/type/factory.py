@@ -25,6 +25,10 @@ from .type import Type
 class TypeFactory:
     """Produces item types."""
 
+    # Functions, which are applied to every item type
+    # Format: {customizing, functions}
+    _instance_funcs = set()
+
     @classmethod
     def make(cls, *args, **kwargs):
         """Produce an item type.
@@ -37,4 +41,11 @@ class TypeFactory:
             Item type instance.
         """
         item_type = Type(*args, **kwargs)
+        for cust_func in cls._instance_funcs:
+            cust_func(item_type)
         return item_type
+
+    @classmethod
+    def reg_cust_instance(cls, cust_func):
+        """Register effect instance customizer for all item types."""
+        cls._instance_funcs.add(cust_func)
