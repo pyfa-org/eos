@@ -19,9 +19,15 @@
 # ==============================================================================
 
 
-from eos.data.cache_handler.exception import (
-    AttrFetchError, EffectFetchError, TypeFetchError)
-from eos.eve_object import AttrFactory, EffectFactory, TypeFactory
+from eos.data.cache_handler.exception import AttrFetchError
+from eos.data.cache_handler.exception import EffectFetchError
+from eos.data.cache_handler.exception import TypeFetchError
+from eos.eve_object import AttrFactory
+from eos.eve_object import Attribute
+from eos.eve_object import Effect
+from eos.eve_object import EffectFactory
+from eos.eve_object import Type
+from eos.eve_object import TypeFactory
 
 
 TEST_ID_START = 1000000
@@ -44,19 +50,24 @@ class CacheHandler:
         if type_id in self.__type_data:
             raise KeyError(type_id)
         # Create, store and return type
-        item_type = TypeFactory.make(
-            type_id=type_id, customize=customize, **kwargs)
+        if customize:
+            item_type = TypeFactory.make(type_id=type_id, **kwargs)
+        else:
+            item_type = Type(type_id=type_id, **kwargs)
         self.__type_data[item_type.id] = item_type
         return item_type
 
-    def mkattr(self, attr_id=None, **kwargs):
+    def mkattr(self, attr_id=None, customize=False, **kwargs):
         # Allocate & verify ID
         if attr_id is None:
             attr_id = self.allocate_attr_id()
         if attr_id in self.__attr_data:
             raise KeyError(attr_id)
         # Create, store and return attribute
-        attr = AttrFactory.make(attr_id=attr_id, **kwargs)
+        if customize:
+            attr = AttrFactory.make(attr_id=attr_id, **kwargs)
+        else:
+            attr = Attribute(attr_id=attr_id, **kwargs)
         self.__attr_data[attr.id] = attr
         return attr
 
@@ -67,8 +78,10 @@ class CacheHandler:
         if effect_id in self.__effect_data:
             raise KeyError(effect_id)
         # Create, store and return effect
-        effect = EffectFactory.make(
-            effect_id=effect_id, customize=customize, **kwargs)
+        if customize:
+            effect = EffectFactory.make(effect_id=effect_id, **kwargs)
+        else:
+            effect = Effect(effect_id=effect_id, **kwargs)
         self.__effect_data[effect.id] = effect
         return effect
 
