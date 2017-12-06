@@ -19,4 +19,23 @@
 # ==============================================================================
 
 
-from .type import add_char_missile_dmg_multiplier
+"""
+Some modules, like ballistic control systems, do not affect missile attributes
+directly; instead, they affect an attribute on the character, which, in turn,
+should affect missiles. The problem is that it doesn't affect missiles (probably
+some hardcoding on CCP's part), so we're adding it manually.
+"""
+
+
+from eos.const.eve import TypeGroupId
+from eos.eve_object import TypeFactory
+from .effect import get_missile_dmg_effect
+
+
+def add_missile_dmg_effect(item_type):
+    if item_type.group_id == TypeGroupId.character:
+        missile_dmg_effect = get_missile_dmg_effect()
+        item_type.effects[missile_dmg_effect.id] = missile_dmg_effect
+
+
+TypeFactory.reg_cust_instance(add_missile_dmg_effect)

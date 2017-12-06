@@ -21,7 +21,7 @@
 
 from eos.const.eve import EffectId
 from eos.eve_object import TypeFactory
-from .effect import paste_effect
+from .effect import get_paste_effect
 
 
 aar_id = EffectId.fueled_armor_repair
@@ -30,6 +30,7 @@ raar_id = EffectId.module_bonus_ancillary_remote_armor_repairer
 
 def add_aar_paste_effect(item_type):
     if aar_id in item_type.effects or raar_id in item_type.effects:
+        paste_effect = get_paste_effect()
         item_type.effects[paste_effect.id] = paste_effect
 
 
