@@ -23,11 +23,16 @@ import bz2
 import json
 import os.path
 from logging import getLogger
-from eos.eve_object import (
-    AttrFactory, DogmaModifier, EffectFactory, TypeFactory)
+
+from eos.eve_object import AttrFactory
+from eos.eve_object import DogmaModifier
+from eos.eve_object import EffectFactory
+from eos.eve_object import TypeFactory
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
-from .exception import AttrFetchError, EffectFetchError, TypeFetchError
+from .exception import AttrFetchError
+from .exception import EffectFetchError
+from .exception import TypeFetchError
 
 
 logger = getLogger(__name__)

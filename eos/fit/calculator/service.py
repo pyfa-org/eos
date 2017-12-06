@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import ModDomain
-from eos.eve_object.modifier import (
+from eos.eve_object import (
     BasePythonModifier, DogmaModifier, ModificationCalculationError)
 from eos.fit.item import Character, Ship
 from eos.fit.message import (

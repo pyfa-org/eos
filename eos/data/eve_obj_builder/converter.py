@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.eve_object import AttrFactory, EffectFactory, TypeFactory
+from eos.eve_object import Attribute, Effect, Type
 from .mod_builder import ModBuilder
 
 
@@ -67,7 +67,7 @@ class Converter:
         # Convert attributes
         attrs = []
         for row in data['dgmattribs']:
-            attrs.append(AttrFactory.make(
+            attrs.append(Attribute(
                 attr_id=row['attributeID'],
                 max_attr_id=row.get('maxAttributeID'),
                 default_value=row.get('defaultValue'),
@@ -79,7 +79,7 @@ class Converter:
         mod_builder = ModBuilder(data['dgmexpressions'])
         for row in data['dgmeffects']:
             modifiers, build_status = mod_builder.build(row)
-            effects.append(EffectFactory.make(
+            effects.append(Effect(
                 effect_id=row['effectID'],
                 category_id=row.get('effectCategory'),
                 is_offensive=row.get('isOffensive'),
@@ -92,8 +92,7 @@ class Converter:
                 fitting_usage_chance_attr_id=(
                     row.get('fittingUsageChanceAttributeID')),
                 build_status=build_status,
-                modifiers=tuple(modifiers),
-                customize=False))
+                modifiers=tuple(modifiers)))
 
         # Convert types
         types = []
@@ -103,14 +102,13 @@ class Converter:
             type_group = row.get('groupID')
             type_effect_ids = types_effects.get(type_id, set())
             type_effect_ids.intersection_update(effect_map)
-            types.append(TypeFactory.make(
+            types.append(Type(
                 type_id=type_id,
                 group_id=type_group,
                 category_id=groups_keyed.get(type_group, {}).get('categoryID'),
                 attrs=types_attrs.get(type_id, {}),
                 effects=tuple(effect_map[eid] for eid in type_effect_ids),
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),
-                fighter_abilities=typeabils_reformat.get(type_id, {}),
-                customize=False))
+                fighter_abilities=typeabils_reformat.get(type_id, {})))
 
         return types, attrs, effects

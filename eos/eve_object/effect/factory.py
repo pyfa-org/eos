@@ -25,10 +25,15 @@ from .effect import Effect
 class EffectFactory:
     """Produces effects."""
 
+    # Custom classes, stored against effect ID
     # Format: {effect ID: effect class}
     _class_id_map = {}
+    # Customization functions, stored against effect ID
     # Format: {effect ID: {customizing, functions}}
     _instance_id_map = {}
+    # Functions, which are applied to every effect
+    # Format: {customizing, functions}
+    _instance_funcs = set()
 
     @classmethod
     def make(cls, effect_id, *args, **kwargs):
@@ -46,17 +51,25 @@ class EffectFactory:
         effect = effect_class(effect_id, *args, **kwargs)
         for cust_func in cls._instance_id_map.get(effect.id, ()):
             cust_func(effect)
+        for cust_func in cls._instance_funcs:
+            cust_func(effect)
         return effect
 
     @classmethod
-    def reg_cust_class_by_id(cls, effect_id, effect_class):
+    def reg_cust_class_by_id(cls, effect_class, effect_id):
         """Register custom effect class against effect ID."""
         if effect_id in cls._class_id_map:
             raise KeyError('effect ID {} is taken'.format(effect_id))
         cls._class_id_map[effect_id] = effect_class
 
     @classmethod
-    def reg_cust_instance_by_id(cls, effect_id, cust_func):
-        """Register instance customizer against effect ID."""
+    def reg_cust_instance_by_id(cls, cust_func, effect_id):
+        """Register effect instance customizer against effect ID."""
         cust_funcs = cls._instance_id_map.setdefault(effect_id, set())
         cust_funcs.add(cust_func)
+
+    @classmethod
+    def reg_cust_instance(cls, cust_func):
+        """Register effect instance customizer for all effects."""
+        cls._instance_funcs.add(cust_func)
+

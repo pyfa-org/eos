@@ -24,7 +24,8 @@ This file holds IDs of multiple Eos-specific entities.
 """
 
 
-from enum import IntEnum, unique
+from enum import IntEnum
+from enum import unique
 
 
 @unique
