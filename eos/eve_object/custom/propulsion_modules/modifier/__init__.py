@@ -19,23 +19,28 @@
 # ==============================================================================
 
 
-from logging import getLogger
-
-from eos.const.eve import EffectCategoryId
-
-
-logger = getLogger(__name__)
+from .dogma import make_mass_modifier
+from .dogma import make_signature_modifier
+from .python import PropulsionModuleVelocityBoostModifier
 
 
-def fix_online_category(effect):
-    """
-    In CCP code, 'online' effect has custom processing within dogma code. Actual
-    effect has 'active' effect category, which lets all item types with it to be
-    in active state according to eos' effect handling. We do not want any
-    special processing, thus just fix it here.
-    """
-    if effect.category_id == EffectCategoryId.online:
-        msg = 'online effect category does not need to be adjusted'
-        logger.info(msg)
-    else:
-        effect.category_id = EffectCategoryId.online
+_ab_modifiers = None
+_mwd_modifiers = None
+
+
+def get_ab_modifiers():
+    global _ab_modifiers
+    if _ab_modifiers is None:
+        _ab_modifiers = (
+            PropulsionModuleVelocityBoostModifier(),
+            make_mass_modifier())
+    return _ab_modifiers
+
+
+def get_mwd_modifiers():
+    global _mwd_modifiers
+    if _mwd_modifiers is None:
+        _mwd_modifiers = (
+            *get_ab_modifiers(),
+            make_signature_modifier())
+    return _mwd_modifiers

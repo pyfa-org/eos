@@ -20,8 +20,8 @@
 
 
 """
-This package contains all the customizations which should be
-applied to eve objects.
+This package contains all the customizations which should be applied to eve
+objects.
 """
 
 

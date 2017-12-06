@@ -19,4 +19,40 @@
 # ==============================================================================
 
 
-from .effect import add_ab_modifiers, add_mwd_modifiers
+"""
+Propulsion module effects are implemented as custom effects in CCP code.
+"""
+
+
+from logging import getLogger
+
+from eos.const.eos import EffectBuildStatus
+from eos.const.eve import EffectId
+from eos.eve_object import EffectFactory
+from .modifier import get_ab_modifiers
+from .modifier import get_mwd_modifiers
+
+
+logger = getLogger(__name__)
+
+
+def add_ab_modifiers(effect):
+    if effect.modifiers:
+        msg = 'afterburner effect has modifiers, overwriting them'
+        logger.info(msg)
+    effect.modifiers = get_ab_modifiers()
+    effect.build_status = EffectBuildStatus.custom
+
+
+def add_mwd_modifiers(effect):
+    if effect.modifiers:
+        msg = 'microwarpdrive effect has modifiers, overwriting them'
+        logger.info(msg)
+    effect.modifiers = get_mwd_modifiers()
+    effect.build_status = EffectBuildStatus.custom
+
+
+EffectFactory.reg_cust_instance_by_id(
+    add_ab_modifiers, EffectId.module_bonus_afterburner)
+EffectFactory.reg_cust_instance_by_id(
+    add_mwd_modifiers, EffectId.module_bonus_microwarpdrive)

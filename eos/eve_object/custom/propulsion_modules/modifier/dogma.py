@@ -19,49 +19,28 @@
 # ==============================================================================
 
 
-from logging import getLogger
-
-from eos.const.eos import (
-    EffectBuildStatus, ModDomain, ModOperator, ModTgtFilter)
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
 from eos.eve_object import DogmaModifier
-from .modifier import PropulsionModuleVelocityBoostModifier
 
 
-logger = getLogger(__name__)
-
-
-def add_ab_modifiers(effect):
-    if effect.modifiers:
-        msg = 'afterburner effect has modifiers, overwriting them'
-        logger.info(msg)
+def make_mass_modifier():
     mass_modifier = DogmaModifier(
         tgt_filter=ModTgtFilter.item,
         tgt_domain=ModDomain.ship,
         tgt_attr_id=AttrId.mass,
         operator=ModOperator.mod_add,
         src_attr_id=AttrId.mass_addition)
-    velocity_modifier = PropulsionModuleVelocityBoostModifier()
-    effect.modifiers = (mass_modifier, velocity_modifier)
-    effect.build_status = EffectBuildStatus.custom
+    return mass_modifier
 
 
-def add_mwd_modifiers(effect):
-    if effect.modifiers:
-        msg = 'microwarpdrive effect has modifiers, overwriting them'
-        logger.info(msg)
-    mass_modifier = DogmaModifier(
-        tgt_filter=ModTgtFilter.item,
-        tgt_domain=ModDomain.ship,
-        tgt_attr_id=AttrId.mass,
-        operator=ModOperator.mod_add,
-        src_attr_id=AttrId.mass_addition)
+def make_signature_modifier():
     signature_modifier = DogmaModifier(
         tgt_filter=ModTgtFilter.item,
         tgt_domain=ModDomain.ship,
         tgt_attr_id=AttrId.signature_radius,
         operator=ModOperator.post_percent,
         src_attr_id=AttrId.signature_radius_bonus)
-    velocity_modifier = PropulsionModuleVelocityBoostModifier()
-    effect.modifiers = (mass_modifier, signature_modifier, velocity_modifier)
-    effect.build_status = EffectBuildStatus.custom
+    return signature_modifier

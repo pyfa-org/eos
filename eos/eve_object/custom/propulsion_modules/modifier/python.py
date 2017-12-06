@@ -21,9 +21,12 @@
 
 from logging import getLogger
 
-from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
-from eos.eve_object import BasePythonModifier, ModificationCalculationError
+from eos.eve_object import BasePythonModifier
+from eos.eve_object import ModificationCalculationError
 from eos.fit.message import AttrValueChanged
 
 
@@ -47,7 +50,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         except (AttributeError, KeyError) as e:
             raise ModificationCalculationError from e
         try:
-            value = speed_boost * thrust / mass
+            perc = speed_boost * thrust / mass
         # Log warning for zero ship mass, as it's abnormal situation
         except ZeroDivisionError as e:
             msg = (
@@ -55,7 +58,8 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             logger.warning(msg)
             raise ModificationCalculationError from e
         else:
-            return ModOperator.post_percent, value
+            mult = 1 + perc / 100
+            return ModOperator.post_mul, mult
 
     def __revise_on_attr_changed(self, msg, carrier_item, ship):
         """
