@@ -19,24 +19,6 @@
 # ==============================================================================
 
 
-__all__ = [
-    'CalibrationStatRegister',
-    'CpuStatRegister',
-    'DmgDealerRegister',
-    'DroneBandwidthStatRegister',
-    'DronebayVolumeStatRegister',
-    'HighSlotStatRegister',
-    'LaunchedDroneStatRegister',
-    'LauncherSlotStatRegister',
-    'LowSlotStatRegister',
-    'MediumSlotStatRegister',
-    'PowergridStatRegister',
-    'RigSlotStatRegister',
-    'SubsystemSlotStatRegister',
-    'TurretSlotStatRegister'
-]
-
-
 from .dmg_dealer import DmgDealerRegister
 from .resource import CalibrationStatRegister
 from .resource import CpuStatRegister

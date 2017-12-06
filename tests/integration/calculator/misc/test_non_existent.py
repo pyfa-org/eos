@@ -21,7 +21,7 @@
 
 import logging
 
-from eos import *
+from eos import Implant
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 

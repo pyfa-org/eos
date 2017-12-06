@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Fit
+from eos import ModuleHigh
 from tests.integration.container.testcase import ContainerTestCase
 
 

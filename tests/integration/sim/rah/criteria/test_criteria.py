@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import EffectMode
+from eos import ModuleLow
+from eos import Ship
+from eos import State
 from eos.const.eve import EffectId
 from tests.integration.sim.rah.testcase import RahSimTestCase
 

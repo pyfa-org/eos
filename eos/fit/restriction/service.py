@@ -21,7 +21,35 @@
 
 from .exception import RestrictionValidationError
 from .exception import ValidationError
-from .restriction import *
+from .restriction import BoosterIndexRestrictionRegister
+from .restriction import CalibrationRestriction
+from .restriction import CapitalItemRestrictionRegister
+from .restriction import ChargeGroupRestrictionRegister
+from .restriction import ChargeSizeRestrictionRegister
+from .restriction import ChargeVolumeRestrictionRegister
+from .restriction import CpuRestriction
+from .restriction import DroneBandwidthRestriction
+from .restriction import DroneBayVolumeRestriction
+from .restriction import DroneGroupRestrictionRegister
+from .restriction import HighSlotRestriction
+from .restriction import ImplantIndexRestrictionRegister
+from .restriction import ItemClassRestrictionRegister
+from .restriction import LaunchedDroneRestriction
+from .restriction import LauncherSlotRestriction
+from .restriction import LowSlotRestriction
+from .restriction import MaxGroupActiveRestrictionRegister
+from .restriction import MaxGroupFittedRestrictionRegister
+from .restriction import MaxGroupOnlineRestrictionRegister
+from .restriction import MediumSlotRestriction
+from .restriction import PowergridRestriction
+from .restriction import RigSizeRestrictionRegister
+from .restriction import RigSlotRestriction
+from .restriction import ShipTypeGroupRestrictionRegister
+from .restriction import SkillRequirementRestrictionRegister
+from .restriction import StateRestrictionRegister
+from .restriction import SubsystemIndexRestrictionRegister
+from .restriction import SubsystemSlotRestriction
+from .restriction import TurretSlotRestriction
 
 
 class RestrictionService:

@@ -19,7 +19,11 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import ModuleHigh
+from eos import Restriction
+from eos import Rig
+from eos import Ship
+from eos import State
 from eos.const.eve import AttrId
 from tests.integration.restriction.testcase import RestrictionTestCase
 

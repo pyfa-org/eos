@@ -19,7 +19,9 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Booster
+from eos import Fit
+from eos import Implant
 from tests.integration.container.testcase import ContainerTestCase
 
 

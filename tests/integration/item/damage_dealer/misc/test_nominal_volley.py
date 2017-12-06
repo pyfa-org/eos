@@ -19,7 +19,11 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Charge
+from eos import Fit
+from eos import ModuleHigh
+from eos import ResistProfile
+from eos import State
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId

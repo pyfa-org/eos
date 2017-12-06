@@ -19,7 +19,11 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Character
+from eos import Drone
+from eos import ModuleHigh
+from eos import Restriction
+from eos import State
 from eos.const.eve import AttrId
 from tests.integration.restriction.testcase import RestrictionTestCase
 

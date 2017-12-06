@@ -24,8 +24,8 @@ from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.util.repr import make_repr_str
 from .mixin.chargeable import ChargeableMixin
-from .mixin.dmg_dealer import DmgDealerMixin
 from .mixin.defeff_proxy import DefaultEffectProxyMixin
+from .mixin.dmg_dealer import DmgDealerMixin
 from .mixin.state import MutableStateMixin
 
 

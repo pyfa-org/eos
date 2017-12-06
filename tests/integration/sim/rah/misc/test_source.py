@@ -19,7 +19,9 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import ModuleLow
+from eos import Ship
+from eos import State
 from tests.integration.sim.rah.testcase import RahSimTestCase
 
 

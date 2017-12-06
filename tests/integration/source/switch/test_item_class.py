@@ -19,7 +19,21 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Booster
+from eos import Character
+from eos import Charge
+from eos import Drone
+from eos import EffectBeacon
+from eos import FighterSquad
+from eos import Implant
+from eos import ModuleHigh
+from eos import ModuleLow
+from eos import ModuleMed
+from eos import Rig
+from eos import Ship
+from eos import Skill
+from eos import Stance
+from eos import Subsystem
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

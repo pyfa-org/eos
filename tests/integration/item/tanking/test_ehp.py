@@ -19,7 +19,9 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import DmgProfile
+from eos import Fit
+from eos import Ship
 from eos.const.eve import AttrId
 from tests.integration.item.testcase import ItemMixinTestCase
 

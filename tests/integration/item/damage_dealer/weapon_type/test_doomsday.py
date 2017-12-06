@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import EffectMode
+from eos import Fit
+from eos import ModuleHigh
+from eos import State
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId

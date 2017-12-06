@@ -19,7 +19,9 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Fit
+from eos import Ship
+from eos import Stance
 from tests.integration.container.testcase import ContainerTestCase
 
 

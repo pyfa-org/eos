@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Charge
+from eos import ModuleHigh
+from eos import ResistProfile
+from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

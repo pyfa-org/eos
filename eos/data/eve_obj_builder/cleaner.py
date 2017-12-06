@@ -19,10 +19,11 @@
 # ==============================================================================
 
 
-import yaml
 from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
+
+import yaml
 
 from eos.const.eve import AttrId
 from eos.const.eve import TypeCategoryId

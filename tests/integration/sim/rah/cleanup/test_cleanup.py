@@ -19,7 +19,11 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import DmgProfile
+from eos import ModuleLow
+from eos import Ship
+from eos import Skill
+from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

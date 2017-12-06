@@ -27,7 +27,6 @@ from eos.data.source import Source
 from eos.data.source import SourceManager
 from eos.eve_object import DogmaModifier
 from tests.testcase import EosTestCase
-
 from .environment import CacheHandler
 
 

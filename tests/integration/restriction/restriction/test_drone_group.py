@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Drone
+from eos import Implant
+from eos import Restriction
+from eos import Ship
 from eos.const.eve import AttrId
 from tests.integration.restriction.testcase import RestrictionTestCase
 

@@ -34,12 +34,25 @@ from .container import ItemList
 from .container import ItemSet
 from .container import ModuleRacks
 from .helper import DmgProfile
-from .item import *
+from .item import Booster
+from .item import Character
+from .item import Drone
+from .item import EffectBeacon
+from .item import FighterSquad
+from .item import Implant
+from .item import ModuleHigh
+from .item import ModuleLow
+from .item import ModuleMed
+from .item import Rig
+from .item import Ship
+from .item import Skill
+from .item import Stance
+from .item import Subsystem
 from .message import DefaultIncomingDmgChanged
 from .message.helper import MsgHelper
 from .misc.volatile import VolatileMgr
 from .restriction import RestrictionService
-from .sim import *
+from .sim import ReactiveArmorHardenerSimulator
 from .stats import StatService
 
 

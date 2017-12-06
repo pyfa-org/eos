@@ -19,11 +19,5 @@
 # ==============================================================================
 
 
-__all__ = [
-    'JsonDataHandler',
-    'SQLiteDataHandler'
-]
-
-
 from .json_data_handler import JsonDataHandler
 from .sqlite_data_handler import SQLiteDataHandler

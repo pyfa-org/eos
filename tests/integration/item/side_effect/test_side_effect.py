@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Booster
+from eos import Fit
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

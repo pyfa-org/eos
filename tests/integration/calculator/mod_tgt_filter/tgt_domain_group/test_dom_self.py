@@ -21,7 +21,10 @@
 
 import logging
 
-from eos import *
+from eos import Character
+from eos import Implant
+from eos import Rig
+from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

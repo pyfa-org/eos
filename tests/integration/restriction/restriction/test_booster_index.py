@@ -19,7 +19,9 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Booster
+from eos import ModuleHigh
+from eos import Restriction
 from eos.const.eve import AttrId
 from tests.integration.restriction.testcase import RestrictionTestCase
 

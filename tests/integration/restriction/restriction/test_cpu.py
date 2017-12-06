@@ -19,7 +19,11 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import EffectMode
+from eos import ModuleHigh
+from eos import Restriction
+from eos import Ship
+from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

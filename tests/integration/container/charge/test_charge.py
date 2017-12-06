@@ -19,7 +19,11 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Charge
+from eos import Fit
+from eos import ModuleHigh
+from eos import Stance
+from eos import State
 from tests.integration.container.testcase import ContainerTestCase
 
 

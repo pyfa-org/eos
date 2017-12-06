@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import ModuleHigh
+from eos import State
 from eos.const.eve import EffectCategoryId
 from tests.integration.effect_mode.testcase import EffectModeTestCase
 

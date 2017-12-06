@@ -31,7 +31,20 @@ from eos.fit.message import ItemRemoved
 from eos.util.pubsub.subscriber import BaseSubscriber
 from eos.util.volatile_cache import InheritableVolatileMixin
 from eos.util.volatile_cache import volatile_property
-from .register import *
+from .register import CalibrationStatRegister
+from .register import CpuStatRegister
+from .register import DmgDealerRegister
+from .register import DroneBandwidthStatRegister
+from .register import DronebayVolumeStatRegister
+from .register import HighSlotStatRegister
+from .register import LaunchedDroneStatRegister
+from .register import LauncherSlotStatRegister
+from .register import LowSlotStatRegister
+from .register import MediumSlotStatRegister
+from .register import PowergridStatRegister
+from .register import RigSlotStatRegister
+from .register import SubsystemSlotStatRegister
+from .register import TurretSlotStatRegister
 
 
 class StatService(BaseSubscriber, InheritableVolatileMixin):

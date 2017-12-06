@@ -21,7 +21,7 @@
 
 import logging
 
-from eos import *
+from eos import Rig
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Ship
 from eos.const.eve import AttrId
 from tests.integration.stats.testcase import StatsTestCase
 

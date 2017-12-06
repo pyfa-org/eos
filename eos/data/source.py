@@ -19,8 +19,8 @@
 # ==============================================================================
 
 
-from logging import getLogger
 from collections import namedtuple
+from logging import getLogger
 
 from eos import __version__ as eos_version
 from eos.util.repr import make_repr_str

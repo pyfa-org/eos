@@ -19,7 +19,11 @@
 # ==============================================================================
 
 
-from eos import *
+from eos import Character
+from eos import Drone
+from eos import ModuleMed
+from eos import State
+from eos import Subsystem
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter

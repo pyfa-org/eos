@@ -19,39 +19,6 @@
 # ==============================================================================
 
 
-__all__ = [
-    'BoosterIndexRestrictionRegister',
-    'CalibrationRestriction',
-    'CapitalItemRestrictionRegister',
-    'CpuRestriction',
-    'ChargeGroupRestrictionRegister',
-    'ChargeSizeRestrictionRegister',
-    'ChargeVolumeRestrictionRegister',
-    'DroneBandwidthRestriction',
-    'DroneBayVolumeRestriction',
-    'DroneGroupRestrictionRegister',
-    'HighSlotRestriction',
-    'ImplantIndexRestrictionRegister',
-    'ItemClassRestrictionRegister',
-    'LaunchedDroneRestriction',
-    'LauncherSlotRestriction',
-    'LowSlotRestriction',
-    'MaxGroupActiveRestrictionRegister',
-    'MaxGroupFittedRestrictionRegister',
-    'MaxGroupOnlineRestrictionRegister',
-    'MediumSlotRestriction',
-    'PowergridRestriction',
-    'RigSizeRestrictionRegister',
-    'RigSlotRestriction',
-    'ShipTypeGroupRestrictionRegister',
-    'SkillRequirementRestrictionRegister',
-    'StateRestrictionRegister',
-    'SubsystemIndexRestrictionRegister',
-    'SubsystemSlotRestriction',
-    'TurretSlotRestriction'
-]
-
-
 from .capital_item import CapitalItemRestrictionRegister
 from .charge_group import ChargeGroupRestrictionRegister
 from .charge_size import ChargeSizeRestrictionRegister
