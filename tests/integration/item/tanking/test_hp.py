@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eve import AttrId
-from tests.integration.item.item_testcase import ItemMixinTestCase
+from tests.integration.item.testcase import ItemMixinTestCase
 
 
 class TestItemMixinTankingHp(ItemMixinTestCase):

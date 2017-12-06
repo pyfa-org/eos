@@ -20,11 +20,16 @@
 
 
 from eos.const.eos import ModDomain
-from eos.eve_object import (
-    BasePythonModifier, DogmaModifier, ModificationCalculationError)
-from eos.fit.item import Character, Ship
-from eos.fit.message import (
-    AttrValueChanged, EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
+from eos.eve_object import BasePythonModifier
+from eos.eve_object import DogmaModifier
+from eos.eve_object import ModificationCalculationError
+from eos.fit.item import Character
+from eos.fit.item import Ship
+from eos.fit.message import AttrValueChanged
+from eos.fit.message import EffectsStarted
+from eos.fit.message import EffectsStopped
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
 from eos.util.keyed_storage import KeyedStorage
 from eos.util.pubsub.subscriber import BaseSubscriber
 from .affector import Affector

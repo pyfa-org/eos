@@ -19,10 +19,12 @@
 # ==============================================================================
 
 
-from eos.const.eos import (
-    EffectBuildStatus, ModDomain, ModOperator, ModTgtFilter)
+from eos.const.eos import EffectBuildStatus
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import OperandId
-from tests.mod_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.mod_builder.testcase import ModBuilderTestCase
 
 
 class TestBuilderEtreeTgtDom(ModBuilderTestCase):

@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eve import EffectId
-from tests.integration.sim.rah.rah_testcase import RahSimTestCase
+from tests.integration.sim.rah.testcase import RahSimTestCase
 
 
 class TestRahSimCriteria(RahSimTestCase):

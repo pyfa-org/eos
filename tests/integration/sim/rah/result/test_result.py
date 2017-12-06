@@ -23,9 +23,11 @@ import logging
 from unittest.mock import patch
 
 from eos import *
-from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
-from tests.integration.sim.rah.rah_testcase import RahSimTestCase
+from tests.integration.sim.rah.testcase import RahSimTestCase
 
 
 class TestRahSimResult(RahSimTestCase):

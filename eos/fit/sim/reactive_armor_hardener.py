@@ -21,12 +21,16 @@
 
 from copy import copy
 from logging import getLogger
-from math import ceil, floor
+from math import ceil
+from math import floor
 
-from eos.const.eve import AttrId, EffectId
-from eos.fit.message import (
-    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDmgChanged,
-    EffectsStarted, EffectsStopped)
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.fit.message import AttrValueChanged
+from eos.fit.message import AttrValueChangedMasked
+from eos.fit.message import DefaultIncomingDmgChanged
+from eos.fit.message import EffectsStarted
+from eos.fit.message import EffectsStopped
 from eos.util.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
 from eos.util.round import sig_round

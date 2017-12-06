@@ -20,7 +20,9 @@
 
 import yaml
 
-from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.eve_object import DogmaModifier
 from ..exception import YamlParsingError
 

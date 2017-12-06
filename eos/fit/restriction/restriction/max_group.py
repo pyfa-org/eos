@@ -21,11 +21,16 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction, State
+from eos.const.eos import Restriction
+from eos.const.eos import State
 from eos.const.eve import AttrId
-from eos.fit.item import ModuleHigh, ModuleLow, ModuleMed
-from eos.fit.message import (
-    ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
+from eos.fit.item import ModuleHigh
+from eos.fit.item import ModuleLow
+from eos.fit.item import ModuleMed
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
+from eos.fit.message import StatesActivated
+from eos.fit.message import StatesDeactivated
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError

@@ -20,8 +20,11 @@
 
 
 from eos.const.eve import AttrId
-from eos.fit.helper import DmgTypes, TankingLayers, TankingLayersTotal
-from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
+from eos.fit.helper import DmgTypes
+from eos.fit.helper import TankingLayers
+from eos.fit.helper import TankingLayersTotal
+from eos.util.volatile_cache import CooperativeVolatileMixin
+from eos.util.volatile_cache import volatile_property
 from .base import BaseItemMixin
 
 

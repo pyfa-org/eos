@@ -23,8 +23,10 @@ import pytest
 
 from eos import SourceManager
 from eos.data.source import Source
-from eos.data.exception import ExistingSourceError, UnknownSourceError
-from unittest.mock import MagicMock, Mock
+from eos.data.exception import ExistingSourceError
+from eos.data.exception import UnknownSourceError
+from unittest.mock import MagicMock
+from unittest.mock import Mock
 
 
 @pytest.fixture

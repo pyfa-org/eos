@@ -23,7 +23,7 @@ import logging
 from unittest.mock import patch
 
 from eos.const.eve import OperandId
-from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
+from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 
 
 @patch('eos.data.eve_obj_builder.converter.ModBuilder')

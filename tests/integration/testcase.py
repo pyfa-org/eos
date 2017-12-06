@@ -21,10 +21,12 @@
 
 from copy import copy
 
-from eos.const.eve import TypeGroupId, TypeId
-from eos.data.source import Source, SourceManager
+from eos.const.eve import TypeGroupId
+from eos.const.eve import TypeId
+from eos.data.source import Source
+from eos.data.source import SourceManager
 from eos.eve_object import DogmaModifier
-from tests.eos_testcase import EosTestCase
+from tests.testcase import EosTestCase
 
 from .environment import CacheHandler
 

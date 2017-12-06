@@ -20,9 +20,9 @@
 
 
 from eos import *
-from eos.const.eve import EffectCategoryId, EffectId
-from tests.integration.effect_mode.effect_mode_testcase import (
-    EffectModeTestCase)
+from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
+from tests.integration.effect_mode.testcase import EffectModeTestCase
 
 
 class TestForceRunOnline(EffectModeTestCase):

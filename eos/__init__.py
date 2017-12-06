@@ -36,16 +36,31 @@ __all__ = [
 __version__ = '0.0.0.dev10'
 
 
-from .const.eos import EffectMode, Restriction, State
+from .const.eos import EffectMode
+from .const.eos import Restriction
+from .const.eos import State
 from .data.cache_handler.exception import TypeFetchError
 from .data.source import SourceManager
 from .fit.container.exception import SlotTakenError
 from .fit.fit import Fit
 from .fit.restriction.exception import ValidationError
-from .fit.helper import DmgProfile, ResistProfile
+from .fit.helper import DmgProfile
+from .fit.helper import ResistProfile
 from .data.cache_handler import JsonCacheHandler
-from .data.data_handler import JsonDataHandler, SQLiteDataHandler
-from .fit.item import (
-    Booster, Character, Charge, Drone, EffectBeacon, FighterSquad,
-    Implant, ModuleHigh, ModuleMed, ModuleLow, Rig, Ship, Skill,
-    Stance, Subsystem)
+from .data.data_handler import JsonDataHandler
+from .data.data_handler import SQLiteDataHandler
+from .fit.item import Booster
+from .fit.item import Character
+from .fit.item import Charge
+from .fit.item import Drone
+from .fit.item import EffectBeacon
+from .fit.item import FighterSquad
+from .fit.item import Implant
+from .fit.item import ModuleHigh
+from .fit.item import ModuleMed
+from .fit.item import ModuleLow
+from .fit.item import Rig
+from .fit.item import Ship
+from .fit.item import Skill
+from .fit.item import Stance
+from .fit.item import Subsystem

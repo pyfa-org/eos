@@ -25,11 +25,14 @@ from logging import getLogger
 from math import exp
 
 from eos.const.eos import ModOperator
-from eos.const.eve import AttrId, TypeCategoryId
+from eos.const.eve import AttrId
+from eos.const.eve import TypeCategoryId
 from eos.data.cache_handler.exception import AttrFetchError
-from eos.fit.message import AttrValueChanged, AttrValueChangedMasked
+from eos.fit.message import AttrValueChanged
+from eos.fit.message import AttrValueChangedMasked
 from eos.util.keyed_storage import KeyedStorage
-from .exception import AttrMetadataError, BaseValueError
+from .exception import AttrMetadataError
+from .exception import BaseValueError
 
 
 OverrideData = namedtuple('OverrideData', ('value', 'persistent'))

@@ -22,7 +22,8 @@
 from collections import namedtuple
 from random import random
 
-from eos.const.eos import EffectMode, State
+from eos.const.eos import EffectMode
+from eos.const.eos import State
 from .base import BaseItemMixin
 
 

@@ -21,8 +21,10 @@
 
 from collections import namedtuple
 
-from eos.const.eos import Restriction, State
-from eos.fit.message import StatesActivated, StatesDeactivated
+from eos.const.eos import Restriction
+from eos.const.eos import State
+from eos.fit.message import StatesActivated
+from eos.fit.message import StatesDeactivated
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 

@@ -22,10 +22,13 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttrId, EffectId
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
 from eos.fit.item import Ship
-from eos.fit.message import (
-    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
+from eos.fit.message import EffectsStarted
+from eos.fit.message import EffectsStopped
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 

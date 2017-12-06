@@ -19,8 +19,8 @@
 # ==============================================================================
 
 
-from eos.util.volatile_cache import (
-    CooperativeVolatileMixin, InheritableVolatileMixin)
+from eos.util.volatile_cache import CooperativeVolatileMixin
+from eos.util.volatile_cache import InheritableVolatileMixin
 
 
 class VolatileMgr:

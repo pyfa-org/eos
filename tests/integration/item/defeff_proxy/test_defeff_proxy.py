@@ -20,9 +20,11 @@
 
 
 from eos import *
-from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
-from tests.integration.item.item_testcase import ItemMixinTestCase
+from tests.integration.item.testcase import ItemMixinTestCase
 
 
 class TestItemMixinDefEffProxy(ItemMixinTestCase):

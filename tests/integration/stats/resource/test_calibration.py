@@ -20,8 +20,10 @@
 
 
 from eos import *
-from eos.const.eve import AttrId, EffectId, EffectCategoryId
-from tests.integration.stats.stats_testcase import StatsTestCase
+from eos.const.eve import AttrId
+from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
+from tests.integration.stats.testcase import StatsTestCase
 
 
 class TestCalibration(StatsTestCase):

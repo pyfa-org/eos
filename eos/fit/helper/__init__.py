@@ -19,5 +19,9 @@
 # ==============================================================================
 
 
-from .dmg_types import DmgTypes, DmgTypesTotal, DmgProfile, ResistProfile
-from .tanking_layers import TankingLayers, TankingLayersTotal
+from .dmg_types import DmgProfile
+from .dmg_types import DmgTypes
+from .dmg_types import DmgTypesTotal
+from .dmg_types import ResistProfile
+from .tanking_layers import TankingLayers
+from .tanking_layers import TankingLayersTotal

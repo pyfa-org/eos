@@ -20,10 +20,12 @@
 
 
 from eos import *
-from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
-from eos.const.eve import AttrId, EffectCategoryId
-from tests.integration.restriction.restriction_testcase import (
-    RestrictionTestCase)
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
+from eos.const.eve import AttrId
+from eos.const.eve import EffectCategoryId
+from tests.integration.restriction.testcase import RestrictionTestCase
 
 
 class TestDroneBandwidth(RestrictionTestCase):

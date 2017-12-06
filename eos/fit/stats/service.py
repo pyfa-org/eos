@@ -22,11 +22,15 @@
 import math
 
 from eos.const.eve import AttrId
-from eos.fit.helper import DmgTypes, TankingLayers, TankingLayersTotal
+from eos.fit.helper import DmgTypes
+from eos.fit.helper import TankingLayers
+from eos.fit.helper import TankingLayersTotal
 from eos.fit.item import Ship
-from eos.fit.message import ItemAdded, ItemRemoved
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
 from eos.util.pubsub.subscriber import BaseSubscriber
-from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
+from eos.util.volatile_cache import InheritableVolatileMixin
+from eos.util.volatile_cache import volatile_property
 from .register import *
 
 

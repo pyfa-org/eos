@@ -19,12 +19,16 @@
 # ==============================================================================
 
 
-from .attribute import AttrFactory, Attribute
+from .attribute import AttrFactory
+from .attribute import Attribute
 from .custom import register_customizations
-from .effect import Effect, EffectFactory
-from .modifier import (
-    BasePythonModifier, DogmaModifier, ModificationCalculationError)
-from .type import Type, TypeFactory
+from .effect import Effect
+from .effect import EffectFactory
+from .modifier import BasePythonModifier
+from .modifier import DogmaModifier
+from .modifier import ModificationCalculationError
+from .type import Type
+from .type import TypeFactory
 
 
 register_customizations()

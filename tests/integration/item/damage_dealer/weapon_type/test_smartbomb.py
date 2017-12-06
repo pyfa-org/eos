@@ -20,8 +20,10 @@
 
 
 from eos import *
-from eos.const.eve import AttrId, EffectId, EffectCategoryId
-from tests.integration.item.item_testcase import ItemMixinTestCase
+from eos.const.eve import AttrId
+from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
+from tests.integration.item.testcase import ItemMixinTestCase
 
 
 class TestItemDmgSmartbomb(ItemMixinTestCase):

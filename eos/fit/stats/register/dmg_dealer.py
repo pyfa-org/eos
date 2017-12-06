@@ -19,9 +19,12 @@
 # ==============================================================================
 
 
-from eos.fit.item.mixin.dmg_dealer import DmgDealerMixin, BASIC_MAP, CHARGE_MAP
+from eos.fit.item.mixin.dmg_dealer import BASIC_MAP
+from eos.fit.item.mixin.dmg_dealer import CHARGE_MAP
+from eos.fit.item.mixin.dmg_dealer import DmgDealerMixin
 from eos.fit.helper import DmgTypesTotal
-from eos.fit.message import EffectsStarted, EffectsStopped
+from eos.fit.message import EffectsStarted
+from eos.fit.message import EffectsStopped
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseStatRegister
 

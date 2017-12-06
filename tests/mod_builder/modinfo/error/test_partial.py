@@ -21,9 +21,11 @@
 
 import logging
 
-from eos.const.eos import (
-    EffectBuildStatus, ModDomain, ModOperator, ModTgtFilter)
-from tests.mod_builder.modbuilder_testcase import ModBuilderTestCase
+from eos.const.eos import EffectBuildStatus
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
+from tests.mod_builder.testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):

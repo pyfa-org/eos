@@ -45,7 +45,9 @@ from .drone import Drone
 from .effect_beacon import EffectBeacon
 from .fighter_squad import FighterSquad
 from .implant import Implant
-from .module import ModuleHigh, ModuleLow, ModuleMed
+from .module import ModuleHigh
+from .module import ModuleLow
+from .module import ModuleMed
 from .rig import Rig
 from .ship import Ship
 from .skill import Skill

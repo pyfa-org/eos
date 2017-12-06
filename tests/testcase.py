@@ -22,7 +22,8 @@
 from collections.abc import Iterable
 from copy import deepcopy
 from fnmatch import fnmatchcase
-from logging import getLogger, DEBUG
+from logging import getLogger
+from logging import DEBUG
 from logging.handlers import BufferingHandler
 from unittest import TestCase
 from unittest.mock import DEFAULT

@@ -20,8 +20,10 @@
 
 
 from .launched_drone import LaunchedDroneStatRegister
-from .ship_ordered import (
-    HighSlotStatRegister, LowSlotStatRegister, MediumSlotStatRegister)
-from .ship_unordered import (
-    LauncherSlotStatRegister, RigSlotStatRegister,
-    SubsystemSlotStatRegister, TurretSlotStatRegister)
+from .ship_ordered import HighSlotStatRegister
+from .ship_ordered import LowSlotStatRegister
+from .ship_ordered import MediumSlotStatRegister
+from .ship_unordered import LauncherSlotStatRegister
+from .ship_unordered import RigSlotStatRegister
+from .ship_unordered import SubsystemSlotStatRegister
+from .ship_unordered import TurretSlotStatRegister

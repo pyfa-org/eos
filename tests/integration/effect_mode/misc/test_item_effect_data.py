@@ -21,8 +21,7 @@
 
 from eos import *
 from eos.const.eve import EffectCategoryId
-from tests.integration.effect_mode.effect_mode_testcase import (
-    EffectModeTestCase)
+from tests.integration.effect_mode.testcase import EffectModeTestCase
 
 
 class TestItemEffectData(EffectModeTestCase):

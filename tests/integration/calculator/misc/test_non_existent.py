@@ -22,7 +22,7 @@
 import logging
 
 from eos import *
-from tests.integration.calculator.calculator_testcase import CalculatorTestCase
+from tests.integration.calculator.testcase import CalculatorTestCase
 
 
 class TestNonExistent(CalculatorTestCase):

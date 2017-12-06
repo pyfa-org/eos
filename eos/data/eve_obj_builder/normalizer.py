@@ -21,7 +21,9 @@
 
 from logging import getLogger
 
-from eos.const.eve import AttrId, TypeGroupId, OperandId
+from eos.const.eve import AttrId
+from eos.const.eve import TypeGroupId
+from eos.const.eve import OperandId
 from eos.util.frozendict import frozendict
 
 

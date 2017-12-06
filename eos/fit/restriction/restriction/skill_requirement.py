@@ -22,8 +22,10 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.fit.item import Rig, Skill
-from eos.fit.message import ItemAdded, ItemRemoved
+from eos.fit.item import Rig
+from eos.fit.item import Skill
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 

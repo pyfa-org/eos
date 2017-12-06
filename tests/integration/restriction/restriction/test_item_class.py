@@ -20,10 +20,12 @@
 
 
 from eos import *
-from eos.const.eve import (
-    AttrId, TypeCategoryId, EffectId, EffectCategoryId, TypeGroupId)
-from tests.integration.restriction.restriction_testcase import (
-    RestrictionTestCase)
+from eos.const.eve import AttrId
+from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
+from eos.const.eve import TypeCategoryId
+from eos.const.eve import TypeGroupId
+from tests.integration.restriction.testcase import RestrictionTestCase
 
 
 class TestItemClass(RestrictionTestCase):

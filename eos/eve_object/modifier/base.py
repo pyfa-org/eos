@@ -19,10 +19,12 @@
 # ==============================================================================
 
 
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 from numbers import Integral
 
-from eos.const.eos import ModDomain, ModTgtFilter
+from eos.const.eos import ModDomain
+from eos.const.eos import ModTgtFilter
 
 
 class BaseModifier(metaclass=ABCMeta):

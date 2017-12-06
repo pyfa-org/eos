@@ -19,7 +19,12 @@
 # ==============================================================================
 
 
-from .message import (
-    AttrValueChanged, AttrValueChangedMasked, DefaultIncomingDmgChanged,
-    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved, StatesActivated,
-    StatesDeactivated)
+from .message import AttrValueChanged
+from .message import AttrValueChangedMasked
+from .message import DefaultIncomingDmgChanged
+from .message import EffectsStarted
+from .message import EffectsStopped
+from .message import ItemAdded
+from .message import ItemRemoved
+from .message import StatesActivated
+from .message import StatesDeactivated

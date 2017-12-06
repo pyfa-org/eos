@@ -22,13 +22,17 @@
 from itertools import chain
 
 from eos.const.eve import TypeId
-from eos.data.source import Source, SourceManager
+from eos.data.source import Source
+from eos.data.source import SourceManager
 from eos.util.default import DEFAULT
 from eos.util.pubsub.broker import MsgBroker
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
-from .container import (
-    ItemDescriptor, ItemKeyedSet, ItemList, ItemSet, ModuleRacks)
+from .container import ItemDescriptor
+from .container import ItemKeyedSet
+from .container import ItemList
+from .container import ItemSet
+from .container import ModuleRacks
 from .helper import DmgProfile
 from .item import *
 from .message import DefaultIncomingDmgChanged

@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 
 from eos.util.pubsub.subscriber import BaseSubscriber
 

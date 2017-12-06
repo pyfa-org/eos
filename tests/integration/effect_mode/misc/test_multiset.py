@@ -20,10 +20,11 @@
 
 
 from eos import *
-from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
-from tests.integration.effect_mode.effect_mode_testcase import (
-    EffectModeTestCase)
+from tests.integration.effect_mode.testcase import EffectModeTestCase
 
 
 class TestModeMultiset(EffectModeTestCase):

@@ -19,11 +19,15 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttrId, EffectId
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
 from eos.fit.item import Ship
-from eos.fit.message import (
-    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved)
-from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
+from eos.fit.message import EffectsStarted
+from eos.fit.message import EffectsStopped
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
+from eos.util.volatile_cache import InheritableVolatileMixin
+from eos.util.volatile_cache import volatile_property
 from .base import BaseResourceStatRegister
 
 

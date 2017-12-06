@@ -20,7 +20,7 @@
 
 
 from eos import *
-from tests.integration.sim.rah.rah_testcase import RahSimTestCase
+from tests.integration.sim.rah.testcase import RahSimTestCase
 
 
 class TestRahSimSource(RahSimTestCase):

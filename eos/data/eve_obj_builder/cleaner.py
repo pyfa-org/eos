@@ -24,7 +24,9 @@ from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eve import AttrId, TypeCategoryId, TypeGroupId
+from eos.const.eve import AttrId
+from eos.const.eve import TypeCategoryId
+from eos.const.eve import TypeGroupId
 from eos.util.cached_property import cached_property
 
 

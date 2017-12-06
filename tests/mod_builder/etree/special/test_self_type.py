@@ -19,9 +19,10 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, EosTypeId
+from eos.const.eos import EffectBuildStatus
+from eos.const.eos import EosTypeId
 from eos.const.eve import OperandId
-from tests.mod_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.mod_builder.testcase import ModBuilderTestCase
 
 
 class TestBuilderEtreeSelfType(ModBuilderTestCase):

@@ -21,11 +21,12 @@
 
 from eos.const.eos import State
 from eos.fit.misc.effect_status import EffectStatusResolver
-
-
-from .message import (
-    EffectsStarted, EffectsStopped, ItemAdded, ItemRemoved,
-    StatesActivated, StatesDeactivated)
+from .message import EffectsStarted
+from .message import EffectsStopped
+from .message import ItemAdded
+from .message import ItemRemoved
+from .message import StatesActivated
+from .message import StatesDeactivated
 
 
 class MsgHelper:

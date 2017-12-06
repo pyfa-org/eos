@@ -19,17 +19,30 @@
 # ==============================================================================
 
 
-from eos import Fit
-from tests.integration.integration_testcase import IntegrationTestCase
+from eos.data.eve_obj_builder.mod_builder import ModBuilder
+from tests.testcase import EosTestCase
+from .environment import ExpressionFactory
 
 
-class SourceTestCase(IntegrationTestCase):
-    """Class which should be used for source-related tests.
+class ModBuilderTestCase(EosTestCase):
+    """Class which should be used by modifier builder tests.
 
     Attributes:
-        fit: Pre-created fit.
+        ef: Expression factory instance.
     """
 
     def setUp(self):
-        IntegrationTestCase.setUp(self)
-        self.fit = Fit()
+        EosTestCase.setUp(self)
+        self.ef = ExpressionFactory()
+
+    def run_builder(self, effect_row):
+        """Run builder using data from expression factory."""
+        effect_row.setdefault('effectID', 1)
+        effect_row.setdefault('preExpression', None)
+        effect_row.setdefault('postExpression', None)
+        effect_row.setdefault('modifierInfo', None)
+        builder = ModBuilder(self.ef.data)
+        return builder.build(effect_row)
+
+    def get_log(self, name='eos.data.eve_obj_builder.mod_builder*'):
+        return EosTestCase.get_log(self, name=name)

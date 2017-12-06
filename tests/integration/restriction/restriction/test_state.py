@@ -21,8 +21,7 @@
 
 from eos import *
 from eos.const.eve import EffectCategoryId
-from tests.integration.restriction.restriction_testcase import (
-    RestrictionTestCase)
+from tests.integration.restriction.testcase import RestrictionTestCase
 
 
 class TestState(RestrictionTestCase):

@@ -19,8 +19,9 @@
 # ==============================================================================
 
 
-from eos.const.eos import EffectBuildStatus, ModOperator
-from tests.mod_builder.modbuilder_testcase import ModBuilderTestCase
+from eos.const.eos import EffectBuildStatus
+from eos.const.eos import ModOperator
+from tests.mod_builder.testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoOperator(ModBuilderTestCase):

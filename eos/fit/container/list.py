@@ -22,7 +22,8 @@
 from numbers import Integral
 
 from .base import ItemContainerBase
-from .exception import ItemAlreadyAssignedError, SlotTakenError
+from .exception import ItemAlreadyAssignedError
+from .exception import SlotTakenError
 
 
 class ItemList(ItemContainerBase):

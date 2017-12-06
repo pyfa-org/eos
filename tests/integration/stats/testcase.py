@@ -20,7 +20,7 @@
 
 
 from eos import Fit
-from tests.integration.integration_testcase import IntegrationTestCase
+from tests.integration.testcase import IntegrationTestCase
 
 
 class StatsTestCase(IntegrationTestCase):

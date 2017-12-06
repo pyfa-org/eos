@@ -19,11 +19,14 @@
 # ==============================================================================
 
 
-from enum import IntEnum, unique
+from enum import IntEnum
+from enum import unique
 
-from eos.const.eve import AttrId, EffectId
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
 from eos.fit.helper import DmgTypesTotal
-from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
+from eos.util.volatile_cache import CooperativeVolatileMixin
+from eos.util.volatile_cache import volatile_property
 from .base import BaseItemMixin
 from .defeff_proxy import DefaultEffectProxyMixin
 

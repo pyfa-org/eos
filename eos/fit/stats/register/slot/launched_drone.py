@@ -21,10 +21,14 @@
 
 from eos.const.eos import State
 from eos.const.eve import AttrId
-from eos.fit.item import Character, Drone
-from eos.fit.message import (
-    ItemAdded, ItemRemoved, StatesActivated, StatesDeactivated)
-from eos.util.volatile_cache import InheritableVolatileMixin, volatile_property
+from eos.fit.item import Character
+from eos.fit.item import Drone
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
+from eos.fit.message import StatesActivated
+from eos.fit.message import StatesDeactivated
+from eos.util.volatile_cache import InheritableVolatileMixin
+from eos.util.volatile_cache import volatile_property
 from .base import BaseSlotStatRegister
 
 

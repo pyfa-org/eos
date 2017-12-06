@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from math import floor, log10
+from math import floor
+from math import log10
 
 
 def sig_round(x, sig_digits):

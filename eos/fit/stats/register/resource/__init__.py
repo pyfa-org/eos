@@ -21,5 +21,6 @@
 
 from .drone_bandwidth import DroneBandwidthStatRegister
 from .dronebay_volume import DronebayVolumeStatRegister
-from .rounded import CpuStatRegister, PowergridStatRegister
+from .rounded import CpuStatRegister
+from .rounded import PowergridStatRegister
 from .unrounded import CalibrationStatRegister

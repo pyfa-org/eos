@@ -25,7 +25,8 @@ from collections import namedtuple
 from eos import __version__ as eos_version
 from eos.util.repr import make_repr_str
 from .eve_obj_builder import EveObjBuilder
-from .exception import ExistingSourceError, UnknownSourceError
+from .exception import ExistingSourceError
+from .exception import UnknownSourceError
 
 
 logger = getLogger(__name__)

@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from .exception import RestrictionValidationError, ValidationError
+from .exception import RestrictionValidationError
+from .exception import ValidationError
 from .restriction import *
 
 

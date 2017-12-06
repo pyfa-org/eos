@@ -20,9 +20,10 @@
 
 
 from eos import *
-from eos.const.eve import AttrId, EffectId, EffectCategoryId
-from tests.integration.restriction.restriction_testcase import (
-    RestrictionTestCase)
+from eos.const.eve import AttrId
+from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
+from tests.integration.restriction.testcase import RestrictionTestCase
 
 
 class TestTurretSlot(RestrictionTestCase):

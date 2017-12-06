@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
-from eos.const.eos import EosTypeId, ModDomain, ModOperator, ModTgtFilter
+from eos.const.eos import EosTypeId
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import OperandId
 from eos.eve_object import DogmaModifier
 from eos.util.attrdict import attrdict

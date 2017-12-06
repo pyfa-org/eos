@@ -22,7 +22,7 @@
 import logging
 
 from eos.const.eve import AttrId
-from tests.eve_obj_builder.eve_obj_builder_testcase import EveObjBuilderTestCase
+from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 
 
 class TestNormalizationIdzing(EveObjBuilderTestCase):

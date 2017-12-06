@@ -20,10 +20,13 @@
 
 
 from eos import *
-from eos.const.eos import (
-    EosTypeId, ModDomain, ModOperator, ModTgtFilter)
-from eos.const.eve import AttrId, EffectCategoryId
-from tests.integration.calculator.calculator_testcase import CalculatorTestCase
+from eos.const.eos import EosTypeId
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
+from eos.const.eve import AttrId
+from eos.const.eve import EffectCategoryId
+from tests.integration.calculator.testcase import CalculatorTestCase
 
 
 class TestTgtDomainSkillrqSkillrqSelf(CalculatorTestCase):

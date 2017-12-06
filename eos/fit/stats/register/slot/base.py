@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 
 from eos.util.repr import make_repr_str
 from ..base import BaseStatRegister

@@ -22,9 +22,13 @@
 from collections import namedtuple
 
 from eos.const.eos import Restriction
-from eos.const.eve import AttrId, TypeCategoryId, EffectId, TypeGroupId
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.const.eve import TypeCategoryId
+from eos.const.eve import TypeGroupId
 from eos.fit.item import *
-from eos.fit.message import ItemAdded, ItemRemoved
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 

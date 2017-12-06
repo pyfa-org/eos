@@ -19,10 +19,12 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttrId, EffectId
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
 from eos.fit.container import ItemDescriptor
 from eos.fit.item import Charge
-from eos.util.volatile_cache import CooperativeVolatileMixin, volatile_property
+from eos.util.volatile_cache import CooperativeVolatileMixin
+from eos.util.volatile_cache import volatile_property
 from .base import BaseItemMixin
 
 

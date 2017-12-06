@@ -19,9 +19,10 @@
 # ==============================================================================
 
 
-from eos import Fit, ValidationError
+from eos import Fit
+from eos import ValidationError
 from eos.const.eos import Restriction
-from tests.integration.integration_testcase import IntegrationTestCase
+from tests.integration.testcase import IntegrationTestCase
 
 
 class RestrictionTestCase(IntegrationTestCase):

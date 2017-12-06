@@ -21,7 +21,8 @@
 
 from logging import getLogger
 
-from eos.const.eos import EffectMode, State
+from eos.const.eos import EffectMode
+from eos.const.eos import State
 from eos.const.eve import EffectId
 
 

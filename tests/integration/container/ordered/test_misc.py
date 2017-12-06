@@ -20,7 +20,7 @@
 
 
 from eos import *
-from tests.integration.container.container_testcase import ContainerTestCase
+from tests.integration.container.testcase import ContainerTestCase
 
 
 class TestContainerOrderedMisc(ContainerTestCase):

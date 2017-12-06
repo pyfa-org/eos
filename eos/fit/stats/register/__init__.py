@@ -38,10 +38,16 @@ __all__ = [
 
 
 from .dmg_dealer import DmgDealerRegister
-from .resource import (
-    CalibrationStatRegister, CpuStatRegister, DroneBandwidthStatRegister,
-    DronebayVolumeStatRegister, PowergridStatRegister)
-from .slot import (
-    HighSlotStatRegister, LaunchedDroneStatRegister, LauncherSlotStatRegister,
-    LowSlotStatRegister, MediumSlotStatRegister, RigSlotStatRegister,
-    SubsystemSlotStatRegister, TurretSlotStatRegister)
+from .resource import CalibrationStatRegister
+from .resource import CpuStatRegister
+from .resource import DroneBandwidthStatRegister
+from .resource import DronebayVolumeStatRegister
+from .resource import PowergridStatRegister
+from .slot import HighSlotStatRegister
+from .slot import LaunchedDroneStatRegister
+from .slot import LauncherSlotStatRegister
+from .slot import LowSlotStatRegister
+from .slot import MediumSlotStatRegister
+from .slot import RigSlotStatRegister
+from .slot import SubsystemSlotStatRegister
+from .slot import TurretSlotStatRegister

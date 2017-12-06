@@ -20,7 +20,7 @@
 
 
 from eos.const.eos import EffectBuildStatus
-from tests.mod_builder.modbuilder_testcase import ModBuilderTestCase
+from tests.mod_builder.testcase import ModBuilderTestCase
 
 
 class TestBuilderModinfoMultiple(ModBuilderTestCase):

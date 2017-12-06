@@ -20,9 +20,12 @@
 
 
 from eos import *
-from eos.const.eos import ModDomain, ModOperator, ModTgtFilter
-from eos.const.eve import EffectId, EffectCategoryId
-from tests.integration.calculator.calculator_testcase import CalculatorTestCase
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
+from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
+from tests.integration.calculator.testcase import CalculatorTestCase
 
 
 class TestStateSwitching(CalculatorTestCase):

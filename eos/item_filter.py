@@ -27,7 +27,8 @@ __all__ = [
 ]
 
 
-from eos.const.eve import EffectId, TypeId
+from eos.const.eve import EffectId
+from eos.const.eve import TypeId
 from eos.fit.item import Drone
 
 

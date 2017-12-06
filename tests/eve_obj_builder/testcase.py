@@ -21,7 +21,7 @@
 
 from eos.data.eve_obj_builder import EveObjBuilder
 from eos.eve_object import DogmaModifier
-from tests.eos_testcase import EosTestCase
+from tests.testcase import EosTestCase
 from .environment import DataHandler
 
 

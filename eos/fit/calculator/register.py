@@ -22,9 +22,12 @@
 from itertools import chain
 from logging import getLogger
 
-from eos.const.eos import EosTypeId, ModDomain, ModTgtFilter
+from eos.const.eos import EosTypeId
+from eos.const.eos import ModDomain
+from eos.const.eos import ModTgtFilter
 from eos.util.keyed_storage import KeyedStorage
-from .exception import UnexpectedDomainError, UnknownTgtFilterError
+from .exception import UnexpectedDomainError
+from .exception import UnknownTgtFilterError
 
 
 logger = getLogger(__name__)

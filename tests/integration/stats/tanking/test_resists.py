@@ -21,7 +21,7 @@
 
 from eos import *
 from eos.const.eve import AttrId
-from tests.integration.stats.stats_testcase import StatsTestCase
+from tests.integration.stats.testcase import StatsTestCase
 
 
 class TestResists(StatsTestCase):

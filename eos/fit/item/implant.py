@@ -19,7 +19,8 @@
 # ==============================================================================
 
 
-from eos.const.eos import ModDomain, State
+from eos.const.eos import ModDomain
+from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.util.repr import make_repr_str
 from .mixin.state import ImmutableStateMixin
