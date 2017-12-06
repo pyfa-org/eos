@@ -19,31 +19,29 @@
 # ==============================================================================
 
 
-from logging import getLogger
-
-from eos.const.eos import (
-    EffectBuildStatus, ModDomain, ModOperator, ModTgtFilter)
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
 from eos.eve_object import DogmaModifier
 
 
-logger = getLogger(__name__)
+_rah_modifiers = None
 
 
-def add_rah_modifiers(effect):
-    if effect.modifiers:
-        msg = 'reactive armor hardener effect has modifiers, overwriting them'
-        logger.warning(msg)
-    effect.modifiers = tuple(
-        DogmaModifier(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=attr_id,
-            operator=ModOperator.pre_mul,
-            src_attr_id=attr_id)
-        for attr_id in (
-            AttrId.armor_em_dmg_resonance,
-            AttrId.armor_thermal_dmg_resonance,
-            AttrId.armor_kinetic_dmg_resonance,
-            AttrId.armor_explosive_dmg_resonance))
-    effect.build_status = EffectBuildStatus.custom
+def get_rah_modifiers():
+    global _rah_modifiers
+    if _rah_modifiers is None:
+        _rah_modifiers = tuple(
+            DogmaModifier(
+                tgt_filter=ModTgtFilter.item,
+                tgt_domain=ModDomain.ship,
+                tgt_attr_id=attr_id,
+                operator=ModOperator.pre_mul,
+                src_attr_id=attr_id)
+            for attr_id in (
+                AttrId.armor_em_dmg_resonance,
+                AttrId.armor_thermal_dmg_resonance,
+                AttrId.armor_kinetic_dmg_resonance,
+                AttrId.armor_explosive_dmg_resonance))
+    return _rah_modifiers
