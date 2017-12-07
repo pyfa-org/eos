@@ -24,6 +24,7 @@ from abc import abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import EffectMode
+from eos.data.cache_handler import TypeFetchError
 from eos.fit.calculator import MutableAttrMap
 from eos.fit.message.helper import MsgHelper
 
@@ -51,17 +52,21 @@ class BaseItemMixin(metaclass=ABCMeta):
 
     def __init__(self, type_id, **kwargs):
         self._type_id = type_id
-        self._container = None
-        # Special dictionary subclass that holds modified attributes and data
-        # related to their calculation
-        self.attrs = MutableAttrMap(self)
+        # Which item type this item based on
+        self._type = None
         # Container for effects IDs which are currently running
         self._running_effect_ids = set()
         # Effect run modes, if they are any different from default
         # Format: {effect ID: effect run mode}
         self.__effect_mode_overrides = None
-        # Which item type this item based on
-        self._type = None
+        # Special dictionary subclass that holds modified attributes and data
+        # related to their calculation
+        self.attrs = MutableAttrMap(self)
+        # Charges which are 'auto-loaded' into item by effects
+        # Format: {effect ID: autocharge type ID}
+        self.__autocharges = None
+        self._container = None
+
         super().__init__(**kwargs)
 
     @property
@@ -208,6 +213,24 @@ class BaseItemMixin(metaclass=ABCMeta):
                 fit._publish_bulk(msgs)
                 fit._volatile_mgr.clear_volatile_attrs()
 
+    # Autocharge methods
+    @property
+    def autocharges(self):
+        """Returns map which contains charges, 'autoloaded' by effects.
+
+        These charges will always be on item as long as item type defines them.
+        """
+        # Format {effect ID: charge}
+        return self.__autocharges or {}
+
+    def _add_autocharge(self, effect_id, charge):
+        if self.__autocharges is None:
+            self.__autocharges = {}
+        self.__autocharges[effect_id] = charge
+
+    def _clear_autocharges(self):
+        self.__autocharges = None
+
     # Auxiliary methods
     def _refresh_source(self):
         """Refresh item's source-dependent data.
@@ -217,9 +240,22 @@ class BaseItemMixin(metaclass=ABCMeta):
         should be called.
         """
         self.attrs.clear()
+        self._clear_autocharges()
         try:
             type_getter = self._fit.source.cache_handler.get_type
         except AttributeError:
             self._type = None
         else:
             self._type = type_getter(self._type_id)
+            for effect_id, effect in self._type_effects.items():
+                autocharge_type_id = effect.get_autocharge_type_id(self)
+                if autocharge_type_id is None:
+                    continue
+                try:
+                    # TODO: should be charge, have to fix circular reference
+                    autocharge = type_getter(autocharge_type_id)
+                except TypeFetchError:
+                    continue
+                self._add_autocharge(effect_id, autocharge)
+
+

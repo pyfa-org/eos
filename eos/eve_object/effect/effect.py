@@ -129,6 +129,10 @@ class Effect:
             return None
         return item.attrs.get(attr_id)
 
+    # Getters for other entities, which are defined by effects
+    def get_autocharge_type_id(self, _):
+        return None
+
     # Auxiliary methods
     def __repr__(self):
         spec = ['id']

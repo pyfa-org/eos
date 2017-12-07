@@ -410,8 +410,11 @@ class MutableAttrMap:
     # Cap-related methods
     @property
     def _cap_map(self):
-        # Returns map of attributes which cap something, and attributes capped
-        # by them
+        """Returns map which defines value caps.
+
+        It includes attributes which cap something, and attributes being capped
+        by them.
+        """
         # Format {capping attribute ID: {capped attribute IDs}}
         return self.__cap_map or {}
 

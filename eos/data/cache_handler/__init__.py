@@ -19,4 +19,5 @@
 # ==============================================================================
 
 
+from .exception import TypeFetchError
 from .json_cache_handler import JsonCacheHandler

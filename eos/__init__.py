@@ -40,7 +40,7 @@ from .const.eos import EffectMode
 from .const.eos import Restriction
 from .const.eos import State
 from .data.cache_handler import JsonCacheHandler
-from .data.cache_handler.exception import TypeFetchError
+from .data.cache_handler import TypeFetchError
 from .data.data_handler import JsonDataHandler
 from .data.data_handler import SQLiteDataHandler
 from .data.source import SourceManager
