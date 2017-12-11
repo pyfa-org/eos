@@ -24,7 +24,7 @@ from .exception import ItemAlreadyAssignedError
 
 
 class ItemDescriptor(ItemContainerBase):
-    """Container for single item, intended to be used as fit attribute.
+    """Container for single item.
 
     Args:
         attr_name: Name of instance attribute which should be used to store data
