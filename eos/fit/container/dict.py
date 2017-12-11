@@ -23,7 +23,7 @@ from .set import ItemSet
 
 
 class ItemDict:
-    """Dict-alike container for items.
+    """Dict-like container for items.
 
     It contains items keyed against something.
 
@@ -71,8 +71,9 @@ class ItemDict:
             KeyError: If item cannot be removed from the container (e.g. it
                 doesn't belong to it).
         """
+        # Should raise KeyError if there's no such item
         item = self.__keyed_items[key]
-        self.__item_set._handle_item_removal(item)
+        self.__item_set.remove(item)
         del self.__keyed_items[key]
 
     def clear(self):

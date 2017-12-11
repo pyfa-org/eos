@@ -21,8 +21,8 @@
 
 from .dict import ItemDict
 from .exception import SlotTakenError
-from .keyed_set import ItemKeyedSet
 from .list import ItemList
 from .modules import ModuleRacks
 from .set import ItemSet
 from .single import ItemDescriptor
+from .type_unique_set import TypeUniqueItemSet

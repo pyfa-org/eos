@@ -29,10 +29,10 @@ from eos.util.pubsub.broker import MsgBroker
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
 from .container import ItemDescriptor
-from .container import ItemKeyedSet
 from .container import ItemList
 from .container import ItemSet
 from .container import ModuleRacks
+from .container import TypeUniqueItemSet
 from .helper import DmgProfile
 from .item import Booster
 from .item import Character
@@ -90,7 +90,7 @@ class Fit(MsgBroker):
         self.__source = None
         self.__default_incoming_dmg = DmgProfile(25, 25, 25, 25)
         # Character-related item containers
-        self.skills = ItemKeyedSet(self, Skill)
+        self.skills = TypeUniqueItemSet(self, Skill)
         self.implants = ItemSet(self, Implant)
         self.boosters = ItemSet(self, Booster)
         # Ship-related containers

@@ -22,8 +22,8 @@
 from .set import ItemSet
 
 
-class ItemKeyedSet(ItemSet):
-    """Unordered container for items with few dict-like modifications.
+class TypeUniqueItemSet(ItemSet):
+    """Unordered container for items with additional restriction.
 
     This container can't hold two items with the same type ID, and provides
     access to items via their type IDs.
@@ -37,6 +37,7 @@ class ItemKeyedSet(ItemSet):
         ItemSet.__init__(self, fit, item_class)
         self.__type_id_map = {}
 
+    # Modifying methods
     def add(self, item):
         """Add item to the container.
 
@@ -76,25 +77,27 @@ class ItemKeyedSet(ItemSet):
         ItemSet.remove(self, item)
         del self.__type_id_map[item._type_id]
 
-    def clear(self):
-        """Remove everything from the container."""
-        ItemSet.clear(self)
-        self.__type_id_map.clear()
-
-    def __getitem__(self, type_id):
-        """Get item by type ID."""
-        return self.__type_id_map[type_id]
-
     def __delitem__(self, type_id):
         """Remove item by type ID."""
         item = self.__type_id_map[type_id]
         self.remove(item)
 
+    def clear(self):
+        """Remove everything from the container."""
+        ItemSet.clear(self)
+        self.__type_id_map.clear()
+
+    # Non-modifying methods
+    def __getitem__(self, type_id):
+        """Get item by type ID."""
+        return self.__type_id_map[type_id]
+
     def __contains__(self, value):
         """Check if type ID or item are present in set."""
         return (
-            self.__type_id_map.__contains__(value) or
+            value in self.__type_id_map or
             ItemSet.__contains__(self, value))
 
+    # Auxiliary methods
     def __repr__(self):
         return repr(self.__type_id_map)

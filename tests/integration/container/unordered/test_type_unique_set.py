@@ -25,7 +25,7 @@ from eos import Skill
 from tests.integration.container.testcase import ContainerTestCase
 
 
-class TestContainerKeyedSet(ContainerTestCase):
+class TestContainerTypeUniqueSet(ContainerTestCase):
 
     def test_add_none(self):
         fit = Fit()
