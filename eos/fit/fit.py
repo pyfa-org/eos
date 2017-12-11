@@ -187,6 +187,7 @@ class Fit(MsgBroker):
             self._publish(DefaultIncomingDmgChanged())
             self._volatile_mgr.clear_volatile_attrs()
 
+    # Auxiliary methods
     @property
     def _fit(self):
         # Items which are stored directly on the fit (e.g. ship, character)
@@ -211,7 +212,6 @@ class Fit(MsgBroker):
             for child_item in item._child_items:
                 yield child_item
 
-    # Auxiliary methods
     def __repr__(self):
         spec = [
             'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',

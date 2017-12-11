@@ -19,6 +19,7 @@
 # ==============================================================================
 
 
+from .dict import ItemDict
 from .exception import SlotTakenError
 from .keyed_set import ItemKeyedSet
 from .list import ItemList

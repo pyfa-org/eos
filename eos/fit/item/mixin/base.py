@@ -252,10 +252,12 @@ class BaseItemMixin(metaclass=ABCMeta):
                 if autocharge_type_id is None:
                     continue
                 try:
-                    # TODO: should be charge, have to fix circular reference
-                    autocharge = type_getter(autocharge_type_id)
+                    autocharge_type = type_getter(autocharge_type_id)
                 except TypeFetchError:
                     continue
-                self._add_autocharge(effect_id, autocharge)
-
-
+                # Using import here is ugly, but there's no good way to use
+                # subclass within parent class. Other solution is to create
+                # method on fit and call that method, but fit shouldn't really
+                # care about implementation details of items too
+                from eos.fit.item import Charge
+                self._add_autocharge(effect_id, Charge(autocharge_type))
