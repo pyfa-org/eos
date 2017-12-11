@@ -210,3 +210,15 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_bool(self):
+        fit = Fit()
+        item = Skill(self.mktype().id)
+        self.assertIs(bool(fit.skills), False)
+        fit.skills.add(item)
+        self.assertIs(bool(fit.skills), True)
+        fit.skills.remove(item)
+        self.assertIs(bool(fit.skills), False)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -133,6 +133,18 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_bool(self):
+        fit = Fit()
+        item = ModuleHigh(self.mktype().id)
+        self.assertIs(bool(fit.modules.high), False)
+        fit.modules.high.place(3, item)
+        self.assertIs(bool(fit.modules.high), True)
+        fit.modules.high.remove(item)
+        self.assertIs(bool(fit.modules.high), False)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_item_view(self):
         fit = Fit()
         item1 = ModuleHigh(self.mktype().id)

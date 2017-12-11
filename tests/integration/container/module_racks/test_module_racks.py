@@ -44,8 +44,11 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.fit.modules.med.place(4, self.mod_med2)
         self.fit.modules.low.place(0, self.mod_low1)
         self.fit.modules.low.place(4, self.mod_low2)
-        # Cleanup
-        self.assertEqual(len(self.get_log()), 0)
+
+    def remove_modules(self):
+        self.fit.modules.high.clear()
+        self.fit.modules.med.clear()
+        self.fit.modules.low.clear()
 
     def test_items_len(self):
         module_items = self.fit.modules.items()
@@ -57,6 +60,8 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.fit.modules.low.append(self.mod_low3)
         self.assertEqual(len(module_items), 5)
         # Cleanup
+        self.remove_modules()
+        self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_items_iter(self):
@@ -85,6 +90,8 @@ class TestContainerModuleRacks(ContainerTestCase):
             self.mod_low1, self.mod_low2, self.mod_low3]
         self.assertEqual(list(module_items), expected)
         # Cleanup
+        self.remove_modules()
+        self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_contains(self):
@@ -109,4 +116,6 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertTrue(self.mod_low3 in module_items)
         self.assertFalse(None in module_items)
         # Cleanup
+        self.remove_modules()
+        self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

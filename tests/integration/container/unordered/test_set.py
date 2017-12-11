@@ -120,3 +120,15 @@ class TestContainerSet(ContainerTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_bool(self):
+        fit = Fit()
+        item = Implant(self.mktype().id)
+        self.assertIs(bool(fit.implants), False)
+        fit.implants.add(item)
+        self.assertIs(bool(fit.implants), True)
+        fit.implants.remove(item)
+        self.assertIs(bool(fit.implants), False)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
