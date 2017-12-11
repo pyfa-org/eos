@@ -19,5 +19,9 @@
 # ==============================================================================
 
 
+from .dmg_dealer import load_dmg_dealers
 from .effect import Effect
 from .factory import EffectFactory
+
+
+load_dmg_dealers()

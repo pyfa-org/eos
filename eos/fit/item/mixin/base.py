@@ -229,11 +229,15 @@ class BaseItemMixin(metaclass=ABCMeta):
         # Format {effect ID: charge}
         return self.__autocharges or {}
 
-    def _add_autocharge(self, effect_id, charge):
+    def _add_autocharge(self, effect_id, autocharge_type_id):
+        # Using import here is ugly, but there's no good way to use subclass
+        # within parent class. Other solution is to create method on fit and
+        # call that method, but fit shouldn't really care about implementation
+        # details of items too
+        from eos.fit.item import Charge
         if self.__autocharges is None:
-            from eos.fit.item import Charge
             self.__autocharges = ItemDict(self, Charge)
-        self.__autocharges[effect_id] = charge
+        self.__autocharges[effect_id] = Charge(autocharge_type_id)
 
     def _clear_autocharges(self):
         if self.__autocharges is not None:
@@ -260,13 +264,4 @@ class BaseItemMixin(metaclass=ABCMeta):
                 autocharge_type_id = effect.get_autocharge_type_id(self)
                 if autocharge_type_id is None:
                     continue
-                try:
-                    autocharge_type = type_getter(autocharge_type_id)
-                except TypeFetchError:
-                    continue
-                # Using import here is ugly, but there's no good way to use
-                # subclass within parent class. Other solution is to create
-                # method on fit and call that method, but fit shouldn't really
-                # care about implementation details of items too
-                from eos.fit.item import Charge
-                self._add_autocharge(effect_id, Charge(autocharge_type))
+                self._add_autocharge(effect_id, autocharge_type_id)

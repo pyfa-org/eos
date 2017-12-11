@@ -29,13 +29,13 @@ class ItemSet(ItemContainerBase):
     Implements set-like interface.
 
     Args:
-        owner: Object, to which this container is attached.
+        parent: Object, to which this container is attached.
         item_class: Class of items this container is allowed to contain.
     """
 
-    def __init__(self, owner, item_class):
+    def __init__(self, parent, item_class):
         ItemContainerBase.__init__(self, item_class)
-        self.__owner = owner
+        self.__parent = parent
         self.__set = set()
 
     # Modifying methods
@@ -92,7 +92,7 @@ class ItemSet(ItemContainerBase):
     # Auxiliary methods
     @property
     def _fit(self):
-        return self.__owner._fit
+        return self.__parent._fit
 
     def __repr__(self):
         return repr(self.__set)

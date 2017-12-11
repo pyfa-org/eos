@@ -45,7 +45,8 @@ class VolatileMgr:
     # Private methods for message handlers
     def add_volatile_object(self, object):
         if isinstance(
-                object, (InheritableVolatileMixin, CooperativeVolatileMixin)):
+            object, (InheritableVolatileMixin, CooperativeVolatileMixin)
+        ):
             self.__volatile_objects.add(object)
 
     def remove_volatile_object(self, object):

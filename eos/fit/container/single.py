@@ -36,7 +36,7 @@ class ItemDescriptor(ItemContainerBase):
         ItemContainerBase.__init__(self, item_class)
         self.__attr_name = self.__mangle_attr_name(attr_name)
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, parent):
         if instance is None:
             return self
         return getattr(instance, self.__attr_name, None)

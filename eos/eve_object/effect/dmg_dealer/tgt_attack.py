@@ -19,8 +19,32 @@
 # ==============================================================================
 
 
-from eos.util.loader import load_modules
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.eve_object import EffectFactory
+from .base import DmgDealerEffect
 
 
-def load_dmg_dealers():
-    load_modules(__path__)
+class TgtAttack(DmgDealerEffect):
+
+    def get_volley(self, item, tgt_resists):
+        return
+
+    def get_dps(self, item, tgt_resists, reload):
+        return
+
+    def get_applied_volley(self, item, tgt_data, tgt_resists):
+        return
+
+    def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
+        return
+
+    def get_autocharge_type_id(self, item):
+        try:
+            ammo_type_id = item.attrs[AttrId.ammo_loaded]
+        except KeyError:
+            return None
+        return int(ammo_type_id)
+
+
+EffectFactory.reg_cust_class_by_id(TgtAttack, EffectId.tgt_attack)

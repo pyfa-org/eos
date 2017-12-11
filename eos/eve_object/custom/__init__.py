@@ -25,10 +25,8 @@ objects.
 """
 
 
-import pkgutil
+from eos.util.loader import load_modules
 
 
-def register_customizations():
-    """Walk through customization folder and load all modules within it."""
-    for loader, name, is_pkg in pkgutil.iter_modules(__path__):
-        loader.find_module(name).load_module(name)
+def load_customizations():
+    load_modules(__path__)

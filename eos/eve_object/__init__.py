@@ -21,7 +21,7 @@
 
 from .attribute import AttrFactory
 from .attribute import Attribute
-from .custom import register_customizations
+from .custom import load_customizations
 from .effect import Effect
 from .effect import EffectFactory
 from .modifier import BasePythonModifier
@@ -31,4 +31,4 @@ from .type import Type
 from .type import TypeFactory
 
 
-register_customizations()
+load_customizations()

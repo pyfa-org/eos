@@ -29,12 +29,12 @@ class TypeUniqueItemSet(ItemSet):
     access to items via their type IDs.
 
     Args:
-        owner: Object, to which this container is attached.
+        parent: Object, to which this container is attached.
         item_class: Class of items this container is allowed to contain.
     """
 
-    def __init__(self, owner, item_class):
-        ItemSet.__init__(self, owner, item_class)
+    def __init__(self, parent, item_class):
+        ItemSet.__init__(self, parent, item_class)
         self.__type_id_map = {}
 
     # Modifying methods

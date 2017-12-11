@@ -28,12 +28,12 @@ class ItemDict:
     It contains items keyed against something.
 
     Args:
-        owner: Object, to which this container is attached.
+        parent: Object, to which this container is attached.
         item_class: Class of items this container is allowed to contain.
     """
 
-    def __init__(self, owner, item_class):
-        self.__item_set = ItemSet(owner, item_class)
+    def __init__(self, parent, item_class):
+        self.__item_set = ItemSet(parent, item_class)
         self.__keyed_items = {}
 
     # Modifying methods
