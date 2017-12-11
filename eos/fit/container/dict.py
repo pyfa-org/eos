@@ -19,12 +19,10 @@
 # ==============================================================================
 
 
-from collections.abc import Mapping
-
 from .set import ItemSet
 
 
-class ItemDict(Mapping):
+class ItemDict:
     """Dict-alike container for items.
 
     It contains items keyed against something.

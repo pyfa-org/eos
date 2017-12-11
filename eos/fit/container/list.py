@@ -41,10 +41,7 @@ class ItemList(ItemContainerBase):
         self.__fit = fit
         self.__list = []
 
-    @property
-    def _fit(self):
-        return self.__fit
-
+    # Modifying methods
     def insert(self, index, value):
         """Insert value to given position.
 
@@ -205,10 +202,6 @@ class ItemList(ItemContainerBase):
         self.__list[index] = None
         self._cleanup()
 
-    def items(self):
-        """Return item view over the container."""
-        return ListItemView(self.__list)
-
     def clear(self):
         """Remove everything from the container."""
         for item in self.__list:
@@ -216,6 +209,7 @@ class ItemList(ItemContainerBase):
                 self._handle_item_removal(item)
         self.__list.clear()
 
+    # Non-modifying methods
     def __getitem__(self, index):
         """Get item by index or items by slice object."""
         return self.__list.__getitem__(index)
@@ -228,15 +222,20 @@ class ItemList(ItemContainerBase):
         """
         return self.__list.index(value)
 
+    def items(self):
+        """Return item view over the container."""
+        return ListItemView(self.__list)
+
     def __iter__(self):
-        return self.__list.__iter__()
+        return iter(self.__list)
 
     def __contains__(self, value):
-        return self.__list.__contains__(value)
+        return value in self.__list
 
     def __len__(self):
-        return self.__list.__len__()
+        return len(self.__list)
 
+    # Auxiliary methods
     def _allocate(self, index):
         """Complete list with Nones until passed index becomes accessible.
 
@@ -254,6 +253,10 @@ class ItemList(ItemContainerBase):
         # with it
         except IndexError:
             pass
+
+    @property
+    def _fit(self):
+        return self.__fit
 
     def __repr__(self):
         return repr(self.__list)

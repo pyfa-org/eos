@@ -38,10 +38,7 @@ class ItemSet(ItemContainerBase):
         self.__fit = fit
         self.__set = set()
 
-    @property
-    def _fit(self):
-        return self.__fit
-
+    # Modifying methods
     def add(self, item):
         """Add item to the container.
 
@@ -82,14 +79,20 @@ class ItemSet(ItemContainerBase):
             self._handle_item_removal(item)
         self.__set.clear()
 
+    # Non-modifying methods
     def __iter__(self):
-        return self.__set.__iter__()
+        return iter(self.__set)
 
     def __contains__(self, item):
-        return self.__set.__contains__(item)
+        return item in self.__set
 
     def __len__(self):
-        return self.__set.__len__()
+        return len(self.__set)
+
+    # Auxiliary methods
+    @property
+    def _fit(self):
+        return self.__fit
 
     def __repr__(self):
         return repr(self.__set)
