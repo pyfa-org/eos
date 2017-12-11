@@ -26,6 +26,7 @@ from collections import namedtuple
 from eos.const.eos import EffectMode
 from eos.data.cache_handler import TypeFetchError
 from eos.fit.calculator import MutableAttrMap
+from eos.fit.container import ItemDict
 from eos.fit.message.helper import MsgHelper
 
 
@@ -48,6 +49,7 @@ class BaseItemMixin(metaclass=ABCMeta):
 
     Cooperative methods:
         __init__
+        _child_items
     """
 
     def __init__(self, type_id, **kwargs):
@@ -66,12 +68,16 @@ class BaseItemMixin(metaclass=ABCMeta):
         # Format: {effect ID: autocharge type ID}
         self.__autocharges = None
         self._container = None
-
         super().__init__(**kwargs)
 
     @property
     def _child_items(self):
-        return ()
+        try:
+            child_items = super()._child_items
+        except AttributeError:
+            child_items = set()
+        child_items.update(self.autocharges.values())
+        return child_items
 
     @property
     def _container_position(self):
@@ -225,11 +231,14 @@ class BaseItemMixin(metaclass=ABCMeta):
 
     def _add_autocharge(self, effect_id, charge):
         if self.__autocharges is None:
-            self.__autocharges = {}
+            from eos.fit.item import Charge
+            self.__autocharges = ItemDict(self, Charge)
         self.__autocharges[effect_id] = charge
 
     def _clear_autocharges(self):
-        self.__autocharges = None
+        if self.__autocharges is not None:
+            self.__autocharges.clear()
+            self.__autocharges = None
 
     # Auxiliary methods
     def _refresh_source(self):
