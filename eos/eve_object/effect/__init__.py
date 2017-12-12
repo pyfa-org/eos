@@ -24,4 +24,5 @@ from .effect import Effect
 from .factory import EffectFactory
 
 
-load_dmg_dealers()
+def load_custom_effects():
+    load_dmg_dealers()

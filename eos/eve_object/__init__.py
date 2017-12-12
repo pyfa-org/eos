@@ -24,6 +24,7 @@ from .attribute import Attribute
 from .custom import load_customizations
 from .effect import Effect
 from .effect import EffectFactory
+from .effect import load_custom_effects
 from .modifier import BasePythonModifier
 from .modifier import DogmaModifier
 from .modifier import ModificationCalculationError
@@ -32,3 +33,4 @@ from .type import TypeFactory
 
 
 load_customizations()
+load_custom_effects()

@@ -25,8 +25,8 @@ objects.
 """
 
 
-from eos.util.loader import load_modules
+from eos.util.dynamic_load import load_submodules
 
 
 def load_customizations():
-    load_modules(__path__)
+    load_submodules(__path__, __name__)

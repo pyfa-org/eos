@@ -19,14 +19,20 @@
 # ==============================================================================
 
 
-import pkgutil
+from importlib import import_module
+from pkgutil import iter_modules
 
 
-def load_modules(path):
+def load_submodules(path_fs, path_mod):
     """Walk through specified path and load all modules within it.
 
     Loads just top-level modules and packages, any package children should be
-    loaded by package itself.
+    loaded by packages themselves.
+
+    Args:
+        path_fs: Location of package on filesystem.
+        path_mod: Location of package within running python instance.
     """
-    for loader, name, is_pkg in pkgutil.iter_modules(path):
-        loader.find_module(name).load_module(name)
+    prefix = '{}.'.format(path_mod)
+    for _, name, _ in iter_modules(path_fs, prefix):
+        import_module(name)
