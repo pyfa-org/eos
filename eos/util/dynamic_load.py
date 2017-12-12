@@ -24,9 +24,9 @@ from pkgutil import iter_modules
 
 
 def load_submodules(path_fs, path_mod):
-    """Walk through specified path and load all modules within it.
+    """Walk through package and load all child modules within it.
 
-    Loads just top-level modules and packages, any package children should be
+    Loads just direct children, their children and anything below it should be
     loaded by packages themselves.
 
     Args:
