@@ -21,7 +21,7 @@
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.eve_object import EffectFactory
+from eos.eve_object.effect import EffectFactory
 from .base import DmgDealerEffect
 
 

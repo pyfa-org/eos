@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import EffectId
-from eos.eve_object import TypeFactory
+from eos.eve_object.type import TypeFactory
 from .effect import get_paste_effect
 
 

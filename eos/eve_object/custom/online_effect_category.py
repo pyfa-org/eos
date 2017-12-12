@@ -31,7 +31,7 @@ from logging import getLogger
 
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
-from eos.eve_object import EffectFactory
+from eos.eve_object.effect import EffectFactory
 
 
 logger = getLogger(__name__)

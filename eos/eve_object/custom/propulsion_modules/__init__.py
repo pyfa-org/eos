@@ -28,7 +28,7 @@ from logging import getLogger
 
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectId
-from eos.eve_object import EffectFactory
+from eos.eve_object.effect import EffectFactory
 from .modifier import get_ab_modifiers
 from .modifier import get_mwd_modifiers
 

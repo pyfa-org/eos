@@ -22,7 +22,7 @@
 from eos.const.eos import EffectBuildStatus
 from eos.const.eos import EosEffectId
 from eos.const.eve import EffectCategoryId
-from eos.eve_object import EffectFactory
+from eos.eve_object.effect import EffectFactory
 from .modifier import AncillaryRepAmountModifier
 
 _paste_effect = None

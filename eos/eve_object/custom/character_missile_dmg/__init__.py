@@ -28,7 +28,7 @@ some hardcoding on CCP's part), so we're adding it manually.
 
 
 from eos.const.eve import TypeGroupId
-from eos.eve_object import TypeFactory
+from eos.eve_object.type import TypeFactory
 from .effect import get_missile_dmg_effect
 
 

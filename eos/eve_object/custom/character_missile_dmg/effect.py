@@ -27,8 +27,8 @@ from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import TypeId
-from eos.eve_object import DogmaModifier
-from eos.eve_object import EffectFactory
+from eos.eve_object.effect import EffectFactory
+from eos.eve_object.modifier import DogmaModifier
 
 
 _missile_dmg_effect = None

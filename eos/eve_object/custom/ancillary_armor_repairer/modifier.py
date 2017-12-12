@@ -24,8 +24,8 @@ from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
 from eos.const.eve import TypeId
-from eos.eve_object import BasePythonModifier
-from eos.eve_object import ModificationCalculationError
+from eos.eve_object.modifier import BasePythonModifier
+from eos.eve_object.modifier import ModificationCalculationError
 from eos.fit.message import AttrValueChanged
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved

@@ -19,9 +19,9 @@
 # ==============================================================================
 
 
-from eos.eve_object import Attribute
-from eos.eve_object import Effect
-from eos.eve_object import Type
+from eos.eve_object.attribute import Attribute
+from eos.eve_object.effect import Effect
+from eos.eve_object.type import Type
 from .mod_builder import ModBuilder
 
 

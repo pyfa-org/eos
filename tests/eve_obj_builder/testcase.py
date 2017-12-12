@@ -20,7 +20,7 @@
 
 
 from eos.data.eve_obj_builder import EveObjBuilder
-from eos.eve_object import DogmaModifier
+from eos.eve_object.modifier import DogmaModifier
 from tests.testcase import EosTestCase
 from .environment import DataHandler
 

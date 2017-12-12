@@ -23,7 +23,7 @@ from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
-from eos.eve_object import DogmaModifier
+from eos.eve_object.modifier import DogmaModifier
 
 
 _rah_modifiers = None
