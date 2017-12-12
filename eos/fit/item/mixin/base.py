@@ -259,6 +259,7 @@ class BaseItemMixin(metaclass=ABCMeta):
             self._type = None
         else:
             self._type = type_getter(self._type_id)
+            # Add autocharges, if effects specify any
             for effect_id, effect in self._type_effects.items():
                 autocharge_type_id = effect.get_autocharge_type_id(self)
                 if autocharge_type_id is None:

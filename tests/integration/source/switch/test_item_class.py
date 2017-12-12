@@ -53,8 +53,8 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.mkattr(src='src1', attr_id=self.tgt_attr_id)
         self.mkattr(src='src2', attr_id=self.tgt_attr_id)
 
-    def prepare_item_type(self):
-        """Prepare item type for source switch test.
+    def make_item_types(self):
+        """Create item types for source switch test.
 
         Create item type in both sources. Both items modify target attribute on
         itself: item in source1 will have its value at 18, item in source2 - 14,
@@ -99,7 +99,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         return item_type_id
 
     def test_booster(self):
-        booster = Booster(self.prepare_item_type())
+        booster = Booster(self.make_item_types())
         self.fit.boosters.add(booster)
         self.assertAlmostEqual(booster.attrs[self.tgt_attr_id], 18)
         # Action
@@ -111,7 +111,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_character(self):
-        character = Character(self.prepare_item_type())
+        character = Character(self.make_item_types())
         self.fit.character = character
         self.assertAlmostEqual(character.attrs[self.tgt_attr_id], 18)
         # Action
@@ -123,8 +123,8 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge(self):
-        module = ModuleHigh(self.prepare_item_type())
-        charge = Charge(self.prepare_item_type())
+        module = ModuleHigh(self.make_item_types())
+        charge = Charge(self.make_item_types())
         module.charge = charge
         self.fit.modules.high.append(module)
         self.assertAlmostEqual(charge.attrs[self.tgt_attr_id], 18)
@@ -137,7 +137,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_drone(self):
-        drone = Drone(self.prepare_item_type())
+        drone = Drone(self.make_item_types())
         self.fit.drones.add(drone)
         self.assertAlmostEqual(drone.attrs[self.tgt_attr_id], 18)
         # Action
@@ -149,7 +149,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_beacon(self):
-        effect_beacon = EffectBeacon(self.prepare_item_type())
+        effect_beacon = EffectBeacon(self.make_item_types())
         self.fit.effect_beacon = effect_beacon
         self.assertAlmostEqual(effect_beacon.attrs[self.tgt_attr_id], 18)
         # Action
@@ -161,7 +161,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fighter_squad(self):
-        fighter_squad = FighterSquad(self.prepare_item_type())
+        fighter_squad = FighterSquad(self.make_item_types())
         self.fit.fighters.add(fighter_squad)
         self.assertAlmostEqual(fighter_squad.attrs[self.tgt_attr_id], 18)
         # Action
@@ -173,7 +173,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_implant(self):
-        implant = Implant(self.prepare_item_type())
+        implant = Implant(self.make_item_types())
         self.fit.implants.add(implant)
         self.assertAlmostEqual(implant.attrs[self.tgt_attr_id], 18)
         # Action
@@ -185,7 +185,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high(self):
-        module = ModuleHigh(self.prepare_item_type())
+        module = ModuleHigh(self.make_item_types())
         self.fit.modules.high.append(module)
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 18)
         # Action
@@ -197,7 +197,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_med(self):
-        module = ModuleMed(self.prepare_item_type())
+        module = ModuleMed(self.make_item_types())
         self.fit.modules.med.append(module)
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 18)
         # Action
@@ -209,7 +209,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low(self):
-        module = ModuleLow(self.prepare_item_type())
+        module = ModuleLow(self.make_item_types())
         self.fit.modules.low.append(module)
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 18)
         # Action
@@ -221,7 +221,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rig(self):
-        rig = Rig(self.prepare_item_type())
+        rig = Rig(self.make_item_types())
         self.fit.rigs.add(rig)
         self.assertAlmostEqual(rig.attrs[self.tgt_attr_id], 18)
         # Action
@@ -233,7 +233,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship(self):
-        ship = Ship(self.prepare_item_type())
+        ship = Ship(self.make_item_types())
         self.fit.ship = ship
         self.assertAlmostEqual(ship.attrs[self.tgt_attr_id], 18)
         # Action
@@ -245,7 +245,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_skill(self):
-        skill = Skill(self.prepare_item_type())
+        skill = Skill(self.make_item_types())
         self.fit.skills.add(skill)
         self.assertAlmostEqual(skill.attrs[self.tgt_attr_id], 18)
         # Action
@@ -257,7 +257,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stance(self):
-        stance = Stance(self.prepare_item_type())
+        stance = Stance(self.make_item_types())
         self.fit.stance = stance
         self.assertAlmostEqual(stance.attrs[self.tgt_attr_id], 18)
         # Action
@@ -269,7 +269,7 @@ class TestSourceSwitchItemClass(SourceTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem(self):
-        subsystem = Subsystem(self.prepare_item_type())
+        subsystem = Subsystem(self.make_item_types())
         self.fit.subsystems.add(subsystem)
         self.assertAlmostEqual(subsystem.attrs[self.tgt_attr_id], 18)
         # Action
