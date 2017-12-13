@@ -145,11 +145,12 @@ class BaseItemMixin(metaclass=ABCMeta):
 
     @property
     def _other(self):
+        other_items = set()
         container = self._container
         if isinstance(container, BaseItemMixin):
-            return container
-        else:
-            return None
+            other_items.add(container)
+        other_items.update(self._child_items)
+        return other_items
 
     # Effect methods
     @property

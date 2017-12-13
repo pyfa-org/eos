@@ -131,6 +131,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_on_parent(self):
+        # Civilian gun ammo does this, see effect ammoInfluenceEntityFlyRange
         autocharge_modifier = self.mkmod_filter_item(ModDomain.other)
         autocharge_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
@@ -184,6 +185,36 @@ class TestAutocharge(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_influence_from_parent_with_charge(self):
+        autocharge_type = self.mktype(attrs={self.tgt_attr.id: 10})
+        charge_item = Charge(self.mktype(attrs={self.tgt_attr.id: 20}).id)
+        parent_modifier = self.mkmod_filter_item(ModDomain.other)
+        parent_effect_modifier = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[parent_modifier])
+        parent_effect_autocharge = self.mkeffect(
+            effect_id=EffectId.tgt_attack,
+            category_id=EffectCategoryId.target,
+            customize=True)
+        parent_item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    self.ammo_attr.id: autocharge_type.id,
+                    self.src_attr.id: 50},
+                effects=[parent_effect_modifier, parent_effect_autocharge]).id,
+            charge=charge_item,
+            state=State.active)
+        # Action
+        self.fit.modules.high.append(parent_item)
+        # Verification
+        self.assertIn(parent_effect_autocharge.id, parent_item.autocharges)
+        autocharge_item = parent_item.autocharges[parent_effect_autocharge.id]
+        self.assertAlmostEqual(autocharge_item.attrs[self.tgt_attr.id], 15)
+        self.assertAlmostEqual(charge_item.attrs[self.tgt_attr.id], 30)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_no_influence_to_charge(self):
         autocharge_modifier = self.mkmod_filter_item(ModDomain.other)
         autocharge_effect = self.mkeffect(
@@ -201,10 +232,10 @@ class TestAutocharge(CalculatorTestCase):
             self.mktype(
                 attrs={self.ammo_attr.id: autocharge_type.id},
                 effects=[parent_effect]).id,
+            charge=charge_item,
             state=State.active)
-        self.fit.modules.high.append(parent_item)
         # Action
-        parent_item.charge = charge_item
+        self.fit.modules.high.append(parent_item)
         # Verification
         self.assertAlmostEqual(charge_item.attrs[self.tgt_attr.id], 10)
         # Cleanup
@@ -228,8 +259,8 @@ class TestAutocharge(CalculatorTestCase):
             self.mktype(
                 attrs={self.ammo_attr.id: autocharge_type.id},
                 effects=[parent_effect]).id,
+            charge=charge_item,
             state=State.active)
-        parent_item.charge = charge_item
         # Action
         self.fit.modules.high.append(parent_item)
         # Verification

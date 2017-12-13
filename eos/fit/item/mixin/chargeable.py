@@ -145,8 +145,3 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         if reload_ms is None:
             return None
         return reload_ms / 1000
-
-    # Properties used by attribute calculator
-    @property
-    def _other(self):
-        return self.charge

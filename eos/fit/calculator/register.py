@@ -65,13 +65,12 @@ class AffectionRegister:
         self.__affectee_owner_skillrq = KeyedStorage()
 
         # Affectors influencing items directly
+        # Format: {carrier item: set(affectors)}
+        self.__affector_item = KeyedStorage()
+
+        # Affectors influencing items directly on a per-target basis
         # Format: {target item: set(affectors)}
         self.__affector_item_active = KeyedStorage()
-
-        # Affectors which influence something directly, but their target is not
-        # available
-        # Format: {carrier item: set(affectors)}
-        self.__affector_item_awaiting = KeyedStorage()
 
         # Affectors influencing all items belonging to certain domain
         # Format: {domain: set(affectors)}
@@ -94,28 +93,24 @@ class AffectionRegister:
     # Helpers for affectee getter - they find map and get data from it according
     # to passed affector
     def __affectee_getter_item_self(self, affector):
-        return (affector.carrier_item,)
+        return affector.carrier_item,
 
     def __affectee_getter_item_character(self, _):
         character = self.__calc_svc._current_char
         if character is not None:
-            return (character,)
+            return character,
         else:
             return ()
 
     def __affectee_getter_item_ship(self, _):
         ship = self.__calc_svc._current_ship
         if ship is not None:
-            return (ship,)
+            return ship,
         else:
             return ()
 
     def __affectee_getter_item_other(self, affector):
-        other_item = affector.carrier_item._other
-        if other_item is not None:
-            return (other_item,)
-        else:
-            return ()
+        return affector.carrier_item._other
 
     __affectee_getters_item = {
         ModDomain.self: __affectee_getter_item_self,
@@ -184,20 +179,17 @@ class AffectionRegister:
         self.__affectee.add(tgt_item)
         for key, affectee_map in self.__get_affectee_maps(tgt_item):
             affectee_map.add_data_entry(key, tgt_item)
-        # Special handling for awaitable direct item affectors. Affector is
-        # awaitable only when it directly affects single target item, and only
-        # when this target item is not affector's carrier item. All affectors
-        # which target their own carrier are always enabled, because when they
-        # are turned on - their target is always available
-        self.__find_and_enable_awaitable_affectors(tgt_item)
+        # When item like ship is added, there might already be affectors which
+        # target it. Make sure that they are activated by calling this method
+        self.__activate_direct_affectors(tgt_item)
 
     def unregister_affectee(self, tgt_item):
         """Remove passed target item from register's affectee containers."""
         self.__affectee.discard(tgt_item)
         for key, affectee_map in self.__get_affectee_maps(tgt_item):
             affectee_map.rm_data_entry(key, tgt_item)
-        # Special handling for awaitable direct item affectors
-        self.__disable_awaitable_affectors(tgt_item)
+        # Deactivate all affectors for item being unregistered
+        self.__deactivate_direct_affectors(tgt_item)
 
     def __get_affectee_maps(self, tgt_item):
         """Return all places where passed affectee should be stored.
@@ -227,42 +219,28 @@ class AffectionRegister:
                     (skill_type_id, self.__affectee_owner_skillrq))
         return affectee_maps
 
-    def __find_and_enable_awaitable_affectors(self, tgt_item):
-        """Enable affectors which wait for passed item."""
+    def __activate_direct_affectors(self, tgt_item):
+        """Activate affectors which target passed item."""
         # Search for affectors
-        other_item = tgt_item._other
-        if other_item is not None:
-            affectors_to_enable = self.__find_affectors_for_tgt_other(
-                chain(*self.__affector_item_awaiting.values()), other_item)
+        other_items = tgt_item._other
+        if other_items:
+            affectors = self.__find_affectors_for_tgt_other(
+                chain(*self.__affector_item.values()), other_items)
         elif tgt_item is self.__calc_svc._current_ship:
-            affectors_to_enable = self.__find_affectors_for_tgt_domain(
-                chain(*self.__affector_item_awaiting.values()), ModDomain.ship)
+            affectors = self.__find_affectors_for_tgt_domain(
+                chain(*self.__affector_item.values()), ModDomain.ship)
         elif tgt_item is self.__calc_svc._current_char:
-            affectors_to_enable = self.__find_affectors_for_tgt_domain(
-                chain(*self.__affector_item_awaiting.values()),
-                ModDomain.character)
+            affectors = self.__find_affectors_for_tgt_domain(
+                chain(*self.__affector_item.values()), ModDomain.character)
         else:
             return
-        # Enable them - move from awaiting map to enabled map
-        self.__affector_item_active.add_data_set(tgt_item, affectors_to_enable)
-        for affector in affectors_to_enable:
-            self.__affector_item_awaiting.rm_data_entry(
-                affector.carrier_item, affector)
+        # Activate affectors
+        self.__affector_item_active.add_data_set(tgt_item, affectors)
 
-    def __disable_awaitable_affectors(self, tgt_item):
-        """Disable awaitable affectors which influence passed item."""
-        affectors_to_disable = set()
-        for affector in self.__affector_item_active.get(tgt_item, ()):
-            # Mark them as to-be-disabled only if they are awaitable. We
-            # consider all affectors which target this item and which are not
-            # originating from it as awaitable
-            if affector.carrier_item is not tgt_item:
-                affectors_to_disable.add(affector)
-        # Move active affectors to awaiting list
-        self.__affector_item_active.rm_data_set(tgt_item, affectors_to_disable)
-        for affector in affectors_to_disable:
-            self.__affector_item_awaiting.add_data_entry(
-                affector.carrier_item, affector)
+    def __deactivate_direct_affectors(self, tgt_item):
+        """Deactivate direct affectors for passed item."""
+        if tgt_item in self.__affector_item_active:
+            del self.__affector_item_active[tgt_item]
 
     def __find_affectors_for_tgt_domain(self, affectors, tgt_domain):
         """Find affectors with specified domain.
@@ -280,7 +258,7 @@ class AffectionRegister:
                 results.add(affector)
         return results
 
-    def __find_affectors_for_tgt_other(self, affectors, other_item):
+    def __find_affectors_for_tgt_other(self, affectors, other_items):
         """Find 'other' affectors in valid configuration.
 
         Proper 'other' affector for passed 'other' item means that affector
@@ -291,7 +269,7 @@ class AffectionRegister:
 
         Args:
             affectors: Iterable with affectors to filter from..
-            other_item: Domain as filter criterion for affectors.
+            other_items: Iterable with items which belong to 'other' location.
 
         Returns:
             Set with valid 'other' affectors.
@@ -300,7 +278,7 @@ class AffectionRegister:
         for affector in affectors:
             if (
                 affector.modifier.tgt_domain == ModDomain.other and
-                affector.carrier_item is other_item
+                affector.carrier_item is other_items
             ):
                 results.add(affector)
         return results
@@ -335,10 +313,12 @@ class AffectionRegister:
         It makes it possible for the affector to modify other items.
         """
         try:
-            key, affector_map = self.__get_affector_map(affector)
-            affector_map.add_data_entry(key, affector)
+            affector_storages = self.__get_affector_storages(affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
+        else:
+            for key, affector_map in affector_storages:
+                affector_map.add_data_entry(key, affector)
 
     def unregister_affector(self, affector):
         """Remove the affector from register.
@@ -346,90 +326,97 @@ class AffectionRegister:
         It makes it impossible for the affector to modify any other items.
         """
         try:
-            key, affector_map = self.__get_affector_map(affector)
-            affector_map.rm_data_entry(key, affector)
+            affector_storages = self.__get_affector_storages(affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
+        else:
+            for key, affector_map in affector_storages:
+                affector_map.rm_data_entry(key, affector)
 
-    # Helpers for affector registering/unregistering, they find affector map and
-    # key to it
-    def __affector_map_getter_item_self(self, affector):
-        return affector.carrier_item, self.__affector_item_active
+    # Helpers for affector registering/unregistering, they find affector maps
+    # and keys to them
+    def __affector_storages_getter_item_self(self, affector):
+        return (
+            (affector.carrier_item, self.__affector_item),
+            (affector.carrier_item, self.__affector_item_active))
 
-    def __affector_map_getter_item_character(self, affector):
+    def __affector_storages_getter_item_character(self, affector):
         character = self.__calc_svc._current_char
         if character is not None:
-            return character, self.__affector_item_active
+            return (
+                (affector.carrier_item, self.__affector_item),
+                (character, self.__affector_item_active))
         else:
-            return affector.carrier_item, self.__affector_item_awaiting
+            return (affector.carrier_item, self.__affector_item),
 
-    def __affector_map_getter_item_ship(self, affector):
+    def __affector_storages_getter_item_ship(self, affector):
         ship = self.__calc_svc._current_ship
         if ship is not None:
-            return ship, self.__affector_item_active
+            return (
+                (affector.carrier_item, self.__affector_item),
+                (ship, self.__affector_item_active))
         else:
-            return affector.carrier_item, self.__affector_item_awaiting
+            return (affector.carrier_item, self.__affector_item),
 
-    def __affector_map_getter_item_other(self, affector):
-        other_item = affector.carrier_item._other
-        if other_item is not None and other_item in self.__affectee:
-            return other_item, self.__affector_item_active
-        else:
-            return affector.carrier_item, self.__affector_item_awaiting
+    def __affector_storages_getter_item_other(self, affector):
+        affector_storages = [(affector.carrier_item, self.__affector_item)]
+        for other_item in affector.carrier_item._other:
+            affector_storages.append((other_item, self.__affector_item_active))
+        return affector_storages
 
-    __affector_map_getters_item = {
-        ModDomain.self: __affector_map_getter_item_self,
-        ModDomain.character: __affector_map_getter_item_character,
-        ModDomain.ship: __affector_map_getter_item_ship,
-        ModDomain.other: __affector_map_getter_item_other}
+    __affector_storages_getters_item = {
+        ModDomain.self: __affector_storages_getter_item_self,
+        ModDomain.character: __affector_storages_getter_item_character,
+        ModDomain.ship: __affector_storages_getter_item_ship,
+        ModDomain.other: __affector_storages_getter_item_other}
 
-    def __affector_map_getter_item(self, affector):
+    def __affector_storages_getter_item(self, affector):
         tgt_domain = affector.modifier.tgt_domain
         try:
-            getter = self.__affector_map_getters_item[tgt_domain]
+            getter = self.__affector_storages_getters_item[tgt_domain]
         except KeyError as e:
             raise UnexpectedDomainError(tgt_domain) from e
         else:
             return getter(self, affector)
 
-    def __affector_map_getter_domain(self, affector):
+    def __affector_storages_getter_domain(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
-        return domain, self.__affector_domain
+        return (domain, self.__affector_domain),
 
-    def __affector_map_getter_domain_group(self, affector):
+    def __affector_storages_getter_domain_group(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         group_id = affector.modifier.tgt_filter_extra_arg
-        return (domain, group_id), self.__affector_domain_group
+        return ((domain, group_id), self.__affector_domain_group),
 
-    def __affector_map_getter_domain_skillrq(self, affector):
+    def __affector_storages_getter_domain_skillrq(self, affector):
         domain = self.__contextize_tgt_filter_domain(affector)
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.carrier_item._type_id
-        return (domain, skill_type_id), self.__affector_domain_skillrq
+        return ((domain, skill_type_id), self.__affector_domain_skillrq),
 
-    def __affector_map_getter_owner_skillrq(self, affector):
+    def __affector_storages_getter_owner_skillrq(self, affector):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.carrier_item._type_id
-        return skill_type_id, self.__affector_owner_skillrq
+        return (skill_type_id, self.__affector_owner_skillrq),
 
-    __affector_map_getters = {
-        ModTgtFilter.item: __affector_map_getter_item,
-        ModTgtFilter.domain: __affector_map_getter_domain,
-        ModTgtFilter.domain_group: __affector_map_getter_domain_group,
-        ModTgtFilter.domain_skillrq: __affector_map_getter_domain_skillrq,
-        ModTgtFilter.owner_skillrq: __affector_map_getter_owner_skillrq}
+    __affector_storages_getters = {
+        ModTgtFilter.item: __affector_storages_getter_item,
+        ModTgtFilter.domain: __affector_storages_getter_domain,
+        ModTgtFilter.domain_group: __affector_storages_getter_domain_group,
+        ModTgtFilter.domain_skillrq: __affector_storages_getter_domain_skillrq,
+        ModTgtFilter.owner_skillrq: __affector_storages_getter_owner_skillrq}
 
-    def __get_affector_map(self, affector):
-        """Get place where passed affector should be stored.
+    def __get_affector_storages(self, affector):
+        """Get places where passed affector should be stored.
 
         Args:
-            affector: Affector, for which map is looked up.
+            affector: Affector, for which storage is looked up.
 
         Returns:
-            Tuple in (key, affector map) format, which defines where affector
-            should be located.
+            Iterable with tuples in (key, affector map) format, which defines
+            where affector should be stored.
 
         Raises:
             UnexpectedDomainError: If affector's modifier target domain is not
@@ -437,8 +424,9 @@ class AffectionRegister:
             UnknownTargetFilterError: If affector's modifier filter type is not
                 supported.
         """
+        tgt_filter = affector.modifier.tgt_filter
         try:
-            getter = self.__affector_map_getters[affector.modifier.tgt_filter]
+            getter = self.__affector_storages_getters[tgt_filter]
         except KeyError as e:
             raise UnknownTgtFilterError(affector.modifier.tgt_filter) from e
         else:

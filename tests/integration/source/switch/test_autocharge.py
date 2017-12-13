@@ -30,4 +30,3 @@ class TestSourceSwitchAutocharge(SourceTestCase):
         SourceTestCase.setUp(self)
         self.mkattr(src='src1', attr_id=AttrId.ammo_loaded)
         self.mkattr(src='src2', attr_id=AttrId.ammo_loaded)
-
