@@ -278,7 +278,7 @@ class AffectionRegister:
         for affector in affectors:
             if (
                 affector.modifier.tgt_domain == ModDomain.other and
-                affector.carrier_item is other_items
+                affector.carrier_item in other_items
             ):
                 results.add(affector)
         return results
