@@ -78,8 +78,8 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_self(self):
-        # Check that source item isn't modified
+    def test_self_container(self):
+        # Check that source container isn't modified
         influence_src = ModuleHigh(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
@@ -87,6 +87,22 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         influence_src.charge = influence_tgt
         # Action
         self.fit.modules.high.append(influence_src)
+        # Verification
+        self.assertAlmostEqual(influence_src.attrs[self.tgt_attr.id], 100)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_self_charge(self):
+        # Check that source charge isn't modified
+        influence_src = Charge(self.mktype(
+            attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
+            effects=[self.effect]).id)
+        influence_tgt = ModuleHigh(self.mktype(
+            attrs={self.tgt_attr.id: 100}).id)
+        influence_tgt.charge = influence_src
+        # Action
+        self.fit.modules.high.append(influence_tgt)
         # Verification
         self.assertAlmostEqual(influence_src.attrs[self.tgt_attr.id], 100)
         # Cleanup

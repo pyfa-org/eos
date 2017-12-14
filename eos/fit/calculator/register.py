@@ -280,6 +280,7 @@ class AffectionRegister:
         # Remove all affectors influencing this item directly, including 'other'
         del self.__affector_item_active[affectee_item]
         # And make sure awaitable affectors are moved to appropriate container
+        # for future use
         for affector in affectors_awaitable:
             self.__affector_item_awaitable.add_data_entry(
                 affector.carrier_item, affector)
