@@ -24,6 +24,8 @@ from eos import ModuleHigh
 from eos import Restriction
 from eos import State
 from eos.const.eve import AttrId
+from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
 from tests.integration.restriction.testcase import RestrictionTestCase
 
 
@@ -123,6 +125,35 @@ class TestChargeSize(RestrictionTestCase):
         self.assertIsNone(error1)
         # Action
         error2 = self.get_error(charge, Restriction.charge_size)
+        # Verification
+        self.assertIsNone(error2)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_autocharge(self):
+        # Make sure autocharge size is ignored
+        autocharge_type = self.mktype(attrs={AttrId.charge_size: 2})
+        container_effect = self.mkeffect(
+            effect_id=EffectId.tgt_attack,
+            category_id=EffectCategoryId.target,
+            customize=True)
+        container = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.charge_size: 3,
+                    AttrId.ammo_loaded: autocharge_type.id},
+                effects=[container_effect]).id,
+            state=State.offline)
+        self.fit.modules.high.append(container)
+        self.assertIn(container_effect.id, container.autocharges)
+        autocharge = container.autocharges[container_effect.id]
+        # Action
+        error1 = self.get_error(container, Restriction.charge_size)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(autocharge, Restriction.charge_size)
         # Verification
         self.assertIsNone(error2)
         # Cleanup

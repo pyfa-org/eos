@@ -39,7 +39,7 @@ class TestAutocharge(CalculatorTestCase):
         CalculatorTestCase.setUp(self)
         self.src_attr = self.mkattr()
         self.tgt_attr = self.mkattr()
-        self.ammo_attr = self.mkattr(attr_id=AttrId.ammo_loaded)
+        self.autocharge_attr_id = AttrId.ammo_loaded
 
     def mkmod_filter_item(self, domain):
         return self.mkmod(
@@ -62,17 +62,17 @@ class TestAutocharge(CalculatorTestCase):
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
-                attrs={self.ammo_attr.id: autocharge_type.id},
+                attrs={self.autocharge_attr_id: autocharge_type.id},
                 effects=[container_effect]).id,
             state=State.offline)
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
-        self.assertIn(container_effect.id, container_item.autocharges)
-        autocharge_item = container_item.autocharges[container_effect.id]
-        self.assertAlmostEqual(autocharge_item.attrs[self.tgt_attr.id], 15)
+        self.assertIn(container_effect.id, container.autocharges)
+        autocharge = container.autocharges[container_effect.id]
+        self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -91,15 +91,15 @@ class TestAutocharge(CalculatorTestCase):
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
-                attrs={self.ammo_attr.id: autocharge_type.id},
+                attrs={self.autocharge_attr_id: autocharge_type.id},
                 effects=[container_effect]).id,
             state=State.active)
         influence_tgt = Ship(self.mktype(attrs={self.tgt_attr.id: 10}).id)
         self.fit.ship = influence_tgt
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 15)
         # Cleanup
@@ -120,15 +120,15 @@ class TestAutocharge(CalculatorTestCase):
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
-                attrs={self.ammo_attr.id: autocharge_type.id},
+                attrs={self.autocharge_attr_id: autocharge_type.id},
                 effects=[container_effect]).id,
             state=State.offline)
         influence_tgt = Ship(self.mktype(attrs={self.tgt_attr.id: 10}).id)
         self.fit.ship = influence_tgt
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 15)
         # Cleanup
@@ -149,17 +149,17 @@ class TestAutocharge(CalculatorTestCase):
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
                 attrs={
-                    self.ammo_attr.id: autocharge_type.id,
+                    self.autocharge_attr_id: autocharge_type.id,
                     self.tgt_attr.id: 10},
                 effects=[container_effect]).id,
             state=State.active)
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
-        self.assertAlmostEqual(container_item.attrs[self.tgt_attr.id], 15)
+        self.assertAlmostEqual(container.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -176,23 +176,21 @@ class TestAutocharge(CalculatorTestCase):
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
                 attrs={
-                    self.ammo_attr.id: autocharge_type.id,
+                    self.autocharge_attr_id: autocharge_type.id,
                     self.src_attr.id: 50},
                 effects=[
                     container_effect_modifier,
                     container_effect_autocharge]).id,
             state=State.active)
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
-        self.assertIn(
-            container_effect_autocharge.id, container_item.autocharges)
-        autocharge_item = (
-            container_item.autocharges[container_effect_autocharge.id])
-        self.assertAlmostEqual(autocharge_item.attrs[self.tgt_attr.id], 15)
+        self.assertIn(container_effect_autocharge.id, container.autocharges)
+        autocharge = container.autocharges[container_effect_autocharge.id]
+        self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -201,7 +199,7 @@ class TestAutocharge(CalculatorTestCase):
         # Container should be able to affect all charges, both normal and auto,
         # at the same time
         autocharge_type = self.mktype(attrs={self.tgt_attr.id: 10})
-        charge_item = Charge(self.mktype(attrs={self.tgt_attr.id: 20}).id)
+        charge = Charge(self.mktype(attrs={self.tgt_attr.id: 20}).id)
         container_modifier = self.mkmod_filter_item(ModDomain.other)
         container_effect_modifier = self.mkeffect(
             category_id=EffectCategoryId.passive,
@@ -210,25 +208,23 @@ class TestAutocharge(CalculatorTestCase):
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
                 attrs={
-                    self.ammo_attr.id: autocharge_type.id,
+                    self.autocharge_attr_id: autocharge_type.id,
                     self.src_attr.id: 50},
                 effects=[
                     container_effect_modifier,
                     container_effect_autocharge]).id,
-            charge=charge_item,
+            charge=charge,
             state=State.active)
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
-        self.assertIn(
-            container_effect_autocharge.id, container_item.autocharges)
-        autocharge_item = (
-            container_item.autocharges[container_effect_autocharge.id])
-        self.assertAlmostEqual(autocharge_item.attrs[self.tgt_attr.id], 15)
-        self.assertAlmostEqual(charge_item.attrs[self.tgt_attr.id], 30)
+        self.assertIn(container_effect_autocharge.id, container.autocharges)
+        autocharge = container.autocharges[container_effect_autocharge.id]
+        self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
+        self.assertAlmostEqual(charge.attrs[self.tgt_attr.id], 30)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -242,21 +238,21 @@ class TestAutocharge(CalculatorTestCase):
         autocharge_type = self.mktype(
             attrs={self.src_attr.id: 50},
             effects=[autocharge_effect])
-        charge_item = Charge(self.mktype(attrs={self.tgt_attr.id: 10}).id)
+        charge = Charge(self.mktype(attrs={self.tgt_attr.id: 10}).id)
         container_effect = self.mkeffect(
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
-                attrs={self.ammo_attr.id: autocharge_type.id},
+                attrs={self.autocharge_attr_id: autocharge_type.id},
                 effects=[container_effect]).id,
-            charge=charge_item,
+            charge=charge,
             state=State.active)
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
-        self.assertAlmostEqual(charge_item.attrs[self.tgt_attr.id], 10)
+        self.assertAlmostEqual(charge.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -268,25 +264,25 @@ class TestAutocharge(CalculatorTestCase):
         charge_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[charge_modifier])
-        charge_item = Charge(self.mktype(
+        charge = Charge(self.mktype(
             attrs={self.src_attr.id: 50},
             effects=[charge_effect]).id)
         container_effect = self.mkeffect(
             effect_id=EffectId.tgt_attack,
             category_id=EffectCategoryId.target,
             customize=True)
-        container_item = ModuleHigh(
+        container = ModuleHigh(
             self.mktype(
-                attrs={self.ammo_attr.id: autocharge_type.id},
+                attrs={self.autocharge_attr_id: autocharge_type.id},
                 effects=[container_effect]).id,
-            charge=charge_item,
+            charge=charge,
             state=State.active)
         # Action
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         # Verification
-        self.assertIn(container_effect.id, container_item.autocharges)
-        autocharge_item = container_item.autocharges[container_effect.id]
-        self.assertAlmostEqual(autocharge_item.attrs[self.tgt_attr.id], 10)
+        self.assertIn(container_effect.id, container.autocharges)
+        autocharge = container.autocharges[container_effect.id]
+        self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

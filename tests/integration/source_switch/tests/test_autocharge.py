@@ -37,8 +37,6 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
     def setUp(self):
         SourceSwitchTestCase.setUp(self)
         self.autocharge_attr_id = AttrId.ammo_loaded
-        self.mkattr(src='src1', attr_id=self.autocharge_attr_id)
-        self.mkattr(src='src2', attr_id=self.autocharge_attr_id)
 
     def mkeffect_container_autocharge(self, src):
         """Make effect, which loads autocharge when assigned to container."""
@@ -102,7 +100,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
             src='src2',
             type_id=container_type_id,
             attrs={self.autocharge_attr_id: autocharge_type_id})
-        container_item = ModuleHigh(container_type_id, state=State.active)
+        container = ModuleHigh(container_type_id, state=State.active)
         # Influence target setup
         influence_tgt_type_id = self.allocate_type_id('src1', 'src2')
         self.mktype(
@@ -116,7 +114,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
         # Action
         self.fit.source = 'src2'
@@ -172,7 +170,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
             type_id=container_type_id,
             attrs={self.autocharge_attr_id: autocharge_type_id},
             effects=[container_effect_src2])
-        container_item = ModuleHigh(container_type_id, state=State.active)
+        container = ModuleHigh(container_type_id, state=State.active)
         # Influence target setup
         influence_tgt_type_id = self.allocate_type_id('src1', 'src2')
         self.mktype(
@@ -186,7 +184,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 10)
         # Action
         self.fit.source = 'src2'
@@ -242,7 +240,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
             type_id=container_type_id,
             attrs={self.autocharge_attr_id: autocharge_type_id},
             effects=[container_effect_src2])
-        container_item = ModuleHigh(container_type_id, state=State.active)
+        container = ModuleHigh(container_type_id, state=State.active)
         # Influence target setup
         influence_tgt_type_id = self.allocate_type_id('src1', 'src2')
         self.mktype(
@@ -256,7 +254,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
         # Action
         self.fit.source = 'src2'
@@ -323,7 +321,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
             type_id=container_type_id,
             attrs={self.autocharge_attr_id: autocharge_type2_id},
             effects=[container_effect_src2])
-        container_item = ModuleHigh(container_type_id, state=State.active)
+        container = ModuleHigh(container_type_id, state=State.active)
         # Influence target setup
         influence_tgt_type_id = self.allocate_type_id('src1', 'src2')
         self.mktype(
@@ -337,7 +335,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
-        self.fit.modules.high.append(container_item)
+        self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
         # Action
         self.fit.source = 'src2'

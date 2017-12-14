@@ -41,7 +41,7 @@ class TgtAttack(DmgDealerEffect):
 
     def get_autocharge_type_id(self, item):
         try:
-            ammo_type_id = item.attrs[AttrId.ammo_loaded]
+            ammo_type_id = item._type_attrs[AttrId.ammo_loaded]
         except KeyError:
             return None
         return int(ammo_type_id)
