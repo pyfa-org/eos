@@ -28,14 +28,14 @@ from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.const.eve import EffectCategoryId
-from tests.integration.source.testcase import SourceTestCase
+from tests.integration.source_switch.testcase import SourceSwitchTestCase
 
 
-class TestSourceSwitchAutocharge(SourceTestCase):
+class TestSourceSwitchAutocharge(SourceSwitchTestCase):
     """Check that autocharge items are updated properly on source switch."""
 
     def setUp(self):
-        SourceTestCase.setUp(self)
+        SourceSwitchTestCase.setUp(self)
         self.autocharge_attr_id = AttrId.ammo_loaded
         self.mkattr(src='src1', attr_id=self.autocharge_attr_id)
         self.mkattr(src='src2', attr_id=self.autocharge_attr_id)

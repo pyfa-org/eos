@@ -38,14 +38,14 @@ from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
-from tests.integration.source.testcase import SourceTestCase
+from tests.integration.source_switch.testcase import SourceSwitchTestCase
 
 
-class TestSourceSwitchItemClass(SourceTestCase):
+class TestSourceSwitchItemClass(SourceSwitchTestCase):
     """Check that all item classes switch source properly."""
 
     def setUp(self):
-        SourceTestCase.setUp(self)
+        SourceSwitchTestCase.setUp(self)
         self.src_attr_id = self.allocate_attr_id('src1', 'src2')
         self.tgt_attr_id = self.allocate_attr_id('src1', 'src2')
         self.mkattr(src='src1', attr_id=self.src_attr_id)

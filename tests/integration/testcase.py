@@ -45,8 +45,7 @@ class IntegrationTestCase(EosTestCase):
         self.__backup_sources = copy(SourceManager._sources)
         self.__backup_default_source = SourceManager.default
         SourceManager._sources.clear()
-        self.__make_source('src1', CacheHandler(), make_default=True)
-        self.__make_source('src2', CacheHandler())
+        self._make_source('src1', CacheHandler(), make_default=True)
 
     def tearDown(self):
         # Revert source change
@@ -55,7 +54,7 @@ class IntegrationTestCase(EosTestCase):
         SourceManager.default = self.__backup_default_source
         EosTestCase.tearDown(self)
 
-    def __make_source(self, alias, cache_handler, make_default=False):
+    def _make_source(self, alias, cache_handler, make_default=False):
         source = Source(alias, cache_handler)
         # Add source 'manually' to avoid building cache
         SourceManager._sources[alias] = source

@@ -26,10 +26,10 @@ from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
-from tests.integration.calculator.testcase import CalculatorTestCase
+from tests.integration.source_switch.testcase import SourceSwitchTestCase
 
 
-class TestSourceSwitch(CalculatorTestCase):
+class TestSourceSwitchCalculator(SourceSwitchTestCase):
 
     def test_switch_item(self):
         # Here we create 2 separate fits with ships affecting it; each ship

@@ -20,10 +20,11 @@
 
 
 from eos import Fit
+from tests.integration.environment import CacheHandler
 from tests.integration.testcase import IntegrationTestCase
 
 
-class SourceTestCase(IntegrationTestCase):
+class SourceSwitchTestCase(IntegrationTestCase):
     """Class which should be used for source-related tests.
 
     Attributes:
@@ -32,4 +33,5 @@ class SourceTestCase(IntegrationTestCase):
 
     def setUp(self):
         IntegrationTestCase.setUp(self)
+        self._make_source('src2', CacheHandler())
         self.fit = Fit()
