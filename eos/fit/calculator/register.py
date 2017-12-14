@@ -188,18 +188,18 @@ class AffectionRegister:
         self.__affectee.add(affectee_item)
         for key, affectee_map in self.__get_affectee_storages(affectee_item):
             affectee_map.add_data_entry(key, affectee_item)
-        # When item like ship is added, there might already be affectors which
-        # should affect it. Make sure that they are activated by calling this
-        # method
-        self.__activate_direct_affectors(affectee_item)
+        # Process special affectors separately. E.g., when item like ship is
+        # added, there might already be affectors which should affect it, and
+        # in this method we activate such affectors
+        self.__activate_special_affectors(affectee_item)
 
     def unregister_affectee(self, affectee_item):
         """Remove passed affectee item from register."""
         self.__affectee.discard(affectee_item)
         for key, affectee_map in self.__get_affectee_storages(affectee_item):
             affectee_map.rm_data_entry(key, affectee_item)
-        # Deactivate all affectors for item being unregistered
-        self.__deactivate_direct_affectors(affectee_item)
+        # Deactivate all special affectors for item being unregistered
+        self.__deactivate_special_affectors(affectee_item)
 
     def __get_affectee_storages(self, affectee_item):
         """Return all places where passed affectee should be stored.
@@ -229,8 +229,8 @@ class AffectionRegister:
                     (skill_type_id, self.__affectee_owner_skillrq))
         return affectee_storages
 
-    def __activate_direct_affectors(self, affectee_item):
-        """Activate direct affectors which should affect passed item."""
+    def __activate_special_affectors(self, affectee_item):
+        """Activate special affectors which should affect passed item."""
         affectors_awaitable = set()
         for carrier_item, affectors in self.__affector_item_awaitable.items():
             for affector in affectors:
@@ -267,8 +267,8 @@ class AffectionRegister:
             self.__affector_item_active.add_data_set(
                 affectee_item, affectors_other)
 
-    def __deactivate_direct_affectors(self, affectee_item):
-        """Deactivate direct affectors which affect passed item."""
+    def __deactivate_special_affectors(self, affectee_item):
+        """Deactivate special affectors which affect passed item."""
         if affectee_item not in self.__affector_item_active:
             return
         affectors_awaitable = set()
@@ -340,6 +340,8 @@ class AffectionRegister:
     # Helpers for affector registering/unregistering, they find affector maps
     # and keys to them
     def __get_affector_storages_item_self(self, affector):
+        # If item itself is not in affectees yet, affectors should not be added
+        # to active storage
         if affector.carrier_item in self.__affectee:
             return [(affector.carrier_item, self.__affector_item_active)]
         else:
