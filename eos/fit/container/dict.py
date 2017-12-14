@@ -30,10 +30,13 @@ class ItemDict:
     Args:
         parent: Object, to which this container is attached.
         item_class: Class of items this container is allowed to contain.
+        container_override (optional): When this argument is set, its value will
+            be assigned as container to all items being added.
     """
 
-    def __init__(self, parent, item_class):
-        self.__item_set = ItemSet(parent, item_class)
+    def __init__(self, parent, item_class, container_override=None):
+        self.__item_set = ItemSet(
+            parent, item_class, container_override=container_override)
         self.__keyed_items = {}
 
     # Modifying methods

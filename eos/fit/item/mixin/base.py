@@ -236,7 +236,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         # details of items too
         from eos.fit.item import Charge
         if self.__autocharges is None:
-            self.__autocharges = ItemDict(self, Charge)
+            self.__autocharges = ItemDict(self, Charge, container_override=self)
         self.__autocharges[effect_id] = Charge(autocharge_type_id)
 
     def _clear_autocharges(self):

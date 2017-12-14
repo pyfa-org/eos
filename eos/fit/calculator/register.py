@@ -19,7 +19,6 @@
 # ==============================================================================
 
 
-from itertools import chain
 from logging import getLogger
 
 from eos.const.eos import EosTypeId

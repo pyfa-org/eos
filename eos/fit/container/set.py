@@ -31,12 +31,15 @@ class ItemSet(ItemContainerBase):
     Args:
         parent: Object, to which this container is attached.
         item_class: Class of items this container is allowed to contain.
+        container_override (optional): When this argument is set, its value will
+            be assigned as container to all items being added.
     """
 
-    def __init__(self, parent, item_class):
+    def __init__(self, parent, item_class, container_override=None):
         ItemContainerBase.__init__(self, item_class)
         self.__parent = parent
         self.__set = set()
+        self.__container_override = container_override
 
     # Modifying methods
     def add(self, item):
@@ -52,8 +55,12 @@ class ItemSet(ItemContainerBase):
         """
         self._check_class(item)
         self.__set.add(item)
+        if self.__container_override is not None:
+            item_container = self.__container_override
+        else:
+            item_container = self
         try:
-            self._handle_item_addition(item, self)
+            self._handle_item_addition(item, item_container)
         except ItemAlreadyAssignedError as e:
             self.__set.remove(item)
             raise ValueError from e
