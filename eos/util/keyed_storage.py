@@ -93,14 +93,3 @@ class KeyedStorage(dict):
             value.discard(data)
             if not value:
                 del self[key]
-
-    def get_data_set(self, key):
-        """Get data set.
-
-        Args:
-            key: Defines which set to retrieve.
-
-        Returns:
-            Set with data, or empty set if no set found for requested key.
-        """
-        return self.get(key) or set()

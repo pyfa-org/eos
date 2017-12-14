@@ -144,7 +144,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         ...
 
     @property
-    def _other(self):
+    def _others(self):
         other_items = set()
         container = self._container
         if isinstance(container, BaseItemMixin):
