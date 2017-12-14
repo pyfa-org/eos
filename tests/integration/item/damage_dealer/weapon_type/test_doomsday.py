@@ -40,7 +40,7 @@ class TestItemDmgDoomsday(ItemMixinTestCase):
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
             effect_id=EffectId.super_weapon_amarr,
-            category_id=EffectCategoryId.active,
+            category_id=EffectCategoryId.target,
             duration_attr_id=self.cycle_attr.id)
 
     def test_nominal_volley_generic(self):

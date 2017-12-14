@@ -36,7 +36,7 @@ class Charge(ImmutableStateMixin):
     """
 
     def __init__(self, type_id):
-        super().__init__(type_id=type_id, state=State.offline)
+        super().__init__(type_id=type_id, state=State.active)
 
     # Attribute calculation-related properties
     _modifier_domain = None

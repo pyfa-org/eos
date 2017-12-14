@@ -50,7 +50,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             duration_attr_id=self.cycle_attr.id)
         self.effect_charge = self.mkeffect(
             effect_id=EffectId.bomb_launching,
-            category_id=EffectCategoryId.passive)
+            category_id=EffectCategoryId.active)
 
     def test_nominal_volley_generic(self):
         fit = Fit()
