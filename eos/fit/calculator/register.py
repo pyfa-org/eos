@@ -99,19 +99,22 @@ class AffectionRegister:
     # Helpers for affectee getter - they find map and get data from it according
     # to passed affector
     def __get_affectees_item_self(self, affector):
-        return self.__get_registered_affectees([affector.carrier_item])
+        if affector.carrier_item in self.__affectee:
+            return [affector.carrier_item]
+        else:
+            return ()
 
     def __get_affectees_item_character(self, _):
         character = self.__calc_svc._current_char
-        if character is not None:
-            return self.__get_registered_affectees([character])
+        if character is not None and character in self.__affectee:
+            return [character]
         else:
             return ()
 
     def __get_affectees_item_ship(self, _):
         ship = self.__calc_svc._current_ship
-        if ship is not None:
-            return self.__get_registered_affectees([ship])
+        if ship is not None and ship in self.__affectee:
+            return [ship]
         else:
             return ()
 
@@ -276,6 +279,7 @@ class AffectionRegister:
                 affectors_awaitable.add(affector)
         # Remove all affectors influencing this item directly, including 'other'
         del self.__affector_item_active[affectee_item]
+        # And make sure awaitable affectors are moved to appropriate container
         for affector in affectors_awaitable:
             self.__affector_item_awaitable.add_data_entry(
                 affector.carrier_item, affector)
