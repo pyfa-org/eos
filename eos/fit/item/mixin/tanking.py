@@ -23,15 +23,13 @@ from eos.const.eve import AttrId
 from eos.fit.helper import DmgTypes
 from eos.fit.helper import TankingLayers
 from eos.fit.helper import TankingLayersTotal
-from eos.util.volatile_cache import CooperativeVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .base import BaseItemMixin
 
 
-class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
+class BufferTankingMixin(BaseItemMixin):
     """Supports various stats related to buffer tanking."""
 
-    @volatile_property
+    @property
     def hp(self):
         """Fetch HP stats of the item.
 
@@ -43,7 +41,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         shield = self.attrs.get(AttrId.shield_capacity, None)
         return TankingLayersTotal(hull, armor, shield)
 
-    @volatile_property
+    @property
     def resists(self):
         """Fetch resistances of the item.
 
@@ -126,7 +124,7 @@ class BufferTankingMixin(BaseItemMixin, CooperativeVolatileMixin):
         received = dealt - absorbed
         return dealt / received
 
-    @volatile_property
+    @property
     def worst_case_ehp(self):
         """Get eve-style effective HP for the item.
 

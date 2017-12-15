@@ -218,7 +218,6 @@ class BaseItemMixin(metaclass=ABCMeta):
             msgs = MsgHelper.get_effects_status_update_msgs(self)
             if msgs:
                 fit._publish_bulk(msgs)
-                fit._volatile_mgr.clear_volatile_attrs()
 
     # Autocharge methods
     @property

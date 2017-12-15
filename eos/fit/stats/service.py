@@ -29,8 +29,6 @@ from eos.fit.item import Ship
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
 from eos.util.pubsub.subscriber import BaseSubscriber
-from eos.util.volatile_cache import InheritableVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .register import CalibrationStatRegister
 from .register import CpuStatRegister
 from .register import DmgDealerRegister
@@ -47,7 +45,7 @@ from .register import SubsystemSlotStatRegister
 from .register import TurretSlotStatRegister
 
 
-class StatService(BaseSubscriber, InheritableVolatileMixin):
+class StatService(BaseSubscriber):
     """Object which is used as access points for all fit statistics.
 
     Args:
@@ -57,7 +55,6 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
 
     def __init__(self, msg_broker):
         BaseSubscriber.__init__(self)
-        InheritableVolatileMixin.__init__(self)
         self.__current_ship = None
         self.__dd_reg = DmgDealerRegister(msg_broker)
         # Initialize sub-containers
@@ -74,23 +71,9 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         self.turret_slots = TurretSlotStatRegister(msg_broker)
         self.launcher_slots = LauncherSlotStatRegister(msg_broker)
         self.launched_drones = LaunchedDroneStatRegister(msg_broker)
-        self.__volatile_containers = (
-            self.cpu,
-            self.powergrid,
-            self.calibration,
-            self.dronebay,
-            self.drone_bandwidth,
-            self.high_slots,
-            self.med_slots,
-            self.low_slots,
-            self.rig_slots,
-            self.subsystem_slots,
-            self.turret_slots,
-            self.launcher_slots,
-            self.launched_drones)
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    @volatile_property
+    @property
     def hp(self):
         """Fetch ship HP stats.
 
@@ -103,7 +86,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         except AttributeError:
             return TankingLayersTotal(None, None, None)
 
-    @volatile_property
+    @property
     def resists(self):
         """Fetch ship resistances.
 
@@ -134,7 +117,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         except AttributeError:
             return TankingLayersTotal(None, None, None)
 
-    @volatile_property
+    @property
     def worst_case_ehp(self):
         """Get eve-style effective HP for the item.
 
@@ -192,7 +175,7 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
             item_filter, 'get_nominal_dps',
             tgt_resists=tgt_resists, reload=reload)
 
-    @volatile_property
+    @property
     def agility_factor(self):
         try:
             agility = self.__current_ship.attrs[AttrId.agility]
@@ -202,18 +185,12 @@ class StatService(BaseSubscriber, InheritableVolatileMixin):
         agility_factor = -math.log(0.25) * agility * mass / 1000000
         return agility_factor
 
-    @volatile_property
+    @property
     def align_time(self):
         try:
             return math.ceil(self.agility_factor)
         except TypeError:
             return None
-
-    def _clear_volatile_attrs(self):
-        """Clear volatile cache for self and all child objects."""
-        for container in self.__volatile_containers:
-            container._clear_volatile_attrs()
-        InheritableVolatileMixin._clear_volatile_attrs(self)
 
     def _handle_item_added(self, msg):
         if isinstance(msg.item, Ship):

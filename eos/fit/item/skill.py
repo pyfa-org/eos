@@ -53,9 +53,6 @@ class Skill(ImmutableStateMixin):
             return
         self.__level = new_lvl
         self.attrs._override_value_may_change(AttrId.skill_level)
-        fit = self._fit
-        if fit is not None:
-            fit._volatile_mgr.clear_volatile_attrs()
 
     # Attribute calculation-related properties
     _modifier_domain = ModDomain.character

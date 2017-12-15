@@ -87,7 +87,6 @@ class MutableStateMixin(BaseItemMixin):
                         msgs.extend(MsgHelper.get_item_state_update_msgs(
                             child_item, old_state, new_state))
                 fit._publish_bulk(msgs)
-            fit._volatile_mgr.clear_volatile_attrs()
 
 
 class ContainerStateMixin(BaseItemMixin):

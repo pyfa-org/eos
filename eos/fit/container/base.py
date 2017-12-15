@@ -55,10 +55,6 @@ class ItemContainerBase:
             if fit.source is not None:
                 msgs = MsgHelper.get_items_added_msgs((item, *child_items))
                 fit._publish_bulk(msgs)
-            # Volatile cache
-            for subitem in (item, *child_items):
-                fit._volatile_mgr.add_volatile_object(subitem)
-            fit._volatile_mgr.clear_volatile_attrs()
 
     def _handle_item_removal(self, item):
         """Do all the generic work to remove item to container.
@@ -74,10 +70,6 @@ class ItemContainerBase:
             if fit.source is not None:
                 msgs = MsgHelper.get_items_removed_msgs((*child_items, item))
                 fit._publish_bulk(msgs)
-            # Volatile cache
-            fit._volatile_mgr.clear_volatile_attrs()
-            for subitem in (*child_items, item):
-                fit._volatile_mgr.remove_volatile_object(subitem)
         # Item updates
         item._container = None
         for subitem in (item, *child_items):

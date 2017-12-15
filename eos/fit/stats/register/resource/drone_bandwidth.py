@@ -27,28 +27,24 @@ from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
-from eos.util.volatile_cache import InheritableVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .base import BaseResourceStatRegister
 
 
-class DroneBandwidthStatRegister(
-        BaseResourceStatRegister, InheritableVolatileMixin):
+class DroneBandwidthStatRegister(BaseResourceStatRegister):
 
     def __init__(self, msg_broker):
         BaseResourceStatRegister.__init__(self)
-        InheritableVolatileMixin.__init__(self)
         self.__current_ship = None
         self.__resource_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    @volatile_property
+    @property
     def used(self):
         return sum(
             item.attrs[AttrId.drone_bandwidth_used]
             for item in self.__resource_users)
 
-    @volatile_property
+    @property
     def output(self):
         try:
             return self.__current_ship.attrs[AttrId.drone_bandwidth]

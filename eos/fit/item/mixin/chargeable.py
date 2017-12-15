@@ -23,8 +23,6 @@ from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.fit.container import ItemDescriptor
 from eos.fit.item import Charge
-from eos.util.volatile_cache import CooperativeVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .base import BaseItemMixin
 
 
@@ -37,7 +35,7 @@ def _float_to_int(value):
     return int(round(value, 9))
 
 
-class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
+class ChargeableMixin(BaseItemMixin):
     """Supports ability to load charges into items.
 
     Args:
@@ -65,7 +63,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
             child_items.add(self.charge)
         return child_items
 
-    @volatile_property
+    @property
     def charge_quantity(self):
         """Max quantity of loadable charges.
 
@@ -85,7 +83,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         charges = _float_to_int(container_capacity / charge_volume)
         return charges
 
-    @volatile_property
+    @property
     def charged_cycles(self):
         """Quantity of cycles this container can run until charges are depleted.
 
@@ -132,7 +130,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
         cycles = _float_to_int(hp / dmg / chance) * self.charge_quantity
         return cycles
 
-    @volatile_property
+    @property
     def reload_time(self):
         """Returns item reload time in seconds."""
         # Return hardcoded 1.0 if item type has target_attack effect (various

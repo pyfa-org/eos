@@ -27,25 +27,22 @@ from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
-from eos.util.volatile_cache import InheritableVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .base import BaseSlotStatRegister
 
 
-class LaunchedDroneStatRegister(BaseSlotStatRegister, InheritableVolatileMixin):
+class LaunchedDroneStatRegister(BaseSlotStatRegister):
 
     def __init__(self, msg_broker):
         BaseSlotStatRegister.__init__(self)
-        InheritableVolatileMixin.__init__(self)
         self.__current_char = None
         self.__slot_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    @volatile_property
+    @property
     def used(self):
         return len(self.__slot_users)
 
-    @volatile_property
+    @property
     def total(self):
         try:
             return int(self.__current_char.attrs[AttrId.max_active_drones])

@@ -50,7 +50,6 @@ from .item import Stance
 from .item import Subsystem
 from .message import DefaultIncomingDmgChanged
 from .message.helper import MsgHelper
-from .misc.volatile import VolatileMgr
 from .restriction import RestrictionService
 from .sim import ReactiveArmorHardenerSimulator
 from .stats import StatService
@@ -106,7 +105,6 @@ class Fit(MsgBroker):
         self._calculator = CalculationService(self)
         self.stats = StatService(self)
         self._restriction = RestrictionService(self, self.stats)
-        self._volatile_mgr = VolatileMgr(self, volatiles=(self.stats,))
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Initialize source
@@ -164,7 +162,6 @@ class Fit(MsgBroker):
         self.__source = new_source
         for item in self._item_iter():
             item._refresh_source()
-        self._volatile_mgr.clear_volatile_attrs()
         # Notify everyone about items being "added"
         if new_source is not None:
             msgs = MsgHelper.get_items_added_msgs(self._item_iter())
@@ -185,7 +182,6 @@ class Fit(MsgBroker):
         self.__default_incoming_dmg = new_profile
         if new_profile != old_profile:
             self._publish(DefaultIncomingDmgChanged())
-            self._volatile_mgr.clear_volatile_attrs()
 
     # Auxiliary methods
     @property

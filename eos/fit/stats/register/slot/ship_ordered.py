@@ -26,31 +26,27 @@ from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from eos.util.volatile_cache import InheritableVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .base import BaseSlotStatRegister
 
 
-class OrderedShipSlotStatRegister(
-        BaseSlotStatRegister, InheritableVolatileMixin):
+class OrderedShipSlotStatRegister(BaseSlotStatRegister):
 
     def __init__(self, msg_broker, slot_effect_id, slot_attr_id):
         BaseSlotStatRegister.__init__(self)
-        InheritableVolatileMixin.__init__(self)
         self.__slot_effect_id = slot_effect_id
         self.__slot_attr_id = slot_attr_id
         self.__current_ship = None
         self.__slot_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    @volatile_property
+    @property
     def used(self):
         return max((
             i._container_position + 1
             for i in self.__slot_users
             if i._container_position is not None), default=0)
 
-    @volatile_property
+    @property
     def total(self):
         try:
             return int(self.__current_ship.attrs[self.__slot_attr_id])

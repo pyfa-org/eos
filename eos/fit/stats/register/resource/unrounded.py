@@ -26,17 +26,13 @@ from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from eos.util.volatile_cache import InheritableVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .base import BaseResourceStatRegister
 
 
-class UnroundedResourceStatRegister(
-        BaseResourceStatRegister, InheritableVolatileMixin):
+class UnroundedResourceStatRegister(BaseResourceStatRegister):
 
     def __init__(self, msg_broker, output_attr_id, use_effect_id, use_attr_id):
         BaseResourceStatRegister.__init__(self)
-        InheritableVolatileMixin.__init__(self)
         self.__output_attr_id = output_attr_id
         self.__use_effect_id = use_effect_id
         self.__use_attr_id = use_attr_id
@@ -44,13 +40,13 @@ class UnroundedResourceStatRegister(
         self.__resource_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    @volatile_property
+    @property
     def used(self):
         return sum(
             item.attrs[self.__use_attr_id]
             for item in self.__resource_users)
 
-    @volatile_property
+    @property
     def output(self):
         try:
             return self.__current_ship.attrs[self.__output_attr_id]

@@ -25,8 +25,6 @@ from enum import unique
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.fit.helper import DmgTypesTotal
-from eos.util.volatile_cache import CooperativeVolatileMixin
-from eos.util.volatile_cache import volatile_property
 from .base import BaseItemMixin
 from .defeff_proxy import DefaultEffectProxyMixin
 
@@ -68,11 +66,10 @@ CHARGE_MAP = {
         EffectId.bomb_launching: WeaponType.bomb}}
 
 
-class DmgDealerMixin(
-        DefaultEffectProxyMixin, BaseItemMixin, CooperativeVolatileMixin):
+class DmgDealerMixin(DefaultEffectProxyMixin, BaseItemMixin):
     """Support for entities which are capable of dealing damage."""
 
-    @volatile_property
+    @property
     def _pereff_weapon_types(self):
         """Get weapon types of the item.
 
@@ -144,7 +141,7 @@ class DmgDealerMixin(
         WeaponType.direct: (__get_volley_self, False),
         WeaponType.untargeted_aoe: (__get_volley_self, False)}
 
-    @volatile_property
+    @property
     def _pereff_volleys(self):
         """Return base volleys for all damage-dealing effects.
 
