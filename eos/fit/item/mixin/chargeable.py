@@ -45,7 +45,7 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     Cooperative methods:
         __init__
-        _child_items
+        _get_child_items
     """
 
     def __init__(self, charge, **kwargs):
@@ -54,12 +54,13 @@ class ChargeableMixin(BaseItemMixin, CooperativeVolatileMixin):
 
     charge = ItemDescriptor('_charge', Charge)
 
-    @property
-    def _child_items(self):
+    def _get_child_items(self):
         try:
-            child_items = super()._child_items
+            child_getter = super()._get_child_items
         except AttributeError:
             child_items = set()
+        else:
+            child_items = child_getter()
         if self.charge is not None:
             child_items.add(self.charge)
         return child_items

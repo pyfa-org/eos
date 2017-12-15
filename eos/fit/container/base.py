@@ -45,7 +45,7 @@ class ItemContainerBase:
             raise ItemAlreadyAssignedError(item)
         # Item updates
         item._container = container
-        child_items = item._child_items
+        child_items = item._get_child_items()
         for subitem in (item, *child_items):
             subitem._refresh_source()
         # Fit updates
@@ -67,7 +67,7 @@ class ItemContainerBase:
         that presence checks during removal should pass.
         """
         # Fit updates
-        child_items = item._child_items
+        child_items = item._get_child_items()
         fit = item._fit
         if fit is not None:
             # Notify services about removed item

@@ -77,7 +77,25 @@ class MutableStateMixin(BaseItemMixin):
         fit = self._fit
         if fit is not None:
             if fit.source is not None:
-                msgs = MsgHelper.get_item_state_update_msgs(
-                    self, old_state, new_state)
+                msgs = []
+                # Messages for item itself
+                msgs.extend(MsgHelper.get_item_state_update_msgs(
+                    self, old_state, new_state))
+                # Messages for all state-dependent child items
+                for child_item in self._get_child_items():
+                    if isinstance(child_item, ContainerStateMixin):
+                        msgs.extend(MsgHelper.get_item_state_update_msgs(
+                            child_item, old_state, new_state))
                 fit._publish_bulk(msgs)
             fit._volatile_mgr.clear_volatile_attrs()
+
+
+class ContainerStateMixin(BaseItemMixin):
+    """Items based on this class inherit state from item which contains them."""
+
+    @property
+    def state(self):
+        try:
+            return self._container.state
+        except AttributeError:
+            return None

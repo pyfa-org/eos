@@ -209,7 +209,7 @@ class Fit(MsgBroker):
             self.fighters
         ):
             yield item
-            for child_item in item._child_items:
+            for child_item in item._get_child_items():
                 yield child_item
 
     def __repr__(self):

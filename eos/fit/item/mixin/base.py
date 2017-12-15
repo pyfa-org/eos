@@ -48,7 +48,7 @@ class BaseItemMixin(metaclass=ABCMeta):
 
     Cooperative methods:
         __init__
-        _child_items
+        _get_child_items
     """
 
     def __init__(self, type_id, **kwargs):
@@ -69,12 +69,13 @@ class BaseItemMixin(metaclass=ABCMeta):
         self._container = None
         super().__init__(**kwargs)
 
-    @property
-    def _child_items(self):
+    def _get_child_items(self):
         try:
-            child_items = super()._child_items
+            child_getter = super()._get_child_items
         except AttributeError:
             child_items = set()
+        else:
+            child_items = child_getter()
         child_items.update(self.autocharges.values())
         return child_items
 
@@ -149,7 +150,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         container = self._container
         if isinstance(container, BaseItemMixin):
             other_items.add(container)
-        other_items.update(self._child_items)
+        other_items.update(self._get_child_items())
         return other_items
 
     # Effect methods

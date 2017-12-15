@@ -19,12 +19,11 @@
 # ==============================================================================
 
 
-from eos.const.eos import State
 from eos.util.repr import make_repr_str
-from .mixin.state import ImmutableStateMixin
+from .mixin.state import ContainerStateMixin
 
 
-class Charge(ImmutableStateMixin):
+class Charge(ContainerStateMixin):
     """Represents a charge.
 
     Charges are anything loadabale in other objects, e.g. various ammo types,
@@ -36,7 +35,7 @@ class Charge(ImmutableStateMixin):
     """
 
     def __init__(self, type_id):
-        super().__init__(type_id=type_id, state=State.active)
+        super().__init__(type_id=type_id)
 
     # Attribute calculation-related properties
     _modifier_domain = None
