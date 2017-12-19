@@ -21,15 +21,12 @@
 
 from eos.const.eos import State
 from eos.util.repr import make_repr_str
-from .mixin.defeff_proxy import DefaultEffectProxyMixin
-from .mixin.dmg_dealer import DmgDealerMixin
+from .mixin.effect_stats import EffectStatsMixin
 from .mixin.state import MutableStateMixin
 from .mixin.tanking import BufferTankingMixin
 
 
-class Drone(
-        MutableStateMixin, DmgDealerMixin, BufferTankingMixin,
-        DefaultEffectProxyMixin):
+class Drone(MutableStateMixin, BufferTankingMixin, EffectStatsMixin):
     """Represents a single drone.
 
     Eos doesn't unify multiple drones into stacks, it should be done in services

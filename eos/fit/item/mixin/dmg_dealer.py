@@ -26,7 +26,6 @@ from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.fit.helper import DmgTypesTotal
 from .base import BaseItemMixin
-from .defeff_proxy import DefaultEffectProxyMixin
 
 
 @unique
@@ -66,7 +65,7 @@ CHARGE_MAP = {
         EffectId.bomb_launching: WeaponType.bomb}}
 
 
-class DmgDealerMixin(DefaultEffectProxyMixin, BaseItemMixin):
+class DmgDealerMixin(BaseItemMixin):
     """Support for entities which are capable of dealing damage."""
 
     @property

@@ -19,30 +19,4 @@
 # ==============================================================================
 
 
-from .base import BaseItemMixin
-
-
-class DefaultEffectProxyMixin(BaseItemMixin):
-    """Provides access to attributes which are exposed by default effect."""
-
-    @property
-    def cycle_time(self):
-        return self.__safe_get_from_defeff('get_duration')
-
-    @property
-    def optimal_range(self):
-        return self.__safe_get_from_defeff('get_optimal_range')
-
-    @property
-    def falloff_range(self):
-        return self.__safe_get_from_defeff('get_falloff_range')
-
-    @property
-    def tracking_speed(self):
-        return self.__safe_get_from_defeff('get_tracking_speed')
-
-    def __safe_get_from_defeff(self, method):
-        default_effect = self._type_default_effect
-        if default_effect is None:
-            return None
-        return getattr(default_effect, method)(self)
+from .effect_stats import EffectStatsMixin
