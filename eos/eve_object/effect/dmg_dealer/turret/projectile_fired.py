@@ -19,26 +19,8 @@
 # ==============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
-
-from eos.eve_object.effect import Effect
+from .base import TurretDmgEffect
 
 
-class DmgDealerEffect(Effect, metaclass=ABCMeta):
-
-    @abstractmethod
-    def get_volley(self, item, tgt_resists):
-        ...
-
-    @abstractmethod
-    def get_dps(self, item, tgt_resists, reload):
-        ...
-
-    @abstractmethod
-    def get_applied_volley(self, item, tgt_data, tgt_resists):
-        ...
-
-    @abstractmethod
-    def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
-        ...
+class ProjectileFired(TurretDmgEffect):
+    pass

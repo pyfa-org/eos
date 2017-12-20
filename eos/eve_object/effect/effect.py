@@ -97,6 +97,17 @@ class Effect:
         """
         return self.__effect_state_map[self.category_id]
 
+    # Getters for charge-related entities
+    def get_charge(self, item):
+        if self.get_autocharge_type_id(item) is not None:
+            charge = item.autocharges.get(self.id)
+        else:
+            charge = item.charge
+        return charge
+
+    def get_autocharge_type_id(self, _):
+        return None
+
     # Getters for effect-referenced attributes
     def get_duration(self, item):
         raw_time = self.__safe_get_attr_value(item, self.duration_attr_id)
@@ -128,10 +139,6 @@ class Effect:
         if attr_id is None:
             return None
         return item.attrs.get(attr_id)
-
-    # Getters for other entities, which are defined by effects
-    def get_autocharge_type_id(self, _):
-        return None
 
     # Auxiliary methods
     def __repr__(self):

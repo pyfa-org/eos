@@ -20,13 +20,11 @@
 
 
 from eos.const.eve import AttrId
-from eos.const.eve import EffectId
-from eos.eve_object.effect import EffectFactory
 from eos.fit.stats_container import DmgTypesTotal
-from .base import DmgDealerEffect
+from ..base import DmgDealerEffect
 
 
-class ProjectileFired(DmgDealerEffect):
+class TurretDmgEffect(DmgDealerEffect):
 
     def get_volley(self, item, tgt_resists):
         charge = self.get_charge(item)
@@ -64,6 +62,3 @@ class ProjectileFired(DmgDealerEffect):
 
     def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
         return
-
-
-EffectFactory.reg_cust_class_by_id(ProjectileFired, EffectId.projectile_fired)

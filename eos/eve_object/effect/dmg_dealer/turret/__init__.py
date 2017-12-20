@@ -19,26 +19,11 @@
 # ==============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
+from eos.const.eve import EffectId
+from eos.eve_object.effect import EffectFactory
+from .projectile_fired import ProjectileFired
+from .target_attack import TargetAttack
 
-from eos.eve_object.effect import Effect
 
-
-class DmgDealerEffect(Effect, metaclass=ABCMeta):
-
-    @abstractmethod
-    def get_volley(self, item, tgt_resists):
-        ...
-
-    @abstractmethod
-    def get_dps(self, item, tgt_resists, reload):
-        ...
-
-    @abstractmethod
-    def get_applied_volley(self, item, tgt_data, tgt_resists):
-        ...
-
-    @abstractmethod
-    def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
-        ...
+EffectFactory.reg_cust_class_by_id(ProjectileFired, EffectId.projectile_fired)
+EffectFactory.reg_cust_class_by_id(TargetAttack, EffectId.target_attack)

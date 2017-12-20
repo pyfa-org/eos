@@ -19,26 +19,15 @@
 # ==============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
-
-from eos.eve_object.effect import Effect
+from eos.const.eve import AttrId
+from .base import TurretDmgEffect
 
 
-class DmgDealerEffect(Effect, metaclass=ABCMeta):
+class TargetAttack(TurretDmgEffect):
 
-    @abstractmethod
-    def get_volley(self, item, tgt_resists):
-        ...
-
-    @abstractmethod
-    def get_dps(self, item, tgt_resists, reload):
-        ...
-
-    @abstractmethod
-    def get_applied_volley(self, item, tgt_data, tgt_resists):
-        ...
-
-    @abstractmethod
-    def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
-        ...
+    def get_autocharge_type_id(self, item):
+        try:
+            ammo_type_id = item._type_attrs[AttrId.ammo_loaded]
+        except KeyError:
+            return None
+        return int(ammo_type_id)
