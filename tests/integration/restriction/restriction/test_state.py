@@ -19,6 +19,7 @@
 # ==============================================================================
 
 
+from eos import Charge
 from eos import ModuleHigh
 from eos import Restriction
 from eos import State
@@ -71,6 +72,28 @@ class TestState(RestrictionTestCase):
         error = self.get_error(item, Restriction.state)
         # Verification
         self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_exception_charge(self):
+        # Charges do not store state at all (inherit from parent), thus they
+        # should not be checked
+        effect = self.mkeffect(category_id=EffectCategoryId.active)
+        item = ModuleHigh(
+            self.mktype(effects=[effect], default_effect=effect).id,
+            state=State.active)
+        charge = Charge(self.mktype().id)
+        item.charge = charge
+        self.fit.modules.high.append(item)
+        # Action
+        error1 = self.get_error(item, Restriction.state)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(charge, Restriction.state)
+        # Verification
+        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

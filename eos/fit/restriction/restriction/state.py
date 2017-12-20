@@ -23,6 +23,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eos import State
+from eos.fit.item import Charge
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
 from .base import BaseRestrictionRegister
@@ -31,6 +32,8 @@ from ..exception import RestrictionValidationError
 
 StateErrorData = namedtuple(
     'StateErrorData', ('state', 'allowed_states'))
+
+EXCEPTIONS = (Charge,)
 
 
 class StateRestrictionRegister(BaseRestrictionRegister):
@@ -44,7 +47,7 @@ class StateRestrictionRegister(BaseRestrictionRegister):
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_states_activated(self, msg):
-        if State.online in msg.states:
+        if State.online in msg.states and not isinstance(msg.item, EXCEPTIONS):
             self.__restricted_items.add(msg.item)
 
     def _handle_states_deactivated(self, msg):
