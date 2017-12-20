@@ -24,7 +24,7 @@ from enum import unique
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.fit.helper import DmgTypesTotal
+from eos.fit.stats_container import DmgTypesTotal
 from .base import BaseItemMixin
 
 

@@ -22,12 +22,12 @@
 import math
 
 from eos.const.eve import AttrId
-from eos.fit.helper import DmgTypes
-from eos.fit.helper import TankingLayers
-from eos.fit.helper import TankingLayersTotal
 from eos.fit.item import Ship
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
+from eos.fit.stats_container import DmgTypes
+from eos.fit.stats_container import TankingLayers
+from eos.fit.stats_container import TankingLayersTotal
 from eos.util.pubsub.subscriber import BaseSubscriber
 from .register import CalibrationStatRegister
 from .register import CpuStatRegister

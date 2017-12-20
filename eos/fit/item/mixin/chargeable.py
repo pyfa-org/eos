@@ -21,8 +21,8 @@
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.fit.container import ItemDescriptor
 from eos.fit.item import Charge
+from eos.fit.item_container import ItemDescriptor
 from .base import BaseItemMixin
 
 

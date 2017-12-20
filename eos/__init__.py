@@ -44,10 +44,7 @@ from .data.cache_handler import TypeFetchError
 from .data.data_handler import JsonDataHandler
 from .data.data_handler import SQLiteDataHandler
 from .data.source import SourceManager
-from .fit.container.exception import SlotTakenError
 from .fit.fit import Fit
-from .fit.helper import DmgProfile
-from .fit.helper import ResistProfile
 from .fit.item import Booster
 from .fit.item import Character
 from .fit.item import Charge
@@ -63,4 +60,7 @@ from .fit.item import Ship
 from .fit.item import Skill
 from .fit.item import Stance
 from .fit.item import Subsystem
+from .fit.item_container.exception import SlotTakenError
 from .fit.restriction.exception import ValidationError
+from .fit.stats_container import DmgProfile
+from .fit.stats_container import ResistProfile

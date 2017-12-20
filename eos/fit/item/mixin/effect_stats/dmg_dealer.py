@@ -20,7 +20,7 @@
 
 
 from eos.eve_object.effect.dmg_dealer.base import DmgDealerEffect
-from eos.fit.helper import DmgTypesTotal
+from eos.fit.stats_container import DmgTypesTotal
 from ..base import BaseItemMixin
 
 

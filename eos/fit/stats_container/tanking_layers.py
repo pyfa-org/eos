@@ -24,7 +24,7 @@ from eos.util.repr import make_repr_str
 
 
 class TankingLayers:
-    """Helper container for HP data."""
+    """Container for HP stats."""
 
     def __init__(self, hull, armor, shield):
         self.__hull = hull
@@ -68,7 +68,7 @@ class TankingLayers:
 
 
 class TankingLayersTotal(TankingLayers):
-    """Helper container for HP data, which also calculates total HP."""
+    """Container for HP stats, which also calculates total HP."""
 
     @cached_property
     def total(self):

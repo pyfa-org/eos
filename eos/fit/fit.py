@@ -28,12 +28,6 @@ from eos.util.default import DEFAULT
 from eos.util.pubsub.broker import MsgBroker
 from eos.util.repr import make_repr_str
 from .calculator import CalculationService
-from .container import ItemDescriptor
-from .container import ItemList
-from .container import ItemSet
-from .container import ModuleRacks
-from .container import TypeUniqueItemSet
-from .helper import DmgProfile
 from .item import Booster
 from .item import Character
 from .item import Drone
@@ -48,11 +42,17 @@ from .item import Ship
 from .item import Skill
 from .item import Stance
 from .item import Subsystem
+from .item_container import ItemDescriptor
+from .item_container import ItemList
+from .item_container import ItemSet
+from .item_container import ModuleRacks
+from .item_container import TypeUniqueItemSet
 from .message import DefaultIncomingDmgChanged
 from .message.helper import MsgHelper
 from .restriction import RestrictionService
 from .sim import ReactiveArmorHardenerSimulator
 from .stats import StatService
+from .stats_container import DmgProfile
 
 
 class Fit(MsgBroker):

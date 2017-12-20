@@ -26,7 +26,7 @@ from eos.util.repr import make_repr_str
 
 
 class DmgTypes:
-    """Helper container for damage data."""
+    """Container for damage data stats."""
 
     def __init__(self, em, thermal, kinetic, explosive):
         self.__em = em
@@ -116,7 +116,7 @@ class DmgTypes:
 
 
 class DmgTypesTotal(DmgTypes):
-    """Helper container for damage data, which also calculates total damage.."""
+    """Container for damage data stats, which also calculates total damage.."""
 
     @cached_property
     def total(self):
@@ -145,7 +145,7 @@ class DmgTypesTotal(DmgTypes):
 
 
 class DmgProfile(DmgTypes):
-    """Helper container intended to store damage profile.
+    """Stats container intended to store damage profile.
 
     Raises:
         TypeError: If any of passed values is not a number.
@@ -176,7 +176,7 @@ class DmgProfile(DmgTypes):
 
 
 class ResistProfile(DmgTypes):
-    """Helper container intended to store resistance profile.
+    """Stats container intended to store resistance profile.
 
     Raises:
         TypeError: If any of passed values is not a number.

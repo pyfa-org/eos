@@ -20,9 +20,9 @@
 
 
 from eos.const.eve import AttrId
-from eos.fit.helper import DmgTypes
-from eos.fit.helper import TankingLayers
-from eos.fit.helper import TankingLayersTotal
+from eos.fit.stats_container import DmgTypes
+from eos.fit.stats_container import TankingLayers
+from eos.fit.stats_container import TankingLayersTotal
 from .base import BaseItemMixin
 
 

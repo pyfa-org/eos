@@ -25,7 +25,7 @@ from collections import namedtuple
 
 from eos.const.eos import EffectMode
 from eos.fit.calculator import MutableAttrMap
-from eos.fit.container import ItemDict
+from eos.fit.item_container import ItemDict
 from eos.fit.message.helper import MsgHelper
 
 

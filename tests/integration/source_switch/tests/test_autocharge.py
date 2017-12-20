@@ -26,8 +26,8 @@ from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
-from eos.const.eve import EffectId
 from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
 from tests.integration.source_switch.testcase import SourceSwitchTestCase
 
 
