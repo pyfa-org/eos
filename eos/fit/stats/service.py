@@ -133,7 +133,7 @@ class StatService(BaseSubscriber):
         except AttributeError:
             return TankingLayersTotal(None, None, None)
 
-    def get_nominal_volley(self, item_filter=None, tgt_resists=None):
+    def get_volley(self, item_filter=None, tgt_resists=None):
         """
         Get nominal volley of the fit.
 
@@ -150,9 +150,9 @@ class StatService(BaseSubscriber):
             DmgTypesTotal helper container instance.
         """
         return self.__dd_reg._collect_dmg_stats(
-            item_filter, 'get_nominal_volley', tgt_resists=tgt_resists)
+            item_filter, 'get_volley', tgt_resists=tgt_resists)
 
-    def get_nominal_dps(
+    def get_dps(
             self, item_filter=None, tgt_resists=None, reload=False):
         """
         Get nominal DPS of the fit.
@@ -172,8 +172,7 @@ class StatService(BaseSubscriber):
             DmgTypesTotal helper container instance.
         """
         return self.__dd_reg._collect_dmg_stats(
-            item_filter, 'get_nominal_dps',
-            tgt_resists=tgt_resists, reload=reload)
+            item_filter, 'get_dps', tgt_resists=tgt_resists, reload=reload)
 
     @property
     def agility_factor(self):

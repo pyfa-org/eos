@@ -19,51 +19,45 @@
 # ==============================================================================
 
 
-from eos.fit.item.mixin.dmg_dealer import BASIC_MAP
-from eos.fit.item.mixin.dmg_dealer import CHARGE_MAP
-from eos.fit.item.mixin.dmg_dealer import DmgDealerMixin
+
+from eos.eve_object.effect.dmg_dealer.base import DmgDealerEffect
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.stats_container import DmgTypesTotal
-from eos.util.keyed_storage import KeyedStorage
 from .base import BaseStatRegister
 
 
-PRIMARY_DMG_EFFECTS = set(BASIC_MAP).union(CHARGE_MAP)
-
-
 class DmgDealerRegister(BaseStatRegister):
-    """Class which tracks all items which can potentially deal damage.
+    """Class which tracks all effects which deal damage.
 
-    Using this data, it provides functionality to fetch various aggregated
-    stats.
+    Provides functionality to fetch various aggregated stats.
     """
 
     def __init__(self, msg_broker):
-        # Format: {item: {damage dealing effect IDs}}
-        self.__dealers = KeyedStorage()
+        # Format: {(item, effect), ...}
+        self.__dealers = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
     def _handle_effects_started(self, msg):
-        if not isinstance(msg.item, DmgDealerMixin):
-            return
-        dmg_effects = msg.effect_ids.intersection(PRIMARY_DMG_EFFECTS)
-        if dmg_effects:
-            self.__dealers.add_data_set(msg.item, dmg_effects)
+        item_effects = msg.item._type_effects
+        for effect_id in msg.effect_ids:
+            effect = item_effects[effect_id]
+            if isinstance(effect, DmgDealerEffect):
+                self.__dealers.add((msg.item, effect))
 
     def _handle_effects_stopped(self, msg):
-        if not isinstance(msg.item, DmgDealerMixin):
-            return
-        dmg_effects = msg.effect_ids.intersection(PRIMARY_DMG_EFFECTS)
-        if dmg_effects:
-            self.__dealers.rm_data_set(msg.item, dmg_effects)
+        item_effects = msg.item._type_effects
+        for effect_id in msg.effect_ids:
+            effect = item_effects[effect_id]
+            if isinstance(effect, DmgDealerEffect):
+                self.__dealers.remove((msg.item, effect))
 
     _handler_map = {
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped}
 
     def _collect_dmg_stats(self, item_filter, method_name, *args, **kwargs):
-        """Fetch stats from all registered items.
+        """Fetch damage stats from all registered damage dealers.
 
         Args:
             item_filter: When iterating over fit items, this function is called.
@@ -76,33 +70,10 @@ class DmgDealerRegister(BaseStatRegister):
         Returns:
             DmgTypesTotal helper container instance.
         """
-        em, therm, kin, expl = None, None, None, None
-        for item in self.__dealers:
+        dmgs = []
+        for item, effect in self.__dealers:
             if item_filter is not None and not item_filter(item):
                 continue
-            stat = getattr(item, method_name)(*args, **kwargs)
-            # Guards against both aggregated values equal to None and item
-            # values equal to None. If aggregated value is None, assigns value
-            # from item stats to aggregated. If item stat is None, just ignores
-            # it.
-            try:
-                em += stat.em
-            except TypeError:
-                if em is None:
-                    em = stat.em
-            try:
-                therm += stat.thermal
-            except TypeError:
-                if therm is None:
-                    therm = stat.thermal
-            try:
-                kin += stat.kinetic
-            except TypeError:
-                if kin is None:
-                    kin = stat.kinetic
-            try:
-                expl += stat.explosive
-            except TypeError:
-                if expl is None:
-                    expl = stat.explosive
-        return DmgTypesTotal(em, therm, kin, expl)
+            dmg = getattr(effect, method_name)(*args, **kwargs)
+            dmgs.append(dmg)
+        return DmgTypesTotal._combine(*dmgs)
