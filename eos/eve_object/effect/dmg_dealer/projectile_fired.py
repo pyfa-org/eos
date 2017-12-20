@@ -65,12 +65,5 @@ class ProjectileFired(DmgDealerEffect):
     def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
         return
 
-    def get_autocharge_type_id(self, item):
-        try:
-            ammo_type_id = item._type_attrs[AttrId.ammo_loaded]
-        except KeyError:
-            return None
-        return int(ammo_type_id)
-
 
 EffectFactory.reg_cust_class_by_id(ProjectileFired, EffectId.projectile_fired)
