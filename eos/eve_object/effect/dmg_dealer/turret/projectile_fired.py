@@ -19,8 +19,10 @@
 # ==============================================================================
 
 
+from eos.const.eve import EffectId
 from .base import TurretDmgEffect
 
 
 class ProjectileFired(TurretDmgEffect):
-    pass
+
+    id = EffectId.projectile_fired

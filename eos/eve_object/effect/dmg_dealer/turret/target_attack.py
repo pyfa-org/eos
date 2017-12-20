@@ -20,10 +20,13 @@
 
 
 from eos.const.eve import AttrId
+from eos.const.eve import EffectId
 from .base import TurretDmgEffect
 
 
 class TargetAttack(TurretDmgEffect):
+
+    id = EffectId.target_attack
 
     def get_autocharge_type_id(self, item):
         try:

@@ -99,6 +99,7 @@ class Effect:
 
     # Getters for charge-related entities
     def get_charge(self, item):
+        """Get charge which should be used by this effect."""
         if self.get_autocharge_type_id(item) is not None:
             charge = item.autocharges.get(self.id)
         else:
@@ -106,6 +107,9 @@ class Effect:
         return charge
 
     def get_autocharge_type_id(self, _):
+        return None
+
+    def get_cycles_until_reload(self, _):
         return None
 
     # Getters for effect-referenced attributes
