@@ -47,7 +47,7 @@ class TestStatsDmgVolley(StatsTestCase):
 
     def test_empty(self):
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -82,7 +82,7 @@ class TestStatsDmgVolley(StatsTestCase):
             AttrId.explosive_dmg: 9.6}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 3.6)
         self.assertAlmostEqual(stats_volley.thermal, 7.2)
@@ -119,7 +119,7 @@ class TestStatsDmgVolley(StatsTestCase):
             AttrId.explosive_dmg: 96}).id)
         self.fit.modules.high.append(item2)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 26.4)
         self.assertAlmostEqual(stats_volley.thermal, 52.8)
@@ -145,7 +145,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.fit.modules.high.append(item)
         # Action
         resists = ResistProfile(0, 1, 1, 1)
-        stats_volley = self.fit.stats.get_nominal_volley(tgt_resists=resists)
+        stats_volley = self.fit.stats.get_volley(tgt_resists=resists)
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 0)
@@ -184,7 +184,7 @@ class TestStatsDmgVolley(StatsTestCase):
             AttrId.explosive_dmg: 96}).id)
         self.fit.modules.high.append(item2)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley(
+        stats_volley = self.fit.stats.get_volley(
             item_filter=lambda i: i._type.group_id == 55)
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
@@ -209,7 +209,7 @@ class TestStatsDmgVolley(StatsTestCase):
             AttrId.explosive_dmg: 9.6}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -233,7 +233,7 @@ class TestStatsDmgVolley(StatsTestCase):
             AttrId.explosive_dmg: 9.6}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertIsNone(stats_volley.thermal)
@@ -257,7 +257,7 @@ class TestStatsDmgVolley(StatsTestCase):
             AttrId.explosive_dmg: 9.6}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -281,7 +281,7 @@ class TestStatsDmgVolley(StatsTestCase):
             AttrId.kinetic_dmg: 4.8}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
@@ -302,7 +302,7 @@ class TestStatsDmgVolley(StatsTestCase):
         item.charge = Charge(self.mktype().id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -323,7 +323,7 @@ class TestStatsDmgVolley(StatsTestCase):
         item.charge = Charge(self.mktype(attrs={AttrId.em_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 0)
         self.assertIsNone(stats_volley.thermal)
@@ -344,7 +344,7 @@ class TestStatsDmgVolley(StatsTestCase):
         item.charge = Charge(self.mktype(attrs={AttrId.thermal_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertAlmostEqual(stats_volley.thermal, 0)
@@ -365,7 +365,7 @@ class TestStatsDmgVolley(StatsTestCase):
         item.charge = Charge(self.mktype(attrs={AttrId.kinetic_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -386,7 +386,7 @@ class TestStatsDmgVolley(StatsTestCase):
         item.charge = Charge(self.mktype(attrs={AttrId.explosive_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertIsNone(stats_volley.em)
         self.assertIsNone(stats_volley.thermal)
@@ -421,7 +421,7 @@ class TestStatsDmgVolley(StatsTestCase):
         item2.charge = Charge(self.mktype().id)
         self.fit.modules.high.append(item2)
         # Action
-        stats_volley = self.fit.stats.get_nominal_volley()
+        stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)

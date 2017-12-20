@@ -47,9 +47,10 @@ class TestItemDmgTurret(ItemMixinTestCase):
         self.effect = self.mkeffect(
             effect_id=EffectId.projectile_fired,
             category_id=EffectCategoryId.target,
-            duration_attr_id=self.cycle_attr.id)
+            duration_attr_id=self.cycle_attr.id,
+            customize=True)
 
-    def test_nominal_volley_generic(self):
+    def test_volley_generic(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -70,7 +71,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 13)
         self.assertAlmostEqual(volley.thermal, 15.75)
         self.assertAlmostEqual(volley.kinetic, 18.5)
@@ -100,7 +101,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 5.2)
         self.assertAlmostEqual(volley.thermal, 6.3)
         self.assertAlmostEqual(volley.kinetic, 7.4)
@@ -110,7 +111,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_insufficient_state(self):
+    def test_volley_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -131,7 +132,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -141,7 +142,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_disabled_effect(self):
+    def test_volley_disabled_effect(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -163,7 +164,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -173,7 +174,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_no_charge(self):
+    def test_volley_no_charge(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -188,7 +189,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
             state=State.active)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -198,32 +199,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_onitem_dmg_stats(self):
-        fit = Fit()
-        item = ModuleHigh(
-            self.mktype(
-                attrs={
-                    AttrId.dmg_multiplier: 2.5,
-                    AttrId.em_dmg: 5.2,
-                    AttrId.thermal_dmg: 6.3,
-                    AttrId.kinetic_dmg: 7.4,
-                    AttrId.explosive_dmg: 8.5, self.cycle_attr.id: 500},
-                effects=[self.effect],
-                default_effect=self.effect).id,
-            state=State.active)
-        fit.modules.high.append(item)
-        # Verification
-        volley = item.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 13)
-        self.assertAlmostEqual(volley.thermal, 15.75)
-        self.assertAlmostEqual(volley.kinetic, 18.5)
-        self.assertAlmostEqual(volley.explosive, 21.25)
-        self.assertAlmostEqual(volley.total, 68.5)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_nominal_dps_no_reload(self):
+    def test_dps_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -244,7 +220,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=False)
+        dps = item.get_dps(reload=False)
         self.assertAlmostEqual(dps.em, 26)
         self.assertAlmostEqual(dps.thermal, 31.5)
         self.assertAlmostEqual(dps.kinetic, 37)
@@ -254,7 +230,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_dps_reload(self):
+    def test_dps_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -275,7 +251,7 @@ class TestItemDmgTurret(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=True)
+        dps = item.get_dps(reload=True)
         self.assertAlmostEqual(dps.em, 13)
         self.assertAlmostEqual(dps.thermal, 15.75)
         self.assertAlmostEqual(dps.kinetic, 18.5)

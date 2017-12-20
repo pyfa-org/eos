@@ -100,7 +100,7 @@ class ChargeableMixin(BaseItemMixin):
             return self.__get_ammo_cycles()
         # Detect crystal-based item types using effects
         if self._type_default_effect_id in (
-            EffectId.tgt_attack,
+            EffectId.target_attack,
             EffectId.mining_laser
         ):
             return self.__get_crystal_mean_cycles()
@@ -136,7 +136,7 @@ class ChargeableMixin(BaseItemMixin):
         # Return hardcoded 1.0 if item type has target_attack effect (various
         # lasers), else fetch reload time attribute from item
         if self._type_default_effect_id in (
-            EffectId.tgt_attack,
+            EffectId.target_attack,
             EffectId.mining_laser
         ):
             return 1.0

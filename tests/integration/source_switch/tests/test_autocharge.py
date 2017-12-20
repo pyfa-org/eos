@@ -42,7 +42,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         """Make effect, which loads autocharge when assigned to container."""
         return self.mkeffect(
             src=src,
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.target,
             customize=True)
 

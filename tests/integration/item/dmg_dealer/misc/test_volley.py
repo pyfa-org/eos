@@ -30,7 +30,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
+class TestItemDmgMiscVolley(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
@@ -69,7 +69,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertAlmostEqual(volley.thermal, 15.75)
         self.assertAlmostEqual(volley.kinetic, 18.5)
@@ -99,7 +99,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 13)
         self.assertIsNone(volley.thermal)
         self.assertAlmostEqual(volley.kinetic, 18.5)
@@ -129,7 +129,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 13)
         self.assertAlmostEqual(volley.thermal, 15.75)
         self.assertIsNone(volley.kinetic)
@@ -159,7 +159,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             AttrId.kinetic_dmg: 7.4}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 13)
         self.assertAlmostEqual(volley.thermal, 15.75)
         self.assertAlmostEqual(volley.kinetic, 18.5)
@@ -186,7 +186,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             attrs={AttrId.volume: 0.2}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -213,7 +213,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             attrs={AttrId.volume: 0.2, AttrId.em_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 0)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -240,7 +240,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             attrs={AttrId.volume: 0.2, AttrId.thermal_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertAlmostEqual(volley.thermal, 0)
         self.assertIsNone(volley.kinetic)
@@ -267,7 +267,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             attrs={AttrId.volume: 0.2, AttrId.kinetic_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertAlmostEqual(volley.kinetic, 0)
@@ -294,7 +294,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             attrs={AttrId.volume: 0.2, AttrId.explosive_dmg: 0}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -326,7 +326,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -357,7 +357,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -388,7 +388,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertIsNone(volley.thermal)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -419,7 +419,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertIsNone(volley.kinetic)
@@ -450,7 +450,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
@@ -478,7 +478,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -506,7 +506,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 0)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -534,7 +534,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertAlmostEqual(volley.thermal, 0)
         self.assertIsNone(volley.kinetic)
@@ -562,7 +562,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertAlmostEqual(volley.kinetic, 0)
@@ -589,7 +589,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        volley = item.get_nominal_volley(tgt_resists=profile)
+        volley = item.get_volley(tgt_resists=profile)
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -620,7 +620,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -652,7 +652,7 @@ class TestItemDmgMiscNominalVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         fit.source = None
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)

@@ -19,7 +19,6 @@
 # ==============================================================================
 
 
-
 from eos.eve_object.effect.dmg_dealer.base import DmgDealerEffect
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped

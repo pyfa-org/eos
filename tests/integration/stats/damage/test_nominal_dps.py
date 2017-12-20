@@ -54,7 +54,7 @@ class TestStatsDmgDps(StatsTestCase):
 
     def test_empty(self):
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertIsNone(stats_dps.em)
         self.assertIsNone(stats_dps.thermal)
@@ -96,7 +96,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 1.44)
         self.assertAlmostEqual(stats_dps.thermal, 2.88)
@@ -145,7 +145,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item2)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 12.96)
         self.assertAlmostEqual(stats_dps.thermal, 25.92)
@@ -177,7 +177,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.fit.modules.high.append(item)
         # Action
         resists = ResistProfile(0, 1, 1, 1)
-        stats_dps = self.fit.stats.get_nominal_dps(tgt_resists=resists)
+        stats_dps = self.fit.stats.get_dps(tgt_resists=resists)
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertAlmostEqual(stats_dps.thermal, 0)
@@ -208,7 +208,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps(reload=True)
+        stats_dps = self.fit.stats.get_dps(reload=True)
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.48)
         self.assertAlmostEqual(stats_dps.thermal, 0.96)
@@ -259,7 +259,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item2)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps(
+        stats_dps = self.fit.stats.get_dps(
             item_filter=lambda i: i._type.group_id == 55)
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
@@ -290,7 +290,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertIsNone(stats_dps.em)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)
@@ -320,7 +320,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertIsNone(stats_dps.thermal)
@@ -350,7 +350,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)
@@ -380,7 +380,7 @@ class TestStatsDmgDps(StatsTestCase):
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)
@@ -406,7 +406,7 @@ class TestStatsDmgDps(StatsTestCase):
         item.charge = Charge(self.mktype(attrs={AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertIsNone(stats_dps.em)
         self.assertIsNone(stats_dps.thermal)
@@ -433,7 +433,7 @@ class TestStatsDmgDps(StatsTestCase):
             attrs={AttrId.em_dmg: 0, AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0)
         self.assertIsNone(stats_dps.thermal)
@@ -460,7 +460,7 @@ class TestStatsDmgDps(StatsTestCase):
             attrs={AttrId.thermal_dmg: 0, AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertIsNone(stats_dps.em)
         self.assertAlmostEqual(stats_dps.thermal, 0)
@@ -487,7 +487,7 @@ class TestStatsDmgDps(StatsTestCase):
             attrs={AttrId.kinetic_dmg: 0, AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertIsNone(stats_dps.em)
         self.assertIsNone(stats_dps.thermal)
@@ -512,7 +512,7 @@ class TestStatsDmgDps(StatsTestCase):
             attrs={AttrId.explosive_dmg: 0, AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertIsNone(stats_dps.em)
         self.assertIsNone(stats_dps.thermal)
@@ -558,7 +558,7 @@ class TestStatsDmgDps(StatsTestCase):
         item2.charge = Charge(self.mktype(attrs={AttrId.volume: 1}).id)
         self.fit.modules.high.append(item2)
         # Action
-        stats_dps = self.fit.stats.get_nominal_dps()
+        stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)

@@ -42,3 +42,10 @@ class DmgDealerEffect(Effect, metaclass=ABCMeta):
     @abstractmethod
     def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
         ...
+
+    def get_charge(self, item):
+        if self.get_autocharge_type_id(item) is not None:
+            charge = item.autocharges.get(self.id)
+        else:
+            charge = item.charge
+        return charge

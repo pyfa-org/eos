@@ -47,7 +47,7 @@ class WeaponType(IntEnum):
 
 # Format: {module effect ID: weapon type}
 BASIC_MAP = {
-    EffectId.tgt_attack: WeaponType.turret,
+    EffectId.target_attack: WeaponType.turret,
     EffectId.projectile_fired: WeaponType.turret,
     EffectId.emp_wave: WeaponType.untargeted_aoe,
     # TODO: instant missile was assigned just to fighter bombers
@@ -177,7 +177,7 @@ class DmgDealerMixin(BaseItemMixin):
             base_volleys[effect_id] = DmgTypesTotal(em, therm, kin, expl)
         return base_volleys
 
-    def get_nominal_volley(self, tgt_resists=None):
+    def get_volley(self, tgt_resists=None):
         """
         Get nominal volley of the item.
 
@@ -244,7 +244,7 @@ class DmgDealerMixin(BaseItemMixin):
                 expl = None
         return DmgTypesTotal(em, therm, kin, expl)
 
-    def get_nominal_dps(self, tgt_resists=None, reload=False):
+    def get_dps(self, tgt_resists=None, reload=False):
         """
         Get nominal DPS of the item.
 
@@ -258,7 +258,7 @@ class DmgDealerMixin(BaseItemMixin):
         Returns:
             DmgTypesTotal helper container instance.
         """
-        volley = self.get_nominal_volley(tgt_resists=tgt_resists)
+        volley = self.get_volley(tgt_resists=tgt_resists)
         # If all attributes of base volley are None, nothing we can do here
         if (
             volley.total is None and

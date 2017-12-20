@@ -133,7 +133,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Make sure autocharge volume is ignored
         autocharge_type = self.mktype(attrs={AttrId.volume: 2})
         container_effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.target,
             customize=True)
         container = ModuleHigh(
@@ -162,7 +162,7 @@ class TestChargeVolume(RestrictionTestCase):
         charge = Charge(self.mktype(attrs={AttrId.volume: 2}).id)
         autocharge_type = self.mktype(attrs={AttrId.volume: 2})
         container_effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.target,
             customize=True)
         container = ModuleHigh(

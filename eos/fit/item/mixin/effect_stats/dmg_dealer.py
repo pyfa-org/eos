@@ -28,7 +28,7 @@ class DmgDealerMixin(BaseItemMixin):
     """Expose damage dealing effect stats to item."""
 
     def __dd_effect_iter(self):
-        for effect in self._type_effects:
+        for effect in self._type_effects.values():
             if not isinstance(effect, DmgDealerEffect):
                 continue
             if effect.id not in self._running_effect_ids:

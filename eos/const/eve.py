@@ -226,7 +226,7 @@ class EffectId(IntEnum):
     super_weapon_caldari = 4490
     super_weapon_gallente = 4491
     super_weapon_minmatar = 4492
-    tgt_attack = 10
+    target_attack = 10
     turret_fitted = 42
     use_missiles = 101
 

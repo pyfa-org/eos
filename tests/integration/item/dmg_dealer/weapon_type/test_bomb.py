@@ -52,7 +52,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             effect_id=EffectId.bomb_launching,
             category_id=EffectCategoryId.active)
 
-    def test_nominal_volley_generic(self):
+    def test_volley_generic(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -76,7 +76,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 5200)
         self.assertAlmostEqual(volley.thermal, 6300)
         self.assertAlmostEqual(volley.kinetic, 7400)
@@ -86,7 +86,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_multiplier(self):
+    def test_volley_multiplier(self):
         self.mkattr(attr_id=AttrId.dmg_multiplier)
         fit = Fit()
         item = ModuleHigh(
@@ -112,7 +112,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 5200)
         self.assertAlmostEqual(volley.thermal, 6300)
         self.assertAlmostEqual(volley.kinetic, 7400)
@@ -122,7 +122,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_insufficient_state(self):
+    def test_volley_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -146,7 +146,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -156,7 +156,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_disabled_item_effect(self):
+    def test_volley_disabled_item_effect(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -181,7 +181,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -191,7 +191,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_disabled_charge_effect(self):
+    def test_volley_disabled_charge_effect(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -217,7 +217,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             self.effect_charge.id, EffectMode.force_stop)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -227,7 +227,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_no_charge(self):
+    def test_volley_no_charge(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -242,7 +242,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             state=State.active)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -252,7 +252,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_dps_no_reload(self):
+    def test_dps_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -276,7 +276,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=False)
+        dps = item.get_dps(reload=False)
         self.assertAlmostEqual(dps.em, 41.6)
         self.assertAlmostEqual(dps.thermal, 50.4)
         self.assertAlmostEqual(dps.kinetic, 59.2)
@@ -286,7 +286,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_dps_reload(self):
+    def test_dps_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -310,7 +310,7 @@ class TestItemDmgBomb(ItemMixinTestCase):
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=True)
+        dps = item.get_dps(reload=True)
         # Reload doesn't affect DPS because reactivation time is higher, item
         # manages to reload during that time
         self.assertAlmostEqual(dps.em, 41.6)

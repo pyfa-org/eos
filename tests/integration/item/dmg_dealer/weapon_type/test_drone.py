@@ -40,11 +40,11 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.explosive_dmg)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.target,
             duration_attr_id=self.cycle_attr.id)
 
-    def test_nominal_volley_generic(self):
+    def test_volley_generic(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -60,7 +60,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
             state=State.active)
         fit.drones.add(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 130)
         self.assertAlmostEqual(volley.thermal, 157.5)
         self.assertAlmostEqual(volley.kinetic, 185)
@@ -85,7 +85,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
             state=State.active)
         fit.drones.add(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 52)
         self.assertAlmostEqual(volley.thermal, 63)
         self.assertAlmostEqual(volley.kinetic, 74)
@@ -95,7 +95,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_insufficient_state(self):
+    def test_volley_insufficient_state(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -111,7 +111,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
             state=State.online)
         fit.drones.add(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -121,7 +121,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_voley_disabled_effect(self):
+    def test_voley_disabled_effect(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -138,7 +138,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         fit.drones.add(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -148,7 +148,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_dps_no_reload(self):
+    def test_dps_no_reload(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -164,7 +164,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
             state=State.active)
         fit.drones.add(item)
         # Verification
-        dps = item.get_nominal_dps(reload=False)
+        dps = item.get_dps(reload=False)
         self.assertAlmostEqual(dps.em, 32.5)
         self.assertAlmostEqual(dps.thermal, 39.375)
         self.assertAlmostEqual(dps.kinetic, 46.25)
@@ -174,7 +174,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_dps_reload(self):
+    def test_dps_reload(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -190,7 +190,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
             state=State.active)
         fit.drones.add(item)
         # Verification
-        dps = item.get_nominal_dps(reload=True)
+        dps = item.get_dps(reload=True)
         self.assertAlmostEqual(dps.em, 32.5)
         self.assertAlmostEqual(dps.thermal, 39.375)
         self.assertAlmostEqual(dps.kinetic, 46.25)

@@ -80,7 +80,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
     def test_laser_combat(self):
         fit = Fit()
         effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
             attrs={AttrId.capacity: 4.0},
@@ -124,7 +124,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
     def test_laser_not_damageable(self):
         fit = Fit()
         effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
             attrs={AttrId.capacity: 4.0},
@@ -145,7 +145,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
     def test_laser_no_hp(self):
         fit = Fit()
         effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
             attrs={AttrId.capacity: 4.0},
@@ -166,7 +166,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
     def test_laser_no_chance(self):
         fit = Fit()
         effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
             attrs={AttrId.capacity: 4.0},
@@ -187,7 +187,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
     def test_laser_no_dmg(self):
         fit = Fit()
         effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
             attrs={AttrId.capacity: 4.0},
@@ -208,7 +208,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
     def test_no_default_effect(self):
         fit = Fit()
         effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
             attrs={AttrId.capacity: 4.0},

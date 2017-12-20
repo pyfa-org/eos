@@ -76,7 +76,7 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
     def test_combat_combat_laser(self):
         fit = Fit()
         effect = self.mkeffect(
-            effect_id=EffectId.tgt_attack,
+            effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
             attrs={AttrId.reload_time: 5000.0},

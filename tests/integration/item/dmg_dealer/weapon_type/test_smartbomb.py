@@ -29,7 +29,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgDoomsday(ItemMixinTestCase):
+class TestItemDmgSmartbomb(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
@@ -39,78 +39,78 @@ class TestItemDmgDoomsday(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.explosive_dmg)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
-            effect_id=EffectId.super_weapon_amarr,
-            category_id=EffectCategoryId.target,
+            effect_id=EffectId.emp_wave,
+            category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
 
-    def test_nominal_volley_generic(self):
+    def test_volley_generic(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000},
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 52000)
-        self.assertAlmostEqual(volley.thermal, 63000)
-        self.assertAlmostEqual(volley.kinetic, 74000)
-        self.assertAlmostEqual(volley.explosive, 85000)
-        self.assertAlmostEqual(volley.total, 274000)
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 52)
+        self.assertAlmostEqual(volley.thermal, 63)
+        self.assertAlmostEqual(volley.kinetic, 74)
+        self.assertAlmostEqual(volley.explosive, 85)
+        self.assertAlmostEqual(volley.total, 274)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_multiplier(self):
+    def test_volley_multiplier(self):
         self.mkattr(attr_id=AttrId.dmg_multiplier)
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000,
                     AttrId.dmg_multiplier: 5.5},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
-        self.assertAlmostEqual(volley.em, 52000)
-        self.assertAlmostEqual(volley.thermal, 63000)
-        self.assertAlmostEqual(volley.kinetic, 74000)
-        self.assertAlmostEqual(volley.explosive, 85000)
-        self.assertAlmostEqual(volley.total, 274000)
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 52)
+        self.assertAlmostEqual(volley.thermal, 63)
+        self.assertAlmostEqual(volley.kinetic, 74)
+        self.assertAlmostEqual(volley.explosive, 85)
+        self.assertAlmostEqual(volley.total, 274)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_insufficient_state(self):
+    def test_volley_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000},
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.online)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -120,23 +120,23 @@ class TestItemDmgDoomsday(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_volley_disabled_effect(self):
+    def test_volley_disabled_effect(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000},
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         fit.modules.high.append(item)
         # Verification
-        volley = item.get_nominal_volley()
+        volley = item.get_volley()
         self.assertIsNone(volley.em)
         self.assertIsNone(volley.thermal)
         self.assertIsNone(volley.kinetic)
@@ -146,52 +146,52 @@ class TestItemDmgDoomsday(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_dps_no_reload(self):
+    def test_dps_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000},
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 208)
-        self.assertAlmostEqual(dps.thermal, 252)
-        self.assertAlmostEqual(dps.kinetic, 296)
-        self.assertAlmostEqual(dps.explosive, 340)
-        self.assertAlmostEqual(dps.total, 1096)
+        dps = item.get_dps(reload=False)
+        self.assertAlmostEqual(dps.em, 10.4)
+        self.assertAlmostEqual(dps.thermal, 12.6)
+        self.assertAlmostEqual(dps.kinetic, 14.8)
+        self.assertAlmostEqual(dps.explosive, 17)
+        self.assertAlmostEqual(dps.total, 54.8)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_nominal_dps_reload(self):
+    def test_dps_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000},
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 208)
-        self.assertAlmostEqual(dps.thermal, 252)
-        self.assertAlmostEqual(dps.kinetic, 296)
-        self.assertAlmostEqual(dps.explosive, 340)
-        self.assertAlmostEqual(dps.total, 1096)
+        dps = item.get_dps(reload=True)
+        self.assertAlmostEqual(dps.em, 10.4)
+        self.assertAlmostEqual(dps.thermal, 12.6)
+        self.assertAlmostEqual(dps.kinetic, 14.8)
+        self.assertAlmostEqual(dps.explosive, 17)
+        self.assertAlmostEqual(dps.total, 54.8)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

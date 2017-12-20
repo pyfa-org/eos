@@ -106,33 +106,33 @@ And few more advanced (total uniform EHP of fit, and shield EHP vs EM damage):
 
 DPS can be fetched with various parameters, for example, should it take reload into consideration or not:
 
-    >>> fit.stats.get_nominal_dps(reload=False).total
+    >>> fit.stats.get_dps(reload=False).total
     1931.374697718373
-    >>> fit.stats.get_nominal_dps(reload=True).total
+    >>> fit.stats.get_dps(reload=True).total
     1857.2875753203057
 
 Specific damage type is accessible too (in this case, hail deals some kinetic damage):
 
-    >>> fit.stats.get_nominal_dps(reload=False).kinetic
+    >>> fit.stats.get_dps(reload=False).kinetic
     136.64914857525073
 
 Get effective DPS against passed resistance profile:
 
-    >>> fit.stats.get_nominal_dps(target_resistances=ResistanceProfile(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
+    >>> fit.stats.get_dps(target_resistances=ResistanceProfile(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
     1072.8636430538475
 
 Get dps using built-in filters:
 
-    >>> fit.stats.get_nominal_dps(holder_filter=turret_filter).total
+    >>> fit.stats.get_dps(holder_filter=turret_filter).total
     637.6960266845034
-    >>> fit.stats.get_nominal_dps(holder_filter=missile_filter).total
+    >>> fit.stats.get_dps(holder_filter=missile_filter).total
     826.1217743481901
-    >>> fit.stats.get_nominal_dps(holder_filter=drone_filter).total
+    >>> fit.stats.get_dps(holder_filter=drone_filter).total
     467.55689668567936
 
 You can compose your own filters or combine existing:
 
-    >>> fit.stats.get_nominal_dps(holder_filter=lambda h: turret_filter(h) or missile_filter(h)).total
+    >>> fit.stats.get_dps(holder_filter=lambda h: turret_filter(h) or missile_filter(h)).total
     1463.8178010326933
 
 Not all stats are implemented yet, more to come soon.

@@ -30,7 +30,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgMiscNominalDps(ItemMixinTestCase):
+class TestItemDmgMiscDps(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
@@ -72,7 +72,7 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
-        dps = item.get_nominal_dps(tgt_resists=profile)
+        dps = item.get_dps(tgt_resists=profile)
         self.assertAlmostEqual(dps.em, 20.8)
         self.assertAlmostEqual(dps.thermal, 25.2)
         self.assertAlmostEqual(dps.kinetic, 7.4)
@@ -104,7 +104,7 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=True)
+        dps = item.get_dps(reload=True)
         self.assertAlmostEqual(dps.em, 5.2)
         self.assertAlmostEqual(dps.thermal, 6.3)
         self.assertAlmostEqual(dps.kinetic, 7.4)
@@ -136,7 +136,7 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
             AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
-        dps = item.get_nominal_dps(reload=True)
+        dps = item.get_dps(reload=True)
         self.assertAlmostEqual(dps.em, 0.65)
         self.assertAlmostEqual(dps.thermal, 0.7875)
         self.assertAlmostEqual(dps.kinetic, 0.925)
@@ -168,7 +168,7 @@ class TestItemDmgMiscNominalDps(ItemMixinTestCase):
         fit.modules.high.append(item)
         fit.source = None
         # Verification
-        dps = item.get_nominal_dps()
+        dps = item.get_dps()
         self.assertIsNone(dps.em)
         self.assertIsNone(dps.thermal)
         self.assertIsNone(dps.kinetic)

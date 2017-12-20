@@ -22,13 +22,39 @@
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
+from eos.fit.stats_container import DmgTypesTotal
 from .base import DmgDealerEffect
 
 
-class TgtAttack(DmgDealerEffect):
+class ProjectileFired(DmgDealerEffect):
 
     def get_volley(self, item, tgt_resists):
-        return
+        charge = self.get_charge(item)
+        if charge is None:
+            return DmgTypesTotal(None, None, None, None)
+        em = charge.attrs.get(AttrId.em_dmg)
+        thermal = charge.attrs.get(AttrId.thermal_dmg)
+        kinetic = charge.attrs.get(AttrId.kinetic_dmg)
+        explosive = charge.attrs.get(AttrId.explosive_dmg)
+        multiplier = item.attrs.get(AttrId.dmg_multiplier)
+        if multiplier is not None:
+            try:
+                em *= multiplier
+            except TypeError:
+                pass
+            try:
+                thermal *= multiplier
+            except TypeError:
+                pass
+            try:
+                kinetic *= multiplier
+            except TypeError:
+                pass
+            try:
+                explosive *= multiplier
+            except TypeError:
+                pass
+        return DmgTypesTotal(em, thermal, kinetic, explosive)
 
     def get_dps(self, item, tgt_resists, reload):
         return
@@ -47,4 +73,4 @@ class TgtAttack(DmgDealerEffect):
         return int(ammo_type_id)
 
 
-EffectFactory.reg_cust_class_by_id(TgtAttack, EffectId.tgt_attack)
+EffectFactory.reg_cust_class_by_id(ProjectileFired, EffectId.projectile_fired)
