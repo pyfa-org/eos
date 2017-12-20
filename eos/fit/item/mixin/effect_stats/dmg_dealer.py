@@ -20,6 +20,7 @@
 
 
 from eos.eve_object.effect.dmg_dealer.base import DmgDealerEffect
+from eos.fit.helper import DmgTypesTotal
 from ..base import BaseItemMixin
 
 
@@ -34,20 +35,24 @@ class DmgDealerMixin(BaseItemMixin):
                 continue
             yield effect
 
-    def get_nominal_volley(self, tgt_resists=None):
-        pass
+    def get_volley(self, tgt_resists=None):
+        volleys = []
+        for effect in self.__dd_effect_iter():
+            volley = effect.get_volley(self, tgt_resists)
+            volleys.append(volley)
+        return DmgTypesTotal._combine(*volleys)
 
-    def get_nominal_dps(self, tgt_resists=None, reload=False):
-        pass
+    def get_dps(self, tgt_resists=None, reload=False):
+        dpss = []
+        for effect in self.__dd_effect_iter():
+            dps = effect.get_dps(self, tgt_resists, reload)
+            dpss.append(dps)
+        return DmgTypesTotal._combine(*dpss)
 
-    def get_volley_vs_tgt(self, tgt_data=None, tgt_resists=None):
+    def get_applied_volley(self, tgt_data=None, tgt_resists=None):
         # TODO
         pass
 
-    def get_chance_to_hit(self, tgt_data=None):
-        # TODO
-        pass
-
-    def get_dps_vs_tgt(self, tgt_data=None, tgt_resists=None, reload=True):
+    def get_applied_dps(self, tgt_data=None, tgt_resists=None, reload=True):
         # TODO
         pass

@@ -50,6 +50,44 @@ class DmgTypes:
     def explosive(self):
         return self.__explosive
 
+    @classmethod
+    def _combine(cls, *combinees):
+        """Create new instance of container based on passed containers."""
+        em = None
+        thermal = None
+        kinetic = None
+        explosive = None
+        for combinee in combinees:
+            if em is None:
+                em = combinee.em
+            else:
+                try:
+                    em += combinee.em
+                except TypeError:
+                    pass
+            if thermal is None:
+                thermal = combinee.thermal
+            else:
+                try:
+                    thermal += combinee.thermal
+                except TypeError:
+                    pass
+            if kinetic is None:
+                kinetic = combinee.kinetic
+            else:
+                try:
+                    kinetic += combinee.kinetic
+                except TypeError:
+                    pass
+            if explosive is None:
+                explosive = combinee.explosive
+            else:
+                try:
+                    explosive += combinee.explosive
+                except TypeError:
+                    pass
+        return cls(em, thermal, kinetic, explosive)
+
     # Iterator is needed to support tuple-style unpacking
     def __iter__(self):
         yield self.em
