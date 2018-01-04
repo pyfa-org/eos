@@ -25,13 +25,15 @@ class CycleInfo:
     This class is used only when all cycles in sequence have the same
     parameters.
 
-    Args:
-        time: Time between start of one cycle and start of next one.
+    Attributes:
+        active_time: How long this effect is active.
+        inactive_time: How long this effect is inactive after its activity.
         quantity: Defines how many times cycle should be repeated.
     """
 
-    def __init__(self, time, quantity):
-        self.time = time
+    def __init__(self, active_time, inactive_time, quantity):
+        self.active_time = active_time
+        self.inactive_time = inactive_time
         self.quantity = quantity
 
 
@@ -40,7 +42,7 @@ class CycleSequence:
 
     This class can be used when cycles it describes have different parameters.
 
-    Args:
+    Attributes:
         sequence: Container-sequence, which holds cycle sequence definition in
             the form of CycleSequence of CycleInfo instances.
         quantity: Defines how many times the sequence should be repeated.

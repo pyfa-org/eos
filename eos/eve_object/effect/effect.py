@@ -19,11 +19,14 @@
 # ==============================================================================
 
 
+from math import inf
+
 from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
+from .cycle import CycleInfo, CycleSequence
 
 
 class Effect:
@@ -56,7 +59,10 @@ class Effect:
         build_status: Effect-to-modifier build status.
         modifiers: Iterable with modifiers. It's actually not effect which
             describes modifications this item does, but these child objects.
+        can_reload: Defines if this effect can be reloaded or not.
     """
+
+    can_reload = True
 
     def __init__(
             self, effect_id, category_id=None, is_offensive=False,
@@ -113,6 +119,9 @@ class Effect:
     def get_cycles_until_reload(self, _):
         return None
 
+    def get_reload_time(self, _):
+        return None
+
     # Getters for effect-referenced attributes
     def get_duration(self, item):
         raw_time = self.__safe_get_attr_value(item, self.duration_attr_id)
@@ -145,13 +154,69 @@ class Effect:
             return None
         return item.attrs.get(attr_id)
 
-    # Misc getters
-    def get_reactivation_delay(self, item):
+    # Cycle-related getters
+    def get_forced_inactive_time(self, item):
         raw_time = item.attrs.get(AttrId.module_reactivation_delay)
         try:
             return raw_time / 1000
         except TypeError:
             return raw_time
+
+    def get_cycle_parameters(self, item, reload):
+        """Get cycle parameters for specific effect on specific item.
+
+        Args:
+            item: Item which carries current effect.
+            reload: Boolean flag which controls if we should take reload into
+                consideration or not.
+
+        Returns:
+            Cycle parameters described by CycleInfo or CycleSequence class
+            instances.
+        """
+        active_time = self.get_duration(item) or 0
+        forced_inactive_time = self.get_forced_inactive_time(item) or 0
+        can_reload = self.can_reload
+        cycles_until_reload = self.get_cycles_until_reload(item) or inf
+        reload_time = self.get_reload_time(item) or 0
+        # Effects which cannot be reloaded have the same processing whether
+        # caller wants to take reload time into account or not
+        if not can_reload and cycles_until_reload < inf:
+            final_cycles = 1
+            early_cycles = cycles_until_reload - final_cycles
+            # Single cycle until effect cannot run anymore
+            if early_cycles == 0:
+                return CycleInfo(active_time, 0, 1)
+            # Multiple cycles with the same parameters
+            if forced_inactive_time == 0:
+                return CycleInfo(active_time, 0, cycles_until_reload)
+            # Multiple cycles with different parameters
+            return CycleSequence((
+                CycleInfo(active_time, forced_inactive_time, early_cycles),
+                CycleInfo(active_time, 0, final_cycles)
+            ), 1)
+        # Module cycles the same way all the time in 3 cases:
+        # 1) caller doesn't want to take into account reload time
+        # 2) effect does not have to reload anything to keep running
+        # 3) effect has enough time to reload during inactivity periods
+        if (
+            not reload or
+            cycles_until_reload == inf or
+            forced_inactive_time >= reload_time
+        ):
+            return CycleInfo(active_time, forced_inactive_time, inf)
+        # We've got to take reload into consideration
+        else:
+            final_cycles = 1
+            early_cycles = cycles_until_reload - final_cycles
+            # If effect has to reload after each its cycle, then its parameters
+            # are the same all the time
+            if early_cycles == 0:
+                return CycleInfo(active_time, reload_time, inf)
+            return CycleSequence((
+                CycleInfo(active_time, forced_inactive_time, early_cycles),
+                CycleInfo(active_time, reload_time, final_cycles)
+            ), inf)
 
     # Auxiliary methods
     def __repr__(self):
