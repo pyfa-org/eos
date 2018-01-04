@@ -55,7 +55,31 @@ class TurretDmgEffect(DmgDealerEffect):
         return DmgTypesTotal(em, thermal, kinetic, explosive)
 
     def get_dps(self, item, tgt_resists, reload):
-        return
+        cycle_time = self.get_cycle_parameters(item, reload).average_time_inf
+        if cycle_time is None:
+            return DmgTypesTotal(None, None, None, None)
+        volley = self.get_volley(item, tgt_resists)
+        em = volley.em
+        thermal = volley.thermal
+        kinetic = volley.kinetic
+        explosive = volley.explosive
+        try:
+            em /= cycle_time
+        except TypeError:
+            pass
+        try:
+            thermal /= cycle_time
+        except TypeError:
+            pass
+        try:
+            kinetic /= cycle_time
+        except TypeError:
+            pass
+        try:
+            explosive /= cycle_time
+        except TypeError:
+            pass
+        return DmgTypesTotal(em, thermal, kinetic, explosive)
 
     def get_applied_volley(self, item, tgt_data, tgt_resists):
         return

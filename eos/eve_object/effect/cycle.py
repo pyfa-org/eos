@@ -19,6 +19,11 @@
 # ==============================================================================
 
 
+import math
+
+from eos.util.repr import make_repr_str
+
+
 class CycleInfo:
     """Holds information about cycle sequence.
 
@@ -36,6 +41,27 @@ class CycleInfo:
         self.inactive_time = inactive_time
         self.quantity = quantity
 
+    @property
+    def average_time_inf(self):
+        """Get average time between cycles.
+
+        Also run a check on how many times it cycles, if it's not infinite, then
+        average time is not returned.
+        """
+        if self.quantity < math.inf:
+            return None
+        return self.active_time + self.inactive_time
+
+    def _get_cycle_quantity(self):
+        return self.quantity
+
+    def _get_time(self):
+        return (self.active_time + self.inactive_time) * self.quantity
+
+    def __repr__(self):
+        spec = ['active_time', 'inactive_time', 'quantity']
+        return make_repr_str(self, spec)
+
 
 class CycleSequence:
     """Holds information about cycle sequence.
@@ -51,3 +77,30 @@ class CycleSequence:
     def __init__(self, sequence, quantity):
         self.sequence = sequence
         self.quantity = quantity
+
+    @property
+    def average_time_inf(self):
+        """Get average time between cycles.
+
+        Also run a check on how many times it cycles, if it's not infinite, then
+        average time is not returned.
+        """
+        if self.quantity < math.inf:
+            return None
+        return self._get_time() / self._get_cycle_quantity()
+
+    def _get_cycle_quantity(self):
+        quantity = 0
+        for item in self.sequence:
+            quantity += item._get_cycle_quantity()
+        return quantity
+
+    def _get_time(self):
+        time = 0
+        for item in self.sequence:
+            time += item._get_time()
+        return time
+
+    def __repr__(self):
+        spec = ['sequence', 'quantity']
+        return make_repr_str(self, spec)
