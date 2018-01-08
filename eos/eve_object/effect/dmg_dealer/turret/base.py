@@ -19,21 +19,29 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
+
 from eos.const.eve import AttrId
 from eos.fit.stats_container import DmgTypesTotal
 from ..base import DmgDealerEffect
 
 
-class TurretDmgEffect(DmgDealerEffect):
+class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
+
+    @abstractmethod
+    def _get_base_dmg_item(self, item):
+        """Get item which carries base damage attributes."""
+        ...
 
     def get_volley(self, item, tgt_resists):
-        charge = self.get_charge(item)
-        if charge is None:
+        base_dmg_item = self._get_base_dmg_item(item)
+        if base_dmg_item is None:
             return DmgTypesTotal(None, None, None, None)
-        em = charge.attrs.get(AttrId.em_dmg)
-        thermal = charge.attrs.get(AttrId.thermal_dmg)
-        kinetic = charge.attrs.get(AttrId.kinetic_dmg)
-        explosive = charge.attrs.get(AttrId.explosive_dmg)
+        em = base_dmg_item.attrs.get(AttrId.em_dmg)
+        thermal = base_dmg_item.attrs.get(AttrId.thermal_dmg)
+        kinetic = base_dmg_item.attrs.get(AttrId.kinetic_dmg)
+        explosive = base_dmg_item.attrs.get(AttrId.explosive_dmg)
         multiplier = item.attrs.get(AttrId.dmg_multiplier)
         if multiplier is not None:
             try:

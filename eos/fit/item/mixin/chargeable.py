@@ -20,19 +20,10 @@
 
 
 from eos.const.eve import AttrId
-from eos.const.eve import EffectId
 from eos.fit.item import Charge
 from eos.fit.item_container import ItemDescriptor
+from eos.util.float import float_to_int
 from .base import BaseItemMixin
-
-
-def _float_to_int(value):
-    """Convert number to integer, taking care of float errors.
-
-    Without its use float calculation representation may lead to undesirable
-    results, e.g. int(2.3 / 0.1) = 22.
-    """
-    return int(round(value, 9))
 
 
 class ChargeableMixin(BaseItemMixin):
@@ -80,67 +71,19 @@ class ChargeableMixin(BaseItemMixin):
         charge_volume = self.charge.attrs.get(AttrId.volume)
         if container_capacity is None or charge_volume is None:
             return None
-        charges = _float_to_int(container_capacity / charge_volume)
+        charges = float_to_int(container_capacity / charge_volume)
         return charges
 
     @property
     def charged_cycles(self):
-        """Quantity of cycles this container can run until charges are depleted.
-
-        If quantity of cycles can vary, mean value if taken (t2 laser ammo).
-        Cycles, when quantity of charges consumed per cycle is more than left in
-        container, are ignored (possible with ancillary armor repairers). None
-        is returned if container can cycle without ammo consumption.
-        """
-        # Various item types consume charges during cycle, detect them based on
-        # presence of charge_rate attribute in item type (modified attribute
-        # value is always possible to fetch, as it has base value, so it's not
-        # reliable way to detect it)
-        if AttrId.charge_rate in self._type_attrs:
-            return self.__get_ammo_cycles()
-        # Detect crystal-based item types using effects
-        if self._type_default_effect_id in (
-            EffectId.target_attack,
-            EffectId.mining_laser
-        ):
-            return self.__get_crystal_mean_cycles()
-        return None
-
-    def __get_ammo_cycles(self):
-        charge_rate = self.attrs.get(AttrId.charge_rate)
-        if not charge_rate or self.charge_quantity is None:
-            return None
-        cycles = self.charge_quantity // int(charge_rate)
-        return cycles
-
-    def __get_crystal_mean_cycles(self):
-        charge_attrs = self.charge.attrs
-        damageable = charge_attrs.get(AttrId.crystals_get_damaged)
-        hp = charge_attrs.get(AttrId.hp)
-        chance = charge_attrs.get(AttrId.crystal_volatility_chance)
-        dmg = charge_attrs.get(AttrId.crystal_volatility_dmg)
-        if (
-            not damageable or
-            hp is None or
-            chance is None or
-            dmg is None or
-            self.charge_quantity is None
-        ):
-            return None
-        cycles = _float_to_int(hp / dmg / chance) * self.charge_quantity
-        return cycles
+        """Quantity of cycles item can run until charges are depleted."""
+        return self._type_default_effect.get_cycles_until_reload(self)
 
     @property
     def reload_time(self):
         """Returns item reload time in seconds."""
-        # Return hardcoded 1.0 if item type has target_attack effect (various
-        # lasers), else fetch reload time attribute from item
-        if self._type_default_effect_id in (
-            EffectId.target_attack,
-            EffectId.mining_laser
-        ):
-            return 1.0
-        reload_ms = self.attrs.get(AttrId.reload_time)
-        if reload_ms is None:
-            return None
-        return reload_ms / 1000
+        time_ms = self.attrs.get(AttrId.reload_time)
+        try:
+            return time_ms / 1000
+        except TypeError:
+            return time_ms

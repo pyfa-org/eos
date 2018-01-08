@@ -19,22 +19,26 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttrId
-from eos.const.eve import EffectId
-from .base import TurretDmgEffect
+"""
+Sometimes use of floats may lead to undesirable results, e.g.
+
+  int(2.3 / 0.1) = 22.
+
+We cannot afford to use different number representations (e.g. representations
+provided by decimal or fraction modules), thus consequences are worked around by
+this module.
+"""
 
 
-class ProjectileFired(TurretDmgEffect):
+import sys
 
-    id = EffectId.projectile_fired
 
-    def _get_base_dmg_item(self, item):
-        return self.get_charge(item)
+# As we will be rounding numbers after operations (which introduce higher error
+# than base float representation error), we need to keep less significant
+# numbers than for single float number w/o operations
+keep_digits = int(sys.float_info.dig / 2)
 
-    def get_cycles_until_reload(self, item):
-        charge_quantity = item.charge_quantity
-        charge_rate = item.attrs.get(AttrId.charge_rate)
-        if not charge_rate or charge_quantity is None:
-            return None
-        cycles = charge_quantity // int(charge_rate)
-        return cycles
+
+def float_to_int(value):
+    """Convert number to integer, taking care of float errors."""
+    return int(round(value, keep_digits))

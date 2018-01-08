@@ -59,10 +59,7 @@ class Effect:
         build_status: Effect-to-modifier build status.
         modifiers: Iterable with modifiers. It's actually not effect which
             describes modifications this item does, but these child objects.
-        can_reload: Defines if this effect can be reloaded or not.
     """
-
-    can_reload = True
 
     def __init__(
             self, effect_id, category_id=None, is_offensive=False,
@@ -108,28 +105,40 @@ class Effect:
     def get_charge(self, item):
         """Get charge which should be used by this effect."""
         if self.get_autocharge_type_id(item) is not None:
-            charge = item.autocharges.get(self.id)
-        else:
-            charge = item.charge
-        return charge
+            return item.autocharges.get(self.id)
+        try:
+            return item.charge
+        except AttributeError:
+            return None
 
-    def get_autocharge_type_id(self, _):
+    def get_autocharge_type_id(self, item):
+        """Return ID of type which should be used as base for autocharge.
+
+        Autocharges are automatically loaded charges which are defined by
+        effects. If None is returned, it means this effect defines no
+        autocharge.
+        """
         return None
 
-    def get_cycles_until_reload(self, _):
-        return None
+    def get_cycles_until_reload(self, item):
+        """Get how many cycles effect can run until it has to be reloaded."""
+        return inf
 
-    def get_reload_time(self, _):
-        return None
+    def get_reload_time(self, item):
+        """Get effect reload time in seconds.
+
+        If None is returned, effect cannot be reloaded.
+        """
+        return item.reload_time
 
     # Getters for effect-referenced attributes
     def get_duration(self, item):
-        raw_time = self.__safe_get_attr_value(item, self.duration_attr_id)
+        time_ms = self.__safe_get_attr_value(item, self.duration_attr_id)
         # Time is specified in milliseconds, but we want to return seconds
         try:
-            return raw_time / 1000
+            return time_ms / 1000
         except TypeError:
-            return raw_time
+            return time_ms
 
     def get_cap_use(self, item):
         return self.__safe_get_attr_value(item, self.discharge_attr_id)
@@ -156,11 +165,11 @@ class Effect:
 
     # Cycle-related getters
     def get_forced_inactive_time(self, item):
-        raw_time = item.attrs.get(AttrId.module_reactivation_delay)
+        time_ms = item.attrs.get(AttrId.module_reactivation_delay)
         try:
-            return raw_time / 1000
+            return time_ms / 1000
         except TypeError:
-            return raw_time
+            return time_ms
 
     def get_cycle_parameters(self, item, reload):
         """Get cycle parameters for specific effect on specific item.
@@ -176,12 +185,11 @@ class Effect:
         """
         active_time = self.get_duration(item) or 0
         forced_inactive_time = self.get_forced_inactive_time(item) or 0
-        can_reload = self.can_reload
-        cycles_until_reload = self.get_cycles_until_reload(item) or inf
-        reload_time = self.get_reload_time(item) or 0
+        cycles_until_reload = self.get_cycles_until_reload(item)
+        reload_time = self.get_reload_time(item)
         # Effects which cannot be reloaded have the same processing whether
         # caller wants to take reload time into account or not
-        if not can_reload and cycles_until_reload < inf:
+        if reload_time is None and cycles_until_reload < inf:
             final_cycles = 1
             early_cycles = cycles_until_reload - final_cycles
             # Single cycle until effect cannot run anymore
