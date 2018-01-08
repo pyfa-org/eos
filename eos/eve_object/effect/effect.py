@@ -129,7 +129,10 @@ class Effect:
 
         If None is returned, effect cannot be reloaded.
         """
-        return item.reload_time
+        try:
+            return item.reload_time
+        except AttributeError:
+            return None
 
     # Getters for effect-referenced attributes
     def get_duration(self, item):
