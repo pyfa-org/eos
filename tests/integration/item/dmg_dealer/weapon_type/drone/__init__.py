@@ -17,28 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ==============================================================================
-
-
-from abc import ABCMeta
-from abc import abstractmethod
-
-from eos.eve_object.effect import Effect
-
-
-class DmgDealerEffect(Effect, metaclass=ABCMeta):
-
-    @abstractmethod
-    def get_volley(self, item):
-        ...
-
-    @abstractmethod
-    def get_dps(self, item, reload):
-        ...
-
-    @abstractmethod
-    def get_applied_volley(self, item, tgt_data):
-        ...
-
-    @abstractmethod
-    def get_applied_dps(self, item, tgt_data, reload):
-        ...

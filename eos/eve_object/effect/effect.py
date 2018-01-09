@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from math import inf
+import math
 
 from eos.const.eos import State
 from eos.const.eve import AttrId
@@ -122,7 +122,7 @@ class Effect:
 
     def get_cycles_until_reload(self, item):
         """Get how many cycles effect can run until it has to be reloaded."""
-        return inf
+        return math.inf
 
     def get_reload_time(self, item):
         """Get effect reload time in seconds.
@@ -192,7 +192,7 @@ class Effect:
         reload_time = self.get_reload_time(item)
         # Effects which cannot be reloaded have the same processing whether
         # caller wants to take reload time into account or not
-        if reload_time is None and cycles_until_reload < inf:
+        if reload_time is None and cycles_until_reload < math.inf:
             final_cycles = 1
             early_cycles = cycles_until_reload - final_cycles
             # Single cycle until effect cannot run anymore
@@ -212,10 +212,10 @@ class Effect:
         # 3) effect has enough time to reload during inactivity periods
         if (
             not reload or
-            cycles_until_reload == inf or
+            cycles_until_reload == math.inf or
             forced_inactive_time >= reload_time
         ):
-            return CycleInfo(active_time, forced_inactive_time, inf)
+            return CycleInfo(active_time, forced_inactive_time, math.inf)
         # We've got to take reload into consideration
         else:
             final_cycles = 1
@@ -223,11 +223,11 @@ class Effect:
             # If effect has to reload after each its cycle, then its parameters
             # are the same all the time
             if early_cycles == 0:
-                return CycleInfo(active_time, reload_time, inf)
+                return CycleInfo(active_time, reload_time, math.inf)
             return CycleSequence((
                 CycleInfo(active_time, forced_inactive_time, early_cycles),
                 CycleInfo(active_time, reload_time, final_cycles)
-            ), inf)
+            ), math.inf)
 
     # Auxiliary methods
     def __repr__(self):

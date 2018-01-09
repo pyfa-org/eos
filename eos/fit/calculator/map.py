@@ -19,10 +19,10 @@
 # ==============================================================================
 
 
+import math
 from collections import namedtuple
 from itertools import chain
 from logging import getLogger
-from math import exp
 
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -42,7 +42,7 @@ logger = getLogger(__name__)
 
 
 # Stacking penalty base constant, used in attribute calculations
-PENALTY_BASE = 1 / exp((1 / 2.67) ** 2)
+PENALTY_BASE = 1 / math.exp((1 / 2.67) ** 2)
 
 # Items belonging to these categories never have their effects stacking
 # penalized

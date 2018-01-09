@@ -19,10 +19,9 @@
 # ==============================================================================
 
 
+import math
 from copy import copy
 from logging import getLogger
-from math import ceil
-from math import floor
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
@@ -233,7 +232,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             ticks_to_ignore = min(
                 self.__estimate_initial_adaptation_ticks(tick_history),
                 # Never ignore more than half of the history
-                floor(len(tick_history) / 2))
+                math.floor(len(tick_history) / 2))
 
             avg_resos = self.__get_avg_resos(tick_history[ticks_to_ignore:])
             for item, resos in avg_resos.items():
@@ -386,7 +385,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         for item in self.__data:
             # Calculate how many cycles it would take for highest resistance
             # (lowest resonance) to be exhausted
-            exhaustion_cycles[item] = max(ceil(
+            exhaustion_cycles[item] = max(math.ceil(
                 (1 - item.attrs._get_without_overrides(attr_id)) /
                 (item.attrs[AttrId.resist_shift_amount] / 100)
             ) for attr_id in res_attr_ids)
@@ -397,7 +396,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             key=lambda i: exhaustion_cycles[i] * self.__get_rah_duration(i))
         # Multiply quantity of resistance exhaustion cycles by 1.5, to give RAH
         # more time for 'finer' adjustments
-        slowest_cycles = ceil(exhaustion_cycles[slowest_item] * 1.5)
+        slowest_cycles = math.ceil(exhaustion_cycles[slowest_item] * 1.5)
         if slowest_cycles == 0:
             return 0
         # We rely on cycling time attribute to be zero in order to determine

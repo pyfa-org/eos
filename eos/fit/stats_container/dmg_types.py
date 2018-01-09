@@ -51,41 +51,60 @@ class DmgTypes:
         return self.__explosive
 
     @classmethod
-    def _combine(cls, *combinees):
+    def _combine(cls, dmg_containers, tgt_resists=None):
         """Create new instance of container based on passed containers."""
         em = None
         thermal = None
         kinetic = None
         explosive = None
-        for combinee in combinees:
+        # Sum up passed damage stats
+        for dmg_container in dmg_containers:
             if em is None:
-                em = combinee.em
+                em = dmg_container.em
             else:
                 try:
-                    em += combinee.em
+                    em += dmg_container.em
                 except TypeError:
                     pass
             if thermal is None:
-                thermal = combinee.thermal
+                thermal = dmg_container.thermal
             else:
                 try:
-                    thermal += combinee.thermal
+                    thermal += dmg_container.thermal
                 except TypeError:
                     pass
             if kinetic is None:
-                kinetic = combinee.kinetic
+                kinetic = dmg_container.kinetic
             else:
                 try:
-                    kinetic += combinee.kinetic
+                    kinetic += dmg_container.kinetic
                 except TypeError:
                     pass
             if explosive is None:
-                explosive = combinee.explosive
+                explosive = dmg_container.explosive
             else:
                 try:
-                    explosive += combinee.explosive
+                    explosive += dmg_container.explosive
                 except TypeError:
                     pass
+        # Reduce resulting damage by resists, if needed
+        if tgt_resists is not None:
+            try:
+                em *= 1 - tgt_resists.em
+            except TypeError:
+                pass
+            try:
+                thermal *= 1 - tgt_resists.thermal
+            except TypeError:
+                pass
+            try:
+                kinetic *= 1 - tgt_resists.kinetic
+            except TypeError:
+                pass
+            try:
+                explosive *= 1 - tgt_resists.explosive
+            except TypeError:
+                pass
         return cls(em, thermal, kinetic, explosive)
 
     # Iterator is needed to support tuple-style unpacking

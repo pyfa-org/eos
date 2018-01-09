@@ -38,21 +38,19 @@ class DmgDealerMixin(BaseItemMixin):
     def get_volley(self, tgt_resists=None):
         volleys = []
         for effect in self.__dd_effect_iter():
-            volley = effect.get_volley(self, tgt_resists)
+            volley = effect.get_volley(self)
             volleys.append(volley)
-        return DmgTypesTotal._combine(*volleys)
+        return DmgTypesTotal._combine(volleys, tgt_resists)
 
-    def get_dps(self, tgt_resists=None, reload=False):
+    def get_dps(self, reload=False, tgt_resists=None):
         dpss = []
         for effect in self.__dd_effect_iter():
-            dps = effect.get_dps(self, tgt_resists, reload)
+            dps = effect.get_dps(self, reload)
             dpss.append(dps)
-        return DmgTypesTotal._combine(*dpss)
+        return DmgTypesTotal._combine(dpss, tgt_resists)
 
     def get_applied_volley(self, tgt_data=None, tgt_resists=None):
-        # TODO
-        pass
+        raise NotImplementedError
 
-    def get_applied_dps(self, tgt_data=None, tgt_resists=None, reload=True):
-        # TODO
-        pass
+    def get_applied_dps(self, reload=False, tgt_data=None, tgt_resists=None):
+        raise NotImplementedError

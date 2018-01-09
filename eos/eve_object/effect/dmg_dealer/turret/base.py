@@ -34,7 +34,7 @@ class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
         """Get item which carries base damage attributes."""
         ...
 
-    def get_volley(self, item, tgt_resists):
+    def get_volley(self, item):
         base_dmg_item = self._get_base_dmg_item(item)
         if base_dmg_item is None:
             return DmgTypesTotal(None, None, None, None)
@@ -62,11 +62,11 @@ class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
                 pass
         return DmgTypesTotal(em, thermal, kinetic, explosive)
 
-    def get_dps(self, item, tgt_resists, reload):
+    def get_dps(self, item, reload):
         cycle_time = self.get_cycle_parameters(item, reload).average_time_inf
         if cycle_time is None:
             return DmgTypesTotal(None, None, None, None)
-        volley = self.get_volley(item, tgt_resists)
+        volley = self.get_volley(item)
         em = volley.em
         thermal = volley.thermal
         kinetic = volley.kinetic
@@ -89,8 +89,8 @@ class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
             pass
         return DmgTypesTotal(em, thermal, kinetic, explosive)
 
-    def get_applied_volley(self, item, tgt_data, tgt_resists):
+    def get_applied_volley(self, item, tgt_data):
         return
 
-    def get_applied_dps(self, item, tgt_data, tgt_resists, reload):
+    def get_applied_dps(self, item, tgt_data, reload):
         return

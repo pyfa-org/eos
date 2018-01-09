@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from math import inf
+import math
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
@@ -62,14 +62,14 @@ class TargetAttack(TurretDmgEffect):
         # it means that either autocharge or item itself provides base damage
         # stats. In either case, effect can be cycled infinitely
         if base_dmg_item is not charge:
-            return inf
+            return math.inf
         # If charge should carry damage stats but charge is not there, effect
         # cannot cycle
         if charge is None:
             return 0
         # Non-damageable crystals can cycle infinitely
         if not charge.attrs.get(AttrId.crystals_get_damaged):
-            return inf
+            return math.inf
         # Damageable crystals must have all damage-related stats to calculate
         # how many times they can cycle
         try:
