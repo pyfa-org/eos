@@ -266,8 +266,7 @@ class TestChargeGroup(RestrictionTestCase):
         autocharge_type = self.mktype(group_id=1008)
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={

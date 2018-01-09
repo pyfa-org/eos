@@ -43,8 +43,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         return self.mkeffect(
             src=src,
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
 
     def mkmod_filter_item(self, src_attr_id, tgt_attr_id):
         return self.mkmod(

@@ -42,8 +42,7 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.effect = self.mkeffect(
             effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.target,
-            duration_attr_id=self.cycle_attr.id,
-            customize=True)
+            duration_attr_id=self.cycle_attr.id)
 
     def test_volley_generic(self):
         fit = Fit()

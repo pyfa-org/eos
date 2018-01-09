@@ -87,8 +87,7 @@ class RahSimTestCase(IntegrationTestCase):
         self.rah_effect = self.mkeffect(
             effect_id=EffectId.adaptive_armor_hardener,
             category_id=EffectCategoryId.active,
-            duration_attr_id=self.cycle_attr.id,
-            customize=True)
+            duration_attr_id=self.cycle_attr.id)
         heat_modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,

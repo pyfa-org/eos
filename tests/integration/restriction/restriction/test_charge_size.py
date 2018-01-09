@@ -136,8 +136,7 @@ class TestChargeSize(RestrictionTestCase):
         autocharge_type = self.mktype(attrs={AttrId.charge_size: 2})
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={

@@ -69,10 +69,10 @@ class DmgDealerRegister(BaseStatRegister):
         Returns:
             DmgTypesTotal helper container instance.
         """
-        dmgs = []
+        dmg_containers = []
         for item, effect in self.__dealers:
             if item_filter is not None and not item_filter(item):
                 continue
-            dmg = getattr(effect, method_name)(*args, **kwargs)
-            dmgs.append(dmg)
-        return DmgTypesTotal._combine(*dmgs)
+            dmg_container = getattr(effect, method_name)(*args, **kwargs)
+            dmg_containers.append(dmg_container)
+        return DmgTypesTotal._combine(dmg_containers)

@@ -46,8 +46,7 @@ class TestItemDmgTurretDpsProjectile(ItemMixinTestCase):
         self.effect = self.mkeffect(
             effect_id=EffectId.projectile_fired,
             category_id=EffectCategoryId.target,
-            duration_attr_id=self.cycle_attr.id,
-            customize=True)
+            duration_attr_id=self.cycle_attr.id)
 
     def test_dps_no_reload(self):
         fit = Fit()

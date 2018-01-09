@@ -60,8 +60,7 @@ class TestAutocharge(CalculatorTestCase):
             effects=[autocharge_effect])
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={self.autocharge_attr_id: autocharge_type.id},
@@ -89,8 +88,7 @@ class TestAutocharge(CalculatorTestCase):
             effects=[autocharge_effect])
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={self.autocharge_attr_id: autocharge_type.id},
@@ -118,8 +116,7 @@ class TestAutocharge(CalculatorTestCase):
             effects=[autocharge_effect])
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={self.autocharge_attr_id: autocharge_type.id},
@@ -147,8 +144,7 @@ class TestAutocharge(CalculatorTestCase):
             effects=[autocharge_effect])
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={
@@ -174,8 +170,7 @@ class TestAutocharge(CalculatorTestCase):
             modifiers=[container_modifier])
         container_effect_autocharge = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={
@@ -206,8 +201,7 @@ class TestAutocharge(CalculatorTestCase):
             modifiers=[container_modifier])
         container_effect_autocharge = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={
@@ -241,8 +235,7 @@ class TestAutocharge(CalculatorTestCase):
         charge = Charge(self.mktype(attrs={self.tgt_attr.id: 10}).id)
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={self.autocharge_attr_id: autocharge_type.id},
@@ -269,8 +262,7 @@ class TestAutocharge(CalculatorTestCase):
             effects=[charge_effect]).id)
         container_effect = self.mkeffect(
             effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
-            customize=True)
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
             self.mktype(
                 attrs={self.autocharge_attr_id: autocharge_type.id},
