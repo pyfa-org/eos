@@ -34,45 +34,43 @@ class DmgDealerRegister(BaseStatRegister):
 
     def __init__(self, msg_broker):
         # Format: {(item, effect), ...}
-        self.__dealers = set()
+        self.__dmg_dealers = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
+    def get_volley(self, item_filter, tgt_resists):
+        volleys = []
+        for item, effect in self.__dd_iter(item_filter):
+            volley = effect.get_volley(item)
+            volleys.append(volley)
+        return DmgTypesTotal._combine(volleys, tgt_resists)
+
+    def get_dps(self, item_filter, reload, tgt_resists):
+        dpss = []
+        for item, effect in self.__dd_iter(item_filter):
+            dps = effect.get_dps(item, reload)
+            dpss.append(dps)
+        return DmgTypesTotal._combine(dpss, tgt_resists)
+
+    def __dd_iter(self, item_filter):
+        for item, effect in self.__dmg_dealers:
+            if item_filter is None or item_filter(item):
+                yield item, effect
+
+    # Message handling
     def _handle_effects_started(self, msg):
         item_effects = msg.item._type_effects
         for effect_id in msg.effect_ids:
             effect = item_effects[effect_id]
             if isinstance(effect, DmgDealerEffect):
-                self.__dealers.add((msg.item, effect))
+                self.__dmg_dealers.add((msg.item, effect))
 
     def _handle_effects_stopped(self, msg):
         item_effects = msg.item._type_effects
         for effect_id in msg.effect_ids:
             effect = item_effects[effect_id]
             if isinstance(effect, DmgDealerEffect):
-                self.__dealers.remove((msg.item, effect))
+                self.__dmg_dealers.remove((msg.item, effect))
 
     _handler_map = {
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped}
-
-    def _collect_dmg_stats(self, item_filter, method_name, *args, **kwargs):
-        """Fetch damage stats from all registered damage dealers.
-
-        Args:
-            item_filter: When iterating over fit items, this function is called.
-                If evaluated as True, this item is taken into consideration,
-                else not. If argument is None, all items 'pass filter'.
-            method_name, *args, **kwargs: Method name, which will be called for
-                each item to request its damage stats. Args and kwargs are
-                arguments which are passed to this method.
-
-        Returns:
-            DmgTypesTotal helper container instance.
-        """
-        dmg_containers = []
-        for item, effect in self.__dealers:
-            if item_filter is not None and not item_filter(item):
-                continue
-            dmg_container = getattr(effect, method_name)(*args, **kwargs)
-            dmg_containers.append(dmg_container)
-        return DmgTypesTotal._combine(dmg_containers)

@@ -143,17 +143,15 @@ class StatService(BaseSubscriber):
                 consideration, else not. If argument is None, all items 'pass
                 filter'. By default None.
             tgt_resists (optional): ResistanceProfile helper container instance.
-                If specified, effective damage against these  resistances is
+                If specified, effective damage against these resistances is
                 calculated.
 
         Returns:
             DmgTypesTotal helper container instance.
         """
-        return self.__dd_reg._collect_dmg_stats(
-            item_filter, 'get_volley', tgt_resists=tgt_resists)
+        return self.__dd_reg.get_volley(item_filter, tgt_resists)
 
-    def get_dps(
-            self, item_filter=None, tgt_resists=None, reload=False):
+    def get_dps(self, item_filter=None, reload=False, tgt_resists=None):
         """
         Get nominal DPS of the fit.
 
@@ -162,17 +160,16 @@ class StatService(BaseSubscriber):
                 is called. If evaluated as True, this item is taken into
                 consideration, else not. If argument is None, all items 'pass
                 filter'. By default None.
+            reload (optional): Boolean flag which controls if reload should be
+                taken into consideration or not. By default, reload is ignored.
             tgt_resists (optional): ResistanceProfile helper container instance.
                 If specified, effective damage against these resistances is
                 calculated.
-            reload (optional): Boolean flag which controls if reload should be
-                taken into consideration or not. By default, reload is ignored.
 
         Returns:
             DmgTypesTotal helper container instance.
         """
-        return self.__dd_reg._collect_dmg_stats(
-            item_filter, 'get_dps', tgt_resists=tgt_resists, reload=reload)
+        return self.__dd_reg.get_dps(item_filter, reload, tgt_resists)
 
     @property
     def agility_factor(self):
