@@ -19,48 +19,40 @@
 # ==============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
-
 from eos.const.eve import AttrId
+from eos.const.eve import EffectId
 from eos.fit.stats_container import DmgTypesTotal
 from ..base import DmgDealerEffect
 
 
-class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
-
-    @abstractmethod
-    def _get_base_dmg_item(self, item):
-        """Get item which carries base damage attributes."""
-        ...
+class DoomsdayDirect(DmgDealerEffect):
 
     def get_volley(self, item):
-        base_dmg_item = self._get_base_dmg_item(item)
-        if base_dmg_item is None:
-            return DmgTypesTotal(None, None, None, None)
-        em = base_dmg_item.attrs.get(AttrId.em_dmg)
-        thermal = base_dmg_item.attrs.get(AttrId.thermal_dmg)
-        kinetic = base_dmg_item.attrs.get(AttrId.kinetic_dmg)
-        explosive = base_dmg_item.attrs.get(AttrId.explosive_dmg)
-        multiplier = item.attrs.get(AttrId.dmg_multiplier)
-        if multiplier is not None:
-            try:
-                em *= multiplier
-            except TypeError:
-                pass
-            try:
-                thermal *= multiplier
-            except TypeError:
-                pass
-            try:
-                kinetic *= multiplier
-            except TypeError:
-                pass
-            try:
-                explosive *= multiplier
-            except TypeError:
-                pass
+        em = item.attrs.get(AttrId.em_dmg)
+        thermal = item.attrs.get(AttrId.thermal_dmg)
+        kinetic = item.attrs.get(AttrId.kinetic_dmg)
+        explosive = item.attrs.get(AttrId.explosive_dmg)
         return DmgTypesTotal(em, thermal, kinetic, explosive)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError
+
+
+class SuperWeaponAmarr(DoomsdayDirect):
+
+    id = EffectId.super_weapon_amarr
+
+
+class SuperWeaponCaldari(DoomsdayDirect):
+
+    id = EffectId.super_weapon_caldari
+
+
+class SuperWeaponGallente(DoomsdayDirect):
+
+    id = EffectId.super_weapon_gallente
+
+
+class SuperWeaponMinmatar(DoomsdayDirect):
+
+    id = EffectId.super_weapon_minmatar

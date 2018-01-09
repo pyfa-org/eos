@@ -107,6 +107,36 @@ class DmgTypes:
                 pass
         return cls(em, thermal, kinetic, explosive)
 
+    @classmethod
+    def _derive(cls, dmg_types, func):
+        """Create new damage type instance based on already existing one.
+
+        Args:
+            dmg_types: Damage type container which serves as base data.
+            func: Modification to apply to each damage type value.
+        """
+        em = dmg_types.em
+        thermal = dmg_types.thermal
+        kinetic = dmg_types.kinetic
+        explosive = dmg_types.explosive
+        try:
+            em = func(em)
+        except TypeError:
+            pass
+        try:
+            thermal = func(thermal)
+        except TypeError:
+            pass
+        try:
+            kinetic = func(kinetic)
+        except TypeError:
+            pass
+        try:
+            explosive = func(explosive)
+        except TypeError:
+            pass
+        return cls(em, thermal, kinetic, explosive)
+
     # Iterator is needed to support tuple-style unpacking
     def __iter__(self):
         yield self.em

@@ -29,7 +29,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgDoomsday(ItemMixinTestCase):
+class TestItemDmgDoomsdayDirect(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)

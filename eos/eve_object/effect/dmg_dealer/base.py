@@ -23,6 +23,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 from eos.eve_object.effect import Effect
+from eos.fit.stats_container import DmgTypesTotal
 
 
 class DmgDealerEffect(Effect, metaclass=ABCMeta):
@@ -31,14 +32,22 @@ class DmgDealerEffect(Effect, metaclass=ABCMeta):
     def get_volley(self, item):
         ...
 
-    @abstractmethod
     def get_dps(self, item, reload):
-        ...
+        cycle_time = self.get_cycle_parameters(item, reload).average_time_inf
+        if cycle_time is None:
+            return DmgTypesTotal(None, None, None, None)
+        volley = self.get_volley(item)
+        dps = DmgTypesTotal._derive(volley, lambda d: d / cycle_time)
+        return dps
 
     @abstractmethod
     def get_applied_volley(self, item, tgt_data):
         ...
 
-    @abstractmethod
     def get_applied_dps(self, item, tgt_data, reload):
-        ...
+        cycle_time = self.get_cycle_parameters(item, reload).average_time_inf
+        if cycle_time is None:
+            return DmgTypesTotal(None, None, None, None)
+        volley = self.get_applied_volley(item, tgt_data)
+        dps = DmgTypesTotal._derive(volley, lambda d: d / cycle_time)
+        return dps

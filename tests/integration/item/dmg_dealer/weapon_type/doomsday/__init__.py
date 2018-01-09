@@ -17,28 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ==============================================================================
-
-
-from eos.const.eve import AttrId
-from eos.const.eve import EffectId
-from eos.eve_object.effect import EffectFactory
-from eos.fit.stats_container import DmgTypesTotal
-from .base import DmgDealerEffect
-
-
-class EmpWave(DmgDealerEffect):
-
-    id = EffectId.emp_wave
-
-    def get_volley(self, item):
-        em = item.attrs.get(AttrId.em_dmg)
-        thermal = item.attrs.get(AttrId.thermal_dmg)
-        kinetic = item.attrs.get(AttrId.kinetic_dmg)
-        explosive = item.attrs.get(AttrId.explosive_dmg)
-        return DmgTypesTotal(em, thermal, kinetic, explosive)
-
-    def get_applied_volley(self, item, tgt_data):
-        raise NotImplementedError
-
-
-EffectFactory.reg_cust_class_by_id(EmpWave)
