@@ -75,7 +75,8 @@ class TestModifierPython(CalculatorTestCase):
             category_id=EffectCategoryId.online,
             modifiers=(TestPythonModifier(),))
         self.online_effect = self.mkeffect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
         self.fit.ship = Ship(self.mktype(attrs={attr3.id: 3}).id)
 
     def test_enabling(self):

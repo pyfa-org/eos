@@ -42,9 +42,14 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
 
     def test_ammo_generic(self):
         fit = Fit()
+        effect = self.mkeffect(
+            effect_id=EffectId.projectile_fired,
+            category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(attrs={
             AttrId.capacity: 100.0,
-            AttrId.charge_rate: 2.0}).id)
+            AttrId.charge_rate: 2.0},
+            effects=[effect],
+            default_effect=effect).id)
         item.charge = Charge(self.mktype(attrs={AttrId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification

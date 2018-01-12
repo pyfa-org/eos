@@ -76,7 +76,11 @@ class ChargeableMixin(BaseItemMixin):
 
     @property
     def cycles_until_reload(self):
-        """Quantity of cycles item can run until charges are depleted."""
+        """Quantity of cycles item can run until charges are depleted.
+
+        Relays calculation to effect, because final value depends on effect
+        type.
+        """
         item_type = self._type
         if item_type is None:
             return None

@@ -71,17 +71,23 @@ class TestStateSwitching(CalculatorTestCase):
             operator=ModOperator.post_mul,
             src_attr_id=src_attr3.id)
         effect_cat_offline = self.mkeffect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier_off])
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier_off])
         effect_cat_online = self.mkeffect(
-            category_id=EffectCategoryId.online, modifiers=[modifier_on])
+            category_id=EffectCategoryId.online,
+            modifiers=[modifier_on])
         effect_cat_active = self.mkeffect(
-            category_id=EffectCategoryId.active, modifiers=[modifier_act])
+            category_id=EffectCategoryId.active,
+            modifiers=[modifier_act])
         effect_cat_overload = self.mkeffect(
-            category_id=EffectCategoryId.overload, modifiers=[modifier_over])
+            category_id=EffectCategoryId.overload,
+            modifiers=[modifier_over])
         online_effect = self.mkeffect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
         effect_disabled = self.mkeffect(
-            category_id=EffectCategoryId.online, modifiers=[modifier_disabled])
+            category_id=EffectCategoryId.online,
+            modifiers=[modifier_disabled])
         self.item = ModuleHigh(self.mktype(
             attrs={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1, src_attr2.id: 1.3,

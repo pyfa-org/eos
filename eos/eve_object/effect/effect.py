@@ -25,7 +25,6 @@ from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.util.cached_property import cached_property
-from eos.util.float import float_to_int
 from eos.util.repr import make_repr_str
 from .cycle import CycleInfo, CycleSequence
 
@@ -191,6 +190,9 @@ class Effect:
         forced_inactive_time = self.get_forced_inactive_time(item) or 0
         cycles_until_reload = self.get_cycles_until_reload(item)
         reload_time = self.get_reload_time(item)
+        # Module cannot cycle at all
+        if cycles_until_reload < 1:
+            return None
         # Effects which cannot be reloaded have the same processing whether
         # caller wants to take reload time into account or not
         if reload_time is None and cycles_until_reload < math.inf:

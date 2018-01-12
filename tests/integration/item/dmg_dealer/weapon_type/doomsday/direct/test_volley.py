@@ -29,7 +29,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgDoomsdayDirect(ItemMixinTestCase):
+class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
@@ -143,33 +143,6 @@ class TestItemDmgDoomsdayDirect(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_multiplier(self):
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
-        fit = Fit()
-        item = ModuleHigh(
-            self.mktype(
-                attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000,
-                    AttrId.dmg_multiplier: 5.5},
-                effects=[self.effect_amarr],
-                default_effect=self.effect_amarr).id,
-            state=State.active)
-        fit.modules.high.append(item)
-        # Verification
-        volley = item.get_volley()
-        self.assertAlmostEqual(volley.em, 52000)
-        self.assertAlmostEqual(volley.thermal, 63000)
-        self.assertAlmostEqual(volley.kinetic, 74000)
-        self.assertAlmostEqual(volley.explosive, 85000)
-        self.assertAlmostEqual(volley.total, 274000)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
     def test_volley_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
@@ -217,56 +190,6 @@ class TestItemDmgDoomsdayDirect(ItemMixinTestCase):
         self.assertIsNone(volley.kinetic)
         self.assertIsNone(volley.explosive)
         self.assertIsNone(volley.total)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_dps_no_reload(self):
-        fit = Fit()
-        item = ModuleHigh(
-            self.mktype(
-                attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000},
-                effects=[self.effect_amarr],
-                default_effect=self.effect_amarr).id,
-            state=State.active)
-        fit.modules.high.append(item)
-        # Verification
-        dps = item.get_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 208)
-        self.assertAlmostEqual(dps.thermal, 252)
-        self.assertAlmostEqual(dps.kinetic, 296)
-        self.assertAlmostEqual(dps.explosive, 340)
-        self.assertAlmostEqual(dps.total, 1096)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_dps_reload(self):
-        fit = Fit()
-        item = ModuleHigh(
-            self.mktype(
-                attrs={
-                    AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
-                    self.cycle_attr.id: 250000},
-                effects=[self.effect_amarr],
-                default_effect=self.effect_amarr).id,
-            state=State.active)
-        fit.modules.high.append(item)
-        # Verification
-        dps = item.get_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 208)
-        self.assertAlmostEqual(dps.thermal, 252)
-        self.assertAlmostEqual(dps.kinetic, 296)
-        self.assertAlmostEqual(dps.explosive, 340)
-        self.assertAlmostEqual(dps.total, 1096)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

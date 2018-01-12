@@ -73,38 +73,6 @@ class TestItemMixinChargeReloadTime(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_combat_combat_laser(self):
-        fit = Fit()
-        effect = self.mkeffect(
-            effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.mktype(
-            attrs={AttrId.reload_time: 5000.0},
-            effects=[effect],
-            default_effect=effect).id)
-        fit.modules.high.append(item)
-        # Verification
-        self.assertAlmostEqual(item.reload_time, 1.0)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_combat_mining_laser(self):
-        fit = Fit()
-        effect = self.mkeffect(
-            effect_id=EffectId.mining_laser,
-            category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.mktype(
-            attrs={AttrId.reload_time: 5000.0},
-            effects=[effect],
-            default_effect=effect).id)
-        fit.modules.high.append(item)
-        # Verification
-        self.assertAlmostEqual(item.reload_time, 1.0)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
     def test_no_source(self):
         fit = Fit()
         effect = self.mkeffect(category_id=EffectCategoryId.active)

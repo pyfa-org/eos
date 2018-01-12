@@ -41,7 +41,8 @@ class TestCpu(RestrictionTestCase):
         self.mkattr(attr_id=AttrId.cpu)
         self.mkattr(attr_id=AttrId.cpu_output)
         self.effect = self.mkeffect(
-            effect_id=EffectId.online, category_id=EffectCategoryId.online)
+            effect_id=EffectId.online,
+            category_id=EffectCategoryId.online)
 
     def test_fail_excess_single(self):
         # When ship provides cpu output, but single consumer demands for more,

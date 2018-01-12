@@ -19,7 +19,6 @@
 # ==============================================================================
 
 
-from eos import Charge
 from eos import Fit
 from eos import ModuleHigh
 from eos import State
@@ -29,26 +28,18 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgTurretDpsLaser(ItemMixinTestCase):
+class TestItemDmgSmartbombDps(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.mkattr(attr_id=AttrId.capacity)
-        self.mkattr(attr_id=AttrId.volume)
-        self.mkattr(attr_id=AttrId.crystals_get_damaged)
-        self.mkattr(attr_id=AttrId.hp)
-        self.mkattr(attr_id=AttrId.crystal_volatility_chance)
-        self.mkattr(attr_id=AttrId.crystal_volatility_dmg)
-        self.mkattr(attr_id=AttrId.reload_time)
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
         self.mkattr(attr_id=AttrId.em_dmg)
         self.mkattr(attr_id=AttrId.thermal_dmg)
         self.mkattr(attr_id=AttrId.kinetic_dmg)
         self.mkattr(attr_id=AttrId.explosive_dmg)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
-            effect_id=EffectId.target_attack,
-            category_id=EffectCategoryId.target,
+            effect_id=EffectId.emp_wave,
+            category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
 
     def test_dps_no_reload(self):
@@ -56,31 +47,22 @@ class TestItemDmgTurretDpsLaser(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
-                    AttrId.capacity: 2.0,
-                    self.cycle_attr.id: 500,
-                    AttrId.reload_time: 5000},
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={
-            AttrId.volume: 0.2,
-            AttrId.hp: 2.0,
-            AttrId.crystals_get_damaged: 1.0,
-            AttrId.crystal_volatility_dmg: 0.025,
-            AttrId.crystal_volatility_chance: 0.1,
-            AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 26)
-        self.assertAlmostEqual(dps.thermal, 31.5)
-        self.assertAlmostEqual(dps.kinetic, 37)
-        self.assertAlmostEqual(dps.explosive, 42.5)
-        self.assertAlmostEqual(dps.total, 137)
+        self.assertAlmostEqual(dps.em, 10.4)
+        self.assertAlmostEqual(dps.thermal, 12.6)
+        self.assertAlmostEqual(dps.kinetic, 14.8)
+        self.assertAlmostEqual(dps.explosive, 17)
+        self.assertAlmostEqual(dps.total, 54.8)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -90,31 +72,22 @@ class TestItemDmgTurretDpsLaser(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
-                    AttrId.capacity: 0.2,
-                    self.cycle_attr.id: 500,
-                    AttrId.reload_time: 5000},
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={
-            AttrId.volume: 0.1,
-            AttrId.hp: 2.0,
-            AttrId.crystals_get_damaged: 1.0,
-            AttrId.crystal_volatility_dmg: 0.8,
-            AttrId.crystal_volatility_chance: 0.5,
-            AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 13)
-        self.assertAlmostEqual(dps.thermal, 15.75)
-        self.assertAlmostEqual(dps.kinetic, 18.5)
-        self.assertAlmostEqual(dps.explosive, 21.25)
-        self.assertAlmostEqual(dps.total, 68.5)
+        self.assertAlmostEqual(dps.em, 10.4)
+        self.assertAlmostEqual(dps.thermal, 12.6)
+        self.assertAlmostEqual(dps.kinetic, 14.8)
+        self.assertAlmostEqual(dps.explosive, 17)
+        self.assertAlmostEqual(dps.total, 54.8)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

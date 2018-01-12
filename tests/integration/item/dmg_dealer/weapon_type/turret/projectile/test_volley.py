@@ -19,9 +19,10 @@
 # ==============================================================================
 
 
-from eos import Drone
+from eos import Charge
 from eos import EffectMode
 from eos import Fit
+from eos import ModuleHigh
 from eos import State
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
@@ -29,10 +30,13 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgDrone(ItemMixinTestCase):
+class TestItemDmgTurretProjectileVolley(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
+        self.mkattr(attr_id=AttrId.capacity)
+        self.mkattr(attr_id=AttrId.volume)
+        self.mkattr(attr_id=AttrId.reload_time)
         self.mkattr(attr_id=AttrId.dmg_multiplier)
         self.mkattr(attr_id=AttrId.em_dmg)
         self.mkattr(attr_id=AttrId.thermal_dmg)
@@ -40,76 +44,91 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.explosive_dmg)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
-            effect_id=EffectId.target_attack,
+            effect_id=EffectId.projectile_fired,
             category_id=EffectCategoryId.target,
             duration_attr_id=self.cycle_attr.id)
 
     def test_volley_generic(self):
         fit = Fit()
-        item = Drone(
+        item = ModuleHigh(
             self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
-                    AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
-                    self.cycle_attr.id: 4000},
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 500,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
-        fit.drones.add(item)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
+        fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertAlmostEqual(volley.em, 130)
-        self.assertAlmostEqual(volley.thermal, 157.5)
-        self.assertAlmostEqual(volley.kinetic, 185)
-        self.assertAlmostEqual(volley.explosive, 212.5)
-        self.assertAlmostEqual(volley.total, 685)
+        self.assertAlmostEqual(volley.em, 13)
+        self.assertAlmostEqual(volley.thermal, 15.75)
+        self.assertAlmostEqual(volley.kinetic, 18.5)
+        self.assertAlmostEqual(volley.explosive, 21.25)
+        self.assertAlmostEqual(volley.total, 68.5)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_multiplier(self):
         fit = Fit()
-        item = Drone(
+        item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
-                    self.cycle_attr.id: 4000},
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 500,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
-        fit.drones.add(item)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
+        fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertAlmostEqual(volley.em, 52)
-        self.assertAlmostEqual(volley.thermal, 63)
-        self.assertAlmostEqual(volley.kinetic, 74)
-        self.assertAlmostEqual(volley.explosive, 85)
-        self.assertAlmostEqual(volley.total, 274)
+        self.assertAlmostEqual(volley.em, 5.2)
+        self.assertAlmostEqual(volley.thermal, 6.3)
+        self.assertAlmostEqual(volley.kinetic, 7.4)
+        self.assertAlmostEqual(volley.explosive, 8.5)
+        self.assertAlmostEqual(volley.total, 27.4)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_volley_insufficient_state(self):
         fit = Fit()
-        item = Drone(
+        item = ModuleHigh(
             self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
-                    AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
-                    self.cycle_attr.id: 4000},
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 500,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.online)
-        fit.drones.add(item)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
+        fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
         self.assertIsNone(volley.em)
@@ -121,22 +140,27 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_voley_disabled_effect(self):
+    def test_volley_disabled_effect(self):
         fit = Fit()
-        item = Drone(
+        item = ModuleHigh(
             self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
-                    AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
-                    self.cycle_attr.id: 4000},
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 500,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
-        fit.drones.add(item)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 0.2,
+            AttrId.em_dmg: 5.2,
+            AttrId.thermal_dmg: 6.3,
+            AttrId.kinetic_dmg: 7.4,
+            AttrId.explosive_dmg: 8.5}).id)
+        fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
         self.assertIsNone(volley.em)
@@ -148,54 +172,27 @@ class TestItemDmgDrone(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_dps_no_reload(self):
+    def test_volley_no_charge(self):
         fit = Fit()
-        item = Drone(
+        item = ModuleHigh(
             self.mktype(
                 attrs={
                     AttrId.dmg_multiplier: 2.5,
-                    AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
-                    self.cycle_attr.id: 4000},
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 500,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 5000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
-        fit.drones.add(item)
+        fit.modules.high.append(item)
         # Verification
-        dps = item.get_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 32.5)
-        self.assertAlmostEqual(dps.thermal, 39.375)
-        self.assertAlmostEqual(dps.kinetic, 46.25)
-        self.assertAlmostEqual(dps.explosive, 53.125)
-        self.assertAlmostEqual(dps.total, 171.25)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_dps_reload(self):
-        fit = Fit()
-        item = Drone(
-            self.mktype(
-                attrs={
-                    AttrId.dmg_multiplier: 2.5,
-                    AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
-                    self.cycle_attr.id: 4000},
-                effects=[self.effect],
-                default_effect=self.effect).id,
-            state=State.active)
-        fit.drones.add(item)
-        # Verification
-        dps = item.get_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 32.5)
-        self.assertAlmostEqual(dps.thermal, 39.375)
-        self.assertAlmostEqual(dps.kinetic, 46.25)
-        self.assertAlmostEqual(dps.explosive, 53.125)
-        self.assertAlmostEqual(dps.total, 171.25)
+        volley = item.get_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

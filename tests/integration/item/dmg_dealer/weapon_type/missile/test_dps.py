@@ -29,7 +29,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgTurretDpsProjectile(ItemMixinTestCase):
+class TestItemDmgMissileDps(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
@@ -37,44 +37,48 @@ class TestItemDmgTurretDpsProjectile(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.volume)
         self.mkattr(attr_id=AttrId.charge_rate)
         self.mkattr(attr_id=AttrId.reload_time)
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
         self.mkattr(attr_id=AttrId.em_dmg)
         self.mkattr(attr_id=AttrId.thermal_dmg)
         self.mkattr(attr_id=AttrId.kinetic_dmg)
         self.mkattr(attr_id=AttrId.explosive_dmg)
         self.cycle_attr = self.mkattr()
-        self.effect = self.mkeffect(
-            effect_id=EffectId.projectile_fired,
-            category_id=EffectCategoryId.target,
+        self.effect_item = self.mkeffect(
+            effect_id=EffectId.use_missiles,
+            category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
+        self.effect_charge = self.mkeffect(
+            effect_id=EffectId.missile_launching,
+            category_id=EffectCategoryId.target)
 
     def test_dps_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
-                    self.cycle_attr.id: 500,
+                    self.cycle_attr.id: 2000,
                     AttrId.charge_rate: 1.0,
-                    AttrId.reload_time: 5000},
-                effects=[self.effect],
-                default_effect=self.effect).id,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={
-            AttrId.volume: 0.2,
-            AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 0.1,
+                AttrId.em_dmg: 5.2,
+                AttrId.thermal_dmg: 6.3,
+                AttrId.kinetic_dmg: 7.4,
+                AttrId.explosive_dmg: 8.5},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=False)
-        self.assertAlmostEqual(dps.em, 26)
-        self.assertAlmostEqual(dps.thermal, 31.5)
-        self.assertAlmostEqual(dps.kinetic, 37)
-        self.assertAlmostEqual(dps.explosive, 42.5)
-        self.assertAlmostEqual(dps.total, 137)
+        self.assertAlmostEqual(dps.em, 2.6)
+        self.assertAlmostEqual(dps.thermal, 3.15)
+        self.assertAlmostEqual(dps.kinetic, 3.7)
+        self.assertAlmostEqual(dps.explosive, 4.25)
+        self.assertAlmostEqual(dps.total, 13.7)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -84,28 +88,30 @@ class TestItemDmgTurretDpsProjectile(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
                     AttrId.capacity: 2.0,
-                    self.cycle_attr.id: 500,
+                    self.cycle_attr.id: 2000,
                     AttrId.charge_rate: 1.0,
-                    AttrId.reload_time: 5000},
-                effects=[self.effect],
-                default_effect=self.effect).id,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={
-            AttrId.volume: 0.2,
-            AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 0.1,
+                AttrId.em_dmg: 5.2,
+                AttrId.thermal_dmg: 6.3,
+                AttrId.kinetic_dmg: 7.4,
+                AttrId.explosive_dmg: 8.5},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=True)
-        self.assertAlmostEqual(dps.em, 13)
-        self.assertAlmostEqual(dps.thermal, 15.75)
-        self.assertAlmostEqual(dps.kinetic, 18.5)
-        self.assertAlmostEqual(dps.explosive, 21.25)
-        self.assertAlmostEqual(dps.total, 68.5)
+        self.assertAlmostEqual(dps.em, 2.08)
+        self.assertAlmostEqual(dps.thermal, 2.52)
+        self.assertAlmostEqual(dps.kinetic, 2.96)
+        self.assertAlmostEqual(dps.explosive, 3.4)
+        self.assertAlmostEqual(dps.total, 10.96)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
