@@ -17,19 +17,3 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ==============================================================================
-
-
-from eos.const.eve import EffectId
-from eos.eve_object.effect.helper_func import get_cycles_until_reload_generic
-from .base import TurretDmgEffect
-
-
-class ProjectileFired(TurretDmgEffect):
-
-    id = EffectId.projectile_fired
-
-    def _get_base_dmg_item(self, item):
-        return self.get_charge(item)
-
-    def get_cycles_until_reload(self, item):
-        return get_cycles_until_reload_generic(item)

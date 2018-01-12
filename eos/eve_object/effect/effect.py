@@ -25,6 +25,7 @@ from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.util.cached_property import cached_property
+from eos.util.float import float_to_int
 from eos.util.repr import make_repr_str
 from .cycle import CycleInfo, CycleSequence
 

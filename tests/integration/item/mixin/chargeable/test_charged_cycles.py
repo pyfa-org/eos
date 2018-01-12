@@ -48,7 +48,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         item.charge = Charge(self.mktype(attrs={AttrId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertEqual(item.charged_cycles, 25)
+        self.assertEqual(item.cycles_until_reload, 25)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -61,7 +61,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         item.charge = Charge(self.mktype(attrs={AttrId.volume: 2.0}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertEqual(item.charged_cycles, 2)
+        self.assertEqual(item.cycles_until_reload, 2)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -72,7 +72,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         item.charge = Charge(self.mktype().id)
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.charged_cycles)
+        self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -94,7 +94,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertEqual(item.charged_cycles, 4400)
+        self.assertEqual(item.cycles_until_reload, 4400)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -116,7 +116,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertEqual(item.charged_cycles, 4400)
+        self.assertEqual(item.cycles_until_reload, 4400)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -137,7 +137,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.charged_cycles)
+        self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -158,7 +158,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.charged_cycles)
+        self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -179,7 +179,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.charged_cycles)
+        self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -200,7 +200,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.charged_cycles)
+        self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -221,7 +221,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.01}).id)
         fit.modules.high.append(item)
         # Verification
-        self.assertIsNone(item.charged_cycles)
+        self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -235,7 +235,7 @@ class TestItemMixinChargedCycles(ItemMixinTestCase):
         fit.modules.high.append(item)
         fit.source = None
         # Verification
-        self.assertIsNone(item.charged_cycles)
+        self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

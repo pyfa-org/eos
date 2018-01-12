@@ -75,9 +75,17 @@ class ChargeableMixin(BaseItemMixin):
         return charges
 
     @property
-    def charged_cycles(self):
+    def cycles_until_reload(self):
         """Quantity of cycles item can run until charges are depleted."""
-        return self._type_default_effect.get_cycles_until_reload(self)
+        item_type = self._type
+        if item_type is None:
+            return None
+        try:
+            getter = item_type.default_effect.get_cycles_until_reload
+        except AttributeError:
+            return 0
+        else:
+            return getter(self)
 
     @property
     def reload_time(self):

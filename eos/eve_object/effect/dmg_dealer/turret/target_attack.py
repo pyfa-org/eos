@@ -23,7 +23,7 @@ import math
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.util.float import float_to_int
+from eos.eve_object.effect.helper_func import get_cycles_until_reload_crystal
 from .base import TurretDmgEffect
 
 
@@ -67,20 +67,4 @@ class TargetAttack(TurretDmgEffect):
         # cannot cycle
         if charge is None:
             return 0
-        # Non-damageable crystals can cycle infinitely
-        if not charge.attrs.get(AttrId.crystals_get_damaged):
-            return math.inf
-        # Damageable crystals must have all damage-related stats to calculate
-        # how many times they can cycle
-        try:
-            hp = charge.attrs[AttrId.hp]
-            chance = charge.attrs[AttrId.crystal_volatility_chance]
-            dmg = charge.attrs[AttrId.crystal_volatility_dmg]
-        except KeyError:
-            return 0
-        charge_quantity = item.charge_quantity
-        # If item cannot fit any charges, effect cannot cycle
-        if not charge_quantity:
-            return 0
-        cycles = float_to_int(hp / dmg / chance) * charge_quantity
-        return cycles
+        return get_cycles_until_reload_crystal(item)
