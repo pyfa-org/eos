@@ -44,7 +44,7 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
             category_id=EffectCategoryId.target,
             duration_attr_id=self.cycle_attr.id)
 
-    def test_volley_generic(self):
+    def test_generic(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -66,6 +66,106 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.kinetic, 185)
         self.assertAlmostEqual(volley.explosive, 212.5)
         self.assertAlmostEqual(volley.total, 685)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_attr_em(self):
+        fit = Fit()
+        item = Drone(
+            self.mktype(
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 4000},
+                effects=[self.effect],
+                default_effect=self.effect).id,
+            state=State.active)
+        fit.drones.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertIsNone(volley.em)
+        self.assertAlmostEqual(volley.thermal, 157.5)
+        self.assertAlmostEqual(volley.kinetic, 185)
+        self.assertAlmostEqual(volley.explosive, 212.5)
+        self.assertAlmostEqual(volley.total, 555)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_attr_therm(self):
+        fit = Fit()
+        item = Drone(
+            self.mktype(
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 4000},
+                effects=[self.effect],
+                default_effect=self.effect).id,
+            state=State.active)
+        fit.drones.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 130)
+        self.assertIsNone(volley.thermal)
+        self.assertAlmostEqual(volley.kinetic, 185)
+        self.assertAlmostEqual(volley.explosive, 212.5)
+        self.assertAlmostEqual(volley.total, 527.5)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_attr_kin(self):
+        fit = Fit()
+        item = Drone(
+            self.mktype(
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 4000},
+                effects=[self.effect],
+                default_effect=self.effect).id,
+            state=State.active)
+        fit.drones.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 130)
+        self.assertAlmostEqual(volley.thermal, 157.5)
+        self.assertIsNone(volley.kinetic)
+        self.assertAlmostEqual(volley.explosive, 212.5)
+        self.assertAlmostEqual(volley.total, 500)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_attr_expl(self):
+        fit = Fit()
+        item = Drone(
+            self.mktype(
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    self.cycle_attr.id: 4000},
+                effects=[self.effect],
+                default_effect=self.effect).id,
+            state=State.active)
+        fit.drones.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 130)
+        self.assertAlmostEqual(volley.thermal, 157.5)
+        self.assertAlmostEqual(volley.kinetic, 185)
+        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.total, 472.5)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -95,7 +195,7 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_insufficient_state(self):
+    def test_insufficient_state(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -121,7 +221,7 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_voley_disabled_effect(self):
+    def test_disabled_effect(self):
         fit = Fit()
         item = Drone(
             self.mktype(
@@ -137,6 +237,33 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
             state=State.active)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         fit.drones.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_source(self):
+        fit = Fit()
+        item = Drone(
+            self.mktype(
+                attrs={
+                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.em_dmg: 52,
+                    AttrId.thermal_dmg: 63,
+                    AttrId.kinetic_dmg: 74,
+                    AttrId.explosive_dmg: 85,
+                    self.cycle_attr.id: 4000},
+                effects=[self.effect],
+                default_effect=self.effect).id,
+            state=State.active)
+        fit.drones.add(item)
+        fit.source = None
         # Verification
         volley = item.get_volley()
         self.assertIsNone(volley.em)

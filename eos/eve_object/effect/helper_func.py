@@ -38,11 +38,17 @@ def get_cycles_until_reload_generic(item):
     if not charge_rate or charge_quantity is None:
         return None
     cycles = charge_quantity // int(charge_rate)
+    if cycles == 0:
+        return None
     return cycles
 
 
 def get_cycles_until_reload_crystal(item):
     """Get cycles until reload for items which use crystals as charge."""
+    charge_quantity = item.charge_quantity
+    # If item cannot fit any charges, effect cannot cycle
+    if not charge_quantity:
+        return None
     charge = item.charge
     # Non-damageable crystals can cycle infinitely
     if not charge.attrs.get(AttrId.crystals_get_damaged):
@@ -54,10 +60,8 @@ def get_cycles_until_reload_crystal(item):
         chance = charge.attrs[AttrId.crystal_volatility_chance]
         dmg = charge.attrs[AttrId.crystal_volatility_dmg]
     except KeyError:
-        return 0
-    charge_quantity = item.charge_quantity
-    # If item cannot fit any charges, effect cannot cycle
-    if not charge_quantity:
-        return 0
+        return None
     cycles = float_to_int(hp / dmg / chance) * charge_quantity
+    if cycles == 0:
+        return None
     return cycles

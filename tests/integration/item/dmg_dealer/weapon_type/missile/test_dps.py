@@ -50,7 +50,7 @@ class TestItemDmgMissileDps(ItemMixinTestCase):
             effect_id=EffectId.missile_launching,
             category_id=EffectCategoryId.target)
 
-    def test_dps_no_reload(self):
+    def test_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -83,7 +83,7 @@ class TestItemDmgMissileDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_dps_reload(self):
+    def test_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(

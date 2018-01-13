@@ -55,7 +55,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
             category_id=EffectCategoryId.target,
             duration_attr_id=self.cycle_attr.id)
 
-    def test_volley_amarr(self):
+    def test_amarr(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -77,7 +77,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_caldari(self):
+    def test_caldari(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -99,7 +99,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_gallente(self):
+    def test_gallente(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -121,7 +121,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_minmatar(self):
+    def test_minmatar(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -143,7 +143,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_insufficient_state(self):
+    def test_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -168,7 +168,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_disabled_effect(self):
+    def test_disabled_effect(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -183,6 +183,29 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
             state=State.active)
         item.set_effect_mode(self.effect_amarr.id, EffectMode.force_stop)
         fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_source(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.em_dmg: 52000,
+                    self.cycle_attr.id: 250000},
+                effects=[self.effect_amarr],
+                default_effect=self.effect_amarr).id,
+            state=State.active)
+        fit.modules.high.append(item)
+        fit.source = None
         # Verification
         volley = item.get_volley()
         self.assertIsNone(volley.em)

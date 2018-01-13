@@ -23,7 +23,6 @@ from eos import Fit
 from eos import ModuleHigh
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
-from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 

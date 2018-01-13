@@ -51,7 +51,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             effect_id=EffectId.missile_launching,
             category_id=EffectCategoryId.target)
 
-    def test_volley_generic(self):
+    def test_generic(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -84,7 +84,135 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_insufficient_state(self):
+    def test_no_attr_em(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 2000,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 0.1,
+                AttrId.thermal_dmg: 6.3,
+                AttrId.kinetic_dmg: 7.4,
+                AttrId.explosive_dmg: 8.5},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertIsNone(volley.em)
+        self.assertAlmostEqual(volley.thermal, 6.3)
+        self.assertAlmostEqual(volley.kinetic, 7.4)
+        self.assertAlmostEqual(volley.explosive, 8.5)
+        self.assertAlmostEqual(volley.total, 22.2)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_attr_therm(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 2000,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 0.1,
+                AttrId.em_dmg: 5.2,
+                AttrId.kinetic_dmg: 7.4,
+                AttrId.explosive_dmg: 8.5},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 5.2)
+        self.assertIsNone(volley.thermal)
+        self.assertAlmostEqual(volley.kinetic, 7.4)
+        self.assertAlmostEqual(volley.explosive, 8.5)
+        self.assertAlmostEqual(volley.total, 21.1)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_attr_kin(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 2000,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 0.1,
+                AttrId.em_dmg: 5.2,
+                AttrId.thermal_dmg: 6.3,
+                AttrId.explosive_dmg: 8.5},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 5.2)
+        self.assertAlmostEqual(volley.thermal, 6.3)
+        self.assertIsNone(volley.kinetic)
+        self.assertAlmostEqual(volley.explosive, 8.5)
+        self.assertAlmostEqual(volley.total, 20)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_attr_expl(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 2000,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 0.1,
+                AttrId.em_dmg: 5.2,
+                AttrId.thermal_dmg: 6.3,
+                AttrId.kinetic_dmg: 7.4},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 5.2)
+        self.assertAlmostEqual(volley.thermal, 6.3)
+        self.assertAlmostEqual(volley.kinetic, 7.4)
+        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.total, 18.9)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -117,7 +245,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_disabled_item_effect(self):
+    def test_disabled_item_effect(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -151,7 +279,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_disabled_charge_effect(self):
+    def test_disabled_charge_effect(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -186,7 +314,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_volley_no_charge(self):
+    def test_no_charge(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -199,6 +327,73 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
                 default_effect=self.effect_item).id,
             state=State.active)
         fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_cycles_until_reload(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 2000,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 2.1,
+                AttrId.em_dmg: 5.2,
+                AttrId.thermal_dmg: 6.3,
+                AttrId.kinetic_dmg: 7.4,
+                AttrId.explosive_dmg: 8.5},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertIsNone(volley.em)
+        self.assertIsNone(volley.thermal)
+        self.assertIsNone(volley.kinetic)
+        self.assertIsNone(volley.explosive)
+        self.assertIsNone(volley.total)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_source(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 2.0,
+                    self.cycle_attr.id: 2000,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 10000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.mktype(
+            attrs={
+                AttrId.volume: 0.1,
+                AttrId.em_dmg: 5.2,
+                AttrId.thermal_dmg: 6.3,
+                AttrId.kinetic_dmg: 7.4,
+                AttrId.explosive_dmg: 8.5},
+            effects=[self.effect_charge],
+            default_effect=self.effect_charge).id)
+        fit.modules.high.append(item)
+        fit.source = None
         # Verification
         volley = item.get_volley()
         self.assertIsNone(volley.em)

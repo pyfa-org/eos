@@ -66,5 +66,5 @@ class TargetAttack(TurretDmgEffect):
         # If charge should carry damage stats but charge is not there, effect
         # cannot cycle
         if charge is None:
-            return 0
+            return None
         return get_cycles_until_reload_crystal(item)

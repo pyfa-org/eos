@@ -121,13 +121,16 @@ class Effect:
         return None
 
     def get_cycles_until_reload(self, item):
-        """Get how many cycles effect can run until it has to be reloaded."""
+        """Get how many cycles effect can run until it has to be reloaded.
+
+        If effect cannot be cycled, returns None.
+        """
         return math.inf
 
     def get_reload_time(self, item):
         """Get effect reload time in seconds.
 
-        If None is returned, effect cannot be reloaded.
+        If effect cannot be reloaded, returns None.
         """
         try:
             return item.reload_time
@@ -188,10 +191,10 @@ class Effect:
         """
         active_time = self.get_duration(item) or 0
         forced_inactive_time = self.get_forced_inactive_time(item) or 0
-        cycles_until_reload = self.get_cycles_until_reload(item)
+        cycles_until_reload = self.get_cycles_until_reload(item) or 0
         reload_time = self.get_reload_time(item)
         # Module cannot cycle at all
-        if cycles_until_reload < 1:
+        if cycles_until_reload <= 0:
             return None
         # Effects which cannot be reloaded have the same processing whether
         # caller wants to take reload time into account or not

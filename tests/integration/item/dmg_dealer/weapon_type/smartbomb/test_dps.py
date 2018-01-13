@@ -42,7 +42,7 @@ class TestItemDmgSmartbombDps(ItemMixinTestCase):
             category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
 
-    def test_dps_no_reload(self):
+    def test_no_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -67,7 +67,7 @@ class TestItemDmgSmartbombDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_dps_reload(self):
+    def test_reload(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(

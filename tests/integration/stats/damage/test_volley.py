@@ -36,11 +36,14 @@ class TestStatsDmgVolley(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
+        self.mkattr(attr_id=AttrId.capacity)
+        self.mkattr(attr_id=AttrId.volume)
+        self.mkattr(attr_id=AttrId.charge_rate)
+        self.mkattr(attr_id=AttrId.dmg_multiplier)
         self.mkattr(attr_id=AttrId.em_dmg)
         self.mkattr(attr_id=AttrId.thermal_dmg)
         self.mkattr(attr_id=AttrId.kinetic_dmg)
         self.mkattr(attr_id=AttrId.explosive_dmg)
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
         self.dd_effect = self.mkeffect(
             effect_id=EffectId.projectile_fired,
             category_id=EffectCategoryId.active)
@@ -71,11 +74,16 @@ class TestStatsDmgVolley(StatsTestCase):
             modifiers=[modifier])
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2, src_attr.id: 1.5},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2,
+                    src_attr.id: 1.5},
                 effects=(self.dd_effect, effect),
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.thermal_dmg: 2.4,
             AttrId.kinetic_dmg: 4.8,
@@ -96,11 +104,15 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_multiple(self):
         item1 = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item1.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.thermal_dmg: 2.4,
             AttrId.kinetic_dmg: 4.8,
@@ -108,11 +120,15 @@ class TestStatsDmgVolley(StatsTestCase):
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item2.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 12,
             AttrId.thermal_dmg: 24,
             AttrId.kinetic_dmg: 48,
@@ -133,11 +149,15 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_arguments_custom_profile(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.thermal_dmg: 2.4,
             AttrId.kinetic_dmg: 4.8,
@@ -160,11 +180,15 @@ class TestStatsDmgVolley(StatsTestCase):
         item1 = ModuleHigh(
             self.mktype(
                 group_id=55,
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item1.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.thermal_dmg: 2.4,
             AttrId.kinetic_dmg: 4.8,
@@ -173,11 +197,15 @@ class TestStatsDmgVolley(StatsTestCase):
         item2 = ModuleHigh(
             self.mktype(
                 group_id=54,
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item2.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 12,
             AttrId.thermal_dmg: 24,
             AttrId.kinetic_dmg: 48,
@@ -199,11 +227,15 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_none_em(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.thermal_dmg: 2.4,
             AttrId.kinetic_dmg: 4.8,
             AttrId.explosive_dmg: 9.6}).id)
@@ -223,11 +255,15 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_none_therm(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.kinetic_dmg: 4.8,
             AttrId.explosive_dmg: 9.6}).id)
@@ -247,11 +283,15 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_none_kin(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.thermal_dmg: 2.4,
             AttrId.explosive_dmg: 9.6}).id)
@@ -271,11 +311,15 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_none_expl(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.thermal_dmg: 2.4,
             AttrId.kinetic_dmg: 4.8}).id)
@@ -295,11 +339,14 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_none_all(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype().id)
+        item.charge = Charge(self.mktype(attrs={AttrId.volume: 1.0}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_volley = self.fit.stats.get_volley()
@@ -316,11 +363,16 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_zero_em(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={AttrId.em_dmg: 0}).id)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
+            AttrId.em_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_volley = self.fit.stats.get_volley()
@@ -337,11 +389,16 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_zero_therm(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={AttrId.thermal_dmg: 0}).id)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
+            AttrId.thermal_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_volley = self.fit.stats.get_volley()
@@ -358,11 +415,16 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_zero_kin(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={AttrId.kinetic_dmg: 0}).id)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
+            AttrId.kinetic_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_volley = self.fit.stats.get_volley()
@@ -379,11 +441,16 @@ class TestStatsDmgVolley(StatsTestCase):
     def test_single_zero_expl(self):
         item = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={AttrId.explosive_dmg: 0}).id)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
+            AttrId.explosive_dmg: 0}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_volley = self.fit.stats.get_volley()
@@ -402,11 +469,15 @@ class TestStatsDmgVolley(StatsTestCase):
         # unreliable (even if there's issue, it won't fail each run)
         item1 = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item1.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
             AttrId.em_dmg: 1.2,
             AttrId.thermal_dmg: 2.4,
             AttrId.kinetic_dmg: 4.8,
@@ -414,11 +485,14 @@ class TestStatsDmgVolley(StatsTestCase):
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.mktype(
-                attrs={AttrId.dmg_multiplier: 2},
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_multiplier: 2},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
-        item2.charge = Charge(self.mktype().id)
+        item2.charge = Charge(self.mktype(attrs={AttrId.volume: 1.0}).id)
         self.fit.modules.high.append(item2)
         # Action
         stats_volley = self.fit.stats.get_volley()

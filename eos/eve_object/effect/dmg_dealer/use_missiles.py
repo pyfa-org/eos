@@ -35,9 +35,11 @@ class UseMissiles(DmgDealerEffect):
         return get_cycles_until_reload_generic(item)
 
     def get_volley(self, item):
-        charge = self.get_charge(item)
-        if charge is None:
+        if self.get_cycles_until_reload(item) is None:
             return DmgTypesTotal(None, None, None, None)
+        # If module can cycle until reload, it means we can assume that there's
+        # a charge loaded
+        charge = self.get_charge(item)
         charge_defeff_id = charge._type_default_effect_id
         if (
             charge_defeff_id is None or

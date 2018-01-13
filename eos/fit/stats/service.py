@@ -135,7 +135,7 @@ class StatService(BaseSubscriber):
 
     def get_volley(self, item_filter=None, tgt_resists=None):
         """
-        Get nominal volley of the fit.
+        Get volley of the fit.
 
         Args:
             item_filter (optional): When iterating over fit items, this function
@@ -153,7 +153,7 @@ class StatService(BaseSubscriber):
 
     def get_dps(self, item_filter=None, reload=False, tgt_resists=None):
         """
-        Get nominal DPS of the fit.
+        Get DPS of the fit.
 
         Args:
             item_filter (optional): When iterating over fit items, this function

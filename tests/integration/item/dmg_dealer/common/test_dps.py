@@ -30,7 +30,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemDmgMiscDps(ItemMixinTestCase):
+class TestItemDmgCommonDps(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
@@ -142,38 +142,6 @@ class TestItemDmgMiscDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.kinetic, 0.925)
         self.assertAlmostEqual(dps.explosive, 1.0625)
         self.assertAlmostEqual(dps.total, 3.425)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_no_source(self):
-        fit = Fit()
-        item = ModuleHigh(
-            self.mktype(
-                attrs={
-                    AttrId.dmg_multiplier: 2.5,
-                    AttrId.capacity: 2.0,
-                    self.cycle_attr.id: 500,
-                    AttrId.charge_rate: 1.0,
-                    AttrId.reload_time: 5000},
-                effects=[self.effect],
-                default_effect=self.effect).id,
-            state=State.active)
-        item.charge = Charge(self.mktype(attrs={
-            AttrId.volume: 0.2,
-            AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
-        fit.modules.high.append(item)
-        fit.source = None
-        # Verification
-        dps = item.get_dps()
-        self.assertIsNone(dps.em)
-        self.assertIsNone(dps.thermal)
-        self.assertIsNone(dps.kinetic)
-        self.assertIsNone(dps.explosive)
-        self.assertIsNone(dps.total)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
