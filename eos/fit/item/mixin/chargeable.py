@@ -87,7 +87,7 @@ class ChargeableMixin(BaseItemMixin):
         try:
             getter = item_type.default_effect.get_cycles_until_reload
         except AttributeError:
-            return 0
+            return None
         else:
             return getter(self)
 

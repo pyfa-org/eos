@@ -61,6 +61,10 @@ def get_cycles_until_reload_crystal(item):
         dmg = charge.attrs[AttrId.crystal_volatility_dmg]
     except KeyError:
         return None
+    if hp <= 0:
+        return None
+    if chance <= 0 or dmg <= 0:
+        return math.inf
     cycles = float_to_int(hp / dmg / chance) * charge_quantity
     if cycles == 0:
         return None
