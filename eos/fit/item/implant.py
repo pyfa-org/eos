@@ -37,6 +37,7 @@ class Implant(ImmutableStateMixin):
     def __init__(self, type_id):
         super().__init__(type_id=type_id, state=State.offline)
 
+    # Item-specific properties
     @property
     def slot(self):
         """Return slot this implant takes."""

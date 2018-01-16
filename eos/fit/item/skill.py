@@ -41,6 +41,7 @@ class Skill(ImmutableStateMixin):
         self.attrs._set_override_callback(
             AttrId.skill_level, (getattr, (self, 'level'), {}))
 
+    # Item-specific properties
     @property
     def level(self):
         """Access point to skill level."""
