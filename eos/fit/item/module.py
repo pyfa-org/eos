@@ -22,17 +22,81 @@
 from eos.const.eos import ModDomain
 from eos.const.eos import State
 from eos.const.eve import AttrId
+from eos.fit.item import Charge
+from eos.fit.item_container import ItemDescriptor
+from eos.util.float import float_to_int
 from eos.util.repr import make_repr_str
-from .mixin.chargeable import ChargeableMixin
 from .mixin.effect_stats import EffectStatsMixin
 from .mixin.state import MutableStateMixin
 
 
-class Module(MutableStateMixin, ChargeableMixin, EffectStatsMixin):
+class Module(MutableStateMixin, EffectStatsMixin):
 
     def __init__(self, type_id, state=State.offline, charge=None):
-        super().__init__(type_id=type_id, state=state, charge=charge)
+        super().__init__(type_id=type_id, state=state)
+        self.charge = charge
 
+    # Charge-specific properties
+    charge = ItemDescriptor('_charge', Charge)
+
+    def _get_child_items(self):
+        try:
+            child_getter = super()._get_child_items
+        except AttributeError:
+            child_items = set()
+        else:
+            child_items = child_getter()
+        if self.charge is not None:
+            child_items.add(self.charge)
+        return child_items
+
+    @property
+    def charge_quantity(self):
+        """Max quantity of loadable charges.
+
+        It depends on capacity of this item and volume of charge.
+
+        Returns:
+            Quantity of loadable charges as integer. If any of necessary
+            attribute values is not defined, or no charge is found in item, None
+            is returned.
+        """
+        if self.charge is None:
+            return None
+        container_capacity = self.attrs.get(AttrId.capacity)
+        charge_volume = self.charge.attrs.get(AttrId.volume)
+        if container_capacity is None or charge_volume is None:
+            return None
+        charges = float_to_int(container_capacity / charge_volume)
+        return charges
+
+    @property
+    def cycles_until_reload(self):
+        """Quantity of cycles item can run until charges are depleted.
+
+        Relays calculation to effect, because final value depends on effect
+        type.
+        """
+        item_type = self._type
+        if item_type is None:
+            return None
+        try:
+            getter = item_type.default_effect.get_cycles_until_reload
+        except AttributeError:
+            return None
+        else:
+            return getter(self)
+
+    @property
+    def reload_time(self):
+        """Returns item reload time in seconds."""
+        time_ms = self.attrs.get(AttrId.reload_time)
+        try:
+            return time_ms / 1000
+        except TypeError:
+            return time_ms
+
+    # Item-specific properties
     @property
     def reactivation_delay(self):
         delay_ms = self.attrs.get(AttrId.module_reactivation_delay)
