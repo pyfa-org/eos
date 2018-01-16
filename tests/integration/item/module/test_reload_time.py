@@ -26,7 +26,7 @@ from eos.const.eve import EffectCategoryId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemMixinChargeReloadTime(ItemMixinTestCase):
+class TestItemModuleChargeReloadTime(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)

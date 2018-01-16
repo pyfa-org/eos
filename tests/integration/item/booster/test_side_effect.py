@@ -28,7 +28,7 @@ from eos.const.eve import EffectCategoryId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemMixinSideEffect(ItemMixinTestCase):
+class TestItemBoosterSideEffect(ItemMixinTestCase):
 
     def test_data(self):
         # Setup

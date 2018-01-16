@@ -31,7 +31,7 @@ from eos.const.eve import EffectId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemMixinChargeCycles(ItemMixinTestCase):
+class TestItemModuleChargeCycles(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)

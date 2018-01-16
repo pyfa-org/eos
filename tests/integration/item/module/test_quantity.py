@@ -26,7 +26,7 @@ from eos.const.eve import AttrId
 from tests.integration.item.testcase import ItemMixinTestCase
 
 
-class TestItemMixinChargeQuantity(ItemMixinTestCase):
+class TestItemModuleChargeQuantity(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
