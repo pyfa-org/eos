@@ -19,14 +19,11 @@
 # ==============================================================================
 
 
-from eos.const.eve import EffectId
 from eos.eve_object.effect.helper_func import get_cycles_until_reload_generic
 from .base import TurretDmgEffect
 
 
 class ProjectileFired(TurretDmgEffect):
-
-    id = EffectId.projectile_fired
 
     def _get_base_dmg_item(self, item):
         return self.get_charge(item)

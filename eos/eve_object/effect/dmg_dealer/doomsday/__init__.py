@@ -19,14 +19,16 @@
 # ==============================================================================
 
 
+from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
-from .direct_dmg import SuperWeaponAmarr
-from .direct_dmg import SuperWeaponCaldari
-from .direct_dmg import SuperWeaponGallente
-from .direct_dmg import SuperWeaponMinmatar
+from .direct_dmg import DoomsdayDirect
 
 
-EffectFactory.reg_cust_class_by_id(SuperWeaponAmarr)
-EffectFactory.reg_cust_class_by_id(SuperWeaponCaldari)
-EffectFactory.reg_cust_class_by_id(SuperWeaponGallente)
-EffectFactory.reg_cust_class_by_id(SuperWeaponMinmatar)
+EffectFactory.reg_cust_class_by_id(
+    DoomsdayDirect, EffectId.super_weapon_amarr)
+EffectFactory.reg_cust_class_by_id(
+    DoomsdayDirect, EffectId.super_weapon_caldari)
+EffectFactory.reg_cust_class_by_id(
+    DoomsdayDirect, EffectId.super_weapon_gallente)
+EffectFactory.reg_cust_class_by_id(
+    DoomsdayDirect, EffectId.super_weapon_minmatar)

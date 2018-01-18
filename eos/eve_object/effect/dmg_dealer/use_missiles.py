@@ -29,8 +29,6 @@ from .base import DmgDealerEffect
 
 class UseMissiles(DmgDealerEffect):
 
-    id = EffectId.use_missiles
-
     def get_cycles_until_reload(self, item):
         return get_cycles_until_reload_generic(item)
 
@@ -59,4 +57,4 @@ class UseMissiles(DmgDealerEffect):
         raise NotImplementedError
 
 
-EffectFactory.reg_cust_class_by_id(UseMissiles)
+EffectFactory.reg_cust_class_by_id(UseMissiles, EffectId.use_missiles)

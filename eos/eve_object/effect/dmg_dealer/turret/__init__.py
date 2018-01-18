@@ -19,10 +19,11 @@
 # ==============================================================================
 
 
+from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
 from .projectile_fired import ProjectileFired
 from .target_attack import TargetAttack
 
 
-EffectFactory.reg_cust_class_by_id(ProjectileFired)
-EffectFactory.reg_cust_class_by_id(TargetAttack)
+EffectFactory.reg_cust_class_by_id(ProjectileFired, EffectId.projectile_fired)
+EffectFactory.reg_cust_class_by_id(TargetAttack, EffectId.target_attack)

@@ -28,8 +28,6 @@ from .base import DmgDealerEffect
 
 class EmpWave(DmgDealerEffect):
 
-    id = EffectId.emp_wave
-
     def get_volley(self, item):
         em = item.attrs.get(AttrId.em_dmg)
         thermal = item.attrs.get(AttrId.thermal_dmg)
@@ -41,4 +39,4 @@ class EmpWave(DmgDealerEffect):
         raise NotImplementedError
 
 
-EffectFactory.reg_cust_class_by_id(EmpWave)
+EffectFactory.reg_cust_class_by_id(EmpWave, EffectId.emp_wave)

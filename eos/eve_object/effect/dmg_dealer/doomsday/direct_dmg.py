@@ -20,7 +20,6 @@
 
 
 from eos.const.eve import AttrId
-from eos.const.eve import EffectId
 from eos.fit.stats_container import DmgTypesTotal
 from ..base import DmgDealerEffect
 
@@ -36,23 +35,3 @@ class DoomsdayDirect(DmgDealerEffect):
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError
-
-
-class SuperWeaponAmarr(DoomsdayDirect):
-
-    id = EffectId.super_weapon_amarr
-
-
-class SuperWeaponCaldari(DoomsdayDirect):
-
-    id = EffectId.super_weapon_caldari
-
-
-class SuperWeaponGallente(DoomsdayDirect):
-
-    id = EffectId.super_weapon_gallente
-
-
-class SuperWeaponMinmatar(DoomsdayDirect):
-
-    id = EffectId.super_weapon_minmatar

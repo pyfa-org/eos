@@ -22,14 +22,11 @@
 import math
 
 from eos.const.eve import AttrId
-from eos.const.eve import EffectId
 from eos.eve_object.effect.helper_func import get_cycles_until_reload_crystal
 from .base import TurretDmgEffect
 
 
 class TargetAttack(TurretDmgEffect):
-
-    id = EffectId.target_attack
 
     def _get_base_dmg_item(self, item):
         charge = self.get_charge(item)
