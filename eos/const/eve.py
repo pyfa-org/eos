@@ -148,6 +148,12 @@ class AttrId(IntEnum):
     fighter_squadron_is_heavy = 2214
     fighter_squadron_is_light = 2212
     fighter_squadron_is_support = 2213
+    fighter_squadron_max_size = 2215
+    fighter_ability_attack_missile_dmg_em = 2227
+    fighter_ability_attack_missile_dmg_thermal = 2228
+    fighter_ability_attack_missile_dmg_kinetic = 2229
+    fighter_ability_attack_missile_dmg_explosive = 2230
+    fighter_ability_attack_missile_dmg_multiplier = 2226
     # Misc
     agility = 70
     capacity = 38
@@ -206,7 +212,7 @@ class EffectId(IntEnum):
     adaptive_armor_hardener = 4928
     bomb_launching = 2971
     emp_wave = 38
-    fighter_missile = 4729
+    fighter_ability_attack_m = 6465
     fof_missile_launching = 104
     fueled_armor_repair = 5275
     hi_power = 12

@@ -28,7 +28,24 @@ from eos.util.repr import make_repr_str
 class DmgTypes:
     """Container for damage data stats."""
 
-    def __init__(self, em, thermal, kinetic, explosive):
+    def __init__(self, em, thermal, kinetic, explosive, mult=None):
+        if mult is not None:
+            try:
+                em *= mult
+            except TypeError:
+                pass
+            try:
+                thermal *= mult
+            except TypeError:
+                pass
+            try:
+                kinetic *= mult
+            except TypeError:
+                pass
+            try:
+                explosive *= mult
+            except TypeError:
+                pass
         self.__em = em
         self.__thermal = thermal
         self.__kinetic = kinetic
@@ -105,36 +122,6 @@ class DmgTypes:
                 explosive *= 1 - tgt_resists.explosive
             except TypeError:
                 pass
-        return cls(em, thermal, kinetic, explosive)
-
-    @classmethod
-    def _derive(cls, dmg_types, func):
-        """Create new damage type instance based on already existing one.
-
-        Args:
-            dmg_types: Damage type container which serves as base data.
-            func: Modification to apply to each damage type value.
-        """
-        em = dmg_types.em
-        thermal = dmg_types.thermal
-        kinetic = dmg_types.kinetic
-        explosive = dmg_types.explosive
-        try:
-            em = func(em)
-        except TypeError:
-            pass
-        try:
-            thermal = func(thermal)
-        except TypeError:
-            pass
-        try:
-            kinetic = func(kinetic)
-        except TypeError:
-            pass
-        try:
-            explosive = func(explosive)
-        except TypeError:
-            pass
         return cls(em, thermal, kinetic, explosive)
 
     # Iterator is needed to support tuple-style unpacking

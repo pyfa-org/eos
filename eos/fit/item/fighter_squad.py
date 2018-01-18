@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import State
+from eos.const.eve import AttrId
 from eos.util.repr import make_repr_str
 from .mixin.effect_stats import EffectStatsMixin
 from .mixin.state import MutableStateMixin
@@ -40,6 +41,11 @@ class FighterSquad(MutableStateMixin, BufferTankingMixin, EffectStatsMixin):
 
     def __init__(self, type_id, state=State.offline):
         super().__init__(type_id=type_id, state=state)
+
+    # Item-specific properties
+    @property
+    def squad_size(self):
+        return self.attrs.get(AttrId.fighter_squadron_max_size)
 
     # Attribute calculation-related properties
     _modifier_domain = None

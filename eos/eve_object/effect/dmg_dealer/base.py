@@ -37,7 +37,12 @@ class DmgDealerEffect(Effect, metaclass=ABCMeta):
         if cycle_time is None:
             return DmgTypesTotal(None, None, None, None)
         volley = self.get_volley(item)
-        dps = DmgTypesTotal._derive(volley, lambda d: d / cycle_time)
+        dps = DmgTypesTotal(
+            volley.em,
+            volley.thermal,
+            volley.kinetic,
+            volley.explosive,
+            1 / cycle_time)
         return dps
 
     @abstractmethod
@@ -49,5 +54,10 @@ class DmgDealerEffect(Effect, metaclass=ABCMeta):
         if cycle_time is None:
             return DmgTypesTotal(None, None, None, None)
         volley = self.get_applied_volley(item, tgt_data)
-        dps = DmgTypesTotal._derive(volley, lambda d: d / cycle_time)
+        dps = DmgTypesTotal(
+            volley.em,
+            volley.thermal,
+            volley.kinetic,
+            volley.explosive,
+            1 / cycle_time)
         return dps

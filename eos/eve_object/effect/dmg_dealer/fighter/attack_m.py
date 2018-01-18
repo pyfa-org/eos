@@ -19,32 +19,29 @@
 # ==============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
-
 from eos.const.eve import AttrId
 from eos.fit.stats_container import DmgTypesTotal
 from ..base import DmgDealerEffect
 
 
-class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
-
-    @abstractmethod
-    def _get_base_dmg_item(self, item):
-        """Get item which carries base damage attributes."""
-        ...
+class FighterAbilityAttackM(DmgDealerEffect):
 
     def get_volley(self, item):
-        if self.get_cycles_until_reload(item) is None:
-            return DmgTypesTotal(None, None, None, None)
-        base_dmg_item = self._get_base_dmg_item(item)
-        if base_dmg_item is None:
-            return DmgTypesTotal(None, None, None, None)
-        em = base_dmg_item.attrs.get(AttrId.em_dmg)
-        thermal = base_dmg_item.attrs.get(AttrId.thermal_dmg)
-        kinetic = base_dmg_item.attrs.get(AttrId.kinetic_dmg)
-        explosive = base_dmg_item.attrs.get(AttrId.explosive_dmg)
-        multiplier = item.attrs.get(AttrId.dmg_multiplier)
+        em = item.attrs.get(
+            AttrId.fighter_ability_attack_missile_dmg_em)
+        thermal = item.attrs.get(
+            AttrId.fighter_ability_attack_missile_dmg_thermal)
+        kinetic = item.attrs.get(
+            AttrId.fighter_ability_attack_missile_dmg_kinetic)
+        explosive = item.attrs.get(
+            AttrId.fighter_ability_attack_missile_dmg_explosive)
+        dmg_multiplier = item.attrs.get(
+                AttrId.fighter_ability_attack_missile_dmg_multiplier, 1)
+        try:
+            squad_size = item.squad_size
+        except AttributeError:
+            squad_size = 1
+        multiplier = dmg_multiplier * squad_size
         return DmgTypesTotal(em, thermal, kinetic, explosive, multiplier)
 
     def get_applied_volley(self, item, tgt_data):
