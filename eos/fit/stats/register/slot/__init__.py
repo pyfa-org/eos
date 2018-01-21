@@ -19,6 +19,7 @@
 # ==============================================================================
 
 
+from .fighter_squad import FighterSquadStatRegister
 from .launched_drone import LaunchedDroneStatRegister
 from .ship_ordered import HighSlotStatRegister
 from .ship_ordered import LowSlotStatRegister

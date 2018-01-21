@@ -36,7 +36,7 @@ class FighterAbilityAttackM(DmgDealerEffect):
         explosive = item.attrs.get(
             AttrId.fighter_ability_attack_missile_dmg_explosive)
         dmg_multiplier = item.attrs.get(
-                AttrId.fighter_ability_attack_missile_dmg_multiplier, 1)
+            AttrId.fighter_ability_attack_missile_dmg_multiplier, 1)
         try:
             squad_size = item.squad_size
         except AttributeError:

@@ -31,6 +31,7 @@ from .restriction import CpuRestriction
 from .restriction import DroneBandwidthRestriction
 from .restriction import DroneBayVolumeRestriction
 from .restriction import DroneGroupRestrictionRegister
+from .restriction import FighterSquadRestriction
 from .restriction import HighSlotRestriction
 from .restriction import ImplantIndexRestrictionRegister
 from .restriction import ItemClassRestrictionRegister
@@ -78,6 +79,7 @@ class RestrictionService:
             DroneBandwidthRestriction(stats),
             DroneBayVolumeRestriction(stats),
             DroneGroupRestrictionRegister(msg_broker),
+            FighterSquadRestriction(stats),
             HighSlotRestriction(stats),
             ImplantIndexRestrictionRegister(msg_broker),
             ItemClassRestrictionRegister(msg_broker),

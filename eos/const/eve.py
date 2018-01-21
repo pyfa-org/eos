@@ -145,6 +145,10 @@ class AttrId(IntEnum):
     max_group_online = 978
     rig_size = 1547
     # Fighters
+    fighter_tubes = 2216
+    fighter_support_slots = 2218
+    fighter_light_slots = 2217
+    fighter_heavy_slots = 2219
     fighter_squadron_is_heavy = 2214
     fighter_squadron_is_light = 2212
     fighter_squadron_is_support = 2213

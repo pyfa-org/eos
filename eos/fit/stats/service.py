@@ -34,6 +34,7 @@ from .register import CpuStatRegister
 from .register import DmgDealerRegister
 from .register import DroneBandwidthStatRegister
 from .register import DronebayVolumeStatRegister
+from .register import FighterSquadStatRegister
 from .register import HighSlotStatRegister
 from .register import LaunchedDroneStatRegister
 from .register import LauncherSlotStatRegister
@@ -71,6 +72,7 @@ class StatService(BaseSubscriber):
         self.turret_slots = TurretSlotStatRegister(msg_broker)
         self.launcher_slots = LauncherSlotStatRegister(msg_broker)
         self.launched_drones = LaunchedDroneStatRegister(msg_broker)
+        self.fighter_squads = FighterSquadStatRegister(msg_broker)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     @property

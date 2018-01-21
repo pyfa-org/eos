@@ -19,10 +19,9 @@
 # ==============================================================================
 
 
-from eos import Character
 from eos import Drone
-from eos import ModuleMed
-from eos import State
+from eos import FighterSquad
+from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
@@ -31,92 +30,82 @@ from eos.const.eve import EffectCategoryId
 from tests.integration.stats.testcase import StatsTestCase
 
 
-class TestLaunchedDrone(StatsTestCase):
+class TestFighterSquad(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)
-        self.mkattr(attr_id=AttrId.max_active_drones)
+        self.mkattr(attr_id=AttrId.fighter_tubes)
 
     def test_output(self):
         src_attr = self.mkattr()
         modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
-            tgt_attr_id=AttrId.max_active_drones,
+            tgt_attr_id=AttrId.fighter_tubes,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         mod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        self.fit.character = Character(self.mktype(
-            attrs={AttrId.max_active_drones: 3, src_attr.id: 2},
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.fighter_tubes: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
-        self.assertEqual(self.fit.stats.launched_drones.total, 6)
+        self.assertEqual(self.fit.stats.fighter_squads.total, 6)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_char(self):
+    def test_output_no_ship(self):
         # None for slot quantity when no ship
-        self.fit.character = None
+        self.fit.ship = None
         # Verification
-        self.assertIsNone(self.fit.stats.launched_drones.total)
+        self.assertIsNone(self.fit.stats.fighter_squads.total)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_no_attr(self):
-        # None for slot quantity when no attribute on char
-        self.fit.character = Character(self.mktype().id)
+        # None for slot quantity when no attribute on ship
+        self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertIsNone(self.fit.stats.launched_drones.total)
+        self.assertIsNone(self.fit.stats.fighter_squads.total)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_empty(self):
         # Verification
-        self.assertEqual(self.fit.stats.launched_drones.used, 0)
+        self.assertEqual(self.fit.stats.fighter_squads.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
-        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
-        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
+        self.fit.fighters.add(FighterSquad(self.mktype().id))
+        self.fit.fighters.add(FighterSquad(self.mktype().id))
         # Verification
-        self.assertEqual(self.fit.stats.launched_drones.used, 2)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_use_state(self):
-        self.fit.drones.add(Drone(self.mktype().id, state=State.offline))
-        # Verification
-        self.assertEqual(self.fit.stats.launched_drones.used, 0)
+        self.assertEqual(self.fit.stats.fighter_squads.used, 2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_other_item_class(self):
-        self.fit.modules.med.append(
-            ModuleMed(self.mktype().id, state=State.online))
+        self.fit.drones.add(Drone(self.mktype().id))
         # Verification
-        self.assertEqual(self.fit.stats.launched_drones.used, 0)
+        self.assertEqual(self.fit.stats.fighter_squads.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_source(self):
-        self.fit.character = Character(self.mktype(
-            attrs={AttrId.max_active_drones: 3}).id)
-        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
-        self.fit.drones.add(Drone(self.mktype().id, state=State.online))
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 3}).id)
+        self.fit.fighters.add(FighterSquad(self.mktype().id))
+        self.fit.fighters.add(FighterSquad(self.mktype().id))
         self.fit.source = None
         # Verification
-        self.assertEqual(self.fit.stats.launched_drones.used, 0)
-        self.assertIsNone(self.fit.stats.launched_drones.total)
+        self.assertEqual(self.fit.stats.fighter_squads.used, 0)
+        self.assertIsNone(self.fit.stats.fighter_squads.total)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -25,6 +25,7 @@ from .resource import CpuStatRegister
 from .resource import DroneBandwidthStatRegister
 from .resource import DronebayVolumeStatRegister
 from .resource import PowergridStatRegister
+from .slot import FighterSquadStatRegister
 from .slot import HighSlotStatRegister
 from .slot import LaunchedDroneStatRegister
 from .slot import LauncherSlotStatRegister

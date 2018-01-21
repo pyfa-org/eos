@@ -194,3 +194,18 @@ class LaunchedDroneRestriction(UnorderedSlotRestriction):
     @property
     def type(self):
         return Restriction.launched_drone
+
+
+class FighterSquadRestriction(UnorderedSlotRestriction):
+    """Quantity of fighter squads should not exceed limit.
+
+    Details:
+        For validation, stats module data is used.
+    """
+
+    def __init__(self, stats):
+        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads')
+
+    @property
+    def type(self):
+        return Restriction.fighter_squad
