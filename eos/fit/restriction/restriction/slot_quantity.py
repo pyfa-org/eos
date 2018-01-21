@@ -209,3 +209,48 @@ class FighterSquadRestriction(UnorderedSlotRestriction):
     @property
     def type(self):
         return Restriction.fighter_squad
+
+
+class FighterSquadSupportRestriction(UnorderedSlotRestriction):
+    """Quantity of support fighter squads should not exceed limit.
+
+    Details:
+        For validation, stats module data is used.
+    """
+
+    def __init__(self, stats):
+        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads_support')
+
+    @property
+    def type(self):
+        return Restriction.fighter_squad_support
+
+
+class FighterSquadLightRestriction(UnorderedSlotRestriction):
+    """Quantity of light fighter squads should not exceed limit.
+
+    Details:
+        For validation, stats module data is used.
+    """
+
+    def __init__(self, stats):
+        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads_light')
+
+    @property
+    def type(self):
+        return Restriction.fighter_squad_light
+
+
+class FighterSquadHeavyRestriction(UnorderedSlotRestriction):
+    """Quantity of heavy fighter squads should not exceed limit.
+
+    Details:
+        For validation, stats module data is used.
+    """
+
+    def __init__(self, stats):
+        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads_heavy')
+
+    @property
+    def type(self):
+        return Restriction.fighter_squad_heavy

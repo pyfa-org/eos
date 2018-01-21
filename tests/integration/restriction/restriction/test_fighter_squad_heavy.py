@@ -26,21 +26,23 @@ from eos.const.eve import AttrId
 from tests.integration.restriction.testcase import RestrictionTestCase
 
 
-class TestFighterSquad(RestrictionTestCase):
-    """Check functionality of fighter squad quantity restriction."""
+class TestFighterSquadHeavy(RestrictionTestCase):
+    """Check functionality of heavy fighter squad quantity restriction."""
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
-        self.mkattr(attr_id=AttrId.fighter_tubes)
+        self.mkattr(attr_id=AttrId.fighter_heavy_slots)
 
     def test_fail_excess_single(self):
-        # Check that error is raised when quantity of used slot exceeds slot
+        # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 0}).id)
-        item = FighterSquad(self.mktype().id)
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.fighter_heavy_slots: 0}).id)
+        item = FighterSquad(self.mktype(
+            attrs={AttrId.fighter_squadron_is_heavy: 1}).id)
         self.fit.fighters.add(item)
         # Action
-        error = self.get_error(item, Restriction.fighter_squad)
+        error = self.get_error(item, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNotNone(error)
         self.assertEqual(error.used, 1)
@@ -52,10 +54,11 @@ class TestFighterSquad(RestrictionTestCase):
     def test_fail_excess_single_no_ship(self):
         # When stats module does not specify total tube quantity, make sure it's
         # assumed to be 0
-        item = FighterSquad(self.mktype().id)
+        item = FighterSquad(self.mktype(
+            attrs={AttrId.fighter_squadron_is_heavy: 1}).id)
         self.fit.fighters.add(item)
         # Action
-        error = self.get_error(item, Restriction.fighter_squad)
+        error = self.get_error(item, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNotNone(error)
         self.assertEqual(error.used, 1)
@@ -66,19 +69,21 @@ class TestFighterSquad(RestrictionTestCase):
 
     def test_fail_excess_multiple(self):
         # Check that error works for multiple items
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 1}).id)
-        item1 = FighterSquad(self.mktype().id)
-        item2 = FighterSquad(self.mktype().id)
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.fighter_heavy_slots: 1}).id)
+        item_type = self.mktype(attrs={AttrId.fighter_squadron_is_heavy: 1})
+        item1 = FighterSquad(item_type.id)
+        item2 = FighterSquad(item_type.id)
         self.fit.fighters.add(item1)
         self.fit.fighters.add(item2)
         # Action
-        error1 = self.get_error(item1, Restriction.fighter_squad)
+        error1 = self.get_error(item1, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNotNone(error1)
         self.assertEqual(error1.used, 2)
         self.assertEqual(error1.total, 1)
         # Action
-        error2 = self.get_error(item2, Restriction.fighter_squad)
+        error2 = self.get_error(item2, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNotNone(error2)
         self.assertEqual(error2.used, 2)
@@ -88,17 +93,19 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 2}).id)
-        item1 = FighterSquad(self.mktype().id)
-        item2 = FighterSquad(self.mktype().id)
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.fighter_heavy_slots: 2}).id)
+        item_type = self.mktype(attrs={AttrId.fighter_squadron_is_heavy: 1})
+        item1 = FighterSquad(item_type.id)
+        item2 = FighterSquad(item_type.id)
         self.fit.fighters.add(item1)
         self.fit.fighters.add(item2)
         # Action
-        error1 = self.get_error(item1, Restriction.fighter_squad)
+        error1 = self.get_error(item1, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNone(error1)
         # Action
-        error2 = self.get_error(item2, Restriction.fighter_squad)
+        error2 = self.get_error(item2, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNone(error2)
         # Cleanup
@@ -106,17 +113,19 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 5}).id)
-        item1 = FighterSquad(self.mktype().id)
-        item2 = FighterSquad(self.mktype().id)
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.fighter_heavy_slots: 5}).id)
+        item_type = self.mktype(attrs={AttrId.fighter_squadron_is_heavy: 1})
+        item1 = FighterSquad(item_type.id)
+        item2 = FighterSquad(item_type.id)
         self.fit.fighters.add(item1)
         self.fit.fighters.add(item2)
         # Action
-        error1 = self.get_error(item1, Restriction.fighter_squad)
+        error1 = self.get_error(item1, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNone(error1)
         # Action
-        error2 = self.get_error(item2, Restriction.fighter_squad)
+        error2 = self.get_error(item2, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNone(error2)
         # Cleanup
@@ -124,12 +133,14 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_no_source(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 0}).id)
-        item = FighterSquad(self.mktype().id)
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.fighter_heavy_slots: 0}).id)
+        item = FighterSquad(self.mktype(
+            attrs={AttrId.fighter_squadron_is_heavy: 1}).id)
         self.fit.fighters.add(item)
         self.fit.source = None
         # Action
-        error = self.get_error(item, Restriction.fighter_squad)
+        error = self.get_error(item, Restriction.fighter_squad_heavy)
         # Verification
         self.assertIsNone(error)
         # Cleanup

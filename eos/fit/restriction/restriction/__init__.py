@@ -39,7 +39,10 @@ from .skill_requirement import SkillRequirementRestrictionRegister
 from .slot_index import BoosterIndexRestrictionRegister
 from .slot_index import ImplantIndexRestrictionRegister
 from .slot_index import SubsystemIndexRestrictionRegister
+from .slot_quantity import FighterSquadHeavyRestriction
+from .slot_quantity import FighterSquadLightRestriction
 from .slot_quantity import FighterSquadRestriction
+from .slot_quantity import FighterSquadSupportRestriction
 from .slot_quantity import HighSlotRestriction
 from .slot_quantity import LaunchedDroneRestriction
 from .slot_quantity import LauncherSlotRestriction

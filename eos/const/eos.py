@@ -163,6 +163,9 @@ class Restriction(IntEnum):
     charge_size = 29
     charge_volume = 30
     fighter_squad = 31
+    fighter_squad_support = 32
+    fighter_squad_light = 33
+    fighter_squad_heavy = 34
 
 
 @unique
