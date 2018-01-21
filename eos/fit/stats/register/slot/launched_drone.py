@@ -27,13 +27,13 @@ from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
-from .base import BaseSlotStatRegister
+from .base import BaseSlotRegister
 
 
-class LaunchedDroneStatRegister(BaseSlotStatRegister):
+class LaunchedDroneRegister(BaseSlotRegister):
 
     def __init__(self, msg_broker):
-        BaseSlotStatRegister.__init__(self)
+        BaseSlotRegister.__init__(self)
         self.__current_char = None
         self.__drones = set()
         msg_broker._subscribe(self, self._handler_map.keys())

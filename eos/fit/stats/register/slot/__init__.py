@@ -19,12 +19,15 @@
 # ==============================================================================
 
 
-from .fighter_squad import FighterSquadStatRegister
-from .launched_drone import LaunchedDroneStatRegister
-from .ship_ordered import HighSlotStatRegister
-from .ship_ordered import LowSlotStatRegister
-from .ship_ordered import MediumSlotStatRegister
-from .ship_unordered import LauncherSlotStatRegister
-from .ship_unordered import RigSlotStatRegister
-from .ship_unordered import SubsystemSlotStatRegister
-from .ship_unordered import TurretSlotStatRegister
+from .fighter_squad import FighterSquadRegister
+from .fighter_squad_type import FighterSquadHeavyRegister
+from .fighter_squad_type import FighterSquadLightRegister
+from .fighter_squad_type import FighterSquadSupportRegister
+from .launched_drone import LaunchedDroneRegister
+from .ship_ordered import HighSlotRegister
+from .ship_ordered import LowSlotRegister
+from .ship_ordered import MediumSlotRegister
+from .ship_unordered import LauncherSlotRegister
+from .ship_unordered import RigSlotRegister
+from .ship_unordered import SubsystemSlotRegister
+from .ship_unordered import TurretSlotRegister

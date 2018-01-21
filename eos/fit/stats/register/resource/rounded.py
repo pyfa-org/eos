@@ -26,13 +26,13 @@ from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from .base import BaseResourceStatRegister
+from .base import BaseResourceRegister
 
 
-class RoundedResourceStatRegister(BaseResourceStatRegister):
+class RoundedResourceRegister(BaseResourceRegister):
 
     def __init__(self, msg_broker, output_attr_id, use_effect_id, use_attr_id):
-        BaseResourceStatRegister.__init__(self)
+        BaseResourceRegister.__init__(self)
         self.__output_attr_id = output_attr_id
         self.__use_effect_id = use_effect_id
         self.__use_attr_id = use_attr_id
@@ -83,16 +83,23 @@ class RoundedResourceStatRegister(BaseResourceStatRegister):
         EffectsStopped: _handle_effects_stopped}
 
 
-class CpuStatRegister(RoundedResourceStatRegister):
+class CpuRegister(RoundedResourceRegister):
 
     def __init__(self, msg_broker):
-        RoundedResourceStatRegister.__init__(
-            self, msg_broker, AttrId.cpu_output, EffectId.online, AttrId.cpu)
+        RoundedResourceRegister.__init__(
+            self,
+            msg_broker,
+            AttrId.cpu_output,
+            EffectId.online,
+            AttrId.cpu)
 
 
-class PowergridStatRegister(RoundedResourceStatRegister):
+class PowergridRegister(RoundedResourceRegister):
 
     def __init__(self, msg_broker):
-        RoundedResourceStatRegister.__init__(
-            self, msg_broker, AttrId.power_output, EffectId.online,
+        RoundedResourceRegister.__init__(
+            self,
+            msg_broker,
+            AttrId.power_output,
+            EffectId.online,
             AttrId.power)

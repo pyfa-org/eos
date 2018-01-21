@@ -26,7 +26,7 @@ from eos.util.repr import make_repr_str
 from ..base import BaseStatRegister
 
 
-class BaseResourceStatRegister(BaseStatRegister, metaclass=ABCMeta):
+class BaseResourceRegister(BaseStatRegister, metaclass=ABCMeta):
 
     @property
     @abstractmethod

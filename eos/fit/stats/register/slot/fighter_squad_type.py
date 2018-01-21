@@ -27,12 +27,14 @@ from eos.fit.message import ItemRemoved
 from .base import BaseSlotRegister
 
 
-class FighterSquadRegister(BaseSlotRegister):
+class FighterSquadTypeRegister(BaseSlotRegister):
 
-    def __init__(self, msg_broker):
+    def __init__(self, msg_broker, fighter_attr_id, ship_attr_id):
         BaseSlotRegister.__init__(self)
         self.__current_ship = None
         self.__fighters = set()
+        self.__fighter_attr_id = fighter_attr_id
+        self.__ship_attr_id = ship_attr_id
         msg_broker._subscribe(self, self._handler_map.keys())
 
     @property
@@ -42,7 +44,7 @@ class FighterSquadRegister(BaseSlotRegister):
     @property
     def total(self):
         try:
-            return int(self.__current_ship.attrs[AttrId.fighter_tubes])
+            return int(self.__current_ship.attrs[self.__ship_attr_id])
         except (AttributeError, KeyError):
             return None
 
@@ -51,7 +53,10 @@ class FighterSquadRegister(BaseSlotRegister):
         return self.__fighters
 
     def _handle_item_added(self, msg):
-        if isinstance(msg.item, FighterSquad):
+        if (
+            isinstance(msg.item, FighterSquad) and
+            msg.item._type_attrs.get(self.__fighter_attr_id)
+        ):
             self.__fighters.add(msg.item)
         elif isinstance(msg.item, Ship):
             self.__current_ship = msg.item
@@ -64,3 +69,33 @@ class FighterSquadRegister(BaseSlotRegister):
     _handler_map = {
         ItemAdded: _handle_item_added,
         ItemRemoved: _handle_item_removed}
+
+
+class FighterSquadSupportRegister(FighterSquadTypeRegister):
+
+    def __init__(self, msg_broker):
+        FighterSquadTypeRegister.__init__(
+            self,
+            msg_broker,
+            AttrId.fighter_squadron_is_support,
+            AttrId.fighter_support_slots)
+
+
+class FighterSquadLightRegister(FighterSquadTypeRegister):
+
+    def __init__(self, msg_broker):
+        FighterSquadTypeRegister.__init__(
+            self,
+            msg_broker,
+            AttrId.fighter_squadron_is_light,
+            AttrId.fighter_light_slots)
+
+
+class FighterSquadHeavyRegister(FighterSquadTypeRegister):
+
+    def __init__(self, msg_broker):
+        FighterSquadTypeRegister.__init__(
+            self,
+            msg_broker,
+            AttrId.fighter_squadron_is_heavy,
+            AttrId.fighter_heavy_slots)

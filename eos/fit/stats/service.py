@@ -29,21 +29,24 @@ from eos.fit.stats_container import DmgTypes
 from eos.fit.stats_container import TankingLayers
 from eos.fit.stats_container import TankingLayersTotal
 from eos.util.pubsub.subscriber import BaseSubscriber
-from .register import CalibrationStatRegister
-from .register import CpuStatRegister
+from .register import CalibrationRegister
+from .register import CpuRegister
 from .register import DmgDealerRegister
-from .register import DroneBandwidthStatRegister
-from .register import DronebayVolumeStatRegister
-from .register import FighterSquadStatRegister
-from .register import HighSlotStatRegister
-from .register import LaunchedDroneStatRegister
-from .register import LauncherSlotStatRegister
-from .register import LowSlotStatRegister
-from .register import MediumSlotStatRegister
-from .register import PowergridStatRegister
-from .register import RigSlotStatRegister
-from .register import SubsystemSlotStatRegister
-from .register import TurretSlotStatRegister
+from .register import DroneBandwidthRegister
+from .register import DronebayVolumeRegister
+from .register import FighterSquadHeavyRegister
+from .register import FighterSquadLightRegister
+from .register import FighterSquadRegister
+from .register import FighterSquadSupportRegister
+from .register import HighSlotRegister
+from .register import LaunchedDroneRegister
+from .register import LauncherSlotRegister
+from .register import LowSlotRegister
+from .register import MediumSlotRegister
+from .register import PowergridRegister
+from .register import RigSlotRegister
+from .register import SubsystemSlotRegister
+from .register import TurretSlotRegister
 
 
 class StatService(BaseSubscriber):
@@ -59,20 +62,23 @@ class StatService(BaseSubscriber):
         self.__current_ship = None
         self.__dd_reg = DmgDealerRegister(msg_broker)
         # Initialize sub-containers
-        self.cpu = CpuStatRegister(msg_broker)
-        self.powergrid = PowergridStatRegister(msg_broker)
-        self.calibration = CalibrationStatRegister(msg_broker)
-        self.dronebay = DronebayVolumeStatRegister(msg_broker)
-        self.drone_bandwidth = DroneBandwidthStatRegister(msg_broker)
-        self.high_slots = HighSlotStatRegister(msg_broker)
-        self.med_slots = MediumSlotStatRegister(msg_broker)
-        self.low_slots = LowSlotStatRegister(msg_broker)
-        self.rig_slots = RigSlotStatRegister(msg_broker)
-        self.subsystem_slots = SubsystemSlotStatRegister(msg_broker)
-        self.turret_slots = TurretSlotStatRegister(msg_broker)
-        self.launcher_slots = LauncherSlotStatRegister(msg_broker)
-        self.launched_drones = LaunchedDroneStatRegister(msg_broker)
-        self.fighter_squads = FighterSquadStatRegister(msg_broker)
+        self.cpu = CpuRegister(msg_broker)
+        self.powergrid = PowergridRegister(msg_broker)
+        self.calibration = CalibrationRegister(msg_broker)
+        self.dronebay = DronebayVolumeRegister(msg_broker)
+        self.drone_bandwidth = DroneBandwidthRegister(msg_broker)
+        self.high_slots = HighSlotRegister(msg_broker)
+        self.med_slots = MediumSlotRegister(msg_broker)
+        self.low_slots = LowSlotRegister(msg_broker)
+        self.rig_slots = RigSlotRegister(msg_broker)
+        self.subsystem_slots = SubsystemSlotRegister(msg_broker)
+        self.turret_slots = TurretSlotRegister(msg_broker)
+        self.launcher_slots = LauncherSlotRegister(msg_broker)
+        self.launched_drones = LaunchedDroneRegister(msg_broker)
+        self.fighter_squads = FighterSquadRegister(msg_broker)
+        self.fighter_squads_support = FighterSquadSupportRegister(msg_broker)
+        self.fighter_squads_light = FighterSquadLightRegister(msg_broker)
+        self.fighter_squads_heavy = FighterSquadHeavyRegister(msg_broker)
         msg_broker._subscribe(self, self._handler_map.keys())
 
     @property

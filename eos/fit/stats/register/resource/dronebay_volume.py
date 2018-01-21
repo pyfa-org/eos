@@ -24,13 +24,13 @@ from eos.fit.item import Drone
 from eos.fit.item import Ship
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from .base import BaseResourceStatRegister
+from .base import BaseResourceRegister
 
 
-class DronebayVolumeStatRegister(BaseResourceStatRegister):
+class DronebayVolumeRegister(BaseResourceRegister):
 
     def __init__(self, msg_broker):
-        BaseResourceStatRegister.__init__(self)
+        BaseResourceRegister.__init__(self)
         self.__current_ship = None
         self.__resource_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())

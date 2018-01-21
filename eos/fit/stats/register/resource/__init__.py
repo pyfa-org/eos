@@ -19,8 +19,8 @@
 # ==============================================================================
 
 
-from .drone_bandwidth import DroneBandwidthStatRegister
-from .dronebay_volume import DronebayVolumeStatRegister
-from .rounded import CpuStatRegister
-from .rounded import PowergridStatRegister
-from .unrounded import CalibrationStatRegister
+from .drone_bandwidth import DroneBandwidthRegister
+from .dronebay_volume import DronebayVolumeRegister
+from .rounded import CpuRegister
+from .rounded import PowergridRegister
+from .unrounded import CalibrationRegister

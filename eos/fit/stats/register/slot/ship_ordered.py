@@ -26,13 +26,13 @@ from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from .base import BaseSlotStatRegister
+from .base import BaseSlotRegister
 
 
-class OrderedShipSlotStatRegister(BaseSlotStatRegister):
+class OrderedShipSlotRegister(BaseSlotRegister):
 
     def __init__(self, msg_broker, slot_effect_id, slot_attr_id):
-        BaseSlotStatRegister.__init__(self)
+        BaseSlotRegister.__init__(self)
         self.__slot_effect_id = slot_effect_id
         self.__slot_attr_id = slot_attr_id
         self.__current_ship = None
@@ -80,22 +80,22 @@ class OrderedShipSlotStatRegister(BaseSlotStatRegister):
         EffectsStopped: _handle_effects_stopped}
 
 
-class HighSlotStatRegister(OrderedShipSlotStatRegister):
+class HighSlotRegister(OrderedShipSlotRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(
+        OrderedShipSlotRegister.__init__(
             self, msg_broker, EffectId.hi_power, AttrId.hi_slots)
 
 
-class MediumSlotStatRegister(OrderedShipSlotStatRegister):
+class MediumSlotRegister(OrderedShipSlotRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(
+        OrderedShipSlotRegister.__init__(
             self, msg_broker, EffectId.med_power, AttrId.med_slots)
 
 
-class LowSlotStatRegister(OrderedShipSlotStatRegister):
+class LowSlotRegister(OrderedShipSlotRegister):
 
     def __init__(self, msg_broker):
-        OrderedShipSlotStatRegister.__init__(
+        OrderedShipSlotRegister.__init__(
             self, msg_broker, EffectId.lo_power, AttrId.low_slots)

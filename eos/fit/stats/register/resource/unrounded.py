@@ -26,13 +26,13 @@ from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from .base import BaseResourceStatRegister
+from .base import BaseResourceRegister
 
 
-class UnroundedResourceStatRegister(BaseResourceStatRegister):
+class UnroundedResourceRegister(BaseResourceRegister):
 
     def __init__(self, msg_broker, output_attr_id, use_effect_id, use_attr_id):
-        BaseResourceStatRegister.__init__(self)
+        BaseResourceRegister.__init__(self)
         self.__output_attr_id = output_attr_id
         self.__use_effect_id = use_effect_id
         self.__use_attr_id = use_attr_id
@@ -83,9 +83,12 @@ class UnroundedResourceStatRegister(BaseResourceStatRegister):
         EffectsStopped: _handle_effects_stopped}
 
 
-class CalibrationStatRegister(UnroundedResourceStatRegister):
+class CalibrationRegister(UnroundedResourceRegister):
 
     def __init__(self, msg_broker):
-        UnroundedResourceStatRegister.__init__(
-            self, msg_broker, AttrId.upgrade_capacity, EffectId.rig_slot,
+        UnroundedResourceRegister.__init__(
+            self,
+            msg_broker,
+            AttrId.upgrade_capacity,
+            EffectId.rig_slot,
             AttrId.upgrade_cost)

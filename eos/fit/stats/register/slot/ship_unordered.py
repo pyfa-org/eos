@@ -26,13 +26,13 @@ from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from .base import BaseSlotStatRegister
+from .base import BaseSlotRegister
 
 
-class UnorderedShipSlotStatRegister(BaseSlotStatRegister):
+class UnorderedShipSlotRegister(BaseSlotRegister):
 
     def __init__(self, msg_broker, slot_effect_id, slot_attr_id):
-        BaseSlotStatRegister.__init__(self)
+        BaseSlotRegister.__init__(self)
         self.__slot_effect_id = slot_effect_id
         self.__slot_attr_id = slot_attr_id
         self.__current_ship = None
@@ -77,30 +77,30 @@ class UnorderedShipSlotStatRegister(BaseSlotStatRegister):
         EffectsStopped: _handle_effects_stopped}
 
 
-class RigSlotStatRegister(UnorderedShipSlotStatRegister):
+class RigSlotRegister(UnorderedShipSlotRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(
+        UnorderedShipSlotRegister.__init__(
             self, msg_broker, EffectId.rig_slot, AttrId.rig_slots)
 
 
-class SubsystemSlotStatRegister(UnorderedShipSlotStatRegister):
+class SubsystemSlotRegister(UnorderedShipSlotRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(
+        UnorderedShipSlotRegister.__init__(
             self, msg_broker, EffectId.subsystem, AttrId.max_subsystems)
 
 
-class TurretSlotStatRegister(UnorderedShipSlotStatRegister):
+class TurretSlotRegister(UnorderedShipSlotRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(
+        UnorderedShipSlotRegister.__init__(
             self, msg_broker, EffectId.turret_fitted, AttrId.turret_slots_left)
 
 
-class LauncherSlotStatRegister(UnorderedShipSlotStatRegister):
+class LauncherSlotRegister(UnorderedShipSlotRegister):
 
     def __init__(self, msg_broker):
-        UnorderedShipSlotStatRegister.__init__(
+        UnorderedShipSlotRegister.__init__(
             self, msg_broker, EffectId.launcher_fitted,
             AttrId.launcher_slots_left)
