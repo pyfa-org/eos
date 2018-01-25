@@ -19,6 +19,9 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
+
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.fit.item import Ship
@@ -26,33 +29,48 @@ from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from .base import BaseSlotRegister
+from .base import BaseResourceRegister
 
 
-class UnorderedShipSlotRegister(BaseSlotRegister):
+class ShipRegularResourceRegister(BaseResourceRegister, metaclass=ABCMeta):
 
-    def __init__(self, msg_broker, slot_effect_id, slot_attr_id):
-        BaseSlotRegister.__init__(self)
-        self.__slot_effect_id = slot_effect_id
-        self.__slot_attr_id = slot_attr_id
+    def __init__(self, msg_broker):
+        BaseResourceRegister.__init__(self)
         self.__current_ship = None
-        self.__slot_users = set()
+        self.__resource_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
     @property
-    def used(self):
-        return len(self.__slot_users)
+    @abstractmethod
+    def _output_attr_id(self):
+        ...
 
     @property
-    def total(self):
+    @abstractmethod
+    def _use_effect_id(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _use_attr_id(self):
+        ...
+
+    @property
+    def used(self):
+        return sum(
+            item.attrs[self._use_attr_id]
+            for item in self.__resource_users)
+
+    @property
+    def output(self):
         try:
-            return int(self.__current_ship.attrs[self.__slot_attr_id])
+            return self.__current_ship.attrs[self._output_attr_id]
         except (AttributeError, KeyError):
             return None
 
     @property
     def _users(self):
-        return self.__slot_users
+        return self.__resource_users
 
     def _handle_item_added(self, msg):
         if isinstance(msg.item, Ship):
@@ -63,12 +81,15 @@ class UnorderedShipSlotRegister(BaseSlotRegister):
             self.__current_ship = None
 
     def _handle_effects_started(self, msg):
-        if self.__slot_effect_id in msg.effect_ids:
-            self.__slot_users.add(msg.item)
+        if (
+            self._use_effect_id in msg.effect_ids and
+            self._use_attr_id in msg.item._type_attrs
+        ):
+            self.__resource_users.add(msg.item)
 
     def _handle_effects_stopped(self, msg):
-        if self.__slot_effect_id in msg.effect_ids:
-            self.__slot_users.discard(msg.item)
+        if self._use_effect_id in msg.effect_ids:
+            self.__resource_users.discard(msg.item)
 
     _handler_map = {
         ItemAdded: _handle_item_added,
@@ -77,30 +98,29 @@ class UnorderedShipSlotRegister(BaseSlotRegister):
         EffectsStopped: _handle_effects_stopped}
 
 
-class RigSlotRegister(UnorderedShipSlotRegister):
+class RoundedShipRegularResourceRegister(ShipRegularResourceRegister):
 
-    def __init__(self, msg_broker):
-        UnorderedShipSlotRegister.__init__(
-            self, msg_broker, EffectId.rig_slot, AttrId.rig_slots)
-
-
-class SubsystemSlotRegister(UnorderedShipSlotRegister):
-
-    def __init__(self, msg_broker):
-        UnorderedShipSlotRegister.__init__(
-            self, msg_broker, EffectId.subsystem, AttrId.max_subsystems)
+    @property
+    def used(self):
+        return round(super().used, 2)
 
 
-class TurretSlotRegister(UnorderedShipSlotRegister):
+class CalibrationRegister(ShipRegularResourceRegister):
 
-    def __init__(self, msg_broker):
-        UnorderedShipSlotRegister.__init__(
-            self, msg_broker, EffectId.turret_fitted, AttrId.turret_slots_left)
+    _output_attr_id = AttrId.upgrade_capacity
+    _use_effect_id = EffectId.rig_slot
+    _use_attr_id = AttrId.upgrade_cost
 
 
-class LauncherSlotRegister(UnorderedShipSlotRegister):
+class CpuRegister(RoundedShipRegularResourceRegister):
 
-    def __init__(self, msg_broker):
-        UnorderedShipSlotRegister.__init__(
-            self, msg_broker, EffectId.launcher_fitted,
-            AttrId.launcher_slots_left)
+    _output_attr_id = AttrId.cpu_output
+    _use_effect_id = EffectId.online
+    _use_attr_id = AttrId.cpu
+
+
+class PowergridRegister(RoundedShipRegularResourceRegister):
+
+    _output_attr_id = AttrId.power_output
+    _use_effect_id = EffectId.online
+    _use_attr_id = AttrId.power

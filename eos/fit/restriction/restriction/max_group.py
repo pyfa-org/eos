@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import Restriction
@@ -43,12 +45,10 @@ MaxGroupErrorData = namedtuple(
     'MaxGroupErrorData', ('group_id', 'quantity', 'max_allowed_quantity'))
 
 
-class MaxGroupRestrictionRegister(BaseRestrictionRegister):
+class MaxGroupRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
     """Base class for all max modules per group restrictions."""
 
-    def __init__(self, max_group_attr_id):
-        # Attribute ID whose value contains group restriction of item
-        self.__max_group_attr_id = max_group_attr_id
+    def __init__(self, msg_broker):
         # Container for all tracked items, keyed by their group ID
         # Format: {group ID: {items}}
         self.__group_item_map = KeyedStorage()
@@ -56,6 +56,13 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         # operational
         # Format: {items}
         self.__restricted_items = set()
+        msg_broker._subscribe(self, self._handler_map.keys())
+
+    @property
+    @abstractmethod
+    def _max_group_attr_id(self):
+        """Attribute ID whose value contains group restriction of item."""
+        ...
 
     def _register_item(self, item):
         if not isinstance(item, TRACKED_ITEM_CLASSES):
@@ -69,7 +76,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
         self.__group_item_map.add_data_entry(group_id, item)
         # To enter restriction container, item's type must have restriction
         # attribute
-        if self.__max_group_attr_id not in item._type_attrs:
+        if self._max_group_attr_id not in item._type_attrs:
             return
         self.__restricted_items.add(item)
 
@@ -88,7 +95,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister):
             # restricted item, and item's restriction value
             group_id = item._type.group_id
             quantity = len(self.__group_item_map.get(group_id, ()))
-            max_allowed_quantity = item._type_attrs[self.__max_group_attr_id]
+            max_allowed_quantity = item._type_attrs[self._max_group_attr_id]
             if quantity > max_allowed_quantity:
                 tainted_items[item] = MaxGroupErrorData(
                     group_id=group_id,
@@ -107,9 +114,7 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
         For validation, modified value of restriction attribute is taken.
     """
 
-    def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttrId.max_group_fitted)
-        msg_broker._subscribe(self, self._handler_map.keys())
+    _max_group_attr_id = AttrId.max_group_fitted
 
     def _handle_item_added(self, msg):
         MaxGroupRestrictionRegister._register_item(self, msg.item)
@@ -134,9 +139,7 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
         For validation, modified value of restriction attribute is taken.
     """
 
-    def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttrId.max_group_online)
-        msg_broker._subscribe(self, self._handler_map.keys())
+    _max_group_attr_id = AttrId.max_group_online
 
     def _handle_states_activated(self, msg):
         if State.online in msg.states:
@@ -163,9 +166,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
         For validation, modified value of restriction attribute is taken.
     """
 
-    def __init__(self, msg_broker):
-        MaxGroupRestrictionRegister.__init__(self, AttrId.max_group_active)
-        msg_broker._subscribe(self, self._handler_map.keys())
+    _max_group_attr_id = AttrId.max_group_active
 
     def _handle_states_activated(self, msg):
         if State.active in msg.states:

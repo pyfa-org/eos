@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import Restriction
@@ -33,29 +35,33 @@ from ..exception import RestrictionValidationError
 SlotIndexErrorData = namedtuple('SlotIndexErrorData', ('slot_index',))
 
 
-class SlotIndexRestrictionRegister(BaseRestrictionRegister):
+class SlotIndexRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
     """Base class for all slot index restrictions.
 
     It doesn't allow multiple items to take the same numbered slot.
     """
 
-    def __init__(self, msg_broker, slot_index_attr_id):
-        # This attribute's value on item represents their index of slot
-        self.__slot_index_attr_id = slot_index_attr_id
+    def __init__(self, msg_broker):
         # All items which possess index of slot are stored in this container
         # Format: {slot index: {items}}
         self.__index_item_map = KeyedStorage()
         msg_broker._subscribe(self, self._handler_map.keys())
 
+    @property
+    @abstractmethod
+    def _slot_index_attr_id(self):
+        """This attribute's value on item represents index of slot."""
+        ...
+
     def _handle_item_added(self, msg):
         # Skip items which don't have index specified
-        slot_index = msg.item._type_attrs.get(self.__slot_index_attr_id)
+        slot_index = msg.item._type_attrs.get(self._slot_index_attr_id)
         if slot_index is None:
             return
         self.__index_item_map.add_data_entry(slot_index, msg.item)
 
     def _handle_item_removed(self, msg):
-        slot_index = msg.item._type_attrs.get(self.__slot_index_attr_id)
+        slot_index = msg.item._type_attrs.get(self._slot_index_attr_id)
         if slot_index is None:
             return
         self.__index_item_map.rm_data_entry(slot_index, msg.item)
@@ -85,9 +91,7 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
         Slot to occupy is determined by item type attributes.
     """
 
-    def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttrId.subsystem_slot)
+    _slot_index_attr_id = AttrId.subsystem_slot
 
     @property
     def type(self):
@@ -101,9 +105,7 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
         Slot to occupy is determined by item type attributes.
     """
 
-    def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttrId.implantness)
+    _slot_index_attr_id = AttrId.implantness
 
     @property
     def type(self):
@@ -117,9 +119,7 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
         Slot to occupy is determined by item type attributes.
     """
 
-    def __init__(self, msg_broker):
-        SlotIndexRestrictionRegister.__init__(
-            self, msg_broker, AttrId.boosterness)
+    _slot_index_attr_id = AttrId.boosterness
 
     @property
     def type(self):

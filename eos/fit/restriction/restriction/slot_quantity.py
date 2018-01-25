@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import Restriction
@@ -30,16 +32,23 @@ SlotQuantityErrorData = namedtuple(
     'SlotQuantityErrorData', ('used', 'total'))
 
 
-class OrderedSlotRestriction(BaseRestriction):
-    """Base class for all ordered slot quantity restrictions."""
+class BaseSlotRestriction(BaseRestriction, metaclass=ABCMeta):
 
-    def __init__(self, stats, stat_name):
-        self.__stats = stats
-        self.__stat_name = stat_name
+    def __init__(self, stats):
+        self._stats = stats
+
+    @property
+    @abstractmethod
+    def _stat_name(self):
+        ...
+
+
+class OrderedSlotRestriction(BaseSlotRestriction):
+    """Base class for all ordered slot quantity restrictions."""
 
     def validate(self):
         # Use stats module to get max and used quantity of slots
-        stats = getattr(self.__stats, self.__stat_name)
+        stats = getattr(self._stats, self._stat_name)
         used = stats.used
         # Can be None, so fall back to 0 in this case
         total = stats.total or 0
@@ -56,15 +65,11 @@ class OrderedSlotRestriction(BaseRestriction):
             raise RestrictionValidationError(tainted_items)
 
 
-class UnorderedSlotRestriction(BaseRestriction):
+class UnorderedSlotRestriction(BaseSlotRestriction):
     """Base class for all unordered slot quantity restrictions."""
 
-    def __init__(self, stats, stat_name):
-        self.__stats = stats
-        self.__stat_name = stat_name
-
     def validate(self):
-        stats = getattr(self.__stats, self.__stat_name)
+        stats = getattr(self._stats, self._stat_name)
         used = stats.used
         total = stats.total or 0
         # If quantity of items which take this slot is bigger than quantity of
@@ -84,8 +89,7 @@ class HighSlotRestriction(OrderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        OrderedSlotRestriction.__init__(self, stats, 'high_slots')
+    _stat_name = 'high_slots'
 
     @property
     def type(self):
@@ -99,8 +103,7 @@ class MediumSlotRestriction(OrderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        OrderedSlotRestriction.__init__(self, stats, 'med_slots')
+    _stat_name = 'med_slots'
 
     @property
     def type(self):
@@ -114,8 +117,7 @@ class LowSlotRestriction(OrderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        OrderedSlotRestriction.__init__(self, stats, 'low_slots')
+    _stat_name = 'low_slots'
 
     @property
     def type(self):
@@ -128,8 +130,8 @@ class RigSlotRestriction(UnorderedSlotRestriction):
     Details:
         For validation, stats module data is used.
     """
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'rig_slots')
+
+    _stat_name = 'rig_slots'
 
     @property
     def type(self):
@@ -143,8 +145,7 @@ class SubsystemSlotRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'subsystem_slots')
+    _stat_name = 'subsystem_slots'
 
     @property
     def type(self):
@@ -158,8 +159,7 @@ class TurretSlotRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'turret_slots')
+    _stat_name = 'turret_slots'
 
     @property
     def type(self):
@@ -173,8 +173,7 @@ class LauncherSlotRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'launcher_slots')
+    _stat_name = 'launcher_slots'
 
     @property
     def type(self):
@@ -188,8 +187,7 @@ class LaunchedDroneRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'launched_drones')
+    _stat_name = 'launched_drones'
 
     @property
     def type(self):
@@ -203,8 +201,7 @@ class FighterSquadRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads')
+    _stat_name = 'fighter_squads'
 
     @property
     def type(self):
@@ -218,8 +215,7 @@ class FighterSquadSupportRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads_support')
+    _stat_name = 'fighter_squads_support'
 
     @property
     def type(self):
@@ -233,8 +229,7 @@ class FighterSquadLightRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads_light')
+    _stat_name = 'fighter_squads_light'
 
     @property
     def type(self):
@@ -248,8 +243,7 @@ class FighterSquadHeavyRestriction(UnorderedSlotRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        UnorderedSlotRestriction.__init__(self, stats, 'fighter_squads_heavy')
+    _stat_name = 'fighter_squads_heavy'
 
     @property
     def type(self):

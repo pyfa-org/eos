@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import Restriction
@@ -31,22 +33,30 @@ ResourceErrorData = namedtuple(
     'ResourceErrorData', ('total_use', 'output', 'item_use'))
 
 
-class ResourceRestriction(BaseRestriction):
+class ResourceRestriction(BaseRestriction, metaclass=ABCMeta):
     """Base class for all resource restrictions.
 
     Resources in this context is something produced by ship/character and
     consumed by other items.
     """
 
-    def __init__(self, stats, stat_name, use_attr_id):
+    def __init__(self, stats):
         self.__stats = stats
-        # Use this stat name to get numbers from stats service
-        self.__stat_name = stat_name
-        self.__use_attr_id = use_attr_id
+
+    @property
+    @abstractmethod
+    def _stat_name(self):
+        """This name will be used to get numbers from stats service."""
+        ...
+
+    @property
+    @abstractmethod
+    def _use_attr_id(self):
+        ...
 
     def validate(self):
         # Use stats module to get resource use and output
-        stats = getattr(self.__stats, self.__stat_name)
+        stats = getattr(self.__stats, self._stat_name)
         total_use = stats.used
         # Can be None, so fall back to 0 in this case
         output = stats.output or 0
@@ -55,7 +65,7 @@ class ResourceRestriction(BaseRestriction):
             return
         tainted_items = {}
         for item in stats._users:
-            resource_use = item.attrs[self.__use_attr_id]
+            resource_use = item.attrs[self._use_attr_id]
             # Ignore items which do not actually consume resource
             if resource_use <= 0:
                 continue
@@ -73,8 +83,8 @@ class CpuRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'cpu', AttrId.cpu)
+    _stat_name = 'cpu'
+    _use_attr_id = AttrId.cpu
 
     @property
     def type(self):
@@ -88,8 +98,8 @@ class PowergridRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'powergrid', AttrId.power)
+    _stat_name = 'powergrid'
+    _use_attr_id = AttrId.power
 
     @property
     def type(self):
@@ -103,9 +113,8 @@ class CalibrationRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        ResourceRestriction.__init__(
-            self, stats, 'calibration', AttrId.upgrade_cost)
+    _stat_name = 'calibration'
+    _use_attr_id = AttrId.upgrade_cost
 
     @property
     def type(self):
@@ -119,8 +128,8 @@ class DroneBayVolumeRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        ResourceRestriction.__init__(self, stats, 'dronebay', AttrId.volume)
+    _stat_name = 'dronebay'
+    _use_attr_id = AttrId.volume
 
     @property
     def type(self):
@@ -134,9 +143,8 @@ class DroneBandwidthRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
-    def __init__(self, stats):
-        ResourceRestriction.__init__(
-            self, stats, 'drone_bandwidth', AttrId.drone_bandwidth_used)
+    _stat_name = 'drone_bandwidth'
+    _use_attr_id = AttrId.drone_bandwidth_used
 
     @property
     def type(self):

@@ -19,6 +19,9 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
+
 from eos.const.eve import AttrId
 from eos.fit.item import FighterSquad
 from eos.fit.item import Ship
@@ -27,15 +30,23 @@ from eos.fit.message import ItemRemoved
 from .base import BaseSlotRegister
 
 
-class FighterSquadTypeRegister(BaseSlotRegister):
+class FighterSquadTypeRegister(BaseSlotRegister, metaclass=ABCMeta):
 
-    def __init__(self, msg_broker, fighter_attr_id, ship_attr_id):
+    def __init__(self, msg_broker):
         BaseSlotRegister.__init__(self)
         self.__current_ship = None
         self.__fighters = set()
-        self.__fighter_attr_id = fighter_attr_id
-        self.__ship_attr_id = ship_attr_id
         msg_broker._subscribe(self, self._handler_map.keys())
+
+    @property
+    @abstractmethod
+    def _fighter_attr_id(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _ship_attr_id(self):
+        ...
 
     @property
     def used(self):
@@ -44,7 +55,7 @@ class FighterSquadTypeRegister(BaseSlotRegister):
     @property
     def total(self):
         try:
-            return int(self.__current_ship.attrs[self.__ship_attr_id])
+            return int(self.__current_ship.attrs[self._ship_attr_id])
         except (AttributeError, KeyError):
             return None
 
@@ -55,7 +66,7 @@ class FighterSquadTypeRegister(BaseSlotRegister):
     def _handle_item_added(self, msg):
         if (
             isinstance(msg.item, FighterSquad) and
-            msg.item._type_attrs.get(self.__fighter_attr_id)
+            msg.item._type_attrs.get(self._fighter_attr_id)
         ):
             self.__fighters.add(msg.item)
         elif isinstance(msg.item, Ship):
@@ -73,29 +84,17 @@ class FighterSquadTypeRegister(BaseSlotRegister):
 
 class FighterSquadSupportRegister(FighterSquadTypeRegister):
 
-    def __init__(self, msg_broker):
-        FighterSquadTypeRegister.__init__(
-            self,
-            msg_broker,
-            AttrId.fighter_squadron_is_support,
-            AttrId.fighter_support_slots)
+    _fighter_attr_id = AttrId.fighter_squadron_is_support
+    _ship_attr_id = AttrId.fighter_support_slots
 
 
 class FighterSquadLightRegister(FighterSquadTypeRegister):
 
-    def __init__(self, msg_broker):
-        FighterSquadTypeRegister.__init__(
-            self,
-            msg_broker,
-            AttrId.fighter_squadron_is_light,
-            AttrId.fighter_light_slots)
+    _fighter_attr_id = AttrId.fighter_squadron_is_light
+    _ship_attr_id = AttrId.fighter_light_slots
 
 
 class FighterSquadHeavyRegister(FighterSquadTypeRegister):
 
-    def __init__(self, msg_broker):
-        FighterSquadTypeRegister.__init__(
-            self,
-            msg_broker,
-            AttrId.fighter_squadron_is_heavy,
-            AttrId.fighter_heavy_slots)
+    _fighter_attr_id = AttrId.fighter_squadron_is_heavy
+    _ship_attr_id = AttrId.fighter_heavy_slots

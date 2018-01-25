@@ -19,6 +19,9 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
+
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.fit.item import Ship
@@ -29,27 +32,32 @@ from eos.fit.message import ItemRemoved
 from .base import BaseSlotRegister
 
 
-class OrderedShipSlotRegister(BaseSlotRegister):
+class ShipRegularSlotRegister(BaseSlotRegister, metaclass=ABCMeta):
 
-    def __init__(self, msg_broker, slot_effect_id, slot_attr_id):
+    def __init__(self, msg_broker):
         BaseSlotRegister.__init__(self)
-        self.__slot_effect_id = slot_effect_id
-        self.__slot_attr_id = slot_attr_id
         self.__current_ship = None
         self.__slot_users = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
     @property
+    @abstractmethod
+    def _slot_effect_id(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _slot_attr_id(self):
+        ...
+
+    @property
     def used(self):
-        return max((
-            i._container_position + 1
-            for i in self.__slot_users
-            if i._container_position is not None), default=0)
+        return len(self.__slot_users)
 
     @property
     def total(self):
         try:
-            return int(self.__current_ship.attrs[self.__slot_attr_id])
+            return int(self.__current_ship.attrs[self._slot_attr_id])
         except (AttributeError, KeyError):
             return None
 
@@ -66,11 +74,11 @@ class OrderedShipSlotRegister(BaseSlotRegister):
             self.__current_ship = None
 
     def _handle_effects_started(self, msg):
-        if self.__slot_effect_id in msg.effect_ids:
+        if self._slot_effect_id in msg.effect_ids:
             self.__slot_users.add(msg.item)
 
     def _handle_effects_stopped(self, msg):
-        if self.__slot_effect_id in msg.effect_ids:
+        if self._slot_effect_id in msg.effect_ids:
             self.__slot_users.discard(msg.item)
 
     _handler_map = {
@@ -80,22 +88,53 @@ class OrderedShipSlotRegister(BaseSlotRegister):
         EffectsStopped: _handle_effects_stopped}
 
 
-class HighSlotRegister(OrderedShipSlotRegister):
+class OrderedShipRegularSlotRegister(ShipRegularSlotRegister):
 
-    def __init__(self, msg_broker):
-        OrderedShipSlotRegister.__init__(
-            self, msg_broker, EffectId.hi_power, AttrId.hi_slots)
-
-
-class MediumSlotRegister(OrderedShipSlotRegister):
-
-    def __init__(self, msg_broker):
-        OrderedShipSlotRegister.__init__(
-            self, msg_broker, EffectId.med_power, AttrId.med_slots)
+    @property
+    def used(self):
+        return max((
+            i._container_position + 1
+            for i in self._users
+            if i._container_position is not None), default=0)
 
 
-class LowSlotRegister(OrderedShipSlotRegister):
+class HighSlotRegister(OrderedShipRegularSlotRegister):
 
-    def __init__(self, msg_broker):
-        OrderedShipSlotRegister.__init__(
-            self, msg_broker, EffectId.lo_power, AttrId.low_slots)
+    _slot_effect_id = EffectId.hi_power
+    _slot_attr_id = AttrId.hi_slots
+
+
+class MediumSlotRegister(OrderedShipRegularSlotRegister):
+
+    _slot_effect_id = EffectId.med_power
+    _slot_attr_id = AttrId.med_slots
+
+
+class LowSlotRegister(OrderedShipRegularSlotRegister):
+
+    _slot_effect_id = EffectId.lo_power
+    _slot_attr_id = AttrId.low_slots
+
+
+class RigSlotRegister(ShipRegularSlotRegister):
+
+    _slot_effect_id = EffectId.rig_slot
+    _slot_attr_id = AttrId.rig_slots
+
+
+class SubsystemSlotRegister(ShipRegularSlotRegister):
+
+    _slot_effect_id = EffectId.subsystem
+    _slot_attr_id = AttrId.max_subsystems
+
+
+class TurretSlotRegister(ShipRegularSlotRegister):
+
+    _slot_effect_id = EffectId.turret_fitted
+    _slot_attr_id = AttrId.turret_slots_left
+
+
+class LauncherSlotRegister(ShipRegularSlotRegister):
+
+    _slot_effect_id = EffectId.launcher_fitted
+    _slot_attr_id = AttrId.launcher_slots_left
