@@ -44,6 +44,7 @@ class UseMissiles(DmgDealerEffect):
             charge_defeff_id not in charge._running_effect_ids or
             charge_defeff_id not in (
                 EffectId.missile_launching,
+                EffectId.fof_missile_launching,
                 EffectId.bomb_launching)
         ):
             return DmgStats(0, 0, 0, 0)
