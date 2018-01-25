@@ -28,24 +28,7 @@ from eos.util.repr import make_repr_str
 class DmgTypes:
     """Container for damage data stats."""
 
-    def __init__(self, em, thermal, kinetic, explosive, mult=None):
-        if mult is not None:
-            try:
-                em *= mult
-            except TypeError:
-                pass
-            try:
-                thermal *= mult
-            except TypeError:
-                pass
-            try:
-                kinetic *= mult
-            except TypeError:
-                pass
-            try:
-                explosive *= mult
-            except TypeError:
-                pass
+    def __init__(self, em, thermal, kinetic, explosive):
         self.__em = em
         self.__thermal = thermal
         self.__kinetic = kinetic
@@ -66,63 +49,6 @@ class DmgTypes:
     @property
     def explosive(self):
         return self.__explosive
-
-    @classmethod
-    def _combine(cls, dmg_containers, tgt_resists=None):
-        """Create new instance of container based on passed containers."""
-        em = None
-        thermal = None
-        kinetic = None
-        explosive = None
-        # Sum up passed damage stats
-        for dmg_container in dmg_containers:
-            if em is None:
-                em = dmg_container.em
-            else:
-                try:
-                    em += dmg_container.em
-                except TypeError:
-                    pass
-            if thermal is None:
-                thermal = dmg_container.thermal
-            else:
-                try:
-                    thermal += dmg_container.thermal
-                except TypeError:
-                    pass
-            if kinetic is None:
-                kinetic = dmg_container.kinetic
-            else:
-                try:
-                    kinetic += dmg_container.kinetic
-                except TypeError:
-                    pass
-            if explosive is None:
-                explosive = dmg_container.explosive
-            else:
-                try:
-                    explosive += dmg_container.explosive
-                except TypeError:
-                    pass
-        # Reduce resulting damage by resists, if needed
-        if tgt_resists is not None:
-            try:
-                em *= 1 - tgt_resists.em
-            except TypeError:
-                pass
-            try:
-                thermal *= 1 - tgt_resists.thermal
-            except TypeError:
-                pass
-            try:
-                kinetic *= 1 - tgt_resists.kinetic
-            except TypeError:
-                pass
-            try:
-                explosive *= 1 - tgt_resists.explosive
-            except TypeError:
-                pass
-        return cls(em, thermal, kinetic, explosive)
 
     # Iterator is needed to support tuple-style unpacking
     def __iter__(self):
@@ -152,23 +78,11 @@ class DmgTypes:
 
 
 class DmgTypesTotal(DmgTypes):
-    """Container for damage data stats, which also calculates total damage.."""
+    """Container for damage data stats, which also calculates total damage."""
 
     @cached_property
     def total(self):
-        total = (
-            (self.em or 0) +
-            (self.thermal or 0) +
-            (self.kinetic or 0) +
-            (self.explosive or 0))
-        if total == 0 and (
-            self.em is None and
-            self.thermal is None and
-            self.kinetic is None and
-            self.explosive is None
-        ):
-            return None
-        return total
+        return self.em + self.thermal + self.kinetic + self.explosive
 
     def __iter__(self):
         for item in DmgTypes.__iter__(self):
@@ -180,8 +94,55 @@ class DmgTypesTotal(DmgTypes):
         return make_repr_str(self, spec)
 
 
+class DmgStats(DmgTypesTotal):
+    """Container for damage stats."""
+
+    def __init__(self, em, thermal, kinetic, explosive, mult=None):
+        if mult is not None:
+            em *= mult
+            thermal *= mult
+            kinetic *= mult
+            explosive *= mult
+        if not all((
+            isinstance(em, Real),
+            isinstance(thermal, Real),
+            isinstance(kinetic, Real),
+            isinstance(explosive, Real)
+        )):
+            raise TypeError('all damage values must be numbers')
+        if not all((
+            em >= 0,
+            thermal >= 0,
+            kinetic >= 0,
+            explosive >= 0
+        )):
+            raise ValueError('all damage values must be non-negative numbers')
+        DmgTypesTotal.__init__(self, em, thermal, kinetic, explosive)
+
+    @classmethod
+    def _combine(cls, dmg_containers, tgt_resists=None):
+        """Create new instance of container based on passed containers."""
+        em = 0
+        thermal = 0
+        kinetic = 0
+        explosive = 0
+        # Sum up passed damage stats
+        for dmg_container in dmg_containers:
+            em += dmg_container.em
+            thermal += dmg_container.thermal
+            kinetic += dmg_container.kinetic
+            explosive += dmg_container.explosive
+        # Reduce resulting damage by resists, if needed
+        if tgt_resists is not None:
+            em *= 1 - tgt_resists.em
+            thermal *= 1 - tgt_resists.thermal
+            kinetic *= 1 - tgt_resists.kinetic
+            explosive *= 1 - tgt_resists.explosive
+        return cls(em, thermal, kinetic, explosive)
+
+
 class DmgProfile(DmgTypes):
-    """Stats container intended to store damage profile.
+    """Container intended to store damage profile.
 
     Raises:
         TypeError: If any of passed values is not a number.
@@ -196,7 +157,7 @@ class DmgProfile(DmgTypes):
             isinstance(kinetic, Real),
             isinstance(explosive, Real)
         )):
-            raise TypeError('all damage types must be numbers')
+            raise TypeError('all damage values must be numbers')
         if not all((
             em >= 0,
             thermal >= 0,
@@ -205,14 +166,14 @@ class DmgProfile(DmgTypes):
             em + thermal + kinetic + explosive > 0
         )):
             msg = (
-                'all damage types must be non-negative numbers '
+                'all damage values must be non-negative numbers '
                 'with positive sum')
             raise ValueError(msg)
         DmgTypes.__init__(self, em, thermal, kinetic, explosive)
 
 
 class ResistProfile(DmgTypes):
-    """Stats container intended to store resistance profile.
+    """Container intended to store resistance profile.
 
     Raises:
         TypeError: If any of passed values is not a number.
@@ -226,12 +187,13 @@ class ResistProfile(DmgTypes):
             isinstance(kinetic, Real),
             isinstance(explosive, Real)
         )):
-            raise TypeError('all resistances must be numbers')
+            raise TypeError('all resistance values must be numbers')
         if not all((
             0 <= em <= 1,
             0 <= thermal <= 1,
             0 <= kinetic <= 1,
             0 <= explosive <= 1
         )):
-            raise ValueError('all resistances must be within range [0, 1]')
+            msg = 'all resistance values must be within range [0, 1]'
+            raise ValueError(msg)
         DmgTypes.__init__(self, em, thermal, kinetic, explosive)

@@ -232,7 +232,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.2}).id)
         fit.ship = item
         # Verification
-        self.assertIsNone(item.worst_case_ehp.hull)
+        self.assertAlmostEqual(item.worst_case_ehp.hull, 0)
         self.assertAlmostEqual(item.worst_case_ehp.armor, 25)
         self.assertAlmostEqual(item.worst_case_ehp.shield, 500)
         self.assertAlmostEqual(item.worst_case_ehp.total, 525)
@@ -260,7 +260,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.worst_case_ehp.hull, 1.25)
-        self.assertIsNone(item.worst_case_ehp.armor)
+        self.assertAlmostEqual(item.worst_case_ehp.armor, 0)
         self.assertAlmostEqual(item.worst_case_ehp.shield, 500)
         self.assertAlmostEqual(item.worst_case_ehp.total, 501.25)
         # Cleanup
@@ -288,7 +288,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.worst_case_ehp.hull, 1.25)
         self.assertAlmostEqual(item.worst_case_ehp.armor, 25)
-        self.assertIsNone(item.worst_case_ehp.shield)
+        self.assertAlmostEqual(item.worst_case_ehp.shield, 0)
         self.assertAlmostEqual(item.worst_case_ehp.total, 26.25)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -311,10 +311,10 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.2}).id)
         fit.ship = item
         # Verification
-        self.assertIsNone(item.worst_case_ehp.hull)
-        self.assertIsNone(item.worst_case_ehp.armor)
-        self.assertIsNone(item.worst_case_ehp.shield)
-        self.assertIsNone(item.worst_case_ehp.total)
+        self.assertAlmostEqual(item.worst_case_ehp.hull, 0)
+        self.assertAlmostEqual(item.worst_case_ehp.armor, 0)
+        self.assertAlmostEqual(item.worst_case_ehp.shield, 0)
+        self.assertAlmostEqual(item.worst_case_ehp.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -471,10 +471,10 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
             AttrId.shield_explosive_dmg_resonance: 0.2}).id)
         fit.ship = item
         # Verification
-        self.assertIsNone(item.worst_case_ehp.hull)
-        self.assertIsNone(item.worst_case_ehp.armor)
-        self.assertIsNone(item.worst_case_ehp.shield)
-        self.assertIsNone(item.worst_case_ehp.total)
+        self.assertAlmostEqual(item.worst_case_ehp.hull, 0)
+        self.assertAlmostEqual(item.worst_case_ehp.armor, 0)
+        self.assertAlmostEqual(item.worst_case_ehp.shield, 0)
+        self.assertAlmostEqual(item.worst_case_ehp.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

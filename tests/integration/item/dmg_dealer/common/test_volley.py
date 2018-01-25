@@ -67,11 +67,11 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -95,9 +95,9 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         # Verification
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 0)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -121,10 +121,10 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
+        self.assertAlmostEqual(volley.em, 0)
         self.assertAlmostEqual(volley.thermal, 0)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -148,10 +148,10 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
         self.assertAlmostEqual(volley.kinetic, 0)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -175,9 +175,9 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
@@ -238,7 +238,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
         volley = item.get_volley(tgt_resists=profile)
-        self.assertIsNone(volley.em)
+        self.assertAlmostEqual(volley.em, 0)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
         self.assertAlmostEqual(volley.explosive, 0)
@@ -270,7 +270,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
         volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
-        self.assertIsNone(volley.thermal)
+        self.assertAlmostEqual(volley.thermal, 0)
         self.assertAlmostEqual(volley.kinetic, 3.7)
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 14.1)
@@ -302,7 +302,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
-        self.assertIsNone(volley.kinetic)
+        self.assertAlmostEqual(volley.kinetic, 0)
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 23)
         # Cleanup
@@ -334,7 +334,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.em, 10.4)
         self.assertAlmostEqual(volley.thermal, 12.6)
         self.assertAlmostEqual(volley.kinetic, 3.7)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 26.7)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -359,11 +359,11 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
         volley = item.get_volley(tgt_resists=profile)
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -388,9 +388,9 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
         volley = item.get_volley(tgt_resists=profile)
         self.assertAlmostEqual(volley.em, 0)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -415,10 +415,10 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
         volley = item.get_volley(tgt_resists=profile)
-        self.assertIsNone(volley.em)
+        self.assertAlmostEqual(volley.em, 0)
         self.assertAlmostEqual(volley.thermal, 0)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -443,10 +443,10 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
         volley = item.get_volley(tgt_resists=profile)
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
         self.assertAlmostEqual(volley.kinetic, 0)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -470,9 +470,9 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
         volley = item.get_volley(tgt_resists=profile)
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup

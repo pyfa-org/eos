@@ -124,7 +124,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         fit.ship = item
         # Verification
         results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
-        self.assertIsNone(results.hull)
+        self.assertAlmostEqual(results.hull, 0)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
         self.assertAlmostEqual(results.total, 780.827, places=3)
@@ -153,7 +153,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         # Verification
         results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
-        self.assertIsNone(results.armor)
+        self.assertAlmostEqual(results.armor, 0)
         self.assertAlmostEqual(results.shield, 685.551, places=3)
         self.assertAlmostEqual(results.total, 697.507, places=3)
         # Cleanup
@@ -182,7 +182,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
         self.assertAlmostEqual(results.hull, 11.957, places=3)
         self.assertAlmostEqual(results.armor, 95.276, places=3)
-        self.assertIsNone(results.shield)
+        self.assertAlmostEqual(results.shield, 0)
         self.assertAlmostEqual(results.total, 107.233, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -206,10 +206,10 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         fit.ship = item
         # Verification
         results = item.get_ehp(DmgProfile(25, 6, 8.333, 1))
-        self.assertIsNone(results.hull)
-        self.assertIsNone(results.armor)
-        self.assertIsNone(results.shield)
-        self.assertIsNone(results.total)
+        self.assertAlmostEqual(results.hull, 0)
+        self.assertAlmostEqual(results.armor, 0)
+        self.assertAlmostEqual(results.shield, 0)
+        self.assertAlmostEqual(results.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -372,10 +372,10 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         fit.ship = item
         # Verification
         results = item.get_ehp(DmgProfile(1, 1, 1, 1))
-        self.assertIsNone(results.hull)
-        self.assertIsNone(results.armor)
-        self.assertIsNone(results.shield)
-        self.assertIsNone(results.total)
+        self.assertAlmostEqual(results.hull, 0)
+        self.assertAlmostEqual(results.armor, 0)
+        self.assertAlmostEqual(results.shield, 0)
+        self.assertAlmostEqual(results.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

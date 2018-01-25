@@ -83,7 +83,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
+        self.assertAlmostEqual(volley.em, 0)
         self.assertAlmostEqual(volley.thermal, 63)
         self.assertAlmostEqual(volley.kinetic, 74)
         self.assertAlmostEqual(volley.explosive, 85)
@@ -108,7 +108,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         # Verification
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 52)
-        self.assertIsNone(volley.thermal)
+        self.assertAlmostEqual(volley.thermal, 0)
         self.assertAlmostEqual(volley.kinetic, 74)
         self.assertAlmostEqual(volley.explosive, 85)
         self.assertAlmostEqual(volley.total, 211)
@@ -133,7 +133,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 52)
         self.assertAlmostEqual(volley.thermal, 63)
-        self.assertIsNone(volley.kinetic)
+        self.assertAlmostEqual(volley.kinetic, 0)
         self.assertAlmostEqual(volley.explosive, 85)
         self.assertAlmostEqual(volley.total, 200)
         # Cleanup
@@ -158,7 +158,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.em, 52)
         self.assertAlmostEqual(volley.thermal, 63)
         self.assertAlmostEqual(volley.kinetic, 74)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 189)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -180,11 +180,11 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -206,11 +206,11 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -232,11 +232,11 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         fit.source = None
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

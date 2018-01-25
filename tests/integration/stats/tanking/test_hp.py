@@ -54,10 +54,10 @@ class TestHp(StatsTestCase):
         # Action
         hp_stats = self.fit.stats.hp
         # Verification
-        self.assertIsNone(hp_stats.hull)
-        self.assertIsNone(hp_stats.armor)
-        self.assertIsNone(hp_stats.shield)
-        self.assertIsNone(hp_stats.total)
+        self.assertAlmostEqual(hp_stats.hull, 0)
+        self.assertAlmostEqual(hp_stats.armor, 0)
+        self.assertAlmostEqual(hp_stats.shield, 0)
+        self.assertAlmostEqual(hp_stats.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -72,10 +72,10 @@ class TestHp(StatsTestCase):
         # Action
         hp_stats = self.fit.stats.hp
         # Verification
-        self.assertIsNone(hp_stats.hull)
-        self.assertIsNone(hp_stats.armor)
-        self.assertIsNone(hp_stats.shield)
-        self.assertIsNone(hp_stats.total)
+        self.assertAlmostEqual(hp_stats.hull, 0)
+        self.assertAlmostEqual(hp_stats.armor, 0)
+        self.assertAlmostEqual(hp_stats.shield, 0)
+        self.assertAlmostEqual(hp_stats.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

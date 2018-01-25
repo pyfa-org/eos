@@ -23,7 +23,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 from eos.const.eve import AttrId
-from eos.fit.stats_container import DmgTypesTotal
+from eos.fit.stats_container import DmgStats
 from ..base import DmgDealerEffect
 
 
@@ -36,16 +36,16 @@ class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
 
     def get_volley(self, item):
         if self.get_cycles_until_reload(item) is None:
-            return DmgTypesTotal(None, None, None, None)
+            return DmgStats(0, 0, 0, 0)
         base_dmg_item = self._get_base_dmg_item(item)
         if base_dmg_item is None:
-            return DmgTypesTotal(None, None, None, None)
-        em = base_dmg_item.attrs.get(AttrId.em_dmg)
-        thermal = base_dmg_item.attrs.get(AttrId.thermal_dmg)
-        kinetic = base_dmg_item.attrs.get(AttrId.kinetic_dmg)
-        explosive = base_dmg_item.attrs.get(AttrId.explosive_dmg)
+            return DmgStats(0, 0, 0, 0)
+        em = base_dmg_item.attrs.get(AttrId.em_dmg, 0)
+        thermal = base_dmg_item.attrs.get(AttrId.thermal_dmg, 0)
+        kinetic = base_dmg_item.attrs.get(AttrId.kinetic_dmg, 0)
+        explosive = base_dmg_item.attrs.get(AttrId.explosive_dmg, 0)
         multiplier = item.attrs.get(AttrId.dmg_multiplier)
-        return DmgTypesTotal(em, thermal, kinetic, explosive, multiplier)
+        return DmgStats(em, thermal, kinetic, explosive, multiplier)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError

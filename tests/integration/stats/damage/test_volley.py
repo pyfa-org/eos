@@ -52,11 +52,11 @@ class TestStatsDmgVolley(StatsTestCase):
         # Action
         stats_volley = self.fit.stats.get_volley()
         # Verification
-        self.assertIsNone(stats_volley.em)
-        self.assertIsNone(stats_volley.thermal)
-        self.assertIsNone(stats_volley.kinetic)
-        self.assertIsNone(stats_volley.explosive)
-        self.assertIsNone(stats_volley.total)
+        self.assertAlmostEqual(stats_volley.em, 0)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
+        self.assertAlmostEqual(stats_volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -243,7 +243,7 @@ class TestStatsDmgVolley(StatsTestCase):
         # Action
         stats_volley = self.fit.stats.get_volley()
         # Verification
-        self.assertIsNone(stats_volley.em)
+        self.assertAlmostEqual(stats_volley.em, 0)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
         self.assertAlmostEqual(stats_volley.kinetic, 9.6)
         self.assertAlmostEqual(stats_volley.explosive, 19.2)
@@ -272,7 +272,7 @@ class TestStatsDmgVolley(StatsTestCase):
         stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
-        self.assertIsNone(stats_volley.thermal)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
         self.assertAlmostEqual(stats_volley.kinetic, 9.6)
         self.assertAlmostEqual(stats_volley.explosive, 19.2)
         self.assertAlmostEqual(stats_volley.total, 31.2)
@@ -301,7 +301,7 @@ class TestStatsDmgVolley(StatsTestCase):
         # Verification
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
-        self.assertIsNone(stats_volley.kinetic)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
         self.assertAlmostEqual(stats_volley.explosive, 19.2)
         self.assertAlmostEqual(stats_volley.total, 26.4)
         # Cleanup
@@ -330,7 +330,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assertAlmostEqual(stats_volley.em, 2.4)
         self.assertAlmostEqual(stats_volley.thermal, 4.8)
         self.assertAlmostEqual(stats_volley.kinetic, 9.6)
-        self.assertIsNone(stats_volley.explosive)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
         self.assertAlmostEqual(stats_volley.total, 16.8)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -351,11 +351,11 @@ class TestStatsDmgVolley(StatsTestCase):
         # Action
         stats_volley = self.fit.stats.get_volley()
         # Verification
-        self.assertIsNone(stats_volley.em)
-        self.assertIsNone(stats_volley.thermal)
-        self.assertIsNone(stats_volley.kinetic)
-        self.assertIsNone(stats_volley.explosive)
-        self.assertIsNone(stats_volley.total)
+        self.assertAlmostEqual(stats_volley.em, 0)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
+        self.assertAlmostEqual(stats_volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -378,9 +378,9 @@ class TestStatsDmgVolley(StatsTestCase):
         stats_volley = self.fit.stats.get_volley()
         # Verification
         self.assertAlmostEqual(stats_volley.em, 0)
-        self.assertIsNone(stats_volley.thermal)
-        self.assertIsNone(stats_volley.kinetic)
-        self.assertIsNone(stats_volley.explosive)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
         self.assertAlmostEqual(stats_volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -403,10 +403,10 @@ class TestStatsDmgVolley(StatsTestCase):
         # Action
         stats_volley = self.fit.stats.get_volley()
         # Verification
-        self.assertIsNone(stats_volley.em)
+        self.assertAlmostEqual(stats_volley.em, 0)
         self.assertAlmostEqual(stats_volley.thermal, 0)
-        self.assertIsNone(stats_volley.kinetic)
-        self.assertIsNone(stats_volley.explosive)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
         self.assertAlmostEqual(stats_volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -429,10 +429,10 @@ class TestStatsDmgVolley(StatsTestCase):
         # Action
         stats_volley = self.fit.stats.get_volley()
         # Verification
-        self.assertIsNone(stats_volley.em)
-        self.assertIsNone(stats_volley.thermal)
+        self.assertAlmostEqual(stats_volley.em, 0)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
         self.assertAlmostEqual(stats_volley.kinetic, 0)
-        self.assertIsNone(stats_volley.explosive)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
         self.assertAlmostEqual(stats_volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -455,9 +455,9 @@ class TestStatsDmgVolley(StatsTestCase):
         # Action
         stats_volley = self.fit.stats.get_volley()
         # Verification
-        self.assertIsNone(stats_volley.em)
-        self.assertIsNone(stats_volley.thermal)
-        self.assertIsNone(stats_volley.kinetic)
+        self.assertAlmostEqual(stats_volley.em, 0)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
         self.assertAlmostEqual(stats_volley.explosive, 0)
         self.assertAlmostEqual(stats_volley.total, 0)
         # Cleanup

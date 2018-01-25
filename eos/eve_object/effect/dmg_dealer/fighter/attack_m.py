@@ -20,7 +20,7 @@
 
 
 from eos.const.eve import AttrId
-from eos.fit.stats_container import DmgTypesTotal
+from eos.fit.stats_container import DmgStats
 from ..base import DmgDealerEffect
 
 
@@ -28,13 +28,13 @@ class FighterAbilityAttackM(DmgDealerEffect):
 
     def get_volley(self, item):
         em = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_em)
+            AttrId.fighter_ability_attack_missile_dmg_em, 0)
         thermal = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_thermal)
+            AttrId.fighter_ability_attack_missile_dmg_thermal, 0)
         kinetic = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_kinetic)
+            AttrId.fighter_ability_attack_missile_dmg_kinetic, 0)
         explosive = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_explosive)
+            AttrId.fighter_ability_attack_missile_dmg_explosive, 0)
         dmg_multiplier = item.attrs.get(
             AttrId.fighter_ability_attack_missile_dmg_multiplier, 1)
         try:
@@ -42,7 +42,7 @@ class FighterAbilityAttackM(DmgDealerEffect):
         except AttributeError:
             squad_size = 1
         multiplier = dmg_multiplier * squad_size
-        return DmgTypesTotal(em, thermal, kinetic, explosive, multiplier)
+        return DmgStats(em, thermal, kinetic, explosive, multiplier)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError

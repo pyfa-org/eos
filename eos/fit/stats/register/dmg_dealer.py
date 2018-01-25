@@ -22,7 +22,7 @@
 from eos.eve_object.effect.dmg_dealer.base import DmgDealerEffect
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
-from eos.fit.stats_container import DmgTypesTotal
+from eos.fit.stats_container import DmgStats
 from .base import BaseStatRegister
 
 
@@ -42,14 +42,14 @@ class DmgDealerRegister(BaseStatRegister):
         for item, effect in self.__dd_iter(item_filter):
             volley = effect.get_volley(item)
             volleys.append(volley)
-        return DmgTypesTotal._combine(volleys, tgt_resists)
+        return DmgStats._combine(volleys, tgt_resists)
 
     def get_dps(self, item_filter, reload, tgt_resists):
         dpss = []
         for item, effect in self.__dd_iter(item_filter):
             dps = effect.get_dps(item, reload)
             dpss.append(dps)
-        return DmgTypesTotal._combine(dpss, tgt_resists)
+        return DmgStats._combine(dpss, tgt_resists)
 
     def __dd_iter(self, item_filter):
         for item, effect in self.__dmg_dealers:

@@ -19,12 +19,14 @@
 # ==============================================================================
 
 
+from numbers import Real
+
 from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 
 
 class TankingLayers:
-    """Container for HP stats."""
+    """Container for various tanking layer attributes."""
 
     def __init__(self, hull, armor, shield):
         self.__hull = hull
@@ -67,20 +69,27 @@ class TankingLayers:
         return make_repr_str(self, spec)
 
 
-class TankingLayersTotal(TankingLayers):
+class ItemHP(TankingLayers):
     """Container for HP stats, which also calculates total HP."""
+
+    def __init__(self, hull, armor, shield):
+        if not all((
+            isinstance(hull, Real),
+            isinstance(armor, Real),
+            isinstance(shield, Real)
+        )):
+            raise TypeError('all HP values must be numbers')
+        if not all((
+            hull >= 0,
+            armor >= 0,
+            shield >= 0
+        )):
+            raise ValueError('all HP values must be non-negative numbers')
+        TankingLayers.__init__(self, hull, armor, shield)
 
     @cached_property
     def total(self):
-        total = (self.hull or 0) + (self.armor or 0) + (self.shield or 0)
-        if (
-            total == 0 and
-            self.hull is None and
-            self.armor is None and
-            self.shield is None
-        ):
-            return None
-        return total
+        return self.hull + self.armor + self.shield
 
     def __iter__(self):
         for item in TankingLayers.__iter__(self):

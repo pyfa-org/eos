@@ -54,10 +54,10 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         item = Ship(self.mktype().id)
         fit.ship = item
         # Verification
-        self.assertIsNone(item.hp.hull)
-        self.assertIsNone(item.hp.armor)
-        self.assertIsNone(item.hp.shield)
-        self.assertIsNone(item.hp.total)
+        self.assertAlmostEqual(item.hp.hull, 0)
+        self.assertAlmostEqual(item.hp.armor, 0)
+        self.assertAlmostEqual(item.hp.shield, 0)
+        self.assertAlmostEqual(item.hp.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -70,10 +70,10 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
             AttrId.shield_capacity: 12}).id)
         fit.ship = item
         # Verification
-        self.assertIsNone(item.hp.hull)
-        self.assertIsNone(item.hp.armor)
-        self.assertIsNone(item.hp.shield)
-        self.assertIsNone(item.hp.total)
+        self.assertAlmostEqual(item.hp.hull, 0)
+        self.assertAlmostEqual(item.hp.armor, 0)
+        self.assertAlmostEqual(item.hp.shield, 0)
+        self.assertAlmostEqual(item.hp.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

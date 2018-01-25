@@ -107,7 +107,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
+        self.assertAlmostEqual(volley.em, 0)
         self.assertAlmostEqual(volley.thermal, 6.3)
         self.assertAlmostEqual(volley.kinetic, 7.4)
         self.assertAlmostEqual(volley.explosive, 8.5)
@@ -140,7 +140,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         # Verification
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 5.2)
-        self.assertIsNone(volley.thermal)
+        self.assertAlmostEqual(volley.thermal, 0)
         self.assertAlmostEqual(volley.kinetic, 7.4)
         self.assertAlmostEqual(volley.explosive, 8.5)
         self.assertAlmostEqual(volley.total, 21.1)
@@ -173,7 +173,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 5.2)
         self.assertAlmostEqual(volley.thermal, 6.3)
-        self.assertIsNone(volley.kinetic)
+        self.assertAlmostEqual(volley.kinetic, 0)
         self.assertAlmostEqual(volley.explosive, 8.5)
         self.assertAlmostEqual(volley.total, 20)
         # Cleanup
@@ -206,7 +206,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.em, 5.2)
         self.assertAlmostEqual(volley.thermal, 6.3)
         self.assertAlmostEqual(volley.kinetic, 7.4)
-        self.assertIsNone(volley.explosive)
+        self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 18.9)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
@@ -236,11 +236,11 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -270,11 +270,11 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -305,11 +305,11 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -329,11 +329,11 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -362,11 +362,11 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -396,11 +396,11 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         fit.source = None
         # Verification
         volley = item.get_volley()
-        self.assertIsNone(volley.em)
-        self.assertIsNone(volley.thermal)
-        self.assertIsNone(volley.kinetic)
-        self.assertIsNone(volley.explosive)
-        self.assertIsNone(volley.total)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

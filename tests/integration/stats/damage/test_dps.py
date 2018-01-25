@@ -56,11 +56,11 @@ class TestStatsDmgDps(StatsTestCase):
         # Action
         stats_dps = self.fit.stats.get_dps()
         # Verification
-        self.assertIsNone(stats_dps.em)
-        self.assertIsNone(stats_dps.thermal)
-        self.assertIsNone(stats_dps.kinetic)
-        self.assertIsNone(stats_dps.explosive)
-        self.assertIsNone(stats_dps.total)
+        self.assertAlmostEqual(stats_dps.em, 0)
+        self.assertAlmostEqual(stats_dps.thermal, 0)
+        self.assertAlmostEqual(stats_dps.kinetic, 0)
+        self.assertAlmostEqual(stats_dps.explosive, 0)
+        self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -292,7 +292,7 @@ class TestStatsDmgDps(StatsTestCase):
         # Action
         stats_dps = self.fit.stats.get_dps()
         # Verification
-        self.assertIsNone(stats_dps.em)
+        self.assertAlmostEqual(stats_dps.em, 0)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)
         self.assertAlmostEqual(stats_dps.kinetic, 3.84)
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
@@ -323,7 +323,7 @@ class TestStatsDmgDps(StatsTestCase):
         stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
-        self.assertIsNone(stats_dps.thermal)
+        self.assertAlmostEqual(stats_dps.thermal, 0)
         self.assertAlmostEqual(stats_dps.kinetic, 3.84)
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 12.48)
@@ -354,7 +354,7 @@ class TestStatsDmgDps(StatsTestCase):
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)
-        self.assertIsNone(stats_dps.kinetic)
+        self.assertAlmostEqual(stats_dps.kinetic, 0)
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 10.56)
         # Cleanup
@@ -385,7 +385,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.em, 0.96)
         self.assertAlmostEqual(stats_dps.thermal, 1.92)
         self.assertAlmostEqual(stats_dps.kinetic, 3.84)
-        self.assertIsNone(stats_dps.explosive)
+        self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 6.72)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -408,11 +408,11 @@ class TestStatsDmgDps(StatsTestCase):
         # Action
         stats_dps = self.fit.stats.get_dps()
         # Verification
-        self.assertIsNone(stats_dps.em)
-        self.assertIsNone(stats_dps.thermal)
-        self.assertIsNone(stats_dps.kinetic)
-        self.assertIsNone(stats_dps.explosive)
-        self.assertIsNone(stats_dps.total)
+        self.assertAlmostEqual(stats_dps.em, 0)
+        self.assertAlmostEqual(stats_dps.thermal, 0)
+        self.assertAlmostEqual(stats_dps.kinetic, 0)
+        self.assertAlmostEqual(stats_dps.explosive, 0)
+        self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -436,9 +436,9 @@ class TestStatsDmgDps(StatsTestCase):
         stats_dps = self.fit.stats.get_dps()
         # Verification
         self.assertAlmostEqual(stats_dps.em, 0)
-        self.assertIsNone(stats_dps.thermal)
-        self.assertIsNone(stats_dps.kinetic)
-        self.assertIsNone(stats_dps.explosive)
+        self.assertAlmostEqual(stats_dps.thermal, 0)
+        self.assertAlmostEqual(stats_dps.kinetic, 0)
+        self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -462,10 +462,10 @@ class TestStatsDmgDps(StatsTestCase):
         # Action
         stats_dps = self.fit.stats.get_dps()
         # Verification
-        self.assertIsNone(stats_dps.em)
+        self.assertAlmostEqual(stats_dps.em, 0)
         self.assertAlmostEqual(stats_dps.thermal, 0)
-        self.assertIsNone(stats_dps.kinetic)
-        self.assertIsNone(stats_dps.explosive)
+        self.assertAlmostEqual(stats_dps.kinetic, 0)
+        self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -489,10 +489,10 @@ class TestStatsDmgDps(StatsTestCase):
         # Action
         stats_dps = self.fit.stats.get_dps()
         # Verification
-        self.assertIsNone(stats_dps.em)
-        self.assertIsNone(stats_dps.thermal)
+        self.assertAlmostEqual(stats_dps.em, 0)
+        self.assertAlmostEqual(stats_dps.thermal, 0)
         self.assertAlmostEqual(stats_dps.kinetic, 0)
-        self.assertIsNone(stats_dps.explosive)
+        self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -514,9 +514,9 @@ class TestStatsDmgDps(StatsTestCase):
         # Action
         stats_dps = self.fit.stats.get_dps()
         # Verification
-        self.assertIsNone(stats_dps.em)
-        self.assertIsNone(stats_dps.thermal)
-        self.assertIsNone(stats_dps.kinetic)
+        self.assertAlmostEqual(stats_dps.em, 0)
+        self.assertAlmostEqual(stats_dps.thermal, 0)
+        self.assertAlmostEqual(stats_dps.kinetic, 0)
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup

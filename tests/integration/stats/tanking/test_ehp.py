@@ -79,10 +79,10 @@ class TestEhp(StatsTestCase):
         # Action
         ehp_stats = self.fit.stats.get_ehp(DmgProfile(1, 1, 1, 1))
         # Verification
-        self.assertIsNone(ehp_stats.hull)
-        self.assertIsNone(ehp_stats.armor)
-        self.assertIsNone(ehp_stats.shield)
-        self.assertIsNone(ehp_stats.total)
+        self.assertAlmostEqual(ehp_stats.hull, 0)
+        self.assertAlmostEqual(ehp_stats.armor, 0)
+        self.assertAlmostEqual(ehp_stats.shield, 0)
+        self.assertAlmostEqual(ehp_stats.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -108,10 +108,10 @@ class TestEhp(StatsTestCase):
         # Action
         ehp_stats = self.fit.stats.get_ehp(DmgProfile(1, 1, 1, 1))
         # Verification
-        self.assertIsNone(ehp_stats.hull)
-        self.assertIsNone(ehp_stats.armor)
-        self.assertIsNone(ehp_stats.shield)
-        self.assertIsNone(ehp_stats.total)
+        self.assertAlmostEqual(ehp_stats.hull, 0)
+        self.assertAlmostEqual(ehp_stats.armor, 0)
+        self.assertAlmostEqual(ehp_stats.shield, 0)
+        self.assertAlmostEqual(ehp_stats.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -23,7 +23,7 @@ from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
 from eos.eve_object.effect.helper_func import get_cycles_until_reload_generic
-from eos.fit.stats_container import DmgTypesTotal
+from eos.fit.stats_container import DmgStats
 from .base import DmgDealerEffect
 
 
@@ -34,7 +34,7 @@ class UseMissiles(DmgDealerEffect):
 
     def get_volley(self, item):
         if self.get_cycles_until_reload(item) is None:
-            return DmgTypesTotal(None, None, None, None)
+            return DmgStats(0, 0, 0, 0)
         # If module can cycle until reload, it means we can assume that there's
         # a charge loaded
         charge = self.get_charge(item)
@@ -46,12 +46,12 @@ class UseMissiles(DmgDealerEffect):
                 EffectId.missile_launching,
                 EffectId.bomb_launching)
         ):
-            return DmgTypesTotal(None, None, None, None)
-        em = charge.attrs.get(AttrId.em_dmg)
-        thermal = charge.attrs.get(AttrId.thermal_dmg)
-        kinetic = charge.attrs.get(AttrId.kinetic_dmg)
-        explosive = charge.attrs.get(AttrId.explosive_dmg)
-        return DmgTypesTotal(em, thermal, kinetic, explosive)
+            return DmgStats(0, 0, 0, 0)
+        em = charge.attrs.get(AttrId.em_dmg, 0)
+        thermal = charge.attrs.get(AttrId.thermal_dmg, 0)
+        kinetic = charge.attrs.get(AttrId.kinetic_dmg, 0)
+        explosive = charge.attrs.get(AttrId.explosive_dmg, 0)
+        return DmgStats(em, thermal, kinetic, explosive)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError

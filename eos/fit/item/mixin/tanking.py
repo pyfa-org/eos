@@ -20,9 +20,9 @@
 
 
 from eos.const.eve import AttrId
-from eos.fit.stats_container import DmgTypes
+from eos.fit.stats_container import ItemHP
+from eos.fit.stats_container import ResistProfile
 from eos.fit.stats_container import TankingLayers
-from eos.fit.stats_container import TankingLayersTotal
 from .base import BaseItemMixin
 
 
@@ -36,10 +36,10 @@ class BufferTankingMixin(BaseItemMixin):
         Returns:
             TankingLayersTotal helper container instance.
         """
-        hull = self.attrs.get(AttrId.hp, None)
-        armor = self.attrs.get(AttrId.armor_hp, None)
-        shield = self.attrs.get(AttrId.shield_capacity, None)
-        return TankingLayersTotal(hull, armor, shield)
+        hull = self.attrs.get(AttrId.hp, 0)
+        armor = self.attrs.get(AttrId.armor_hp, 0)
+        shield = self.attrs.get(AttrId.shield_capacity, 0)
+        return ItemHP(hull, armor, shield)
 
     @property
     def resists(self):
@@ -49,17 +49,17 @@ class BufferTankingMixin(BaseItemMixin):
             TankingLayers helper container instance, whose attributes are
             DmgTypes helper container instances.
         """
-        hull = DmgTypes(
+        hull = ResistProfile(
             self.__get_resist_by_attr(AttrId.em_dmg_resonance),
             self.__get_resist_by_attr(AttrId.thermal_dmg_resonance),
             self.__get_resist_by_attr(AttrId.kinetic_dmg_resonance),
             self.__get_resist_by_attr(AttrId.explosive_dmg_resonance))
-        armor = DmgTypes(
+        armor = ResistProfile(
             self.__get_resist_by_attr(AttrId.armor_em_dmg_resonance),
             self.__get_resist_by_attr(AttrId.armor_thermal_dmg_resonance),
             self.__get_resist_by_attr(AttrId.armor_kinetic_dmg_resonance),
             self.__get_resist_by_attr(AttrId.armor_explosive_dmg_resonance))
-        shield = DmgTypes(
+        shield = ResistProfile(
             self.__get_resist_by_attr(AttrId.shield_em_dmg_resonance),
             self.__get_resist_by_attr(AttrId.shield_thermal_dmg_resonance),
             self.__get_resist_by_attr(AttrId.shield_kinetic_dmg_resonance),
@@ -68,12 +68,7 @@ class BufferTankingMixin(BaseItemMixin):
 
     def __get_resist_by_attr(self, attr_id):
         """Get resistance by attribute ID."""
-        try:
-            resonance = self.attrs[attr_id]
-        except KeyError:
-            return None
-        else:
-            return 1 - resonance
+        return 1 - self.attrs.get(attr_id, 1)
 
     def get_ehp(self, dmg_profile=None):
         """Get effective HP of an item against passed damage profile.
@@ -89,14 +84,14 @@ class BufferTankingMixin(BaseItemMixin):
             dmg_profile = self._fit.default_incoming_dmg
         # If damage profile is not specified anywhere, return Nones
         if dmg_profile is None:
-            return TankingLayersTotal(None, None, None)
+            return ItemHP(0, 0, 0)
         hull_ehp = self.__get_layer_ehp(
             self.hp.hull, self.resists.hull, dmg_profile)
         armor_ehp = self.__get_layer_ehp(
             self.hp.armor, self.resists.armor, dmg_profile)
         shield_ehp = self.__get_layer_ehp(
             self.hp.shield, self.resists.shield, dmg_profile)
-        return TankingLayersTotal(hull_ehp, armor_ehp, shield_ehp)
+        return ItemHP(hull_ehp, armor_ehp, shield_ehp)
 
     def __get_layer_ehp(self, layer_hp, layer_resists, dmg_profile):
         """Calculate layer EHP according to passed data.
@@ -114,13 +109,15 @@ class BufferTankingMixin(BaseItemMixin):
         If any of layer resistances are not specified, they're assumed to be 0.
         """
         dealt = (
-            dmg_profile.em + dmg_profile.thermal +
-            dmg_profile.kinetic + dmg_profile.explosive)
+            dmg_profile.em +
+            dmg_profile.thermal +
+            dmg_profile.kinetic +
+            dmg_profile.explosive)
         absorbed = (
-            dmg_profile.em * (resists.em or 0) +
-            dmg_profile.thermal * (resists.thermal or 0) +
-            dmg_profile.kinetic * (resists.kinetic or 0) +
-            dmg_profile.explosive * (resists.explosive or 0))
+            dmg_profile.em * resists.em +
+            dmg_profile.thermal * resists.thermal +
+            dmg_profile.kinetic * resists.kinetic +
+            dmg_profile.explosive * resists.explosive)
         received = dealt - absorbed
         return dealt / received
 
@@ -140,7 +137,7 @@ class BufferTankingMixin(BaseItemMixin):
             self.hp.armor, self.resists.armor)
         shield_ehp = self.__get_layer_worst_case_ehp(
             self.hp.shield, self.resists.shield)
-        return TankingLayersTotal(hull_ehp, armor_ehp, shield_ehp)
+        return ItemHP(hull_ehp, armor_ehp, shield_ehp)
 
     def __get_layer_worst_case_ehp(self, layer_hp, layer_resists):
         """Calculate layer EHP according to passed data.
@@ -150,8 +147,8 @@ class BufferTankingMixin(BaseItemMixin):
         if not layer_hp:
             return layer_hp
         resist = min(
-            layer_resists.em or 0,
-            layer_resists.thermal or 0,
-            layer_resists.kinetic or 0,
-            layer_resists.explosive or 0)
+            layer_resists.em,
+            layer_resists.thermal,
+            layer_resists.kinetic,
+            layer_resists.explosive)
         return layer_hp / (1 - resist)

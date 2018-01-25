@@ -78,10 +78,10 @@ class TestWorstCaseEhp(StatsTestCase):
         # Action
         worst_ehp_stats = self.fit.stats.worst_case_ehp
         # Verification
-        self.assertIsNone(worst_ehp_stats.hull)
-        self.assertIsNone(worst_ehp_stats.armor)
-        self.assertIsNone(worst_ehp_stats.shield)
-        self.assertIsNone(worst_ehp_stats.total)
+        self.assertAlmostEqual(worst_ehp_stats.hull, 0)
+        self.assertAlmostEqual(worst_ehp_stats.armor, 0)
+        self.assertAlmostEqual(worst_ehp_stats.shield, 0)
+        self.assertAlmostEqual(worst_ehp_stats.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -108,10 +108,10 @@ class TestWorstCaseEhp(StatsTestCase):
         # Action
         worst_ehp_stats = self.fit.stats.worst_case_ehp
         # Verification
-        self.assertIsNone(worst_ehp_stats.hull)
-        self.assertIsNone(worst_ehp_stats.armor)
-        self.assertIsNone(worst_ehp_stats.shield)
-        self.assertIsNone(worst_ehp_stats.total)
+        self.assertAlmostEqual(worst_ehp_stats.hull, 0)
+        self.assertAlmostEqual(worst_ehp_stats.armor, 0)
+        self.assertAlmostEqual(worst_ehp_stats.shield, 0)
+        self.assertAlmostEqual(worst_ehp_stats.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

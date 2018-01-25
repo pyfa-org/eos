@@ -25,9 +25,9 @@ from eos.const.eve import AttrId
 from eos.fit.item import Ship
 from eos.fit.message import ItemAdded
 from eos.fit.message import ItemRemoved
-from eos.fit.stats_container import DmgTypes
+from eos.fit.stats_container import ItemHP
+from eos.fit.stats_container import ResistProfile
 from eos.fit.stats_container import TankingLayers
-from eos.fit.stats_container import TankingLayersTotal
 from eos.util.pubsub.subscriber import BaseSubscriber
 from .register import CalibrationRegister
 from .register import CpuRegister
@@ -92,7 +92,7 @@ class StatService(BaseSubscriber):
         try:
             return self.__current_ship.hp
         except AttributeError:
-            return TankingLayersTotal(None, None, None)
+            return ItemHP(0, 0, 0)
 
     @property
     def resists(self):
@@ -106,8 +106,8 @@ class StatService(BaseSubscriber):
         try:
             return self.__current_ship.resists
         except AttributeError:
-            empty = DmgTypes(None, None, None, None)
-            return TankingLayers(empty, empty, empty)
+            null_res = ResistProfile(0, 0, 0, 0)
+            return TankingLayers(null_res, null_res, null_res)
 
     def get_ehp(self, dmg_profile=None):
         """Get effective HP of an item against passed damage profile.
@@ -123,7 +123,7 @@ class StatService(BaseSubscriber):
         try:
             return self.__current_ship.get_ehp(dmg_profile)
         except AttributeError:
-            return TankingLayersTotal(None, None, None)
+            return ItemHP(0, 0, 0)
 
     @property
     def worst_case_ehp(self):
@@ -139,7 +139,7 @@ class StatService(BaseSubscriber):
         try:
             return self.__current_ship.worst_case_ehp
         except AttributeError:
-            return TankingLayersTotal(None, None, None)
+            return ItemHP(0, 0, 0)
 
     def get_volley(self, item_filter=None, tgt_resists=None):
         """
