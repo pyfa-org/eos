@@ -21,6 +21,7 @@
 
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
+from eos.eve_object.type import FighterAbility
 from eos.eve_object.type import Type
 from .mod_builder import ModBuilder
 
@@ -58,13 +59,15 @@ class Converter:
             type_attrs = types_attrs.setdefault(row['typeID'], {})
             type_attrs[row['attributeID']] = row['value']
         # Format: {type ID: {ability ID: ability data}}
-        typeabils_reformat = {}
+        types_fighterabils = {}
         for row in data['typefighterabils']:
-            type_abils = typeabils_reformat.setdefault(row['typeID'], {})
-            type_abils[row['abilityID']] = {
-                'cooldown_time': row.get('cooldownSeconds'),
-                'charge_quantity': row.get('chargeCount'),
-                'charge_rearm_time': row.get('rearmTimeSeconds')}
+            abilities = types_fighterabils.setdefault(row['typeID'], set())
+            abilities.add(FighterAbility(
+                id=row['abilityID'],
+                slot=int(row['slot'].replace('abilitySlot', '')),
+                cooldown_time=row.get('cooldownSeconds'),
+                charge_quantity=row.get('chargeCount'),
+                rearm_time=row.get('rearmTimeSeconds')))
 
         # Convert attributes
         attrs = []
@@ -111,6 +114,6 @@ class Converter:
                 attrs=types_attrs.get(type_id, {}),
                 effects=tuple(effect_map[eid] for eid in type_effect_ids),
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),
-                fighter_abilities=typeabils_reformat.get(type_id, {})))
+                fighter_abilities=types_fighterabils.get(type_id, ())))
 
         return types, attrs, effects

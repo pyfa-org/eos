@@ -29,7 +29,8 @@ from eos.util.repr import make_repr_str
 
 
 FighterAbility = namedtuple(
-    'FighterAbility', ('cooldown_time', 'charge_quantity', 'rearm_time'))
+    'FighterAbility',
+    ('id', 'slot', 'cooldown_time', 'charge_quantity', 'rearm_time'))
 
 
 class Type:
@@ -55,7 +56,7 @@ class Type:
 
     def __init__(
             self, type_id, group_id=None, category_id=None, attrs=DEFAULT,
-            effects=(), default_effect=None, fighter_abilities=DEFAULT):
+            effects=(), default_effect=None, fighter_abilities=()):
         self.id = type_id
         self.group_id = group_id
         self.category_id = category_id
@@ -65,10 +66,7 @@ class Type:
             self.attrs = attrs
         self.effects = {e.id: e for e in effects}
         self.default_effect = default_effect
-        if fighter_abilities is DEFAULT:
-            self.fighter_abilities = {}
-        else:
-            self.fighter_abilities = fighter_abilities
+        self.fighter_abilities = fighter_abilities
 
     # Define attributes which describe item type skill requirement details
     # Format: {skill type attribute ID: skill level attribute ID}

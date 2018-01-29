@@ -27,6 +27,7 @@ from logging import getLogger
 from eos.eve_object.attribute import AttrFactory
 from eos.eve_object.effect import EffectFactory
 from eos.eve_object.modifier import DogmaModifier
+from eos.eve_object.type import FighterAbility
 from eos.eve_object.type import TypeFactory
 from eos.util.repr import make_repr_str
 from .base import BaseCacheHandler
@@ -166,7 +167,7 @@ class JsonCacheHandler(BaseCacheHandler):
             tuple(item_type.attrs.items()),
             tuple(item_type.effects.keys()),
             default_effect_id,
-            tuple(item_type.fighter_abilities.items()))
+            tuple(item_type.fighter_abilities))
         return type_data
 
     def __type_decompress(self, type_data):
@@ -183,7 +184,7 @@ class JsonCacheHandler(BaseCacheHandler):
             attrs={k: v for k, v in type_data[3]},
             effects=tuple(self.get_effect(eid) for eid in type_data[4]),
             default_effect=default_effect,
-            fighter_abilities={k: v for k, v in type_data[6]})
+            fighter_abilities=tuple(FighterAbility(*d) for d in type_data[6]))
         return item_type
 
     def __attr_compress(self, attr):

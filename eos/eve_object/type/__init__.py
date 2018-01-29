@@ -20,4 +20,5 @@
 
 
 from .factory import TypeFactory
+from .type import FighterAbility
 from .type import Type

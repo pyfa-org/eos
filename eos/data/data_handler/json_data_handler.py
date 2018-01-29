@@ -64,9 +64,8 @@ class JsonDataHandler(BaseDataHandler):
         rows = []
         fighter_abils = self.__fetch_file('fighterabilitiesbytype')
         for type_id, type_abilities in fighter_abils.items():
-            type_id = int(type_id)
-            for ability_data in type_abilities.values():
-                ability_row = {'typeID': type_id}
+            for ability_slot, ability_data in type_abilities.items():
+                ability_row = {'typeID': int(type_id), 'slot': ability_slot}
                 self.__collapse_dict(ability_data, ability_row)
                 rows.append(ability_row)
         return rows

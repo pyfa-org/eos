@@ -47,12 +47,14 @@ class TestConversionType(EveObjBuilderTestCase):
             'effectID': 1111, 'effectCategory': 85, 'isOffensive': False,
             'isAssistance': True, 'fittingUsageChanceAttributeID': 41,
             'preExpression': None, 'postExpression': None})
-        self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 5})
         self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'abilityID': 6, 'cooldownSeconds': 60})
+            {'typeID': 1, 'slot': 'abilitySlot1', 'abilityID': 5})
         self.dh.data['typefighterabils'].append({
-            'typeID': 1, 'abilityID': 50, 'chargeCount': 3,
-            'rearmTimeSeconds': 20})
+            'typeID': 1, 'slot': 'abilitySlot2', 'abilityID': 6,
+            'cooldownSeconds': 60})
+        self.dh.data['typefighterabils'].append({
+            'typeID': 1, 'slot': 'abilitySlot33', 'abilityID': 50,
+            'chargeCount': 3, 'rearmTimeSeconds': 20})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
