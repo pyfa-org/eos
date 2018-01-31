@@ -23,6 +23,7 @@ from logging import getLogger
 from numbers import Real
 
 from eos.const.eve import EffectId
+from eos.const.eve import fighter_ability_map
 from eos.util.frozendict import frozendict
 
 
@@ -115,7 +116,9 @@ class ValidatorPreConv:
             dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
         rack_effect_ids = (
-            EffectId.hi_power, EffectId.med_power, EffectId.lo_power)
+            EffectId.hi_power,
+            EffectId.med_power,
+            EffectId.lo_power)
         racked_type_ids = set()
         invalid_rows = set()
         for row in sorted(dte_rows, key=lambda r: r['table_pos']):
@@ -134,3 +137,43 @@ class ValidatorPreConv:
             ).format(len(invalid_rows))
             logger.warning(msg)
             dte_rows.difference_update(invalid_rows)
+
+    @staticmethod
+    def _fighter_abilities(tfa_rows):
+        """Check type-specific fighter ability attributes.
+
+        Actually, contains two checks.
+        1) Make sure that eos' ability-to-effect map knows about all abilities
+        in the data.
+        2) Check that any effect at any item is controlled by 1 ability max.
+        Otherwise, it might be unclear which ability-specific attributes (like
+        cooldown) effect should use and what should happen when both abilities
+        are active at the same time.
+
+        Args:
+            tfa_rows: Iterable with data rows from typefighterabils table.
+        """
+        # Format: {(type ID, effect ID), ...}
+        defined_pairs = set()
+        invalid_rows = set()
+        for row in sorted(tfa_rows, key=lambda r: r['table_pos']):
+            ability_id = row['abilityID']
+            try:
+                effect_id = fighter_ability_map[ability_id]
+            # If we cannot fetch effect ID for an ability, we cannot use it
+            except KeyError:
+                invalid_rows.add(row)
+                continue
+            type_id = row['typeID']
+            pair = (type_id, effect_id)
+            if pair in defined_pairs:
+                invalid_rows.add(row)
+            else:
+                defined_pairs.add(pair)
+        if invalid_rows:
+            msg = (
+                '{} rows contain invalid fighter ability attributes, '
+                'removing them'
+            ).format(len(invalid_rows))
+            logger.warning(msg)
+            tfa_rows.difference_update(invalid_rows)

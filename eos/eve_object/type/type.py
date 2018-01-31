@@ -28,9 +28,8 @@ from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 
 
-FighterAbility = namedtuple(
-    'FighterAbility',
-    ('id', 'slot', 'cooldown_time', 'charge_quantity', 'rearm_time'))
+TypeEffectData = namedtuple(
+    'TypeEffectData', ('cooldown_time', 'charge_quantity'))
 
 
 class Type:
@@ -50,13 +49,13 @@ class Type:
         effects: Map with effects this type has in {effect ID: effect} format.
         default_effect: Default effect of the type. When item is activated, it
             gets run.
-        fighter_abilities: Map with fighter abilities in {ability ID: (cooldown
-            time, charge quantity, rearm time) format.
+        effects_data: Type-specific effect data stored in {effect ID: (cooldown
+            time, charge quantity) format.
     """
 
     def __init__(
             self, type_id, group_id=None, category_id=None, attrs=DEFAULT,
-            effects=(), default_effect=None, fighter_abilities=()):
+            effects=(), default_effect=None, effects_data=DEFAULT):
         self.id = type_id
         self.group_id = group_id
         self.category_id = category_id
@@ -66,7 +65,10 @@ class Type:
             self.attrs = attrs
         self.effects = {e.id: e for e in effects}
         self.default_effect = default_effect
-        self.fighter_abilities = fighter_abilities
+        if effects_data is DEFAULT:
+            self.effects_data = {}
+        else:
+            self.effects_data = effects_data
 
     # Define attributes which describe item type skill requirement details
     # Format: {skill type attribute ID: skill level attribute ID}

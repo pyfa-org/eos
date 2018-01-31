@@ -19,10 +19,13 @@
 # ==============================================================================
 
 
+import math
+
+from eos.const.eve import fighter_ability_map
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
-from eos.eve_object.type import FighterAbility
 from eos.eve_object.type import Type
+from eos.eve_object.type import TypeEffectData
 from .mod_builder import ModBuilder
 
 
@@ -58,16 +61,14 @@ class Converter:
         for row in data['dgmtypeattribs']:
             type_attrs = types_attrs.setdefault(row['typeID'], {})
             type_attrs[row['attributeID']] = row['value']
-        # Format: {type ID: {ability ID: ability data}}
-        types_fighterabils = {}
+        # Format: {type ID: (cooldown, charge quantity)}
+        types_effects_data = {}
         for row in data['typefighterabils']:
-            abilities = types_fighterabils.setdefault(row['typeID'], set())
-            abilities.add(FighterAbility(
-                id=row['abilityID'],
-                slot=int(row['slot'].replace('abilitySlot', '')),
-                cooldown_time=row.get('cooldownSeconds'),
-                charge_quantity=row.get('chargeCount'),
-                rearm_time=row.get('rearmTimeSeconds')))
+            type_effects_data = types_effects_data.setdefault(row['typeID'], {})
+            effect_id = fighter_ability_map[row['abilityID']]
+            type_effects_data[effect_id] = TypeEffectData(
+                cooldown_time=row.get('cooldownSeconds', 0),
+                charge_quantity=row.get('chargeCount', math.inf))
 
         # Convert attributes
         attrs = []
@@ -114,6 +115,6 @@ class Converter:
                 attrs=types_attrs.get(type_id, {}),
                 effects=tuple(effect_map[eid] for eid in type_effect_ids),
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),
-                fighter_abilities=types_fighterabils.get(type_id, ())))
+                effects_data=types_effects_data.get(type_id, {})))
 
         return types, attrs, effects
