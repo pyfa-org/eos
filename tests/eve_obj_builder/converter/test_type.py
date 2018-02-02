@@ -19,6 +19,10 @@
 # ==============================================================================
 
 
+import math
+
+from eos.const.eve import EffectId
+from eos.const.eve import FighterAbilityId
 from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 
 
@@ -48,13 +52,13 @@ class TestConversionType(EveObjBuilderTestCase):
             'isAssistance': True, 'fittingUsageChanceAttributeID': 41,
             'preExpression': None, 'postExpression': None})
         self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'slot': 'abilitySlot1', 'abilityID': 5})
+            {'typeID': 1, 'abilityID': FighterAbilityId.autocannon})
         self.dh.data['typefighterabils'].append({
-            'typeID': 1, 'slot': 'abilitySlot2', 'abilityID': 6,
+            'typeID': 1, 'abilityID': FighterAbilityId.microwarpdrive,
             'cooldownSeconds': 60})
         self.dh.data['typefighterabils'].append({
-            'typeID': 1, 'slot': 'abilitySlot33', 'abilityID': 50,
-            'chargeCount': 3, 'rearmTimeSeconds': 20})
+            'typeID': 1, 'abilityID': FighterAbilityId.micromissile_swarm_exp,
+            'chargeCount': 3})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
@@ -71,16 +75,19 @@ class TestConversionType(EveObjBuilderTestCase):
         self.assertIn(1111, type_effects)
         type_defeff = item_type.default_effect
         self.assertEqual(type_defeff.id, 111)
-        type_fighterabils = item_type.fighter_abilities
-        self.assertEqual(len(type_fighterabils), 3)
-        self.assertCountEqual(type_fighterabils, {5, 6, 50})
-        self.assertDictEqual(type_fighterabils[5], {
-            'cooldown_time': None, 'charge_quantity': None,
-            'charge_rearm_time': None})
-        self.assertDictEqual(type_fighterabils[6], {
-            'cooldown_time': 60, 'charge_quantity': None,
-            'charge_rearm_time': None})
-        self.assertDictEqual(type_fighterabils[50], {
-            'cooldown_time': None, 'charge_quantity': 3,
-            'charge_rearm_time': 20})
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        type_effects_data = item_type.effects_data
+        self.assertEqual(len(type_effects_data), 3)
+        attack1_eid = EffectId.fighter_ability_attack_m
+        attack2_eid = EffectId.fighter_ability_missiles
+        mwd_eid = EffectId.fighter_ability_microwarpdrive
+        self.assertCountEqual(
+            type_effects_data, {attack1_eid, attack2_eid, mwd_eid})
+        attack1_edata = type_effects_data[attack1_eid]
+        self.assertEqual(attack1_edata.cooldown_time, 0)
+        self.assertEqual(attack1_edata.charge_quantity, math.inf)
+        attack2_edata = type_effects_data[attack2_eid]
+        self.assertEqual(attack2_edata.cooldown_time, 0)
+        self.assertEqual(attack2_edata.charge_quantity, 3)
+        mwd_edata = type_effects_data[mwd_eid]
+        self.assertEqual(mwd_edata.cooldown_time, 60)
+        self.assertEqual(mwd_edata.charge_quantity, math.inf)

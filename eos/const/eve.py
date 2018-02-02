@@ -226,8 +226,6 @@ class EffectId(IntEnum):
     fighter_ability_tackle = 6464
     fighter_ability_warp_disruption = 6436
     fighter_damage_multiply = 6420
-    fighter_decrease_target_speed = 6418
-    fighter_microjumpdrive = 6421
     fighter_target_paint = 6419
     fof_missile_launching = 104
     fueled_armor_repair = 5275
@@ -267,21 +265,16 @@ class EffectCategoryId(IntEnum):
 
 @unique
 class FighterAbilityId(IntEnum):
-    attack_turret = 1
     webs = 2
-    tgt_paint = 3
     microwarpdrive = 4
     microjumpdrive = 5
-    dmg_boost = 6
     launch_bomb = 7
     afterburner = 9
     warp_disrupt = 10
     energy_neut = 11
     ecm = 12
     evasion = 13
-    missile = 14
     tackle = 16
-    attack_missile = 17
     torpedo_salvo_em = 18
     torpedo_salvo_therm = 19
     torpedo_salvo_kin = 20
@@ -333,75 +326,65 @@ class OperandId(IntEnum):
 
 
 fighter_ability_map = {
-    FighterAbilityId.attack_turret:
-        EffectId.fighter_ability_attack,
-    FighterAbilityId.webs:
-        EffectId.fighter_ability_stasis_webifier,
-    FighterAbilityId.tgt_paint:
-        EffectId.fighter_target_paint,
-    FighterAbilityId.warp_disrupt:
-        EffectId.fighter_ability_warp_disruption,
-    FighterAbilityId.energy_neut:
-        EffectId.fighter_ability_energy_neutralizer,
-    FighterAbilityId.ecm:
-        EffectId.fighter_ability_ecm,
-    FighterAbilityId.missile:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.tackle:
-        EffectId.fighter_ability_tackle,
-    FighterAbilityId.attack_missile:
+    FighterAbilityId.afterburner:
+        EffectId.fighter_ability_afterburner,
+    FighterAbilityId.artillery:
         EffectId.fighter_ability_attack_m,
-    FighterAbilityId.torpedo_salvo_em:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.torpedo_salvo_therm:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.torpedo_salvo_kin:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.torpedo_salvo_exp:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.pulse_cannon:
+    FighterAbilityId.autocannon:
         EffectId.fighter_ability_attack_m,
     FighterAbilityId.beam_cannon:
         EffectId.fighter_ability_attack_m,
     FighterAbilityId.blaster_cannon:
         EffectId.fighter_ability_attack_m,
-    FighterAbilityId.railgun:
+    FighterAbilityId.blaster_cannon_caldari:
         EffectId.fighter_ability_attack_m,
-    FighterAbilityId.autocannon:
-        EffectId.fighter_ability_attack_m,
-    FighterAbilityId.artillery:
-        EffectId.fighter_ability_attack_m,
-    FighterAbilityId.micromissile_swarm_em:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.micromissile_swarm_therm:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.micromissile_swarm_kin:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.micromissile_swarm_exp:
-        EffectId.fighter_ability_missiles,
+    FighterAbilityId.ecm:
+        EffectId.fighter_ability_ecm,
+    FighterAbilityId.energy_neut:
+        EffectId.fighter_ability_energy_neutralizer,
+    FighterAbilityId.evasion:
+        EffectId.fighter_ability_evasive_maneuvers,
     FighterAbilityId.heavy_rocket_salvo_em:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.heavy_rocket_salvo_therm:
-        EffectId.fighter_ability_missiles,
-    FighterAbilityId.heavy_rocket_salvo_kin:
         EffectId.fighter_ability_missiles,
     FighterAbilityId.heavy_rocket_salvo_exp:
         EffectId.fighter_ability_missiles,
-    FighterAbilityId.afterburner:
-        EffectId.fighter_ability_afterburner,
-    FighterAbilityId.microwarpdrive:
-        EffectId.fighter_ability_microwarpdrive,
-    FighterAbilityId.microjumpdrive:
-        EffectId.fighter_ability_microjumpdrive,
-    FighterAbilityId.dmg_boost:
-        EffectId.fighter_damage_multiply,
-    FighterAbilityId.evasion:
-        EffectId.fighter_ability_evasive_maneuvers,
-    FighterAbilityId.launch_bomb:
-        EffectId.fighter_ability_launch_bomb,
+    FighterAbilityId.heavy_rocket_salvo_kin:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.heavy_rocket_salvo_therm:
+        EffectId.fighter_ability_missiles,
     FighterAbilityId.kamikaze:
         EffectId.fighter_ability_kamikaze,
-    FighterAbilityId.blaster_cannon_caldari:
+    FighterAbilityId.launch_bomb:
+        EffectId.fighter_ability_launch_bomb,
+    FighterAbilityId.microjumpdrive:
+        EffectId.fighter_ability_microjumpdrive,
+    FighterAbilityId.micromissile_swarm_em:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.micromissile_swarm_exp:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.micromissile_swarm_kin:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.micromissile_swarm_therm:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.microwarpdrive:
+        EffectId.fighter_ability_microwarpdrive,
+    FighterAbilityId.pulse_cannon:
+        EffectId.fighter_ability_attack_m,
+    FighterAbilityId.railgun:
         EffectId.fighter_ability_attack_m,
     FighterAbilityId.railgun_caldari:
-        EffectId.fighter_ability_attack_m}
+        EffectId.fighter_ability_attack_m,
+    FighterAbilityId.tackle:
+        EffectId.fighter_ability_tackle,
+    FighterAbilityId.torpedo_salvo_em:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.torpedo_salvo_exp:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.torpedo_salvo_kin:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.torpedo_salvo_therm:
+        EffectId.fighter_ability_missiles,
+    FighterAbilityId.warp_disrupt:
+        EffectId.fighter_ability_warp_disruption,
+    FighterAbilityId.webs:
+        EffectId.fighter_ability_stasis_webifier}

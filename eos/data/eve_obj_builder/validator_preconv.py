@@ -46,6 +46,7 @@ class ValidatorPreConv:
         ValidatorPreConv._attr_value_type(data['dgmtypeattribs'])
         ValidatorPreConv._multiple_default_effects(data['dgmtypeeffects'])
         ValidatorPreConv._colliding_module_racks(data['dgmtypeeffects'])
+        ValidatorPreConv._fighter_abilities(data['typefighterabils'])
 
     @staticmethod
     def _attr_value_type(dta_rows):
