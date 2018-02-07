@@ -96,7 +96,6 @@ class TestSourceSwitchSideEffect(SourceSwitchTestCase):
         self.assertEqual(len(side_effects), 1)
         self.assertIn(effect1_id, side_effects)
         side_effect1 = side_effects[effect1_id]
-        self.assertIs(side_effect1.effect, effect1_src2)
         self.assertAlmostEqual(side_effect1.chance, 0.7)
         self.assertIs(side_effect1.status, True)
         # Action
@@ -106,17 +105,14 @@ class TestSourceSwitchSideEffect(SourceSwitchTestCase):
         self.assertEqual(len(side_effects), 3)
         self.assertIn(effect1_id, side_effects)
         side_effect1 = side_effects[effect1_id]
-        self.assertIs(side_effect1.effect, effect1_src1)
         self.assertAlmostEqual(side_effect1.chance, 0.2)
         self.assertIs(side_effect1.status, True)
         self.assertIn(effect2_id, side_effects)
         side_effect2 = side_effects[effect2_id]
-        self.assertIs(side_effect2.effect, effect2_src1)
         self.assertAlmostEqual(side_effect2.chance, 0.3)
         self.assertIs(side_effect2.status, True)
         self.assertIn(effect3_id, side_effects)
         side_effect3 = side_effects[effect3_id]
-        self.assertIs(side_effect3.effect, effect3_src1)
         self.assertAlmostEqual(side_effect3.chance, 0.4)
         self.assertIs(side_effect3.status, True)
         # Cleanup

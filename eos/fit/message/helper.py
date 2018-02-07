@@ -117,9 +117,15 @@ class MsgHelper:
         Returns:
             Iterable with messages.
         """
+        # Set of effects which should be running according to new conditions
+        new_running_effect_ids = set()
+        effects_status = EffectStatusResolver.resolve_effects_status(item)
+        for effect_id, status in effects_status.items():
+            if status:
+                new_running_effect_ids.add(effect_id)
+        start_ids = new_running_effect_ids.difference(item._running_effect_ids)
+        stop_ids = item._running_effect_ids.difference(new_running_effect_ids)
         msgs = []
-        start_ids, stop_ids = (
-            EffectStatusResolver.get_effect_status_updates(item))
         if start_ids:
             item._running_effect_ids.update(start_ids)
             msgs.append(EffectsStarted(item, start_ids))

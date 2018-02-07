@@ -91,3 +91,8 @@ class TestConversionType(EveObjBuilderTestCase):
         mwd_edata = type_effects_data[mwd_eid]
         self.assertEqual(mwd_edata.cooldown_time, 60)
         self.assertEqual(mwd_edata.charge_quantity, math.inf)
+        type_ability_ids = item_type.ability_ids
+        self.assertCountEqual(type_ability_ids, (
+            FighterAbilityId.autocannon,
+            FighterAbilityId.microwarpdrive,
+            FighterAbilityId.micromissile_swarm_exp))

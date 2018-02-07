@@ -43,8 +43,8 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
-        type_effects_data = self.types[1].effects_data
-        self.assertEqual(len(type_effects_data), 0)
+        self.assertEqual(len(self.types[1].effects_data), 0)
+        self.assertEqual(len(self.types[1].ability_ids), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -75,6 +75,9 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.assertIn(EffectId.fighter_ability_missiles, type_effects_data)
         type_effect_data = type_effects_data[EffectId.fighter_ability_missiles]
         self.assertEqual(type_effect_data.charge_quantity, 3)
+        self.assertCountEqual(
+            self.types[1].ability_ids,
+            [FighterAbilityId.micromissile_swarm_em])
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]

@@ -24,6 +24,7 @@ import json
 import os.path
 from logging import getLogger
 
+from eos.const.eve import fighter_ability_map
 from eos.eve_object.attribute import AttrFactory
 from eos.eve_object.effect import EffectFactory
 from eos.eve_object.modifier import DogmaModifier
@@ -160,6 +161,10 @@ class JsonCacheHandler(BaseCacheHandler):
             default_effect_id = item_type.default_effect.id
         else:
             default_effect_id = None
+        abilities_data = {}
+        for ability_id in item_type.ability_ids:
+            effect_id = fighter_ability_map[ability_id]
+            abilities_data[ability_id] = item_type.effects_data[effect_id]
         type_data = (
             item_type.id,
             item_type.group_id,
@@ -167,7 +172,7 @@ class JsonCacheHandler(BaseCacheHandler):
             tuple(item_type.attrs.items()),
             tuple(item_type.effects.keys()),
             default_effect_id,
-            tuple(item_type.effects_data.items()))
+            tuple(abilities_data.items()))
         return type_data
 
     def __type_decompress(self, type_data):
@@ -184,7 +189,7 @@ class JsonCacheHandler(BaseCacheHandler):
             attrs={k: v for k, v in type_data[3]},
             effects=tuple(self.get_effect(eid) for eid in type_data[4]),
             default_effect=default_effect,
-            effects_data={k: TypeEffectData(*v) for k, v in type_data[6]})
+            abilities_data={k: TypeEffectData(*v) for k, v in type_data[6]})
         return item_type
 
     def __attr_compress(self, attr):

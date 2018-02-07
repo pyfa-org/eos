@@ -32,66 +32,67 @@ logger = getLogger(__name__)
 class EffectStatusResolver:
 
     @staticmethod
-    def get_effect_status_updates(item):
-        """Get changes needed to actualize effect running statuses.
-
-        Args:
-            item: Item for which effects are to be actualized.
-
-        Returns:
-            Two sets, first with effect IDs which should be started and second
-            with effect IDs which should be stopped to achieve proper state.
-        """
-        effects = item._type_effects
-        # Set of effects which should be running according to new conditions
-        new_running_effect_ids = set()
-        # Process 'online' effect separately, as it's needed for all other
-        # effects from online categories
-        if EffectId.online in effects:
-            online_running = EffectStatusResolver.resolve_effect_status(
-                item, effects[EffectId.online], None)
-            if online_running:
-                new_running_effect_ids.add(EffectId.online)
-        else:
-            online_running = False
-        # Do a pass over regular effects
-        for effect_id, effect in effects.items():
-            if effect_id == EffectId.online:
-                continue
-            if EffectStatusResolver.resolve_effect_status(
-                item, effect, online_running
-            ):
-                new_running_effect_ids.add(effect_id)
-        start_ids = new_running_effect_ids.difference(item._running_effect_ids)
-        stop_ids = item._running_effect_ids.difference(new_running_effect_ids)
-        return start_ids, stop_ids
+    def resolve_effect_status(item, effect_id, state_override=None):
+        effects_status = EffectStatusResolver.resolve_effects_status(
+            item, [effect_id], state_override)
+        return effects_status[effect_id]
 
     @staticmethod
-    def resolve_effect_status(item, effect, online_running):
-        """Decide if an effect should be running or not.
+    def resolve_effects_status(item, effect_ids=None, state_override=None):
+        """Decide if effects should be running or not.
 
         Decision is taken based on effect's run mode, item's state and multiple
         less significant factors.
 
         Args:
-            item: Item which should carry the effect.
-            effect: The effect in question.
-            online_running: Flag which tells function if 'online' effect is
-                running on the item or not.
+            item: Item which should carry the effects.
+            effect_ids (optional): Iterable with effect IDs in question. When
+                not specified, status of all item effects is resolved.
+            state_override (optional): Use this state instead of item's actual
+                state. By default, item's state is used.
 
         Returns:
-            Boolean flag, True when effect should be running, False when it
+            Resolved effect statuses in {effect ID: status} format. Status is
+            boolean flag, True when effect should be running, False when it
             should not.
         """
+        item_effects = item._type_effects
+        if effect_ids is None:
+            rq_effect_ids = set(item_effects)
+        else:
+            rq_effect_ids = set(effect_ids).intersection(item_effects)
+        effects_status = {}
+        # Process 'online' effect separately, as it's needed for all other
+        # effects from online categories
+        if EffectId.online in item_effects:
+            online_running = EffectStatusResolver.__resolve_effect_status(
+                item, item_effects[EffectId.online], None, state_override)
+            if EffectId.online in rq_effect_ids:
+                effects_status[EffectId.online] = online_running
+        else:
+            online_running = False
+        # Process the rest of effects
+        for effect_id in rq_effect_ids:
+            if effect_id == EffectId.online:
+                continue
+            effect = item_effects[effect_id]
+            effect_status = EffectStatusResolver.__resolve_effect_status(
+                item, effect, online_running, state_override)
+            effects_status[effect_id] = effect_status
+        return effects_status
+
+    @staticmethod
+    def __resolve_effect_status(
+            item, effect, online_running, state_override):
         resolver_map = {
             EffectMode.full_compliance:
-                EffectStatusResolver._resolve_full_compliance,
+                EffectStatusResolver.__resolve_full_compliance,
             EffectMode.state_compliance:
-                EffectStatusResolver._resolve_state_compliance,
+                EffectStatusResolver.__resolve_state_compliance,
             EffectMode.force_run:
-                EffectStatusResolver._resolve_force_run,
+                EffectStatusResolver.__resolve_force_run,
             EffectMode.force_stop:
-                EffectStatusResolver._resolve_force_stop}
+                EffectStatusResolver.__resolve_force_stop}
         # Decide how we handle effect based on its run mode
         effect_mode = item.get_effect_mode(effect.id)
         try:
@@ -101,14 +102,18 @@ class EffectStatusResolver:
             logger.warning(msg)
             return False
         else:
-            return resolver(item, effect, online_running)
+            return resolver(item, effect, online_running, state_override)
 
     @staticmethod
-    def _resolve_full_compliance(item, effect, online_running):
+    def __resolve_full_compliance(item, effect, online_running, state_override):
+        if state_override is not None:
+            item_state = state_override
+        else:
+            item_state = item.state
         # Check state restriction first, as it should be checked regardless of
         # effect category
         effect_state = effect._state
-        if item.state < effect_state:
+        if item_state < effect_state:
             return False
         # Offline effects must NOT specify fitting usage chance
         if effect_state == State.offline:
@@ -133,15 +138,19 @@ class EffectStatusResolver:
             return False
 
     @staticmethod
-    def _resolve_state_compliance(item, effect, _):
+    def __resolve_state_compliance(item, effect, _, state_override):
+        if state_override is not None:
+            item_state = state_override
+        else:
+            item_state = item.state
         # In state compliance, consider effect running if item's state is at
         # least as high as required by the effect
-        return item.state >= effect._state
+        return item_state >= effect._state
 
     @staticmethod
-    def _resolve_force_run(*_):
+    def __resolve_force_run(*_):
         return True
 
     @staticmethod
-    def _resolve_force_stop(*_):
+    def __resolve_force_stop(*_):
         return False

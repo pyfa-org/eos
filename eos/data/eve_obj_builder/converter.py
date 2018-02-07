@@ -21,7 +21,6 @@
 
 import math
 
-from eos.const.eve import fighter_ability_map
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
 from eos.eve_object.type import Type
@@ -61,12 +60,12 @@ class Converter:
         for row in data['dgmtypeattribs']:
             type_attrs = types_attrs.setdefault(row['typeID'], {})
             type_attrs[row['attributeID']] = row['value']
-        # Format: {type ID: (cooldown, charge quantity)}
-        types_effects_data = {}
+        # Format: {type ID: {ability ID: (cooldown, charge quantity)}}
+        types_abilities_data = {}
         for row in data['typefighterabils']:
-            type_effects_data = types_effects_data.setdefault(row['typeID'], {})
-            effect_id = fighter_ability_map[row['abilityID']]
-            type_effects_data[effect_id] = TypeEffectData(
+            type_id = row['typeID']
+            type_abilities_data = types_abilities_data.setdefault(type_id, {})
+            type_abilities_data[row['abilityID']] = TypeEffectData(
                 cooldown_time=row.get('cooldownSeconds', 0),
                 charge_quantity=row.get('chargeCount', math.inf))
 
@@ -115,6 +114,6 @@ class Converter:
                 attrs=types_attrs.get(type_id, {}),
                 effects=tuple(effect_map[eid] for eid in type_effect_ids),
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),
-                effects_data=types_effects_data.get(type_id, {})))
+                abilities_data=types_abilities_data.get(type_id, {})))
 
         return types, attrs, effects

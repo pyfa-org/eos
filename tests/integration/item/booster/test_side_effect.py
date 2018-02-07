@@ -64,12 +64,10 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertEqual(len(side_effects), 2)
         self.assertIn(effect1.id, side_effects)
         side_effect1 = side_effects[effect1.id]
-        self.assertIs(side_effect1.effect, effect1)
         self.assertAlmostEqual(side_effect1.chance, 0.5)
         self.assertIs(side_effect1.status, False)
         self.assertIn(effect2.id, side_effects)
         side_effect2 = side_effects[effect2.id]
-        self.assertIs(side_effect2.effect, effect2)
         self.assertAlmostEqual(side_effect2.chance, 0.075)
         self.assertIs(side_effect2.status, True)
         # Cleanup
@@ -114,7 +112,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_enabling_attached(self):
+    def test_enabling(self):
         # Setup
         chance_attr = self.mkattr()
         src_attr = self.mkattr()
@@ -147,39 +145,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_enabling_detached(self):
-        # Setup
-        chance_attr = self.mkattr()
-        src_attr = self.mkattr()
-        tgt_attr = self.mkattr()
-        modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
-        effect = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attr_id=chance_attr.id,
-            modifiers=[modifier])
-        fit = Fit()
-        item = Booster(self.mktype(
-            attrs={
-                chance_attr.id: 0.5,
-                tgt_attr.id: 100,
-                src_attr.id: 1.2},
-            effects=[effect]).id)
-        item.set_side_effect_status(effect.id, True)
-        # Action
-        fit.boosters.add(item)
-        # Verification
-        self.assertIs(item.side_effects[effect.id].status, True)
-        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_disabling_attached(self):
+    def test_disabling(self):
         # Setup
         chance_attr = self.mkattr()
         src_attr = self.mkattr()
@@ -206,39 +172,6 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Action
         item.set_side_effect_status(effect.id, False)
-        # Verification
-        self.assertIs(item.side_effects[effect.id].status, False)
-        self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_disabling_detached(self):
-        # Setup
-        chance_attr = self.mkattr()
-        src_attr = self.mkattr()
-        tgt_attr = self.mkattr()
-        modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
-        effect = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attr_id=chance_attr.id,
-            modifiers=[modifier])
-        fit = Fit()
-        item = Booster(self.mktype(
-            attrs={
-                chance_attr.id: 0.5,
-                tgt_attr.id: 100,
-                src_attr.id: 1.2},
-            effects=[effect]).id)
-        item.set_side_effect_status(effect.id, True)
-        item.set_side_effect_status(effect.id, False)
-        # Action
-        fit.boosters.add(item)
         # Verification
         self.assertIs(item.side_effects[effect.id].status, False)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)

@@ -23,8 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import State
 from eos.const.eve import AttrId
+from eos.const.eve import fighter_ability_map
 from eos.util.cached_property import cached_property
-from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 
 
@@ -51,24 +51,26 @@ class Type:
             gets run.
         effects_data: Type-specific effect data stored in {effect ID: (cooldown
             time, charge quantity) format.
+        ability_ids: Iterable with IDs of abilities this type has.
     """
 
     def __init__(
-            self, type_id, group_id=None, category_id=None, attrs=DEFAULT,
-            effects=(), default_effect=None, effects_data=DEFAULT):
+            self, type_id, group_id=None, category_id=None, attrs=None,
+            effects=(), default_effect=None, abilities_data=None):
         self.id = type_id
         self.group_id = group_id
         self.category_id = category_id
-        if attrs is DEFAULT:
-            self.attrs = {}
-        else:
-            self.attrs = attrs
+        if attrs is None:
+            attrs = {}
+        self.attrs = attrs
         self.effects = {e.id: e for e in effects}
         self.default_effect = default_effect
-        if effects_data is DEFAULT:
-            self.effects_data = {}
-        else:
-            self.effects_data = effects_data
+        if abilities_data is None:
+            abilities_data = {}
+        self.effects_data = {
+            fighter_ability_map[aid]: adata
+            for aid, adata in abilities_data.items()}
+        self.ability_ids = tuple(abilities_data.keys())
 
     # Define attributes which describe item type skill requirement details
     # Format: {skill type attribute ID: skill level attribute ID}
