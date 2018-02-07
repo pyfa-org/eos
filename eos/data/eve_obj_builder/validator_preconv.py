@@ -46,15 +46,14 @@ class ValidatorPreConv:
         ValidatorPreConv._attr_value_type(data['dgmtypeattribs'])
         ValidatorPreConv._multiple_default_effects(data['dgmtypeeffects'])
         ValidatorPreConv._colliding_module_racks(data['dgmtypeeffects'])
-        ValidatorPreConv._fighter_abilities(data['typefighterabils'])
+        ValidatorPreConv._fighter_unknown_ability(data['typefighterabils'])
+        ValidatorPreConv._fighter_ability_collisions(data['typefighterabils'])
+        ValidatorPreConv._fighter_ability_effect(
+            data['typefighterabils'], data['dgmtypeeffects'])
 
     @staticmethod
     def _attr_value_type(dta_rows):
-        """Make sure that all attributes have numeric values.
-
-        Args:
-            dta_rows: Iterable with data rows from dgmtypeattribs table.
-        """
+        """Make sure that all attributes have numeric values."""
         invalid_rows = set()
         for row in dta_rows:
             if not isinstance(row.get('value'), Real):
@@ -68,11 +67,7 @@ class ValidatorPreConv:
 
     @staticmethod
     def _multiple_default_effects(dte_rows):
-        """Check that each type has one default effect maximum.
-
-        Args:
-            dte_rows: Iterable with data rows from dgmtypeeffects table.
-        """
+        """Check that each type has one default effect maximum."""
         # Set with IDs of item types, which have default effect
         defeff_type_ids = set()
         invalid_rows = set()
@@ -112,9 +107,6 @@ class ValidatorPreConv:
         cleanup, because slot type effects are still used on many item types we
         do not need and want to remove to avoid printing unnecessary log
         entries.
-
-        Args:
-            dte_rows: Iterable with data rows from dgmtypeeffects table.
         """
         rack_effect_ids = (
             EffectId.hi_power,
@@ -140,31 +132,38 @@ class ValidatorPreConv:
             dte_rows.difference_update(invalid_rows)
 
     @staticmethod
-    def _fighter_abilities(tfa_rows):
-        """Check type-specific fighter ability attributes.
+    def _fighter_unknown_ability(tfa_rows):
+        """Check that eos knows all abilities.
 
-        Actually, contains two checks.
-        1) Make sure that eos' ability-to-effect map knows about all abilities
-        in the data.
-        2) Check that any effect at any item is controlled by 1 ability max.
-        Otherwise, it might be unclear which ability-specific attributes (like
-        cooldown) effect should use and what should happen when both abilities
-        are active at the same time.
+        Without such knowledge, it's impossible to control effects bound to
+        abilities.
+        """
+        invalid_rows = set()
+        for row in tfa_rows:
+            if row['abilityID'] not in fighter_ability_map:
+                invalid_rows.add(row)
+        if invalid_rows:
+            msg = (
+                '{} rows contain unknown fighter abilities, removing them'
+            ).format(len(invalid_rows))
+            logger.warning(msg)
+            tfa_rows.difference_update(invalid_rows)
 
-        Args:
-            tfa_rows: Iterable with data rows from typefighterabils table.
+    @staticmethod
+    def _fighter_ability_collisions(tfa_rows):
+        """Check that there're no effect collisions for abilities.
+
+        Any effect on any item must be controlled by 1 ability max. Otherwise,
+        it might be unclear which ability-specific attributes (like cooldown)
+        effect should use and what should happen when both abilities are active
+        at the same time.
         """
         # Format: {(type ID, effect ID), ...}
         defined_pairs = set()
         invalid_rows = set()
         for row in sorted(tfa_rows, key=lambda r: r['table_pos']):
             ability_id = row['abilityID']
-            try:
-                effect_id = fighter_ability_map[ability_id]
-            # If we cannot fetch effect ID for an ability, we cannot use it
-            except KeyError:
-                invalid_rows.add(row)
-                continue
+            effect_id = fighter_ability_map[ability_id]
             type_id = row['typeID']
             pair = (type_id, effect_id)
             if pair in defined_pairs:
@@ -173,8 +172,29 @@ class ValidatorPreConv:
                 defined_pairs.add(pair)
         if invalid_rows:
             msg = (
-                '{} rows contain invalid fighter ability attributes, '
-                'removing them'
+                '{} rows contain colliding fighter abilities, removing them'
+            ).format(len(invalid_rows))
+            logger.warning(msg)
+            tfa_rows.difference_update(invalid_rows)
+
+    @staticmethod
+    def _fighter_ability_effect(tfa_rows, dte_rows):
+        """Check that fighters with abilities have corresponding effects."""
+        # Format: {type ID: {effect ID}}
+        types_effect_ids = {}
+        for row in dte_rows:
+            type_effect_ids = types_effect_ids.setdefault(row['typeID'], set())
+            type_effect_ids.add(row['effectID'])
+        invalid_rows = set()
+        for row in tfa_rows:
+            ability_id = row['abilityID']
+            effect_id = fighter_ability_map[ability_id]
+            type_id = row['typeID']
+            if effect_id not in types_effect_ids.get(type_id, ()):
+                invalid_rows.add(row)
+        if invalid_rows:
+            msg = (
+                '{} rows contain abilities without effect, removing them'
             ).format(len(invalid_rows))
             logger.warning(msg)
             tfa_rows.difference_update(invalid_rows)

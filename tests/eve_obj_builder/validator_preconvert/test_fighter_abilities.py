@@ -50,7 +50,7 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows contain invalid fighter ability attributes, removing them')
+            '1 rows contain unknown fighter abilities, removing them')
 
     def test_ability_effect_collision(self):
         attack1_aid = FighterAbilityId.micromissile_swarm_em
@@ -79,7 +79,25 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
-            '1 rows contain invalid fighter ability attributes, removing them')
+            '1 rows contain colliding fighter abilities, removing them')
+
+    def test_ability_no_effect(self):
+        attack_aid = FighterAbilityId.autocannon
+        self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 6})
+        self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6})
+        self.dh.data['typefighterabils'].append(
+            {'typeID': 1, 'abilityID': attack_aid})
+        self.run_builder()
+        self.assertEqual(len(self.types), 1)
+        self.assertIn(1, self.types)
+        self.assertEqual(len(self.types[1].abilities_data), 0)
+        log = self.get_log(name=self.logger_name)
+        self.assertEqual(len(log), 1)
+        log_record = log[0]
+        self.assertEqual(log_record.levelno, logging.WARNING)
+        self.assertEqual(
+            log_record.msg,
+            '1 rows contain abilities without effect, removing them')
 
     def test_cleaned(self):
         self.dh.data['evetypes'].append({'typeID': 1})
