@@ -28,8 +28,7 @@ from eos.util.cached_property import cached_property
 from eos.util.repr import make_repr_str
 
 
-TypeEffectData = namedtuple(
-    'TypeEffectData', ('cooldown_time', 'charge_quantity'))
+AbilityData = namedtuple('AbilityData', ('cooldown_time', 'charge_quantity'))
 
 
 class Type:
@@ -49,9 +48,8 @@ class Type:
         effects: Map with effects this type has in {effect ID: effect} format.
         default_effect: Default effect of the type. When item is activated, it
             gets run.
-        effects_data: Type-specific effect data stored in {effect ID: (cooldown
-            time, charge quantity) format.
-        ability_ids: Iterable with IDs of abilities this type has.
+        abilities_data: Type-specific data for abilities in {ability ID:
+            (cooldown time, charge quantity)} format.
     """
 
     def __init__(
@@ -67,10 +65,16 @@ class Type:
         self.default_effect = default_effect
         if abilities_data is None:
             abilities_data = {}
-        self.effects_data = {
-            fighter_ability_map[aid]: adata
-            for aid, adata in abilities_data.items()}
-        self.ability_ids = tuple(abilities_data.keys())
+        self.abilities_data = abilities_data
+
+    @cached_property
+    def effects_data(self):
+        """Get extended effect data."""
+        effects_data = {}
+        for ability_id, ability_data in self.abilities_data.items():
+            effect_id = fighter_ability_map[ability_id]
+            effects_data[effect_id] = ability_data
+        return effects_data
 
     # Define attributes which describe item type skill requirement details
     # Format: {skill type attribute ID: skill level attribute ID}

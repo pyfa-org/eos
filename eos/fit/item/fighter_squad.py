@@ -88,7 +88,7 @@ class FighterSquad(MutableStateMixin, BufferTankingMixin, EffectStatsMixin):
     @property
     def __ability_ids(self):
         try:
-            return self._type.ability_ids
+            return self._type.abilities_data.keys()
         except AttributeError:
             return ()
 

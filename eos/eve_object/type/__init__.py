@@ -20,5 +20,5 @@
 
 
 from .factory import TypeFactory
+from .type import AbilityData
 from .type import Type
-from .type import TypeEffectData

@@ -43,8 +43,7 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
-        self.assertEqual(len(self.types[1].effects_data), 0)
-        self.assertEqual(len(self.types[1].ability_ids), 0)
+        self.assertEqual(len(self.types[1].abilities_data), 0)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -54,6 +53,8 @@ class TestFighterAbilities(EveObjBuilderTestCase):
             '1 rows contain invalid fighter ability attributes, removing them')
 
     def test_ability_effect_collision(self):
+        attack1_aid = FighterAbilityId.micromissile_swarm_em
+        attack2_aid = FighterAbilityId.micromissile_swarm_exp
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 6})
         self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6})
         self.dh.data['dgmtypeeffects'].append({
@@ -61,23 +62,17 @@ class TestFighterAbilities(EveObjBuilderTestCase):
             'isDefault': True})
         self.dh.data['dgmeffects'].append(
             {'effectID': EffectId.fighter_ability_attack_m})
-        self.dh.data['typefighterabils'].append({
-            'typeID': 1, 'abilityID': FighterAbilityId.micromissile_swarm_em,
-            'chargeCount': 3})
-        self.dh.data['typefighterabils'].append({
-            'typeID': 1, 'abilityID': FighterAbilityId.micromissile_swarm_exp,
-            'chargeCount': 22})
+        self.dh.data['typefighterabils'].append(
+            {'typeID': 1, 'abilityID': attack1_aid, 'chargeCount': 3})
+        self.dh.data['typefighterabils'].append(
+            {'typeID': 1, 'abilityID': attack2_aid, 'chargeCount': 22})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
-        type_effects_data = self.types[1].effects_data
-        self.assertEqual(len(type_effects_data), 1)
-        self.assertIn(EffectId.fighter_ability_missiles, type_effects_data)
-        type_effect_data = type_effects_data[EffectId.fighter_ability_missiles]
-        self.assertEqual(type_effect_data.charge_quantity, 3)
-        self.assertCountEqual(
-            self.types[1].ability_ids,
-            [FighterAbilityId.micromissile_swarm_em])
+        type_abilities_data = self.types[1].abilities_data
+        self.assertEqual(len(type_abilities_data), 1)
+        type_ability_data = type_abilities_data[attack1_aid]
+        self.assertEqual(type_ability_data.charge_quantity, 3)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]

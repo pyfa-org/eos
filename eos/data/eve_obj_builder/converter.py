@@ -23,8 +23,8 @@ import math
 
 from eos.eve_object.attribute import Attribute
 from eos.eve_object.effect import Effect
+from eos.eve_object.type import AbilityData
 from eos.eve_object.type import Type
-from eos.eve_object.type import TypeEffectData
 from .mod_builder import ModBuilder
 
 
@@ -65,7 +65,7 @@ class Converter:
         for row in data['typefighterabils']:
             type_id = row['typeID']
             type_abilities_data = types_abilities_data.setdefault(type_id, {})
-            type_abilities_data[row['abilityID']] = TypeEffectData(
+            type_abilities_data[row['abilityID']] = AbilityData(
                 cooldown_time=row.get('cooldownSeconds', 0),
                 charge_quantity=row.get('chargeCount', math.inf))
 
