@@ -34,9 +34,8 @@ class TestFighterAbilities(EveObjBuilderTestCase):
     def test_unknown_ability(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 6})
         self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6})
-        self.dh.data['dgmtypeeffects'].append({
-            'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m,
-            'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append(
+            {'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m})
         self.dh.data['dgmeffects'].append(
             {'effectID': EffectId.fighter_ability_attack_m})
         self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 555})
@@ -53,25 +52,24 @@ class TestFighterAbilities(EveObjBuilderTestCase):
             '1 rows contain unknown fighter abilities, removing them')
 
     def test_ability_effect_collision(self):
-        attack1_aid = FighterAbilityId.micromissile_swarm_em
-        attack2_aid = FighterAbilityId.micromissile_swarm_exp
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 6})
         self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6})
-        self.dh.data['dgmtypeeffects'].append({
-            'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m,
-            'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append(
+            {'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m})
         self.dh.data['dgmeffects'].append(
             {'effectID': EffectId.fighter_ability_attack_m})
-        self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'abilityID': attack1_aid, 'chargeCount': 3})
-        self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'abilityID': attack2_aid, 'chargeCount': 22})
+        self.dh.data['typefighterabils'].append({
+            'typeID': 1, 'abilityID': FighterAbilityId.autocannon,
+            'chargeCount': 3})
+        self.dh.data['typefighterabils'].append({
+            'typeID': 1, 'abilityID': FighterAbilityId.blaster_cannon,
+            'chargeCount': 22})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         type_abilities_data = self.types[1].abilities_data
         self.assertEqual(len(type_abilities_data), 1)
-        type_ability_data = type_abilities_data[attack1_aid]
+        type_ability_data = type_abilities_data[FighterAbilityId.autocannon]
         self.assertEqual(type_ability_data.charge_quantity, 3)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
@@ -82,11 +80,10 @@ class TestFighterAbilities(EveObjBuilderTestCase):
             '1 rows contain colliding fighter abilities, removing them')
 
     def test_ability_no_effect(self):
-        attack_aid = FighterAbilityId.autocannon
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 6})
         self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6})
         self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'abilityID': attack_aid})
+            {'typeID': 1, 'abilityID': FighterAbilityId.autocannon})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
@@ -101,12 +98,12 @@ class TestFighterAbilities(EveObjBuilderTestCase):
 
     def test_cleaned(self):
         self.dh.data['evetypes'].append({'typeID': 1})
-        self.dh.data['dgmtypeeffects'].append({
-            'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m,
-            'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append(
+            {'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m})
         self.dh.data['dgmeffects'].append(
             {'effectID': EffectId.fighter_ability_attack_m})
-        self.dh.data['typefighterabils'].append({'typeID': 1, 'abilityID': 555})
+        self.dh.data['typefighterabils'].append(
+            {'typeID': 1, 'abilityID': FighterAbilityId.autocannon})
         self.run_builder()
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)

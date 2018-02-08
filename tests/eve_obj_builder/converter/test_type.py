@@ -21,6 +21,7 @@
 
 import math
 
+from eos.const.eve import EffectId
 from eos.const.eve import FighterAbilityId
 from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 
@@ -31,9 +32,6 @@ class TestConversionType(EveObjBuilderTestCase):
     logger_name = 'eos.data.eve_obj_builder.converter'
 
     def test_fields(self):
-        attack1_aid = FighterAbilityId.autocannon
-        attack2_aid = FighterAbilityId.microwarpdrive
-        mwd_aid = FighterAbilityId.micromissile_swarm_exp
         self.dh.data['evetypes'].append(
             {'randomField': 66, 'typeID': 1, 'groupID': 6})
         self.dh.data['evegroups'].append({'categoryID': 16, 'groupID': 6})
@@ -41,24 +39,29 @@ class TestConversionType(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': 5, 'value': 10.0})
         self.dh.data['dgmtypeattribs'].append(
             {'attributeID': 80, 'typeID': 1, 'value': 180.0})
-        self.dh.data['dgmtypeeffects'].append(
-            {'typeID': 1, 'effectID': 111, 'isDefault': True})
-        self.dh.data['dgmtypeeffects'].append(
-            {'typeID': 1, 'effectID': 1111, 'isDefault': False})
-        self.dh.data['dgmeffects'].append({
-            'effectID': 111, 'effectCategory': 8, 'isOffensive': True,
-            'isAssistance': False, 'fittingUsageChanceAttributeID': 96,
-            'preExpression': None, 'postExpression': None})
-        self.dh.data['dgmeffects'].append({
-            'effectID': 1111, 'effectCategory': 85, 'isOffensive': False,
-            'isAssistance': True, 'fittingUsageChanceAttributeID': 41,
-            'preExpression': None, 'postExpression': None})
+        self.dh.data['dgmtypeeffects'].append({
+            'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m,
+            'isDefault': True})
+        self.dh.data['dgmtypeeffects'].append({
+            'typeID': 1, 'effectID': EffectId.fighter_ability_microwarpdrive,
+            'isDefault': False})
+        self.dh.data['dgmtypeeffects'].append({
+            'typeID': 1, 'effectID': EffectId.fighter_ability_missiles,
+            'isDefault': False})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': EffectId.fighter_ability_attack_m})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': EffectId.fighter_ability_microwarpdrive})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': EffectId.fighter_ability_missiles})
         self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'abilityID': attack1_aid})
-        self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'abilityID': mwd_aid, 'cooldownSeconds': 60})
-        self.dh.data['typefighterabils'].append(
-            {'typeID': 1, 'abilityID': attack2_aid, 'chargeCount': 3})
+            {'typeID': 1, 'abilityID': FighterAbilityId.autocannon})
+        self.dh.data['typefighterabils'].append({
+            'typeID': 1, 'abilityID': FighterAbilityId.microwarpdrive,
+            'cooldownSeconds': 60})
+        self.dh.data['typefighterabils'].append({
+            'typeID': 1, 'abilityID': FighterAbilityId.micromissile_swarm_exp,
+            'chargeCount': 3})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
@@ -70,19 +73,22 @@ class TestConversionType(EveObjBuilderTestCase):
         self.assertEqual(type_attrs[5], 10.0)
         self.assertEqual(type_attrs[80], 180.0)
         type_effects = item_type.effects
-        self.assertEqual(len(type_effects), 2)
-        self.assertIn(111, type_effects)
-        self.assertIn(1111, type_effects)
+        self.assertEqual(len(type_effects), 3)
+        self.assertIn(EffectId.fighter_ability_attack_m, type_effects)
+        self.assertIn(EffectId.fighter_ability_microwarpdrive, type_effects)
+        self.assertIn(EffectId.fighter_ability_missiles, type_effects)
         type_defeff = item_type.default_effect
-        self.assertEqual(type_defeff.id, 111)
+        self.assertEqual(type_defeff.id, EffectId.fighter_ability_attack_m)
         type_abilities_data = item_type.abilities_data
         self.assertEqual(len(type_abilities_data), 3)
-        attack1_adata = type_abilities_data[attack1_aid]
-        self.assertEqual(attack1_adata.cooldown_time, 0)
-        self.assertEqual(attack1_adata.charge_quantity, math.inf)
-        attack2_adata = type_abilities_data[attack2_aid]
-        self.assertEqual(attack2_adata.cooldown_time, 0)
-        self.assertEqual(attack2_adata.charge_quantity, 3)
-        mwd_adata = type_abilities_data[mwd_aid]
-        self.assertEqual(mwd_adata.cooldown_time, 60)
-        self.assertEqual(mwd_adata.charge_quantity, math.inf)
+        ability1_data = type_abilities_data[FighterAbilityId.autocannon]
+        self.assertEqual(ability1_data.cooldown_time, 0)
+        self.assertEqual(ability1_data.charge_quantity, math.inf)
+        ability2_data = (
+            type_abilities_data[FighterAbilityId.microwarpdrive])
+        self.assertEqual(ability2_data.cooldown_time, 60)
+        self.assertEqual(ability2_data.charge_quantity, math.inf)
+        ability3_data = (
+            type_abilities_data[FighterAbilityId.micromissile_swarm_exp])
+        self.assertEqual(ability3_data.cooldown_time, 0)
+        self.assertEqual(ability3_data.charge_quantity, 3)

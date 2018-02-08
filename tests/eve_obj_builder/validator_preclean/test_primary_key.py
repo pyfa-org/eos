@@ -22,6 +22,7 @@
 import logging
 from unittest.mock import patch
 
+from eos.const.eve import EffectId
 from eos.const.eve import FighterAbilityId
 from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 
@@ -309,6 +310,14 @@ class TestPrimaryKey(EveObjBuilderTestCase):
 
     def test_fighterabilities(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
+        self.dh.data['dgmtypeeffects'].append(
+            {'typeID': 1, 'effectID': EffectId.fighter_ability_attack_m})
+        self.dh.data['dgmtypeeffects'].append(
+            {'typeID': 1, 'effectID': EffectId.fighter_ability_microwarpdrive})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': EffectId.fighter_ability_attack_m})
+        self.dh.data['dgmeffects'].append(
+            {'effectID': EffectId.fighter_ability_microwarpdrive})
         self.dh.data['typefighterabils'].append(
             {'typeID': 1, 'abilityID': FighterAbilityId.autocannon})
         self.dh.data['typefighterabils'].append(
@@ -317,8 +326,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
             {'typeID': 1, 'abilityID': FighterAbilityId.autocannon})
         self.run_builder()
         self.assertEqual(len(self.types), 1)
-        type_effects_data = self.types[1].effects_data
-        self.assertEqual(len(type_effects_data), 2)
+        type_abilities_data = self.types[1].abilities_data
+        self.assertEqual(len(type_abilities_data), 2)
         log = self.get_log(name=self.logger_name)
         self.assertEqual(len(log), 1)
         log_record = log[0]
