@@ -51,6 +51,11 @@ class FighterSquad(MutableStateMixin, BufferTankingMixin, EffectStatsMixin):
     # Ability-related methods
     @property
     def abilities(self):
+        """Get map with ability statuses.
+
+        Returns:
+            Dictionary in {ability ID: ability status)} format.
+        """
         abilities = {}
         for ability_id in self.__ability_ids:
             effect_id = fighter_ability_map[ability_id]
@@ -66,6 +71,12 @@ class FighterSquad(MutableStateMixin, BufferTankingMixin, EffectStatsMixin):
         return abilities
 
     def set_ability_status(self, ability_id, status):
+        """Enable or disable ability.
+
+        Args:
+            ability_id: ID of ability.
+            status: True for enabling, False for disabling.
+        """
         if ability_id not in self.__ability_ids:
             return
         effect_id = fighter_ability_map[ability_id]
