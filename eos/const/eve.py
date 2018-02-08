@@ -212,7 +212,6 @@ class EffectId(IntEnum):
     bomb_launching = 2971
     emp_wave = 38
     fighter_ability_afterburner = 6440
-    fighter_ability_attack = 6430
     fighter_ability_attack_m = 6465
     fighter_ability_ecm = 6437
     fighter_ability_energy_neutralizer = 6434
@@ -225,15 +224,12 @@ class EffectId(IntEnum):
     fighter_ability_stasis_webifier = 6435
     fighter_ability_tackle = 6464
     fighter_ability_warp_disruption = 6436
-    fighter_damage_multiply = 6420
-    fighter_target_paint = 6419
     fof_missile_launching = 104
     fueled_armor_repair = 5275
     hi_power = 12
     launcher_fitted = 40
     lo_power = 11
     med_power = 13
-    mining_laser = 67
     missile_launching = 9
     module_bonus_afterburner = 6731
     module_bonus_ancillary_remote_armor_repairer = 6651
@@ -265,37 +261,37 @@ class EffectCategoryId(IntEnum):
 
 @unique
 class FighterAbilityId(IntEnum):
-    webs = 2
-    microwarpdrive = 4
-    microjumpdrive = 5
-    launch_bomb = 7
     afterburner = 9
-    warp_disrupt = 10
-    energy_neut = 11
-    ecm = 12
-    evasion = 13
-    tackle = 16
-    torpedo_salvo_em = 18
-    torpedo_salvo_therm = 19
-    torpedo_salvo_kin = 20
-    torpedo_salvo_exp = 21
-    pulse_cannon = 22
+    artillery = 27
+    autocannon = 26
     beam_cannon = 23
     blaster_cannon = 24
-    railgun = 25
-    autocannon = 26
-    artillery = 27
-    micromissile_swarm_em = 29
-    micromissile_swarm_therm = 30
-    micromissile_swarm_kin = 31
-    micromissile_swarm_exp = 32
-    heavy_rocket_salvo_em = 33
-    heavy_rocket_salvo_therm = 34
-    heavy_rocket_salvo_kin = 35
-    heavy_rocket_salvo_exp = 36
-    kamikaze = 38
     blaster_cannon_caldari = 44
+    ecm = 12
+    energy_neut = 11
+    evasion = 13
+    heavy_rocket_salvo_em = 33
+    heavy_rocket_salvo_exp = 36
+    heavy_rocket_salvo_kin = 35
+    heavy_rocket_salvo_therm = 34
+    kamikaze = 38
+    launch_bomb = 7
+    microjumpdrive = 5
+    micromissile_swarm_em = 29
+    micromissile_swarm_exp = 32
+    micromissile_swarm_kin = 31
+    micromissile_swarm_therm = 30
+    microwarpdrive = 4
+    pulse_cannon = 22
+    railgun = 25
     railgun_caldari = 45
+    tackle = 16
+    torpedo_salvo_em = 18
+    torpedo_salvo_exp = 21
+    torpedo_salvo_kin = 20
+    torpedo_salvo_therm = 19
+    warp_disrupt = 10
+    webs = 2
 
 
 @unique
