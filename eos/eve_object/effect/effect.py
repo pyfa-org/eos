@@ -81,6 +81,10 @@ class Effect:
         self.build_status = build_status
         self.modifiers = modifiers
 
+    # Describes if running this effect kills carrying item once cycle is
+    # complete
+    kills_item = False
+
     # Format: {effect category ID: state ID}
     __effect_state_map = {
         EffectCategoryId.passive: State.offline,
@@ -175,7 +179,7 @@ class Effect:
         try:
             return time_ms / 1000
         except TypeError:
-            return time_ms
+            return 0
 
     def get_cycle_parameters(self, item, reload):
         """Get cycle parameters for specific effect on specific item.

@@ -22,7 +22,10 @@
 from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
 from .attack_m import FighterAbilityAttackM
+from .missiles import FighterAbilityMissiles
 
 
 EffectFactory.reg_cust_class_by_id(
     FighterAbilityAttackM, EffectId.fighter_ability_attack_m)
+EffectFactory.reg_cust_class_by_id(
+    FighterAbilityMissiles, EffectId.fighter_ability_missiles)

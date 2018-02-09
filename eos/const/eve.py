@@ -157,6 +157,11 @@ class AttrId(IntEnum):
     fighter_ability_attack_missile_dmg_kinetic = 2229
     fighter_ability_attack_missile_dmg_explosive = 2230
     fighter_ability_attack_missile_dmg_multiplier = 2226
+    fighter_ability_missiles_dmg_em = 2131
+    fighter_ability_missiles_dmg_thermal = 2132
+    fighter_ability_missiles_dmg_kinetic = 2133
+    fighter_ability_missiles_dmg_explosive = 2134
+    fighter_ability_missiles_dmg_multiplier = 2130
     # Misc
     agility = 70
     capacity = 38
