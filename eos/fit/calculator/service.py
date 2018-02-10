@@ -66,7 +66,9 @@ class CalculationService(BaseSubscriber):
             Set with tuples in (operator, modification value, carrier item)
             format.
         """
-        modifications = set()
+        # Use list because we can have multiple tuples with the same values
+        # as valid configuration
+        modifications = []
         for affector in self.__affections.get_affectors(tgt_item):
             modifier, carrier_item = affector
             if modifier.tgt_attr_id == tgt_attr_id:
@@ -77,7 +79,7 @@ class CalculationService(BaseSubscriber):
                 # getter or even earlier
                 except ModificationCalculationError:
                     continue
-                modifications.add((mod_op, mod_value, carrier_item))
+                modifications.append((mod_op, mod_value, carrier_item))
         return modifications
 
     # Handle item changes which are significant for calculator
