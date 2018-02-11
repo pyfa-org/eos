@@ -24,34 +24,47 @@ from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
+from eos.eve_object.modifier import BasePythonModifier
+from eos.fit.message import AttrValueChanged
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 
-class TestOneItemManyModifiers(CalculatorTestCase):
-    """Make sure that similar yet different modifications are applied.
+class TestSimilarModifiersDogma(CalculatorTestCase):
 
-    This test set appeared after there was a bug in eos where multiple
-    modifications coming from the same item were applied as just one
-    modification, with condition that operator and value were the same.
-    """
+    def make_modifier(self, src_attr_id, tgt_attr_id):
+
+        class TestPythonModifier(BasePythonModifier):
+
+            def __init__(self):
+                BasePythonModifier.__init__(
+                    self,
+                    tgt_filter=ModTgtFilter.item,
+                    tgt_domain=ModDomain.self,
+                    tgt_filter_extra_arg=None,
+                    tgt_attr_id=tgt_attr_id)
+
+            def get_modification(self, carrier_item, _):
+                value = carrier_item.attrs[src_attr_id]
+                return ModOperator.post_percent, value
+
+            @property
+            def revise_msg_types(self):
+                return {AttrValueChanged}
+
+            def revise_modification(self, msg, carrier_item, _):
+                if msg.item is carrier_item and msg.attr_id == src_attr_id:
+                    return True
+                return False
+
+        return TestPythonModifier()
 
     def test_same_item(self):
         # Real scenario - capital ships boost their agility via proxy attrs
         tgt_attr = self.mkattr()
         src_attr1 = self.mkattr()
         src_attr2 = self.mkattr()
-        modifier1 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr1.id)
-        modifier2 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr2.id)
+        modifier1 = self.make_modifier(src_attr1.id, tgt_attr.id)
+        modifier2 = self.make_modifier(src_attr2.id, tgt_attr.id)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier1])
@@ -64,22 +77,29 @@ class TestOneItemManyModifiers(CalculatorTestCase):
         self.fit.ship = item
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
 
+    def test_same_item_attr(self):
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier1 = self.make_modifier(src_attr.id, tgt_attr.id)
+        modifier2 = self.make_modifier(src_attr.id, tgt_attr.id)
+        effect1 = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier1])
+        effect2 = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier2])
+        item = Ship(self.mktype(
+            attrs={src_attr.id: 20, tgt_attr.id: 100},
+            effects=(effect1, effect2)).id)
+        self.fit.ship = item
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
+
     def test_same_item_effect(self):
         tgt_attr = self.mkattr()
         src_attr1 = self.mkattr()
         src_attr2 = self.mkattr()
-        modifier1 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr1.id)
-        modifier2 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr2.id)
+        modifier1 = self.make_modifier(src_attr1.id, tgt_attr.id)
+        modifier2 = self.make_modifier(src_attr2.id, tgt_attr.id)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier1, modifier2])
@@ -89,15 +109,24 @@ class TestOneItemManyModifiers(CalculatorTestCase):
         self.fit.ship = item
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
 
-    def test_same_item_modifier(self):
+    def test_same_item_effect_attr(self):
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
-        modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
+        modifier1 = self.make_modifier(src_attr.id, tgt_attr.id)
+        modifier2 = self.make_modifier(src_attr.id, tgt_attr.id)
+        effect1 = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier1, modifier2])
+        item = Ship(self.mktype(
+            attrs={src_attr.id: 20, tgt_attr.id: 100},
+            effects=[effect1]).id)
+        self.fit.ship = item
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
+
+    def test_same_item_modifier_attr(self):
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier = self.make_modifier(src_attr.id, tgt_attr.id)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
@@ -110,15 +139,10 @@ class TestOneItemManyModifiers(CalculatorTestCase):
         self.fit.ship = item
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
 
-    def test_same_item_effect_modifier(self):
+    def test_same_item_effect_modifier_attr(self):
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
-        modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
+        modifier = self.make_modifier(src_attr.id, tgt_attr.id)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
