@@ -29,8 +29,8 @@ from logging import getLogger
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
-from .modifier import get_ab_modifiers
-from .modifier import get_mwd_modifiers
+from .modifier import make_ab_modifiers
+from .modifier import make_mwd_modifiers
 
 
 logger = getLogger(__name__)
@@ -40,7 +40,7 @@ def add_ab_modifiers(effect):
     if effect.modifiers:
         msg = 'afterburner effect has modifiers, overwriting them'
         logger.info(msg)
-    effect.modifiers = get_ab_modifiers()
+    effect.modifiers = make_ab_modifiers()
     effect.build_status = EffectBuildStatus.custom
 
 
@@ -48,7 +48,7 @@ def add_mwd_modifiers(effect):
     if effect.modifiers:
         msg = 'microwarpdrive effect has modifiers, overwriting them'
         logger.info(msg)
-    effect.modifiers = get_mwd_modifiers()
+    effect.modifiers = make_mwd_modifiers()
     effect.build_status = EffectBuildStatus.custom
 
 

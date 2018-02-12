@@ -26,22 +26,17 @@ from eos.const.eve import AttrId
 from eos.eve_object.modifier import DogmaModifier
 
 
-_rah_modifiers = None
-
-
-def get_rah_modifiers():
-    global _rah_modifiers
-    if _rah_modifiers is None:
-        _rah_modifiers = tuple(
-            DogmaModifier(
-                tgt_filter=ModTgtFilter.item,
-                tgt_domain=ModDomain.ship,
-                tgt_attr_id=attr_id,
-                operator=ModOperator.pre_mul,
-                src_attr_id=attr_id)
-            for attr_id in (
-                AttrId.armor_em_dmg_resonance,
-                AttrId.armor_thermal_dmg_resonance,
-                AttrId.armor_kinetic_dmg_resonance,
-                AttrId.armor_explosive_dmg_resonance))
-    return _rah_modifiers
+def make_rah_modifiers():
+    rah_modifiers = tuple(
+        DogmaModifier(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=attr_id,
+            operator=ModOperator.pre_mul,
+            src_attr_id=attr_id)
+        for attr_id in (
+            AttrId.armor_em_dmg_resonance,
+            AttrId.armor_thermal_dmg_resonance,
+            AttrId.armor_kinetic_dmg_resonance,
+            AttrId.armor_explosive_dmg_resonance))
+    return rah_modifiers

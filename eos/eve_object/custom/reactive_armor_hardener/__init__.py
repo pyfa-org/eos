@@ -24,7 +24,7 @@ from logging import getLogger
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
-from .modifier import get_rah_modifiers
+from .modifier import make_rah_modifiers
 
 
 logger = getLogger(__name__)
@@ -34,7 +34,7 @@ def add_rah_modifiers(effect):
     if effect.modifiers:
         msg = 'reactive armor hardener effect has modifiers, overwriting them'
         logger.warning(msg)
-    effect.modifiers = get_rah_modifiers()
+    effect.modifiers = make_rah_modifiers()
     effect.build_status = EffectBuildStatus.custom
 
 

@@ -31,31 +31,26 @@ from eos.eve_object.effect import EffectFactory
 from eos.eve_object.modifier import DogmaModifier
 
 
-_missile_dmg_effect = None
-
-
-def get_missile_dmg_effect():
-    global _missile_dmg_effect
-    if _missile_dmg_effect is None:
-        modifiers = []
-        for dmg_attr_id in (
-            AttrId.em_dmg,
-            AttrId.thermal_dmg,
-            AttrId.kinetic_dmg,
-            AttrId.explosive_dmg
-        ):
-            modifiers.append(DogmaModifier(
-                tgt_filter=ModTgtFilter.owner_skillrq,
-                tgt_domain=ModDomain.character,
-                tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-                tgt_attr_id=dmg_attr_id,
-                operator=ModOperator.pre_mul,
-                src_attr_id=AttrId.missile_dmg_multiplier))
-        _missile_dmg_effect = EffectFactory.make(
-            effect_id=EosEffectId.char_missile_dmg,
-            category_id=EffectCategoryId.passive,
-            is_offensive=False,
-            is_assistance=False,
-            build_status=EffectBuildStatus.custom,
-            modifiers=tuple(modifiers))
-    return _missile_dmg_effect
+def make_missile_dmg_effect():
+    modifiers = []
+    for dmg_attr_id in (
+        AttrId.em_dmg,
+        AttrId.thermal_dmg,
+        AttrId.kinetic_dmg,
+        AttrId.explosive_dmg
+    ):
+        modifiers.append(DogmaModifier(
+            tgt_filter=ModTgtFilter.owner_skillrq,
+            tgt_domain=ModDomain.character,
+            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
+            tgt_attr_id=dmg_attr_id,
+            operator=ModOperator.pre_mul,
+            src_attr_id=AttrId.missile_dmg_multiplier))
+    missile_dmg_effect = EffectFactory.make(
+        effect_id=EosEffectId.char_missile_dmg,
+        category_id=EffectCategoryId.passive,
+        is_offensive=False,
+        is_assistance=False,
+        build_status=EffectBuildStatus.custom,
+        modifiers=tuple(modifiers))
+    return missile_dmg_effect

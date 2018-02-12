@@ -25,17 +25,13 @@ from eos.const.eve import EffectCategoryId
 from eos.eve_object.effect import EffectFactory
 from .modifier import AncillaryRepAmountModifier
 
-_paste_effect = None
 
-
-def get_paste_effect():
-    global _paste_effect
-    if _paste_effect is None:
-        _paste_effect = EffectFactory.make(
-            effect_id=EosEffectId.ancillary_paste_armor_rep_boost,
-            category_id=EffectCategoryId.passive,
-            is_offensive=False,
-            is_assistance=False,
-            build_status=EffectBuildStatus.custom,
-            modifiers=(AncillaryRepAmountModifier(),))
-    return _paste_effect
+def make_paste_effect():
+    paste_effect = EffectFactory.make(
+        effect_id=EosEffectId.ancillary_paste_armor_rep_boost,
+        category_id=EffectCategoryId.passive,
+        is_offensive=False,
+        is_assistance=False,
+        build_status=EffectBuildStatus.custom,
+        modifiers=(AncillaryRepAmountModifier(),))
+    return paste_effect

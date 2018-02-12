@@ -24,23 +24,15 @@ from .dogma import make_signature_modifier
 from .python import PropulsionModuleVelocityBoostModifier
 
 
-_ab_modifiers = None
-_mwd_modifiers = None
+def make_ab_modifiers():
+    ab_modifiers = (
+        PropulsionModuleVelocityBoostModifier(),
+        make_mass_modifier())
+    return ab_modifiers
 
 
-def get_ab_modifiers():
-    global _ab_modifiers
-    if _ab_modifiers is None:
-        _ab_modifiers = (
-            PropulsionModuleVelocityBoostModifier(),
-            make_mass_modifier())
-    return _ab_modifiers
-
-
-def get_mwd_modifiers():
-    global _mwd_modifiers
-    if _mwd_modifiers is None:
-        _mwd_modifiers = (
-            *get_ab_modifiers(),
-            make_signature_modifier())
-    return _mwd_modifiers
+def make_mwd_modifiers():
+    mwd_modifiers = (
+        *make_ab_modifiers(),
+        make_signature_modifier())
+    return mwd_modifiers

@@ -29,12 +29,12 @@ some hardcoding on CCP's part), so we're adding it manually.
 
 from eos.const.eve import TypeGroupId
 from eos.eve_object.type import TypeFactory
-from .effect import get_missile_dmg_effect
+from .effect import make_missile_dmg_effect
 
 
 def add_missile_dmg_effect(item_type):
     if item_type.group_id == TypeGroupId.character:
-        missile_dmg_effect = get_missile_dmg_effect()
+        missile_dmg_effect = make_missile_dmg_effect()
         item_type.effects[missile_dmg_effect.id] = missile_dmg_effect
 
 
