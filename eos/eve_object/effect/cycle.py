@@ -42,14 +42,8 @@ class CycleInfo:
         self.quantity = quantity
 
     @property
-    def average_time_inf(self):
-        """Get average time between cycles.
-
-        Also run a check on how many times it cycles, if it's not infinite, then
-        average time is not returned.
-        """
-        if self.quantity < math.inf:
-            return None
+    def average_time(self):
+        """Get average time between cycles."""
         return self.active_time + self.inactive_time
 
     def _get_cycle_quantity(self):
@@ -79,14 +73,8 @@ class CycleSequence:
         self.quantity = quantity
 
     @property
-    def average_time_inf(self):
-        """Get average time between cycles.
-
-        Also run a check on how many times it cycles, if it's not infinite, then
-        average time is not returned.
-        """
-        if self.quantity < math.inf:
-            return None
+    def average_time(self):
+        """Get average time between cycles."""
         return self._get_time() / self._get_cycle_quantity()
 
     def _get_cycle_quantity(self):

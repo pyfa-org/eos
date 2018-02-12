@@ -33,7 +33,7 @@ class DmgDealerEffect(Effect, metaclass=ABCMeta):
         ...
 
     def get_dps(self, item, reload):
-        cycle_time = self.get_cycle_parameters(item, reload).average_time_inf
+        cycle_time = self.get_cycle_parameters(item, reload).average_time
         if cycle_time is None:
             return DmgStats(0, 0, 0, 0)
         volley = self.get_volley(item)
@@ -50,7 +50,7 @@ class DmgDealerEffect(Effect, metaclass=ABCMeta):
         ...
 
     def get_applied_dps(self, item, tgt_data, reload):
-        cycle_time = self.get_cycle_parameters(item, reload).average_time_inf
+        cycle_time = self.get_cycle_parameters(item, reload).average_time
         if cycle_time is None:
             return DmgStats(0, 0, 0, 0)
         volley = self.get_applied_volley(item, tgt_data)
