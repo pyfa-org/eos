@@ -24,46 +24,27 @@ from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
-from eos.eve_object.modifier import BasePythonModifier
-from eos.fit.message import AttrValueChanged
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 
 class TestSimilarModifiersDogma(CalculatorTestCase):
 
-    def make_modifier(self, src_attr_id, tgt_attr_id):
-
-        class TestPythonModifier(BasePythonModifier):
-
-            def __init__(self):
-                BasePythonModifier.__init__(
-                    self,
-                    tgt_filter=ModTgtFilter.item,
-                    tgt_domain=ModDomain.self,
-                    tgt_filter_extra_arg=None,
-                    tgt_attr_id=tgt_attr_id)
-
-            def get_modification(self, carrier_item, _):
-                value = carrier_item.attrs[src_attr_id]
-                return ModOperator.post_percent, value
-
-            @property
-            def revise_msg_types(self):
-                return {AttrValueChanged}
-
-            def revise_modification(self, msg, carrier_item, _):
-                if msg.item is carrier_item and msg.attr_id == src_attr_id:
-                    return True
-                return False
-
-        return TestPythonModifier()
+    def make_modifier(self, src_attr, tgt_attr):
+        return self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=tgt_attr.id,
+            operator=ModOperator.post_percent,
+            src_attr_id=src_attr.id)
 
     def test_same_item(self):
+        # Real scenario - capital ships boost their agility via proxy attrs
+        # Setup
         tgt_attr = self.mkattr()
         src_attr1 = self.mkattr()
         src_attr2 = self.mkattr()
-        modifier1 = self.make_modifier(src_attr1.id, tgt_attr.id)
-        modifier2 = self.make_modifier(src_attr2.id, tgt_attr.id)
+        modifier1 = self.make_modifier(src_attr1, tgt_attr)
+        modifier2 = self.make_modifier(src_attr2, tgt_attr)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier1])
@@ -85,8 +66,8 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         # Setup
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
-        modifier1 = self.make_modifier(src_attr.id, tgt_attr.id)
-        modifier2 = self.make_modifier(src_attr.id, tgt_attr.id)
+        modifier1 = self.make_modifier(src_attr, tgt_attr)
+        modifier2 = self.make_modifier(src_attr, tgt_attr)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier1])
@@ -109,8 +90,8 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         tgt_attr = self.mkattr()
         src_attr1 = self.mkattr()
         src_attr2 = self.mkattr()
-        modifier1 = self.make_modifier(src_attr1.id, tgt_attr.id)
-        modifier2 = self.make_modifier(src_attr2.id, tgt_attr.id)
+        modifier1 = self.make_modifier(src_attr1, tgt_attr)
+        modifier2 = self.make_modifier(src_attr2, tgt_attr)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier1, modifier2])
@@ -129,8 +110,8 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         # Setup
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
-        modifier1 = self.make_modifier(src_attr.id, tgt_attr.id)
-        modifier2 = self.make_modifier(src_attr.id, tgt_attr.id)
+        modifier1 = self.make_modifier(src_attr, tgt_attr)
+        modifier2 = self.make_modifier(src_attr, tgt_attr)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier1, modifier2])
