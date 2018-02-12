@@ -66,4 +66,7 @@ class DogmaModifier(BaseModifier):
 
     # Auxiliary methods
     def __repr__(self):
-        return make_repr_str(self)
+        spec = [
+            'tgt_filter', 'tgt_domain', 'tgt_filter_extra_arg',
+            'tgt_attr_id', 'operator', 'src_attr_id']
+        return make_repr_str(self, spec)

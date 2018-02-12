@@ -47,7 +47,7 @@ class TestTgtDomainDomainChar(CalculatorTestCase):
             attrs={src_attr.id: 20},
             effects=[effect]).id)
 
-    def test_parent_domain_character(self):
+    def test_domain_character(self):
         influence_tgt = Implant(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         self.fit.implants.add(influence_tgt)
         # Action
@@ -62,7 +62,7 @@ class TestTgtDomainDomainChar(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_parent_domain_other(self):
+    def test_domain_other(self):
         influence_tgt = Rig(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action

@@ -58,7 +58,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_parent_domain_character(self):
+    def test_domain_character(self):
         item = Implant(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)
@@ -70,7 +70,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_parent_domain_ship(self):
+    def test_domain_ship(self):
         item = Rig(self.mktype(
             attrs={self.tgt_attr.id: 100, self.src_attr.id: 20},
             effects=[self.effect]).id)

@@ -60,6 +60,7 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
 
     def test_same_item(self):
         # Real scenario - capital ships boost their agility via proxy attrs
+        # Setup
         tgt_attr = self.mkattr()
         src_attr1 = self.mkattr()
         src_attr2 = self.mkattr()
@@ -74,10 +75,16 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         item = Ship(self.mktype(
             attrs={src_attr1.id: 20, src_attr2.id: 20, tgt_attr.id: 100},
             effects=(effect1, effect2)).id)
+        # Action
         self.fit.ship = item
+        # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_same_item_attr(self):
+        # Setup
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
         modifier1 = self.make_modifier(src_attr.id, tgt_attr.id)
@@ -91,10 +98,16 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         item = Ship(self.mktype(
             attrs={src_attr.id: 20, tgt_attr.id: 100},
             effects=(effect1, effect2)).id)
+        # Action
         self.fit.ship = item
+        # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_same_item_effect(self):
+        # Setup
         tgt_attr = self.mkattr()
         src_attr1 = self.mkattr()
         src_attr2 = self.mkattr()
@@ -106,10 +119,16 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         item = Ship(self.mktype(
             attrs={src_attr1.id: 20, src_attr2.id: 20, tgt_attr.id: 100},
             effects=[effect1]).id)
+        # Action
         self.fit.ship = item
+        # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
 
     def test_same_item_effect_attr(self):
+        # Setup
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
         modifier1 = self.make_modifier(src_attr.id, tgt_attr.id)
@@ -120,34 +139,10 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         item = Ship(self.mktype(
             attrs={src_attr.id: 20, tgt_attr.id: 100},
             effects=[effect1]).id)
+        # Action
         self.fit.ship = item
+        # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
-
-    def test_same_item_modifier_attr(self):
-        tgt_attr = self.mkattr()
-        src_attr = self.mkattr()
-        modifier = self.make_modifier(src_attr.id, tgt_attr.id)
-        effect1 = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            modifiers=[modifier])
-        effect2 = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            modifiers=[modifier])
-        item = Ship(self.mktype(
-            attrs={src_attr.id: 20, tgt_attr.id: 100},
-            effects=(effect1, effect2)).id)
-        self.fit.ship = item
-        self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
-
-    def test_same_item_effect_modifier_attr(self):
-        tgt_attr = self.mkattr()
-        src_attr = self.mkattr()
-        modifier = self.make_modifier(src_attr.id, tgt_attr.id)
-        effect1 = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            modifiers=[modifier])
-        item = Ship(self.mktype(
-            attrs={src_attr.id: 20, tgt_attr.id: 100},
-            effects=[effect1]).id)
-        self.fit.ship = item
-        self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

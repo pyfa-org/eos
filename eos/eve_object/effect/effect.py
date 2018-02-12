@@ -59,6 +59,8 @@ class Effect:
         build_status: Effect-to-modifier build status.
         modifiers: Iterable with modifiers. It's actually not effect which
             describes modifications this item does, but these child objects.
+            Each modifier instance must belong to only one effect, otherwise
+            attribute calculation may be improper in several edge cases.
     """
 
     def __init__(

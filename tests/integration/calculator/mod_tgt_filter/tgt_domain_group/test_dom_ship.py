@@ -49,7 +49,7 @@ class TestTgtDomainGroupDomainShip(CalculatorTestCase):
             attrs={src_attr.id: 20},
             effects=[effect]).id)
 
-    def test_parent_domain_ship(self):
+    def test_domain_ship(self):
         influence_tgt = Rig(self.mktype(
             group_id=35,
             attrs={self.tgt_attr.id: 100}).id)
@@ -66,7 +66,7 @@ class TestTgtDomainGroupDomainShip(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_parent_domain_other(self):
+    def test_domain_other(self):
         influence_tgt = Booster(self.mktype(
             group_id=35,
             attrs={self.tgt_attr.id: 100}).id)

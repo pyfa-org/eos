@@ -63,7 +63,7 @@ class TestTgtItemDomainShip(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_parent_domain_ship(self):
+    def test_domain_ship(self):
         influence_tgt = Rig(self.mktype(attrs={self.tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
