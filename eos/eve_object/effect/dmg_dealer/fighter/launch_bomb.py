@@ -20,29 +20,40 @@
 
 
 from eos.const.eve import AttrId
+from eos.const.eve import EffectId
 from eos.eve_object.effect.dmg_dealer.base import DmgDealerEffect
 from eos.eve_object.effect.fighter_effect import FighterEffect
 from eos.fit.stats_container import DmgStats
 
 
-class FighterAbilityAttackM(DmgDealerEffect, FighterEffect):
+class FighterAbilityLaunchBomb(DmgDealerEffect, FighterEffect):
 
     def get_volley(self, item):
         if not self.get_cycles_until_reload(item):
             return DmgStats(0, 0, 0, 0)
-        em = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_em, 0)
-        therm = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_therm, 0)
-        kin = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_kin, 0)
-        expl = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_expl, 0)
-        dmg_mult = item.attrs.get(
-            AttrId.fighter_ability_attack_missile_dmg_mult, 1)
+        charge = self.get_charge(item)
+        if charge is None:
+            return DmgStats(0, 0, 0, 0)
+        charge_defeff_id = charge._type_default_effect_id
+        if (
+            charge_defeff_id != EffectId.bomb_launching or
+            charge_defeff_id not in charge._running_effect_ids
+        ):
+            return DmgStats(0, 0, 0, 0)
+        em = charge.attrs.get(AttrId.em_dmg, 0)
+        therm = charge.attrs.get(AttrId.therm_dmg, 0)
+        kin = charge.attrs.get(AttrId.kin_dmg, 0)
+        expl = charge.attrs.get(AttrId.expl_dmg, 0)
         squad_size = self.get_squad_size(item)
-        mult = dmg_mult * squad_size
-        return DmgStats(em, therm, kin, expl, mult)
+        return DmgStats(em, therm, kin, expl, squad_size)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError
+
+    def get_autocharge_type_id(self, item):
+        try:
+            ammo_type_id = (
+                item._type_attrs[AttrId.fighter_ability_launch_bomb_type])
+        except KeyError:
+            return None
+        return int(ammo_type_id)

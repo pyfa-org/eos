@@ -50,7 +50,7 @@ class TestFighterSquadMissileAttackDps(ItemMixinTestCase):
         self.abilities_data = {
             FighterAbilityId.pulse_cannon: AbilityData(0, math.inf)}
 
-    def make_fighter(self, attrs):
+    def make_item(self, attrs):
         return FighterSquad(
             self.mktype(
                 attrs=attrs,
@@ -61,7 +61,7 @@ class TestFighterSquadMissileAttackDps(ItemMixinTestCase):
 
     def test_no_reload(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_attack_missile_dmg_mult: 2.5,
             AttrId.fighter_ability_attack_missile_dmg_em: 52,
             AttrId.fighter_ability_attack_missile_dmg_therm: 63,
@@ -83,7 +83,7 @@ class TestFighterSquadMissileAttackDps(ItemMixinTestCase):
 
     def test_reload(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_attack_missile_dmg_mult: 2.5,
             AttrId.fighter_ability_attack_missile_dmg_em: 52,
             AttrId.fighter_ability_attack_missile_dmg_therm: 63,

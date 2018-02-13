@@ -35,7 +35,7 @@ class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
         ...
 
     def get_volley(self, item):
-        if self.get_cycles_until_reload(item) is None:
+        if not self.get_cycles_until_reload(item):
             return DmgStats(0, 0, 0, 0)
         base_dmg_item = self._get_base_dmg_item(item)
         if base_dmg_item is None:

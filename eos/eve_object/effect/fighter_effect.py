@@ -19,16 +19,28 @@
 # ==============================================================================
 
 
-from eos.const.eve import EffectId
-from eos.eve_object.effect import EffectFactory
-from .attack_m import FighterAbilityAttackM
-from .launch_bomb import FighterAbilityLaunchBomb
-from .missiles import FighterAbilityMissiles
+from .effect import Effect
 
 
-EffectFactory.reg_cust_class_by_id(
-    FighterAbilityAttackM, EffectId.fighter_ability_attack_m)
-EffectFactory.reg_cust_class_by_id(
-    FighterAbilityLaunchBomb, EffectId.fighter_ability_launch_bomb)
-EffectFactory.reg_cust_class_by_id(
-    FighterAbilityMissiles, EffectId.fighter_ability_missiles)
+class FighterEffect(Effect):
+
+    def get_cycles_until_reload(self, item):
+        try:
+            ability_data = item._type.effects_data[self.id]
+        except KeyError:
+            return None
+        cycles = ability_data.charge_quantity
+        if cycles == 0:
+            return None
+        return cycles
+
+    def get_forced_inactive_time(self, item):
+        cooldown_time = item._type.effects_data[self.id].cooldown_time
+        cycle_time = self.get_duration(item)
+        return max(cooldown_time - cycle_time, 0)
+
+    def get_squad_size(self, item):
+        try:
+            return item.squad_size
+        except AttributeError:
+            return 1

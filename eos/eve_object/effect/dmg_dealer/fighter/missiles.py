@@ -20,32 +20,24 @@
 
 
 from eos.const.eve import AttrId
+from eos.eve_object.effect.dmg_dealer.base import DmgDealerEffect
+from eos.eve_object.effect.fighter_effect import FighterEffect
 from eos.fit.stats_container import DmgStats
-from ..base import DmgDealerEffect
 
 
-class FighterAbilityMissiles(DmgDealerEffect):
+class FighterAbilityMissiles(DmgDealerEffect, FighterEffect):
 
     def get_volley(self, item):
+        if not self.get_cycles_until_reload(item):
+            return DmgStats(0, 0, 0, 0)
         em = item.attrs.get(AttrId.fighter_ability_missiles_dmg_em, 0)
         therm = item.attrs.get(AttrId.fighter_ability_missiles_dmg_therm, 0)
         kin = item.attrs.get(AttrId.fighter_ability_missiles_dmg_kin, 0)
         expl = item.attrs.get(AttrId.fighter_ability_missiles_dmg_expl, 0)
         dmg_mult = item.attrs.get(AttrId.fighter_ability_missiles_dmg_mult, 1)
-        try:
-            squad_size = item.squad_size
-        except AttributeError:
-            squad_size = 1
+        squad_size = self.get_squad_size(item)
         mult = dmg_mult * squad_size
         return DmgStats(em, therm, kin, expl, mult)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError
-
-    def get_cycles_until_reload(self, item):
-        return item._type.effects_data[self.id].charge_quantity
-
-    def get_forced_inactive_time(self, item):
-        cooldown_time = item._type.effects_data[self.id].cooldown_time
-        cycle_time = self.get_duration(item)
-        return max(cooldown_time - cycle_time, 0)

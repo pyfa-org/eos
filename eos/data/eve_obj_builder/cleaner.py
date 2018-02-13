@@ -134,7 +134,7 @@ class Cleaner:
         tgt_data = {}
         self._get_tgts_relational(tgt_data)
         self._get_tgts_yaml(tgt_data)
-        self._get_tgts_default_ammo(tgt_data)
+        self._get_tgts_autocharge(tgt_data)
         # Now, when we have all the target data values, we may look for rows,
         # which have matching values, and restore them
         for tgt_spec, tgt_values in tgt_data.items():
@@ -290,11 +290,11 @@ class Cleaner:
             relations[effect_row['effectID']] = (type_ids, group_ids, attr_ids)
         return relations
 
-    def _get_tgts_default_ammo(self, tgt_data):
+    def _get_tgts_autocharge(self, tgt_data):
         """Find out which types are referred via 'ammo loaded' attribute.
 
-        Some item types specify which ammo is loaded into them by default, and
-        here we ensure these ammo types are kept.
+        Some item types specify which ammo is loaded into them, and here we
+        ensure these ammo types are kept.
 
         Args:
             tgt_data: Dictionary which will be filled during the process. Its
@@ -302,7 +302,10 @@ class Cleaner:
                 should have.
         """
         for row in self.data['dgmtypeattribs']:
-            if row.get('attributeID') != AttrId.ammo_loaded:
+            if row.get('attributeID') not in (
+                AttrId.ammo_loaded,
+                AttrId.fighter_ability_launch_bomb_type
+            ):
                 continue
             try:
                 ammo_type_id = int(row.get('value'))

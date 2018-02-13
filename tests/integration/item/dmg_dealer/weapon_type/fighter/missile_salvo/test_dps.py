@@ -48,7 +48,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.abilities_data = {
             FighterAbilityId.heavy_rocket_salvo_em: AbilityData(0, 12)}
 
-    def make_fighter(self, attrs):
+    def make_item(self, attrs):
         return FighterSquad(
             self.mktype(
                 attrs=attrs,
@@ -59,7 +59,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_no_reload(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
             AttrId.fighter_ability_missiles_dmg_em: 52,
             AttrId.fighter_ability_missiles_dmg_therm: 63,
@@ -81,7 +81,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_reload(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
             AttrId.fighter_ability_missiles_dmg_em: 52,
             AttrId.fighter_ability_missiles_dmg_therm: 63,

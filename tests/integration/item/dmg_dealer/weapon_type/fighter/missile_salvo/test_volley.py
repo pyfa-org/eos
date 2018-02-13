@@ -49,8 +49,8 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.abilities_data = {
             FighterAbilityId.heavy_rocket_salvo_em: AbilityData(0, 12)}
 
-    def make_fighter(self, attrs):
-        return FighterSquad(
+    def make_item(self, attrs, item_class=FighterSquad):
+        return item_class(
             self.mktype(
                 attrs=attrs,
                 effects=[self.effect],
@@ -60,7 +60,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_generic(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
             AttrId.fighter_ability_missiles_dmg_em: 52,
             AttrId.fighter_ability_missiles_dmg_therm: 63,
@@ -81,7 +81,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_no_attr_em(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
             AttrId.fighter_ability_missiles_dmg_therm: 63,
             AttrId.fighter_ability_missiles_dmg_kin: 74,
@@ -101,7 +101,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_no_attr_therm(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
             AttrId.fighter_ability_missiles_dmg_em: 52,
             AttrId.fighter_ability_missiles_dmg_kin: 74,
@@ -121,7 +121,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_no_attr_kin(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
             AttrId.fighter_ability_missiles_dmg_em: 52,
             AttrId.fighter_ability_missiles_dmg_therm: 63,
@@ -141,7 +141,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_no_attr_expl(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
             AttrId.fighter_ability_missiles_dmg_em: 52,
             AttrId.fighter_ability_missiles_dmg_therm: 63,
@@ -161,7 +161,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_no_mult(self):
         fit = Fit()
-        item = self.make_fighter({
+        item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_em: 52,
             AttrId.fighter_ability_missiles_dmg_therm: 63,
             AttrId.fighter_ability_missiles_dmg_kin: 74,
@@ -181,17 +181,15 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
 
     def test_no_squad_size(self):
         fit = Fit()
-        item = Drone(
-            self.mktype(
-                attrs={
-                    AttrId.fighter_ability_missiles_dmg_mult: 2.5,
-                    AttrId.fighter_ability_missiles_dmg_em: 52,
-                    AttrId.fighter_ability_missiles_dmg_therm: 63,
-                    AttrId.fighter_ability_missiles_dmg_kin: 74,
-                    AttrId.fighter_ability_missiles_dmg_expl: 85},
-                effects=[self.effect],
-                default_effect=self.effect).id,
-            state=State.active)
+        item = self.make_item(
+            attrs={
+                AttrId.fighter_ability_missiles_dmg_mult: 2.5,
+                AttrId.fighter_ability_missiles_dmg_em: 52,
+                AttrId.fighter_ability_missiles_dmg_therm: 63,
+                AttrId.fighter_ability_missiles_dmg_kin: 74,
+                AttrId.fighter_ability_missiles_dmg_expl: 85,
+                AttrId.fighter_squadron_max_size: 9},
+            item_class=Drone)
         fit.drones.add(item)
         # Verification
         volley = item.get_volley()

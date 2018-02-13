@@ -116,7 +116,7 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.dh.data['dgmattribs'].append({
             'attributeID': 1009, 'maxAttributeID': None, 'default_value': 0.0,
             'high_is_good': False, 'stackable': False})
-        # Weak entity, but linked through ammoLoaded attribute
+        # Weak entity, but linked through autocharge attribute
         self.dh.data['evetypes'].append({'typeID': 4, 'groupID': 8})
         self.dh.data['evegroups'].append({'groupID': 8, 'categoryID': 52})
 

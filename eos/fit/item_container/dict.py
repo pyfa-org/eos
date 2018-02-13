@@ -88,6 +88,12 @@ class ItemDict:
     def __getitem__(self, key):
         return self.__keyed_items[key]
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
     def keys(self):
         return self.__keyed_items.keys()
 
