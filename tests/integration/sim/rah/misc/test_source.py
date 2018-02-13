@@ -44,7 +44,7 @@ class TestRahSimSource(RahSimTestCase):
         with self.assertRaises(KeyError):
             rah.attrs[self.armor_kin.id]
         with self.assertRaises(KeyError):
-            rah.attrs[self.armor_exp.id]
+            rah.attrs[self.armor_expl.id]
         with self.assertRaises(KeyError):
             rah.attrs[self.armor_em.id]
         with self.assertRaises(KeyError):
@@ -52,7 +52,7 @@ class TestRahSimSource(RahSimTestCase):
         with self.assertRaises(KeyError):
             rah.attrs[self.armor_kin.id]
         with self.assertRaises(KeyError):
-            rah.attrs[self.armor_exp.id]
+            rah.attrs[self.armor_expl.id]
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

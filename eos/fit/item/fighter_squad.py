@@ -81,14 +81,14 @@ class FighterSquad(MutableStateMixin, BufferTankingMixin, EffectStatsMixin):
             return
         effect_id = fighter_ability_map[ability_id]
         default_effect_id = self._type_default_effect_id
-        # Default effects are running by default if item is in active+ state,
-        # thus they have special processing
+        # Default effects in full compliance mode are running if item is in
+        # active+ state, thus they have special processing
         if effect_id == default_effect_id:
             if status:
                 effect_mode = EffectMode.full_compliance
             else:
                 effect_mode = EffectMode.force_stop
-        # Non-default effects
+        # Non-default effects are not running in full compliance mode
         else:
             if status:
                 effect_mode = EffectMode.state_compliance

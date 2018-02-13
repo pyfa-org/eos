@@ -27,22 +27,17 @@ from ..base import DmgDealerEffect
 class FighterAbilityMissiles(DmgDealerEffect):
 
     def get_volley(self, item):
-        em = item.attrs.get(
-            AttrId.fighter_ability_missiles_dmg_em, 0)
-        thermal = item.attrs.get(
-            AttrId.fighter_ability_missiles_dmg_thermal, 0)
-        kinetic = item.attrs.get(
-            AttrId.fighter_ability_missiles_dmg_kinetic, 0)
-        explosive = item.attrs.get(
-            AttrId.fighter_ability_missiles_dmg_explosive, 0)
-        dmg_mult = item.attrs.get(
-            AttrId.fighter_ability_missiles_dmg_multiplier, 1)
+        em = item.attrs.get(AttrId.fighter_ability_missiles_dmg_em, 0)
+        therm = item.attrs.get(AttrId.fighter_ability_missiles_dmg_therm, 0)
+        kin = item.attrs.get(AttrId.fighter_ability_missiles_dmg_kin, 0)
+        expl = item.attrs.get(AttrId.fighter_ability_missiles_dmg_expl, 0)
+        dmg_mult = item.attrs.get(AttrId.fighter_ability_missiles_dmg_mult, 1)
         try:
             squad_size = item.squad_size
         except AttributeError:
             squad_size = 1
         mult = dmg_mult * squad_size
-        return DmgStats(em, thermal, kinetic, explosive, mult)
+        return DmgStats(em, therm, kin, expl, mult)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError

@@ -123,22 +123,22 @@ class DmgStats(DmgTypesTotal):
     def _combine(cls, dmg_containers, tgt_resists=None):
         """Create new instance of container based on passed containers."""
         em = 0
-        thermal = 0
-        kinetic = 0
-        explosive = 0
+        therm = 0
+        kin = 0
+        expl = 0
         # Sum up passed damage stats
         for dmg_container in dmg_containers:
             em += dmg_container.em
-            thermal += dmg_container.thermal
-            kinetic += dmg_container.kinetic
-            explosive += dmg_container.explosive
+            therm += dmg_container.thermal
+            kin += dmg_container.kinetic
+            expl += dmg_container.explosive
         # Reduce resulting damage by resists, if needed
         if tgt_resists is not None:
             em *= 1 - tgt_resists.em
-            thermal *= 1 - tgt_resists.thermal
-            kinetic *= 1 - tgt_resists.kinetic
-            explosive *= 1 - tgt_resists.explosive
-        return cls(em, thermal, kinetic, explosive)
+            therm *= 1 - tgt_resists.thermal
+            kin *= 1 - tgt_resists.kinetic
+            expl *= 1 - tgt_resists.explosive
+        return cls(em, therm, kin, expl)
 
 
 class DmgProfile(DmgTypes):

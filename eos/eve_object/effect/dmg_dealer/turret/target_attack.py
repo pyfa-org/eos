@@ -32,9 +32,9 @@ class TargetAttack(TurretDmgEffect):
         charge = self.get_charge(item)
         dmg_attr_ids = {
             AttrId.em_dmg,
-            AttrId.thermal_dmg,
-            AttrId.kinetic_dmg,
-            AttrId.explosive_dmg}
+            AttrId.therm_dmg,
+            AttrId.kin_dmg,
+            AttrId.expl_dmg}
         if charge is not None and dmg_attr_ids.intersection(charge._type_attrs):
             return charge
         elif dmg_attr_ids.intersection(item._type_attrs):

@@ -35,9 +35,9 @@ def make_missile_dmg_effect():
     modifiers = []
     for dmg_attr_id in (
         AttrId.em_dmg,
-        AttrId.thermal_dmg,
-        AttrId.kinetic_dmg,
-        AttrId.explosive_dmg
+        AttrId.therm_dmg,
+        AttrId.kin_dmg,
+        AttrId.expl_dmg
     ):
         modifiers.append(DogmaModifier(
             tgt_filter=ModTgtFilter.owner_skillrq,
@@ -45,7 +45,7 @@ def make_missile_dmg_effect():
             tgt_filter_extra_arg=TypeId.missile_launcher_operation,
             tgt_attr_id=dmg_attr_id,
             operator=ModOperator.pre_mul,
-            src_attr_id=AttrId.missile_dmg_multiplier))
+            src_attr_id=AttrId.missile_dmg_mult))
     missile_dmg_effect = EffectFactory.make(
         effect_id=EosEffectId.char_missile_dmg,
         category_id=EffectCategoryId.passive,

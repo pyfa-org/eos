@@ -44,7 +44,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         charge = getattr(carrier_item, 'charge', None)
         if charge is not None and charge._type_id == TypeId.nanite_repair_paste:
             try:
-                value = carrier_item.attrs[AttrId.charged_armor_dmg_multiplier]
+                value = carrier_item.attrs[AttrId.charged_armor_dmg_mult]
             except (AttributeError, KeyError) as e:
                 raise ModificationCalculationError from e
         else:
@@ -66,7 +66,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         # should change
         if (
             msg.item is carrier_item and
-            msg.attr_id == AttrId.charged_armor_dmg_multiplier
+            msg.attr_id == AttrId.charged_armor_dmg_mult
         ):
             return True
         return False

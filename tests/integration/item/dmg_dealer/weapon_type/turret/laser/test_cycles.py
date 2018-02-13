@@ -42,9 +42,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.crystal_volatility_chance)
         self.mkattr(attr_id=AttrId.crystal_volatility_dmg)
         self.mkattr(attr_id=AttrId.em_dmg)
-        self.mkattr(attr_id=AttrId.thermal_dmg)
-        self.mkattr(attr_id=AttrId.kinetic_dmg)
-        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.mkattr(attr_id=AttrId.therm_dmg)
+        self.mkattr(attr_id=AttrId.kin_dmg)
+        self.mkattr(attr_id=AttrId.expl_dmg)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
             effect_id=EffectId.target_attack,
@@ -66,9 +66,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.cycles_until_reload, 1000)
@@ -91,9 +91,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.cycles_until_reload, 1000)
@@ -115,9 +115,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)
@@ -140,9 +140,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
@@ -164,9 +164,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
@@ -189,9 +189,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)
@@ -214,9 +214,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)
@@ -239,9 +239,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.crystal_volatility_dmg: 0.00,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
@@ -263,9 +263,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.hp: 1.0,
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)
@@ -288,9 +288,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.crystal_volatility_chance: 0.0,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
@@ -312,9 +312,9 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.hp: 1.0,
             AttrId.crystal_volatility_dmg: 0.01,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)

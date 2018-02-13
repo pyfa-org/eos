@@ -33,9 +33,9 @@ class TestItemDmgDoomsdayDirectDps(ItemMixinTestCase):
     def setUp(self):
         ItemMixinTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.em_dmg)
-        self.mkattr(attr_id=AttrId.thermal_dmg)
-        self.mkattr(attr_id=AttrId.kinetic_dmg)
-        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.mkattr(attr_id=AttrId.therm_dmg)
+        self.mkattr(attr_id=AttrId.kin_dmg)
+        self.mkattr(attr_id=AttrId.expl_dmg)
         self.cycle_attr = self.mkattr()
         self.effect_amarr = self.mkeffect(
             effect_id=EffectId.super_weapon_amarr,
@@ -60,9 +60,9 @@ class TestItemDmgDoomsdayDirectDps(ItemMixinTestCase):
             self.mktype(
                 attrs={
                     AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
+                    AttrId.therm_dmg: 63000,
+                    AttrId.kin_dmg: 74000,
+                    AttrId.expl_dmg: 85000,
                     self.cycle_attr.id: 250000},
                 effects=[self.effect_amarr],
                 default_effect=self.effect_amarr).id,
@@ -85,9 +85,9 @@ class TestItemDmgDoomsdayDirectDps(ItemMixinTestCase):
             self.mktype(
                 attrs={
                     AttrId.em_dmg: 52000,
-                    AttrId.thermal_dmg: 63000,
-                    AttrId.kinetic_dmg: 74000,
-                    AttrId.explosive_dmg: 85000,
+                    AttrId.therm_dmg: 63000,
+                    AttrId.kin_dmg: 74000,
+                    AttrId.expl_dmg: 85000,
                     self.cycle_attr.id: 250000},
                 effects=[self.effect_amarr],
                 default_effect=self.effect_amarr).id,

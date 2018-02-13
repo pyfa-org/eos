@@ -33,11 +33,11 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
 
     def setUp(self):
         ItemMixinTestCase.setUp(self)
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.dmg_mult)
         self.mkattr(attr_id=AttrId.em_dmg)
-        self.mkattr(attr_id=AttrId.thermal_dmg)
-        self.mkattr(attr_id=AttrId.kinetic_dmg)
-        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.mkattr(attr_id=AttrId.therm_dmg)
+        self.mkattr(attr_id=AttrId.kin_dmg)
+        self.mkattr(attr_id=AttrId.expl_dmg)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
             effect_id=EffectId.target_attack,
@@ -49,11 +49,11 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.therm_dmg: 63,
+                    AttrId.kin_dmg: 74,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -75,10 +75,10 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.dmg_mult: 2.5,
+                    AttrId.therm_dmg: 63,
+                    AttrId.kin_dmg: 74,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -100,10 +100,10 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.em_dmg: 52,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.kin_dmg: 74,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -125,10 +125,10 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.therm_dmg: 63,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -150,10 +150,10 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
+                    AttrId.therm_dmg: 63,
+                    AttrId.kin_dmg: 74,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -170,15 +170,15 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_multiplier(self):
+    def test_no_mult(self):
         fit = Fit()
         item = Drone(
             self.mktype(
                 attrs={
                     AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.therm_dmg: 63,
+                    AttrId.kin_dmg: 74,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -200,11 +200,11 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.therm_dmg: 63,
+                    AttrId.kin_dmg: 74,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -226,11 +226,11 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.therm_dmg: 63,
+                    AttrId.kin_dmg: 74,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,
@@ -253,11 +253,11 @@ class TestItemDmgDroneVolley(ItemMixinTestCase):
         item = Drone(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.em_dmg: 52,
-                    AttrId.thermal_dmg: 63,
-                    AttrId.kinetic_dmg: 74,
-                    AttrId.explosive_dmg: 85,
+                    AttrId.therm_dmg: 63,
+                    AttrId.kin_dmg: 74,
+                    AttrId.expl_dmg: 85,
                     self.cycle_attr.id: 4000},
                 effects=[self.effect],
                 default_effect=self.effect).id,

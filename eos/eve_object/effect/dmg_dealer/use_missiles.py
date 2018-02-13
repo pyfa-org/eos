@@ -49,10 +49,10 @@ class UseMissiles(DmgDealerEffect):
         ):
             return DmgStats(0, 0, 0, 0)
         em = charge.attrs.get(AttrId.em_dmg, 0)
-        thermal = charge.attrs.get(AttrId.thermal_dmg, 0)
-        kinetic = charge.attrs.get(AttrId.kinetic_dmg, 0)
-        explosive = charge.attrs.get(AttrId.explosive_dmg, 0)
-        return DmgStats(em, thermal, kinetic, explosive)
+        therm = charge.attrs.get(AttrId.therm_dmg, 0)
+        kin = charge.attrs.get(AttrId.kin_dmg, 0)
+        expl = charge.attrs.get(AttrId.expl_dmg, 0)
+        return DmgStats(em, therm, kin, expl)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError

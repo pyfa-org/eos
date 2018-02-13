@@ -54,30 +54,30 @@ class AttrId(IntEnum):
     turret_slots_left = 102
     # Damage
     em_dmg = 114
-    explosive_dmg = 116
-    kinetic_dmg = 117
-    thermal_dmg = 118
+    expl_dmg = 116
+    kin_dmg = 117
+    therm_dmg = 118
     # Resistances
     armor_em_dmg_resonance = 267
-    armor_explosive_dmg_resonance = 268
-    armor_kinetic_dmg_resonance = 269
-    armor_thermal_dmg_resonance = 270
+    armor_expl_dmg_resonance = 268
+    armor_kin_dmg_resonance = 269
+    armor_therm_dmg_resonance = 270
     em_dmg_resonance = 113
-    explosive_dmg_resonance = 111
-    kinetic_dmg_resonance = 109
+    expl_dmg_resonance = 111
+    kin_dmg_resonance = 109
     resist_shift_amount = 1849
-    thermal_dmg_resonance = 110
+    therm_dmg_resonance = 110
     shield_em_dmg_resonance = 271
-    shield_explosive_dmg_resonance = 272
-    shield_kinetic_dmg_resonance = 273
-    shield_thermal_dmg_resonance = 274
+    shield_expl_dmg_resonance = 272
+    shield_kin_dmg_resonance = 273
+    shield_therm_dmg_resonance = 274
     # Tanking
     armor_hp = 265
     hp = 9
     shield_capacity = 263
     # Repairing
     armor_dmg_amount = 84
-    charged_armor_dmg_multiplier = 1886
+    charged_armor_dmg_mult = 1886
     # Charge-related
     ammo_loaded = 127
     charge_group_1 = 604
@@ -153,24 +153,24 @@ class AttrId(IntEnum):
     fighter_squadron_is_support = 2213
     fighter_squadron_max_size = 2215
     fighter_ability_attack_missile_dmg_em = 2227
-    fighter_ability_attack_missile_dmg_thermal = 2228
-    fighter_ability_attack_missile_dmg_kinetic = 2229
-    fighter_ability_attack_missile_dmg_explosive = 2230
-    fighter_ability_attack_missile_dmg_multiplier = 2226
+    fighter_ability_attack_missile_dmg_therm = 2228
+    fighter_ability_attack_missile_dmg_kin = 2229
+    fighter_ability_attack_missile_dmg_expl = 2230
+    fighter_ability_attack_missile_dmg_mult = 2226
     fighter_ability_missiles_dmg_em = 2131
-    fighter_ability_missiles_dmg_thermal = 2132
-    fighter_ability_missiles_dmg_kinetic = 2133
-    fighter_ability_missiles_dmg_explosive = 2134
-    fighter_ability_missiles_dmg_multiplier = 2130
+    fighter_ability_missiles_dmg_therm = 2132
+    fighter_ability_missiles_dmg_kin = 2133
+    fighter_ability_missiles_dmg_expl = 2134
+    fighter_ability_missiles_dmg_mult = 2130
     # Misc
     agility = 70
     capacity = 38
-    dmg_multiplier = 64
+    dmg_mult = 64
     is_capital_size = 1785
     mass = 4
     mass_addition = 796
     max_velocity = 37
-    missile_dmg_multiplier = 212
+    missile_dmg_mult = 212
     module_reactivation_delay = 669
     radius = 162
     signature_radius = 552

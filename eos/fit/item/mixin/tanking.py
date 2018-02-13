@@ -51,19 +51,19 @@ class BufferTankingMixin(BaseItemMixin):
         """
         hull = ResistProfile(
             self.__get_resist_by_attr(AttrId.em_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.thermal_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.kinetic_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.explosive_dmg_resonance))
+            self.__get_resist_by_attr(AttrId.therm_dmg_resonance),
+            self.__get_resist_by_attr(AttrId.kin_dmg_resonance),
+            self.__get_resist_by_attr(AttrId.expl_dmg_resonance))
         armor = ResistProfile(
             self.__get_resist_by_attr(AttrId.armor_em_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.armor_thermal_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.armor_kinetic_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.armor_explosive_dmg_resonance))
+            self.__get_resist_by_attr(AttrId.armor_therm_dmg_resonance),
+            self.__get_resist_by_attr(AttrId.armor_kin_dmg_resonance),
+            self.__get_resist_by_attr(AttrId.armor_expl_dmg_resonance))
         shield = ResistProfile(
             self.__get_resist_by_attr(AttrId.shield_em_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.shield_thermal_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.shield_kinetic_dmg_resonance),
-            self.__get_resist_by_attr(AttrId.shield_explosive_dmg_resonance))
+            self.__get_resist_by_attr(AttrId.shield_therm_dmg_resonance),
+            self.__get_resist_by_attr(AttrId.shield_kin_dmg_resonance),
+            self.__get_resist_by_attr(AttrId.shield_expl_dmg_resonance))
         return TankingLayers(hull, armor, shield)
 
     def __get_resist_by_attr(self, attr_id):

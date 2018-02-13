@@ -44,7 +44,7 @@ class TestRahSimAttrOverride(RahSimTestCase):
                 src_attr_id=skill_attr.id)
             for attr in (
                 self.armor_em.id, self.armor_therm.id,
-                self.armor_kin.id, self.armor_exp.id))
+                self.armor_kin.id, self.armor_expl.id))
         skill_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=skill_modifiers)
@@ -62,22 +62,22 @@ class TestRahSimAttrOverride(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.9)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Switch state up to enable RAH
         rah.state = State.active
         # callbacks are installed, sim is doing its job
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.655)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.655)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.5895)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Action
         self.fit.skills.add(skill)
         rah.state = State.online
@@ -87,11 +87,11 @@ class TestRahSimAttrOverride(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.425)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.425)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.425)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.425)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.425)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.9)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -108,11 +108,11 @@ class TestRahSimAttrOverride(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.9)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Action
         rah.state = State.active
         # Verification
@@ -121,11 +121,11 @@ class TestRahSimAttrOverride(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.655)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.655)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.5895)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

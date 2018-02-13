@@ -45,15 +45,15 @@ SIG_DIGITS = 10
 # earlier in this list will be picked as donors
 res_attr_ids = (
     AttrId.armor_em_dmg_resonance,
-    AttrId.armor_explosive_dmg_resonance,
-    AttrId.armor_kinetic_dmg_resonance,
-    AttrId.armor_thermal_dmg_resonance)
+    AttrId.armor_expl_dmg_resonance,
+    AttrId.armor_kin_dmg_resonance,
+    AttrId.armor_therm_dmg_resonance)
 # Format: {resonance attribute: damage profile field}
 attr_profile_map = {
     AttrId.armor_em_dmg_resonance: 'em',
-    AttrId.armor_thermal_dmg_resonance: 'thermal',
-    AttrId.armor_kinetic_dmg_resonance: 'kinetic',
-    AttrId.armor_explosive_dmg_resonance: 'explosive'}
+    AttrId.armor_therm_dmg_resonance: 'thermal',
+    AttrId.armor_kin_dmg_resonance: 'kinetic',
+    AttrId.armor_expl_dmg_resonance: 'explosive'}
 
 
 class RahState:

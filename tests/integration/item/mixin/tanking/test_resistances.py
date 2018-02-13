@@ -30,33 +30,33 @@ class TestItemMixinTankingResists(ItemMixinTestCase):
     def setUp(self):
         ItemMixinTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.em_dmg_resonance)
-        self.mkattr(attr_id=AttrId.thermal_dmg_resonance)
-        self.mkattr(attr_id=AttrId.kinetic_dmg_resonance)
-        self.mkattr(attr_id=AttrId.explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.therm_dmg_resonance)
+        self.mkattr(attr_id=AttrId.kin_dmg_resonance)
+        self.mkattr(attr_id=AttrId.expl_dmg_resonance)
         self.mkattr(attr_id=AttrId.armor_em_dmg_resonance)
-        self.mkattr(attr_id=AttrId.armor_thermal_dmg_resonance)
-        self.mkattr(attr_id=AttrId.armor_kinetic_dmg_resonance)
-        self.mkattr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_therm_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_kin_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_expl_dmg_resonance)
         self.mkattr(attr_id=AttrId.shield_em_dmg_resonance)
-        self.mkattr(attr_id=AttrId.shield_thermal_dmg_resonance)
-        self.mkattr(attr_id=AttrId.shield_kinetic_dmg_resonance)
-        self.mkattr(attr_id=AttrId.shield_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_therm_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_kin_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_expl_dmg_resonance)
 
     def test_generic(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.01,
-            AttrId.thermal_dmg_resonance: 0.02,
-            AttrId.kinetic_dmg_resonance: 0.03,
-            AttrId.explosive_dmg_resonance: 0.04,
+            AttrId.therm_dmg_resonance: 0.02,
+            AttrId.kin_dmg_resonance: 0.03,
+            AttrId.expl_dmg_resonance: 0.04,
             AttrId.armor_em_dmg_resonance: 0.05,
-            AttrId.armor_thermal_dmg_resonance: 0.06,
-            AttrId.armor_kinetic_dmg_resonance: 0.07,
-            AttrId.armor_explosive_dmg_resonance: 0.08,
+            AttrId.armor_therm_dmg_resonance: 0.06,
+            AttrId.armor_kin_dmg_resonance: 0.07,
+            AttrId.armor_expl_dmg_resonance: 0.08,
             AttrId.shield_em_dmg_resonance: 0.09,
-            AttrId.shield_thermal_dmg_resonance: 0.1,
-            AttrId.shield_kinetic_dmg_resonance: 0.11,
-            AttrId.shield_explosive_dmg_resonance: 0.12}).id)
+            AttrId.shield_therm_dmg_resonance: 0.1,
+            AttrId.shield_kin_dmg_resonance: 0.11,
+            AttrId.shield_expl_dmg_resonance: 0.12}).id)
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.resists.hull.em, 0.99)
@@ -100,17 +100,17 @@ class TestItemMixinTankingResists(ItemMixinTestCase):
         fit = Fit(source=None)
         item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.01,
-            AttrId.thermal_dmg_resonance: 0.02,
-            AttrId.kinetic_dmg_resonance: 0.03,
-            AttrId.explosive_dmg_resonance: 0.04,
+            AttrId.therm_dmg_resonance: 0.02,
+            AttrId.kin_dmg_resonance: 0.03,
+            AttrId.expl_dmg_resonance: 0.04,
             AttrId.armor_em_dmg_resonance: 0.05,
-            AttrId.armor_thermal_dmg_resonance: 0.06,
-            AttrId.armor_kinetic_dmg_resonance: 0.07,
-            AttrId.armor_explosive_dmg_resonance: 0.08,
+            AttrId.armor_therm_dmg_resonance: 0.06,
+            AttrId.armor_kin_dmg_resonance: 0.07,
+            AttrId.armor_expl_dmg_resonance: 0.08,
             AttrId.shield_em_dmg_resonance: 0.09,
-            AttrId.shield_thermal_dmg_resonance: 0.1,
-            AttrId.shield_kinetic_dmg_resonance: 0.11,
-            AttrId.shield_explosive_dmg_resonance: 0.12}).id)
+            AttrId.shield_therm_dmg_resonance: 0.1,
+            AttrId.shield_kin_dmg_resonance: 0.11,
+            AttrId.shield_expl_dmg_resonance: 0.12}).id)
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.resists.hull.em, 0)

@@ -43,7 +43,7 @@ class RahSimTestCase(IntegrationTestCase):
         armor_em: Armor EM resonance attribute.
         armor_therm: Armor thermal resonance attribute.
         armor_kin: Armor kinetic resonance attribute.
-        armor_exp: Armor explosive resonance attribute.
+        armor_expl: Armor explosive resonance attribute.
     """
 
     def setUp(self):
@@ -69,17 +69,17 @@ class RahSimTestCase(IntegrationTestCase):
             high_is_good=False,
             stackable=False)
         self.armor_therm = self.mkattr(
-            attr_id=AttrId.armor_thermal_dmg_resonance,
+            attr_id=AttrId.armor_therm_dmg_resonance,
             max_attr_id=self.max_attr.id,
             high_is_good=False,
             stackable=False)
         self.armor_kin = self.mkattr(
-            attr_id=AttrId.armor_kinetic_dmg_resonance,
+            attr_id=AttrId.armor_kin_dmg_resonance,
             max_attr_id=self.max_attr.id,
             high_is_good=False,
             stackable=False)
-        self.armor_exp = self.mkattr(
-            attr_id=AttrId.armor_explosive_dmg_resonance,
+        self.armor_expl = self.mkattr(
+            attr_id=AttrId.armor_expl_dmg_resonance,
             max_attr_id=self.max_attr.id,
             high_is_good=False,
             stackable=False)
@@ -104,7 +104,7 @@ class RahSimTestCase(IntegrationTestCase):
         """Create ship type with specified resonances."""
         attr_order = (
             self.armor_em.id, self.armor_therm.id,
-            self.armor_kin.id, self.armor_exp.id)
+            self.armor_kin.id, self.armor_expl.id)
         return self.mktype(attrs=dict(zip(attr_order, resonances)))
 
     def make_rah_type(
@@ -112,7 +112,7 @@ class RahSimTestCase(IntegrationTestCase):
         """Create RAH type with specified attributes."""
         attr_order = (
             self.armor_em.id, self.armor_therm.id, self.armor_kin.id,
-            self.armor_exp.id, self.shift_attr.id, self.cycle_attr.id,
+            self.armor_expl.id, self.shift_attr.id, self.cycle_attr.id,
             self.heat_attr.id)
         return self.mktype(
             attrs=dict(zip(

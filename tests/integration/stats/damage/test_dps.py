@@ -37,10 +37,10 @@ class TestStatsDmgDps(StatsTestCase):
     def setUp(self):
         StatsTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.em_dmg)
-        self.mkattr(attr_id=AttrId.thermal_dmg)
-        self.mkattr(attr_id=AttrId.kinetic_dmg)
-        self.mkattr(attr_id=AttrId.explosive_dmg)
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.therm_dmg)
+        self.mkattr(attr_id=AttrId.kin_dmg)
+        self.mkattr(attr_id=AttrId.expl_dmg)
+        self.mkattr(attr_id=AttrId.dmg_mult)
         self.mkattr(attr_id=AttrId.module_reactivation_delay, default_value=0)
         self.mkattr(attr_id=AttrId.volume)
         self.mkattr(attr_id=AttrId.capacity)
@@ -70,7 +70,7 @@ class TestStatsDmgDps(StatsTestCase):
         modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.self,
-            tgt_attr_id=AttrId.dmg_multiplier,
+            tgt_attr_id=AttrId.dmg_mult,
             operator=ModOperator.post_mul,
             src_attr_id=src_attr.id)
         effect = self.mkeffect(
@@ -79,7 +79,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -90,9 +90,9 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
@@ -111,7 +111,7 @@ class TestStatsDmgDps(StatsTestCase):
         item1 = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -121,15 +121,15 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item1.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2000,
@@ -139,9 +139,9 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item2.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 12,
-            AttrId.thermal_dmg: 24,
-            AttrId.kinetic_dmg: 48,
-            AttrId.explosive_dmg: 96,
+            AttrId.therm_dmg: 24,
+            AttrId.kin_dmg: 48,
+            AttrId.expl_dmg: 96,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item2)
         # Action
@@ -160,7 +160,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -170,9 +170,9 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
@@ -192,7 +192,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 3000,
@@ -202,9 +202,9 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
@@ -224,7 +224,7 @@ class TestStatsDmgDps(StatsTestCase):
             self.mktype(
                 group_id=55,
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -234,16 +234,16 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item1.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.mktype(
                 group_id=54,
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2000,
@@ -253,9 +253,9 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item2.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 12,
-            AttrId.thermal_dmg: 24,
-            AttrId.kinetic_dmg: 48,
-            AttrId.explosive_dmg: 96,
+            AttrId.therm_dmg: 24,
+            AttrId.kin_dmg: 48,
+            AttrId.expl_dmg: 96,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item2)
         # Action
@@ -275,7 +275,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -284,9 +284,9 @@ class TestStatsDmgDps(StatsTestCase):
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
@@ -305,7 +305,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -315,8 +315,8 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
@@ -335,7 +335,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -345,8 +345,8 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
@@ -365,7 +365,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -375,8 +375,8 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
@@ -395,7 +395,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -421,7 +421,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -448,7 +448,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -457,7 +457,7 @@ class TestStatsDmgDps(StatsTestCase):
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(
-            attrs={AttrId.thermal_dmg: 0, AttrId.volume: 1}).id)
+            attrs={AttrId.therm_dmg: 0, AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_dps()
@@ -475,7 +475,7 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -484,7 +484,7 @@ class TestStatsDmgDps(StatsTestCase):
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(
-            attrs={AttrId.kinetic_dmg: 0, AttrId.volume: 1}).id)
+            attrs={AttrId.kin_dmg: 0, AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_dps()
@@ -502,14 +502,14 @@ class TestStatsDmgDps(StatsTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2, AttrId.capacity: 1,
+                    AttrId.dmg_mult: 2, AttrId.capacity: 1,
                     AttrId.charge_rate: 1, self.cycle_attr.id: 2500,
                     AttrId.reload_time: 2000},
                 effects=[self.dd_effect],
                 default_effect=self.dd_effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(
-            attrs={AttrId.explosive_dmg: 0, AttrId.volume: 1}).id)
+            attrs={AttrId.expl_dmg: 0, AttrId.volume: 1}).id)
         self.fit.modules.high.append(item)
         # Action
         stats_dps = self.fit.stats.get_dps()
@@ -529,7 +529,7 @@ class TestStatsDmgDps(StatsTestCase):
         item1 = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2500,
@@ -539,15 +539,15 @@ class TestStatsDmgDps(StatsTestCase):
             state=State.active)
         item1.charge = Charge(self.mktype(attrs={
             AttrId.em_dmg: 1.2,
-            AttrId.thermal_dmg: 2.4,
-            AttrId.kinetic_dmg: 4.8,
-            AttrId.explosive_dmg: 9.6,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6,
             AttrId.volume: 1}).id)
         self.fit.modules.high.append(item1)
         item2 = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2,
+                    AttrId.dmg_mult: 2,
                     AttrId.capacity: 1,
                     AttrId.charge_rate: 1,
                     self.cycle_attr.id: 2000,

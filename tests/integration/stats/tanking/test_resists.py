@@ -29,33 +29,33 @@ class TestResists(StatsTestCase):
     def setUp(self):
         StatsTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.em_dmg_resonance)
-        self.mkattr(attr_id=AttrId.thermal_dmg_resonance)
-        self.mkattr(attr_id=AttrId.kinetic_dmg_resonance)
-        self.mkattr(attr_id=AttrId.explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.therm_dmg_resonance)
+        self.mkattr(attr_id=AttrId.kin_dmg_resonance)
+        self.mkattr(attr_id=AttrId.expl_dmg_resonance)
         self.mkattr(attr_id=AttrId.armor_em_dmg_resonance)
-        self.mkattr(attr_id=AttrId.armor_thermal_dmg_resonance)
-        self.mkattr(attr_id=AttrId.armor_kinetic_dmg_resonance)
-        self.mkattr(attr_id=AttrId.armor_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_therm_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_kin_dmg_resonance)
+        self.mkattr(attr_id=AttrId.armor_expl_dmg_resonance)
         self.mkattr(attr_id=AttrId.shield_em_dmg_resonance)
-        self.mkattr(attr_id=AttrId.shield_thermal_dmg_resonance)
-        self.mkattr(attr_id=AttrId.shield_kinetic_dmg_resonance)
-        self.mkattr(attr_id=AttrId.shield_explosive_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_therm_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_kin_dmg_resonance)
+        self.mkattr(attr_id=AttrId.shield_expl_dmg_resonance)
 
     def test_relay(self):
         # Check that stats service relays resistance stats properly
         self.fit.ship = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.05,
-            AttrId.thermal_dmg_resonance: 0.06,
-            AttrId.kinetic_dmg_resonance: 0.07,
-            AttrId.explosive_dmg_resonance: 0.08,
+            AttrId.therm_dmg_resonance: 0.06,
+            AttrId.kin_dmg_resonance: 0.07,
+            AttrId.expl_dmg_resonance: 0.08,
             AttrId.armor_em_dmg_resonance: 0.09,
-            AttrId.armor_thermal_dmg_resonance: 0.1,
-            AttrId.armor_kinetic_dmg_resonance: 0.11,
-            AttrId.armor_explosive_dmg_resonance: 0.12,
+            AttrId.armor_therm_dmg_resonance: 0.1,
+            AttrId.armor_kin_dmg_resonance: 0.11,
+            AttrId.armor_expl_dmg_resonance: 0.12,
             AttrId.shield_em_dmg_resonance: 0.13,
-            AttrId.shield_thermal_dmg_resonance: 0.14,
-            AttrId.shield_kinetic_dmg_resonance: 0.15,
-            AttrId.shield_explosive_dmg_resonance: 0.16}).id)
+            AttrId.shield_therm_dmg_resonance: 0.14,
+            AttrId.shield_kin_dmg_resonance: 0.15,
+            AttrId.shield_expl_dmg_resonance: 0.16}).id)
         # Action
         res_stats = self.fit.stats.resists
         # Verification
@@ -99,17 +99,17 @@ class TestResists(StatsTestCase):
     def test_no_source(self):
         self.fit.ship = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.05,
-            AttrId.thermal_dmg_resonance: 0.06,
-            AttrId.kinetic_dmg_resonance: 0.07,
-            AttrId.explosive_dmg_resonance: 0.08,
+            AttrId.therm_dmg_resonance: 0.06,
+            AttrId.kin_dmg_resonance: 0.07,
+            AttrId.expl_dmg_resonance: 0.08,
             AttrId.armor_em_dmg_resonance: 0.09,
-            AttrId.armor_thermal_dmg_resonance: 0.1,
-            AttrId.armor_kinetic_dmg_resonance: 0.11,
-            AttrId.armor_explosive_dmg_resonance: 0.12,
+            AttrId.armor_therm_dmg_resonance: 0.1,
+            AttrId.armor_kin_dmg_resonance: 0.11,
+            AttrId.armor_expl_dmg_resonance: 0.12,
             AttrId.shield_em_dmg_resonance: 0.13,
-            AttrId.shield_thermal_dmg_resonance: 0.14,
-            AttrId.shield_kinetic_dmg_resonance: 0.15,
-            AttrId.shield_explosive_dmg_resonance: 0.16}).id)
+            AttrId.shield_therm_dmg_resonance: 0.14,
+            AttrId.shield_kin_dmg_resonance: 0.15,
+            AttrId.shield_expl_dmg_resonance: 0.16}).id)
         self.fit.source = None
         # Action
         res_stats = self.fit.stats.resists

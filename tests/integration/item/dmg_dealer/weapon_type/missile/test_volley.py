@@ -39,9 +39,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.charge_rate)
         self.mkattr(attr_id=AttrId.reload_time)
         self.mkattr(attr_id=AttrId.em_dmg)
-        self.mkattr(attr_id=AttrId.thermal_dmg)
-        self.mkattr(attr_id=AttrId.kinetic_dmg)
-        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.mkattr(attr_id=AttrId.therm_dmg)
+        self.mkattr(attr_id=AttrId.kin_dmg)
+        self.mkattr(attr_id=AttrId.expl_dmg)
         self.cycle_attr = self.mkattr()
         self.effect_item = self.mkeffect(
             effect_id=EffectId.use_missiles,
@@ -67,9 +67,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -99,9 +99,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         item.charge = Charge(self.mktype(
             attrs={
                 AttrId.volume: 0.1,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -132,8 +132,8 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -164,8 +164,8 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -196,8 +196,8 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -228,9 +228,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -262,9 +262,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -295,9 +295,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         item.charge.set_effect_mode(
@@ -354,9 +354,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 2.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)
@@ -387,9 +387,9 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
             attrs={
                 AttrId.volume: 0.1,
                 AttrId.em_dmg: 5.2,
-                AttrId.thermal_dmg: 6.3,
-                AttrId.kinetic_dmg: 7.4,
-                AttrId.explosive_dmg: 8.5},
+                AttrId.therm_dmg: 6.3,
+                AttrId.kin_dmg: 7.4,
+                AttrId.expl_dmg: 8.5},
             effects=[self.effect_charge],
             default_effect=self.effect_charge).id)
         fit.modules.high.append(item)

@@ -41,11 +41,11 @@ class TurretDmgEffect(DmgDealerEffect, metaclass=ABCMeta):
         if base_dmg_item is None:
             return DmgStats(0, 0, 0, 0)
         em = base_dmg_item.attrs.get(AttrId.em_dmg, 0)
-        thermal = base_dmg_item.attrs.get(AttrId.thermal_dmg, 0)
-        kinetic = base_dmg_item.attrs.get(AttrId.kinetic_dmg, 0)
-        explosive = base_dmg_item.attrs.get(AttrId.explosive_dmg, 0)
-        multiplier = item.attrs.get(AttrId.dmg_multiplier)
-        return DmgStats(em, thermal, kinetic, explosive, multiplier)
+        therm = base_dmg_item.attrs.get(AttrId.therm_dmg, 0)
+        kin = base_dmg_item.attrs.get(AttrId.kin_dmg, 0)
+        expl = base_dmg_item.attrs.get(AttrId.expl_dmg, 0)
+        mult = item.attrs.get(AttrId.dmg_mult)
+        return DmgStats(em, therm, kin, expl, mult)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError

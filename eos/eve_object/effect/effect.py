@@ -83,10 +83,6 @@ class Effect:
         self.build_status = build_status
         self.modifiers = modifiers
 
-    # Describes if running this effect kills carrying item once cycle is
-    # complete
-    kills_item = False
-
     # Format: {effect category ID: state ID}
     __effect_state_map = {
         EffectCategoryId.passive: State.offline,
@@ -195,13 +191,13 @@ class Effect:
             Cycle parameters described by CycleInfo or CycleSequence class
             instances.
         """
-        active_time = self.get_duration(item) or 0
-        forced_inactive_time = self.get_forced_inactive_time(item) or 0
         cycles_until_reload = self.get_cycles_until_reload(item) or 0
-        reload_time = self.get_reload_time(item)
         # Module cannot cycle at all
         if cycles_until_reload <= 0:
             return None
+        active_time = self.get_duration(item) or 0
+        forced_inactive_time = self.get_forced_inactive_time(item) or 0
+        reload_time = self.get_reload_time(item)
         # Effects which cannot be reloaded have the same processing whether
         # caller wants to take reload time into account or not
         if reload_time is None and cycles_until_reload < math.inf:

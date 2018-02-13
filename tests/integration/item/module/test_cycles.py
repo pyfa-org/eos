@@ -53,9 +53,9 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 1.0,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
@@ -76,9 +76,9 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 1.0,
             AttrId.em_dmg: 1.0,
-            AttrId.thermal_dmg: 1.0,
-            AttrId.kinetic_dmg: 1.0,
-            AttrId.explosive_dmg: 1.0}).id)
+            AttrId.therm_dmg: 1.0,
+            AttrId.kin_dmg: 1.0,
+            AttrId.expl_dmg: 1.0}).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)

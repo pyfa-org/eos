@@ -28,10 +28,10 @@ class DoomsdayDirect(DmgDealerEffect):
 
     def get_volley(self, item):
         em = item.attrs.get(AttrId.em_dmg, 0)
-        thermal = item.attrs.get(AttrId.thermal_dmg, 0)
-        kinetic = item.attrs.get(AttrId.kinetic_dmg, 0)
-        explosive = item.attrs.get(AttrId.explosive_dmg, 0)
-        return DmgStats(em, thermal, kinetic, explosive)
+        therm = item.attrs.get(AttrId.therm_dmg, 0)
+        kin = item.attrs.get(AttrId.kin_dmg, 0)
+        expl = item.attrs.get(AttrId.expl_dmg, 0)
+        return DmgStats(em, therm, kin, expl)
 
     def get_applied_volley(self, item, tgt_data):
         raise NotImplementedError

@@ -49,11 +49,11 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.655)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.655)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.60125)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.5895)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -72,15 +72,15 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah1.attrs[self.armor_em.id], 0.97)
         self.assertAlmostEqual(rah1.attrs[self.armor_therm.id], 0.88)
         self.assertAlmostEqual(rah1.attrs[self.armor_kin.id], 0.805)
-        self.assertAlmostEqual(rah1.attrs[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(rah1.attrs[self.armor_expl.id], 0.745)
         self.assertAlmostEqual(rah2.attrs[self.armor_em.id], 0.97)
         self.assertAlmostEqual(rah2.attrs[self.armor_therm.id], 0.88)
         self.assertAlmostEqual(rah2.attrs[self.armor_kin.id], 0.805)
-        self.assertAlmostEqual(rah2.attrs[self.armor_exp.id], 0.745)
+        self.assertAlmostEqual(rah2.attrs[self.armor_expl.id], 0.745)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.472, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.512, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.501, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.522, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.522, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -99,15 +99,15 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah1.attrs[self.armor_em.id], 0.975, places=3)
         self.assertAlmostEqual(rah1.attrs[self.armor_therm.id], 0.835, places=3)
         self.assertAlmostEqual(rah1.attrs[self.armor_kin.id], 0.83, places=3)
-        self.assertAlmostEqual(rah1.attrs[self.armor_exp.id], 0.76, places=3)
+        self.assertAlmostEqual(rah1.attrs[self.armor_expl.id], 0.76, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_em.id], 0.979, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_therm.id], 0.91, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_kin.id], 0.796, places=3)
-        self.assertAlmostEqual(rah2.attrs[self.armor_exp.id], 0.715, places=3)
+        self.assertAlmostEqual(rah2.attrs[self.armor_expl.id], 0.715, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.479, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.5, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.509, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.509, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.509, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -132,15 +132,15 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah1.attrs[self.armor_em.id], 0.971, places=3)
         self.assertAlmostEqual(rah1.attrs[self.armor_therm.id], 0.834, places=3)
         self.assertAlmostEqual(rah1.attrs[self.armor_kin.id], 0.834, places=3)
-        self.assertAlmostEqual(rah1.attrs[self.armor_exp.id], 0.761, places=3)
+        self.assertAlmostEqual(rah1.attrs[self.armor_expl.id], 0.761, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_em.id], 0.987, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_therm.id], 0.912, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_kin.id], 0.789, places=3)
-        self.assertAlmostEqual(rah2.attrs[self.armor_exp.id], 0.712, places=3)
+        self.assertAlmostEqual(rah2.attrs[self.armor_expl.id], 0.712, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.48, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.501, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.506, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.508, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.508, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -161,15 +161,15 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah1.attrs[self.armor_em.id], 0.94, places=3)
         self.assertAlmostEqual(rah1.attrs[self.armor_therm.id], 0.88, places=3)
         self.assertAlmostEqual(rah1.attrs[self.armor_kin.id], 0.82, places=3)
-        self.assertAlmostEqual(rah1.attrs[self.armor_exp.id], 0.76, places=3)
+        self.assertAlmostEqual(rah1.attrs[self.armor_expl.id], 0.76, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_em.id], 0.97, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_therm.id], 0.85, places=3)
         self.assertAlmostEqual(rah2.attrs[self.armor_kin.id], 0.85, places=3)
-        self.assertAlmostEqual(rah2.attrs[self.armor_exp.id], 0.73, places=3)
+        self.assertAlmostEqual(rah2.attrs[self.armor_expl.id], 0.73, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.458, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.495, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.535, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.52, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.52, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -187,15 +187,15 @@ class TestRahSimResult(RahSimTestCase):
         # From real tests, gecko vs gnosis
         # ---loop---
         # 0 0.850 0.850 0.850 0.850
-        # 1 0.910 0.790 0.790 0.910 (kin therm > em explo)
+        # 1 0.910 0.790 0.790 0.910 (kin therm > em expl)
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.88)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.88)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.88)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.594, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.554, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.554, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.594, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.594, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -213,20 +213,20 @@ class TestRahSimResult(RahSimTestCase):
         # Verification
         # From real tests, gecko vs gnosis with 2 EM hardeners
         # 0 0.850 0.850 0.850 0.850
-        # 1 0.910 0.790 0.790 0.910 (kin therm > explo)
+        # 1 0.910 0.790 0.790 0.910 (kin therm > expl)
         # 2 0.970 0.730 0.850 0.850 (therm > kin)
         # ---loop---
         # 3 1.000 0.790 0.805 0.805
         # 4 1.000 0.850 0.775 0.775
-        # 5 1.000 0.820 0.745 0.835 (kin > explo)
+        # 5 1.000 0.820 0.745 0.835 (kin > expl)
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.775)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.805)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.805)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.675, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.553, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.523, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.543, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.543, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -244,20 +244,20 @@ class TestRahSimResult(RahSimTestCase):
         # Verification
         # From real tests, gecko vs gnosis with 2 thermal hardeners
         # 0 0.850 0.850 0.850 0.850
-        # 1 0.910 0.910 0.790 0.790 (kin explo > em)
-        # 2 0.850 0.970 0.730 0.850 (kin > explo)
+        # 1 0.910 0.910 0.790 0.790 (kin expl > em)
+        # 2 0.850 0.970 0.730 0.850 (kin > expl)
         # ---loop---
         # 3 0.805 1.000 0.790 0.805
         # 4 0.775 1.000 0.850 0.775
-        # 5 0.835 1.000 0.820 0.745 (explo > em)
+        # 5 0.835 1.000 0.820 0.745 (expl > em)
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 1)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.775)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.775)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.543, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.675, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.553, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.523, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.523, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -275,20 +275,20 @@ class TestRahSimResult(RahSimTestCase):
         # Verification
         # From real tests, gecko vs gnosis with 2 kinetic hardeners
         # 0 0.850 0.850 0.850 0.850
-        # 1 0.910 0.790 0.910 0.790 (explo therm > em)
-        # 2 0.850 0.730 0.970 0.850 (therm > explo)
+        # 1 0.910 0.790 0.910 0.790 (expl therm > em)
+        # 2 0.850 0.730 0.970 0.850 (therm > expl)
         # ---loop---
         # 3 0.805 0.790 1.000 0.805
         # 4 0.775 0.850 1.000 0.775
-        # 5 0.835 0.820 1.000 0.745 (explo > em)
+        # 5 0.835 0.820 1.000 0.745 (expl > em)
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 1)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.775)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.775)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.543, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.553, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.675, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.523, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.523, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -315,11 +315,11 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.805)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.82)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.775)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 1)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.543, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.553, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.523, places=3)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.675, places=3)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.675, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -334,7 +334,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -352,11 +352,11 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.425)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.5525)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.6375)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.765)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.765)
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]
@@ -396,11 +396,11 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.425)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
-        self.assertAlmostEqual(rah.attrs[self.armor_exp.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.2125)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.5525)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.6375)
-        self.assertAlmostEqual(ship.attrs[self.armor_exp.id], 0.765)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.765)
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]

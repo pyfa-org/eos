@@ -38,11 +38,11 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.volume)
         self.mkattr(attr_id=AttrId.charge_rate)
         self.mkattr(attr_id=AttrId.reload_time)
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.dmg_mult)
         self.mkattr(attr_id=AttrId.em_dmg)
-        self.mkattr(attr_id=AttrId.thermal_dmg)
-        self.mkattr(attr_id=AttrId.kinetic_dmg)
-        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.mkattr(attr_id=AttrId.therm_dmg)
+        self.mkattr(attr_id=AttrId.kin_dmg)
+        self.mkattr(attr_id=AttrId.expl_dmg)
         self.mkattr(attr_id=AttrId.module_reactivation_delay)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
@@ -55,7 +55,7 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
@@ -66,9 +66,9 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
+            AttrId.therm_dmg: 6.3,
+            AttrId.kin_dmg: 7.4,
+            AttrId.expl_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)
@@ -87,7 +87,7 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
@@ -99,9 +99,9 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
+            AttrId.therm_dmg: 6.3,
+            AttrId.kin_dmg: 7.4,
+            AttrId.expl_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=True)
@@ -119,7 +119,7 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.charge_rate: 1.0,
@@ -131,9 +131,9 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         item.charge = Charge(self.mktype(attrs={
             AttrId.volume: 0.2,
             AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
+            AttrId.therm_dmg: 6.3,
+            AttrId.kin_dmg: 7.4,
+            AttrId.expl_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=True)

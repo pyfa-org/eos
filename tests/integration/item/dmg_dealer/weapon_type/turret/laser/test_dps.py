@@ -40,11 +40,11 @@ class TestItemDmgTurretLaserDps(ItemMixinTestCase):
         self.mkattr(attr_id=AttrId.crystal_volatility_chance)
         self.mkattr(attr_id=AttrId.crystal_volatility_dmg)
         self.mkattr(attr_id=AttrId.reload_time)
-        self.mkattr(attr_id=AttrId.dmg_multiplier)
+        self.mkattr(attr_id=AttrId.dmg_mult)
         self.mkattr(attr_id=AttrId.em_dmg)
-        self.mkattr(attr_id=AttrId.thermal_dmg)
-        self.mkattr(attr_id=AttrId.kinetic_dmg)
-        self.mkattr(attr_id=AttrId.explosive_dmg)
+        self.mkattr(attr_id=AttrId.therm_dmg)
+        self.mkattr(attr_id=AttrId.kin_dmg)
+        self.mkattr(attr_id=AttrId.expl_dmg)
         self.cycle_attr = self.mkattr()
         self.effect = self.mkeffect(
             effect_id=EffectId.target_attack,
@@ -56,7 +56,7 @@ class TestItemDmgTurretLaserDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.capacity: 2.0,
                     self.cycle_attr.id: 500,
                     AttrId.reload_time: 5000},
@@ -70,9 +70,9 @@ class TestItemDmgTurretLaserDps(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.025,
             AttrId.crystal_volatility_chance: 0.1,
             AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
+            AttrId.therm_dmg: 6.3,
+            AttrId.kin_dmg: 7.4,
+            AttrId.expl_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=False)
@@ -90,7 +90,7 @@ class TestItemDmgTurretLaserDps(ItemMixinTestCase):
         item = ModuleHigh(
             self.mktype(
                 attrs={
-                    AttrId.dmg_multiplier: 2.5,
+                    AttrId.dmg_mult: 2.5,
                     AttrId.capacity: 0.2,
                     self.cycle_attr.id: 500,
                     AttrId.reload_time: 5000},
@@ -104,9 +104,9 @@ class TestItemDmgTurretLaserDps(ItemMixinTestCase):
             AttrId.crystal_volatility_dmg: 0.8,
             AttrId.crystal_volatility_chance: 0.5,
             AttrId.em_dmg: 5.2,
-            AttrId.thermal_dmg: 6.3,
-            AttrId.kinetic_dmg: 7.4,
-            AttrId.explosive_dmg: 8.5}).id)
+            AttrId.therm_dmg: 6.3,
+            AttrId.kin_dmg: 7.4,
+            AttrId.expl_dmg: 8.5}).id)
         fit.modules.high.append(item)
         # Verification
         dps = item.get_dps(reload=True)
