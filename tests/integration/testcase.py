@@ -145,6 +145,8 @@ class IntegrationTestCase(EosTestCase):
         Returns:
             Allocated item type ID.
         """
+        if not srcs:
+            srcs = [SourceManager.default]
         return max(
             SourceManager.get(src).cache_handler.allocate_type_id()
             for src in srcs)
@@ -158,6 +160,8 @@ class IntegrationTestCase(EosTestCase):
         Returns:
             Allocated attribute ID.
         """
+        if not srcs:
+            srcs = [SourceManager.default]
         return max(
             SourceManager.get(src).cache_handler.allocate_attr_id()
             for src in srcs)
@@ -171,6 +175,8 @@ class IntegrationTestCase(EosTestCase):
         Returns:
             Allocated effect ID.
         """
+        if not srcs:
+            srcs = [SourceManager.default]
         return max(
             SourceManager.get(src).cache_handler.allocate_effect_id()
             for src in srcs)

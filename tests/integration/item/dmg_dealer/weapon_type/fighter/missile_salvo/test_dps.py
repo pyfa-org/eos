@@ -65,8 +65,8 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
             AttrId.fighter_ability_missiles_dmg_therm: 63,
             AttrId.fighter_ability_missiles_dmg_kin: 74,
             AttrId.fighter_ability_missiles_dmg_expl: 85,
-            self.cycle_attr.id: 4000,
-            AttrId.fighter_squadron_max_size: 9})
+            AttrId.fighter_squadron_max_size: 9,
+            self.cycle_attr.id: 4000})
         fit.fighters.add(item)
         # Verification
         dps = item.get_dps(reload=False)
@@ -87,8 +87,8 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
             AttrId.fighter_ability_missiles_dmg_therm: 63,
             AttrId.fighter_ability_missiles_dmg_kin: 74,
             AttrId.fighter_ability_missiles_dmg_expl: 85,
-            self.cycle_attr.id: 4000,
-            AttrId.fighter_squadron_max_size: 9})
+            AttrId.fighter_squadron_max_size: 9,
+            self.cycle_attr.id: 4000})
         fit.fighters.add(item)
         # Verification
         dps = item.get_dps(reload=True)

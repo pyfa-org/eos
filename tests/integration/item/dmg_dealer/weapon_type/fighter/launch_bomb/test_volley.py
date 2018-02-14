@@ -46,8 +46,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.effect_charge = self.mkeffect(
             effect_id=EffectId.bomb_launching,
             category_id=EffectCategoryId.active)
-        self.abilities_data = {
-            FighterAbilityId.launch_bomb: AbilityData(0, 3)}
+        self.abilities_data = {FighterAbilityId.launch_bomb: AbilityData(0, 3)}
 
     def make_item(self, attrs, item_class=FighterSquad):
         return item_class(
@@ -194,25 +193,58 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    # def test_no_charges(self):
-    #     self.abilities_data = {
-    # FighterAbilityId.pulse_cannon: AbilityData(0, 0)}
-    #     fit = Fit()
-    #     item = self.make_item({
-    #         AttrId.fighter_ability_attack_missile_dmg_mult: 2.5,
-    #         AttrId.fighter_ability_attack_missile_dmg_em: 52,
-    #         AttrId.fighter_ability_attack_missile_dmg_therm: 63,
-    #         AttrId.fighter_ability_attack_missile_dmg_kin: 74,
-    #         AttrId.fighter_ability_attack_missile_dmg_expl: 85,
-    #         AttrId.fighter_squadron_max_size: 9})
-    #     fit.fighters.add(item)
-    #     # Verification
-    #     volley = item.get_volley()
-    #     self.assertAlmostEqual(volley.em, 0)
-    #     self.assertAlmostEqual(volley.thermal, 0)
-    #     self.assertAlmostEqual(volley.kinetic, 0)
-    #     self.assertAlmostEqual(volley.explosive, 0)
-    #     self.assertAlmostEqual(volley.total, 0)
-    #     # Cleanup
-    #     self.assert_fit_buffers_empty(fit)
-    #     self.assertEqual(len(self.get_log()), 0)
+    def test_no_charges(self):
+        self.abilities_data = {FighterAbilityId.launch_bomb: AbilityData(0, 0)}
+        fit = Fit()
+        bomb_type = self.make_charge_type({
+            AttrId.em_dmg: 52,
+            AttrId.therm_dmg: 63,
+            AttrId.kin_dmg: 74,
+            AttrId.expl_dmg: 85})
+        item = self.make_item({
+            AttrId.fighter_ability_launch_bomb_type: bomb_type.id,
+            AttrId.fighter_squadron_max_size: 9})
+        fit.fighters.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_charge_type_attr(self):
+        fit = Fit()
+        item = self.make_item({AttrId.fighter_squadron_max_size: 9})
+        fit.fighters.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_no_charge_type(self):
+        fit = Fit()
+        emoty_type_id = self.allocate_type_id()
+        item = self.make_item({
+            AttrId.fighter_ability_launch_bomb_type: emoty_type_id,
+            AttrId.fighter_squadron_max_size: 9})
+        fit.fighters.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 468)
+        self.assertAlmostEqual(volley.thermal, 567)
+        self.assertAlmostEqual(volley.kinetic, 666)
+        self.assertAlmostEqual(volley.explosive, 765)
+        self.assertAlmostEqual(volley.total, 2466)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
