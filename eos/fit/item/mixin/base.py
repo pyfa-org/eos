@@ -234,10 +234,11 @@ class BaseItemMixin(metaclass=ABCMeta):
         # within parent class. Other solution is to create method on fit and
         # call that method, but fit shouldn't really care about implementation
         # details of items too
-        from eos.fit.item import Charge
+        from eos.fit.item.charge import Autocharge
         if self.__autocharges is None:
-            self.__autocharges = ItemDict(self, Charge, container_override=self)
-        self.__autocharges[effect_id] = Charge(autocharge_type_id)
+            self.__autocharges = ItemDict(
+                self, Autocharge, container_override=self)
+        self.__autocharges[effect_id] = Autocharge(autocharge_type_id)
 
     def _clear_autocharges(self):
         if self.__autocharges is not None:

@@ -23,16 +23,7 @@ from eos.util.repr import make_repr_str
 from .mixin.state import ContainerStateMixin
 
 
-class Charge(ContainerStateMixin):
-    """Represents a charge.
-
-    Charges are anything loadabale in other objects, e.g. various ammo types,
-    mining crystals, scanning probes, bombs, etc.
-
-    Args:
-        type_id: Identifier of item type which should serve as base for this
-            charge.
-    """
+class BaseCharge(ContainerStateMixin):
 
     def __init__(self, type_id):
         super().__init__(type_id=type_id)
@@ -45,3 +36,27 @@ class Charge(ContainerStateMixin):
     def __repr__(self):
         spec = [['type_id', '_type_id']]
         return make_repr_str(self, spec)
+
+
+class Charge(BaseCharge):
+    """Represents a regular charge.
+
+    Regular charges are manually loadable into various container items, e.g.
+    various crystals, scanning probes and bombs loadable by eos user into
+    modules.
+
+    Args:
+        type_id: Identifier of item type which should serve as base for this
+            charge.
+    """
+    ...
+
+
+class Autocharge(BaseCharge):
+    """Represents an autocharge.
+
+    Autocharges are spawned automatically when item type specifies it via its
+    effects, eos user doesn't have to deal with them. Examples are civilian gun
+    ammunition or long-range fighter bombs.
+    """
+    ...
