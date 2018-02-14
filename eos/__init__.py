@@ -23,15 +23,16 @@ __all__ = [
     'EffectMode', 'Restriction', 'State',
     'TypeFetchError',
     'SourceManager',
-    'SlotTakenError',
     'Fit',
-    'ValidationError',
-    'DmgProfile', 'ResistProfile',
     'JsonCacheHandler',
     'JsonDataHandler', 'SQLiteDataHandler',
     'Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon', 'FighterSquad',
     'Implant', 'ModuleHigh', 'ModuleMed', 'ModuleLow', 'Rig', 'Ship', 'Skill',
-    'Stance', 'Subsystem'
+    'Stance', 'Subsystem',
+    'NoSuchAbilityError', 'NoSuchSideEffectError',
+    'SlotTakenError',
+    'ValidationError',
+    'DmgProfile', 'ResistProfile'
 ]
 __version__ = '0.0.0.dev10'
 
@@ -60,6 +61,8 @@ from .fit.item import Ship
 from .fit.item import Skill
 from .fit.item import Stance
 from .fit.item import Subsystem
+from .fit.item.exception import NoSuchAbilityError
+from .fit.item.exception import NoSuchSideEffectError
 from .fit.item_container.exception import SlotTakenError
 from .fit.restriction.exception import ValidationError
 from .fit.stats_container import DmgProfile

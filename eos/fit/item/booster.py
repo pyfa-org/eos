@@ -28,6 +28,7 @@ from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.fit.misc.effect_status import EffectStatusResolver
 from eos.util.repr import make_repr_str
+from .exception import NoSuchSideEffectError
 from .mixin.state import ImmutableStateMixin
 
 
@@ -74,7 +75,7 @@ class Booster(ImmutableStateMixin):
             status: True for enabling, False for disabling.
         """
         if effect_id not in self.__side_effect_chances:
-            return
+            raise NoSuchSideEffectError(effect_id)
         if status:
             effect_mode = EffectMode.state_compliance
         else:

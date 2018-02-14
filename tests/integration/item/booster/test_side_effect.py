@@ -21,6 +21,7 @@
 
 from eos import Booster
 from eos import Fit
+from eos import NoSuchSideEffectError
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
@@ -102,8 +103,9 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
                 src_attr.id: -25},
             effects=(effect1, effect2, effect3)).id)
         fit.boosters.add(item)
-        item.set_side_effect_status(effect2.id, True)
         # Verification
+        with self.assertRaises(NoSuchSideEffectError):
+            item.set_side_effect_status(effect2.id, True)
         side_effects = item.side_effects
         self.assertEqual(len(side_effects), 0)
         self.assertNotIn(effect1.id, side_effects)
@@ -145,6 +147,34 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_enabling_not_side_effect(self):
+        # Setup
+        src_attr = self.mkattr()
+        tgt_attr = self.mkattr()
+        modifier = self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=tgt_attr.id,
+            operator=ModOperator.post_mul,
+            src_attr_id=src_attr.id)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        fit = Fit()
+        item = Booster(self.mktype(
+            attrs={tgt_attr.id: 100, src_attr.id: 1.2},
+            effects=[effect]).id)
+        fit.boosters.add(item)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
+        # Verification
+        with self.assertRaises(NoSuchSideEffectError):
+            item.set_side_effect_status(effect.id, True)
+        self.assertNotIn(effect.id, item.side_effects)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_disabling(self):
         # Setup
         chance_attr = self.mkattr()
@@ -175,6 +205,34 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         # Verification
         self.assertIs(item.side_effects[effect.id].status, False)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_disabling_not_side_effect(self):
+        # Setup
+        src_attr = self.mkattr()
+        tgt_attr = self.mkattr()
+        modifier = self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=tgt_attr.id,
+            operator=ModOperator.post_mul,
+            src_attr_id=src_attr.id)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        fit = Fit()
+        item = Booster(self.mktype(
+            attrs={tgt_attr.id: 100, src_attr.id: 1.2},
+            effects=[effect]).id)
+        fit.boosters.add(item)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
+        # Verification
+        with self.assertRaises(NoSuchSideEffectError):
+            item.set_side_effect_status(effect.id, False)
+        self.assertNotIn(effect.id, item.side_effects)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

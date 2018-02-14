@@ -25,6 +25,7 @@ from eos.const.eve import AttrId
 from eos.const.eve import fighter_ability_map
 from eos.fit.misc.effect_status import EffectStatusResolver
 from eos.util.repr import make_repr_str
+from .exception import NoSuchAbilityError
 from .mixin.effect_stats import EffectStatsMixin
 from .mixin.state import MutableStateMixin
 from .mixin.tanking import BufferTankingMixin
@@ -78,7 +79,7 @@ class FighterSquad(MutableStateMixin, BufferTankingMixin, EffectStatsMixin):
             status: True for enabling, False for disabling.
         """
         if ability_id not in self.__ability_ids:
-            return
+            raise NoSuchAbilityError(ability_id)
         effect_id = fighter_ability_map[ability_id]
         default_effect_id = self._type_default_effect_id
         # Default effects in full compliance mode are running if item is in

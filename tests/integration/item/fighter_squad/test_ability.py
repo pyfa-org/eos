@@ -23,6 +23,7 @@ import math
 
 from eos import FighterSquad
 from eos import Fit
+from eos import NoSuchAbilityError
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
@@ -195,6 +196,40 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_ability_enabling_no_ability(self):
+        # Setup
+        src_attr = self.mkattr()
+        tgt_attr = self.mkattr()
+        modifier = self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=tgt_attr.id,
+            operator=ModOperator.post_percent,
+            src_attr_id=src_attr.id)
+        effect = self.mkeffect(
+            effect_id=EffectId.fighter_ability_attack_m,
+            category_id=EffectCategoryId.active,
+            modifiers=[modifier])
+        fighter_type = self.mktype(
+            attrs={src_attr.id: 50, tgt_attr.id: 10},
+            effects=[effect],
+            default_effect=effect,
+            abilities_data={
+                FighterAbilityId.pulse_cannon: AbilityData(0, math.inf)})
+        fit = Fit()
+        item = FighterSquad(fighter_type.id, state=State.active)
+        fit.fighters.add(item)
+        item.set_ability_status(FighterAbilityId.pulse_cannon, False)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
+        # Verification
+        with self.assertRaises(NoSuchAbilityError):
+            item.set_ability_status(FighterAbilityId.beam_cannon, True)
+        self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], False)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_ability_disabling_default_effect(self):
         # Setup
         src_attr = self.mkattr()
@@ -257,6 +292,39 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         # Verification
         self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], False)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_ability_disabling_no_ability(self):
+        # Setup
+        src_attr = self.mkattr()
+        tgt_attr = self.mkattr()
+        modifier = self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=tgt_attr.id,
+            operator=ModOperator.post_percent,
+            src_attr_id=src_attr.id)
+        effect = self.mkeffect(
+            effect_id=EffectId.fighter_ability_attack_m,
+            category_id=EffectCategoryId.active,
+            modifiers=[modifier])
+        fighter_type = self.mktype(
+            attrs={src_attr.id: 50, tgt_attr.id: 10},
+            effects=[effect],
+            default_effect=effect,
+            abilities_data={
+                FighterAbilityId.pulse_cannon: AbilityData(0, math.inf)})
+        fit = Fit()
+        item = FighterSquad(fighter_type.id, state=State.active)
+        fit.fighters.add(item)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
+        # Verification
+        with self.assertRaises(NoSuchAbilityError):
+            item.set_ability_status(FighterAbilityId.beam_cannon, False)
+        self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], True)
+        self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
