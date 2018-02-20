@@ -163,6 +163,10 @@ class AttrId(IntEnum):
     fighter_ability_missiles_dmg_expl = 2134
     fighter_ability_missiles_dmg_mult = 2130
     fighter_ability_launch_bomb_type = 2324
+    fighter_ability_kamikaze_dmg_em = 2325
+    fighter_ability_kamikaze_dmg_therm = 2326
+    fighter_ability_kamikaze_dmg_kin = 2327
+    fighter_ability_kamikaze_dmg_expl = 2328
     # Misc
     agility = 70
     capacity = 38

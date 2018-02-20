@@ -22,12 +22,15 @@
 from eos.const.eve import EffectId
 from eos.eve_object.effect import EffectFactory
 from .attack_m import FighterAbilityAttackM
+from .kamikaze import FighterAbilityKamikaze
 from .launch_bomb import FighterAbilityLaunchBomb
 from .missiles import FighterAbilityMissiles
 
 
 EffectFactory.reg_cust_class_by_id(
     FighterAbilityAttackM, EffectId.fighter_ability_attack_m)
+EffectFactory.reg_cust_class_by_id(
+    FighterAbilityKamikaze, EffectId.fighter_ability_kamikaze)
 EffectFactory.reg_cust_class_by_id(
     FighterAbilityLaunchBomb, EffectId.fighter_ability_launch_bomb)
 EffectFactory.reg_cust_class_by_id(

@@ -34,6 +34,10 @@ class FighterEffect(Effect):
             return None
         return cycles
 
+    def get_reload_time(self, item):
+        # No fighter-related effects can be reloaded
+        return None
+
     def get_forced_inactive_time(self, item):
         cooldown_time = item._type.effects_data[self.id].cooldown_time
         cycle_time = self.get_duration(item)
