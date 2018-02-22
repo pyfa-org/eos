@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # ==============================================================================
 # Copyright (C) 2011 Diego Duclos
 # Copyright (C) 2011-2017 Anton Vorobyov

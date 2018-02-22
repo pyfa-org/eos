@@ -28,11 +28,21 @@ class DmgDealerMixin(BaseItemMixin):
     """Expose damage dealing effect stats to item."""
 
     def __dd_effect_iter(self):
+        effects = []
+        suppressor_effects = []
         for effect in self._type_effects.values():
             if not isinstance(effect, DmgDealerEffect):
                 continue
             if effect.id not in self._running_effect_ids:
                 continue
+            effects.append(effect)
+            if effect.suppress_dds:
+                suppressor_effects.append(effect)
+        # If we have any effects which suppress other effects on this item,
+        # we're going to cycle only through them
+        if suppressor_effects:
+            effects = suppressor_effects
+        for effect in effects:
             yield effect
 
     def get_volley(self, tgt_resists=None):

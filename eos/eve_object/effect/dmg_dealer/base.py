@@ -28,6 +28,10 @@ from eos.fit.stats_container import DmgStats
 
 class DmgDealerEffect(Effect, metaclass=ABCMeta):
 
+    # Flag which controls if this effect suppresses non-suppressor damage
+    # dealers on its item
+    suppress_dds = False
+
     @abstractmethod
     def get_volley(self, item):
         ...

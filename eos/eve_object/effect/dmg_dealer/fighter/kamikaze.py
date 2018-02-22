@@ -27,6 +27,8 @@ from eos.fit.stats_container import DmgStats
 
 class FighterAbilityKamikaze(DmgDealerEffect, FighterEffect):
 
+    suppress_dds = True
+
     def get_volley(self, item):
         if not self.get_cycles_until_reload(item):
             return DmgStats(0, 0, 0, 0)
