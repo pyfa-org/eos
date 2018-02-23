@@ -46,7 +46,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.mkattr(attr_id=AttrId.expl_dmg)
         self.dd_effect = self.mkeffect(
             effect_id=EffectId.projectile_fired,
-            category_id=EffectCategoryId.active)
+            category_id=EffectCategoryId.target)
 
     def test_empty(self):
         # Action

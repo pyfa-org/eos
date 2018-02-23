@@ -49,7 +49,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.cycle_attr = self.mkattr()
         self.dd_effect = self.mkeffect(
             effect_id=EffectId.projectile_fired,
-            category_id=EffectCategoryId.active,
+            category_id=EffectCategoryId.target,
             duration_attr_id=self.cycle_attr.id)
 
     def test_empty(self):
