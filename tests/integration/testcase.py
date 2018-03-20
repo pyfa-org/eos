@@ -23,8 +23,8 @@ from copy import copy
 
 from eos.const.eve import TypeGroupId
 from eos.const.eve import TypeId
-from eos.data.source import Source
-from eos.data.source import SourceManager
+from eos.source import Source
+from eos.source import SourceManager
 from eos.eve_object.modifier import DogmaModifier
 from tests.testcase import EosTestCase
 from .environment import CacheHandler

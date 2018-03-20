@@ -22,8 +22,8 @@
 from itertools import chain
 
 from eos.const.eve import TypeId
-from eos.data.source import Source
-from eos.data.source import SourceManager
+from eos.source import Source
+from eos.source import SourceManager
 from eos.util.default import DEFAULT
 from eos.util.pubsub.broker import MsgBroker
 from eos.util.repr import make_repr_str

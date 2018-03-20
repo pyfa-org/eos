@@ -19,20 +19,17 @@
 # ==============================================================================
 
 
-from collections import namedtuple
 from logging import getLogger
 
 from eos import __version__ as eos_version
+from eos.data.eve_obj_builder import EveObjBuilder
 from eos.util.repr import make_repr_str
-from .eve_obj_builder import EveObjBuilder
 from .exception import ExistingSourceError
 from .exception import UnknownSourceError
+from .source import Source
 
 
 logger = getLogger(__name__)
-
-
-Source = namedtuple('Source', ('alias', 'cache_handler'))
 
 
 class SourceManager:

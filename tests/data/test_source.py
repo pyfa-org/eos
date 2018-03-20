@@ -25,9 +25,9 @@ from unittest.mock import Mock
 import pytest
 
 from eos import SourceManager
-from eos.data.exception import ExistingSourceError
-from eos.data.exception import UnknownSourceError
-from eos.data.source import Source
+from eos.source import Source
+from eos.source.exception import ExistingSourceError
+from eos.source.exception import UnknownSourceError
 
 
 @pytest.fixture

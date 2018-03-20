@@ -22,7 +22,6 @@
 from eos.exception import EosError
 
 
-# Source manager exceptions
 class UnknownSourceError(EosError):
     """Raised when source corresponding to passed alias cannot be found."""
     ...

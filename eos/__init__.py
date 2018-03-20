@@ -22,7 +22,6 @@
 __all__ = [
     'EffectMode', 'Restriction', 'State',
     'TypeFetchError',
-    'SourceManager',
     'Fit',
     'JsonCacheHandler',
     'JsonDataHandler', 'SQLiteDataHandler',
@@ -32,7 +31,8 @@ __all__ = [
     'NoSuchAbilityError', 'NoSuchSideEffectError',
     'SlotTakenError',
     'ValidationError',
-    'DmgProfile', 'ResistProfile'
+    'DmgProfile', 'ResistProfile',
+    'SourceManager'
 ]
 __version__ = '0.0.0.dev10'
 
@@ -44,7 +44,6 @@ from .data.cache_handler import JsonCacheHandler
 from .data.cache_handler import TypeFetchError
 from .data.data_handler import JsonDataHandler
 from .data.data_handler import SQLiteDataHandler
-from .data.source import SourceManager
 from .fit.fit import Fit
 from .fit.item import Booster
 from .fit.item import Character
@@ -67,3 +66,4 @@ from .fit.item_container.exception import SlotTakenError
 from .fit.restriction.exception import ValidationError
 from .fit.stats_container import DmgProfile
 from .fit.stats_container import ResistProfile
+from .source import SourceManager
