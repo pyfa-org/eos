@@ -251,24 +251,21 @@ class BaseItemMixin(metaclass=ABCMeta):
     def _is_loaded(self):
         return False if self._type is None else True
 
-    def _refresh_source(self):
-        """Refresh item's source-dependent data.
+    def _reload(self, source):
+        """Reload item's source-dependent data.
 
-        Each time item's context is changed (the source it relies on, which may
-        change when item switches fit or its fit switches source), this method
-        should be called.
+        Each time item's underlying type is changed, this method should be
+        called.
         """
         self.attrs.clear()
         self._clear_autocharges()
-        try:
-            type_getter = self._fit.source.cache_handler.get_type
-        except AttributeError:
-            item_type = None
-        else:
+        if source is not None:
             try:
-                item_type = type_getter(self._type_id)
+                item_type = source.cache_handler.get_type(self._type_id)
             except TypeFetchError:
                 item_type = None
+        else:
+            item_type = None
         self._type = item_type
         # Add autocharges, if effects specify any
         for effect_id, effect in self._type_effects.items():

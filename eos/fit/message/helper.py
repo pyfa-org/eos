@@ -33,7 +33,7 @@ class MsgHelper:
     """Assists with generation of messages for various complex needs."""
 
     @staticmethod
-    def get_items_added_msgs(items):
+    def get_item_added_msgs(item):
         """Generate messages about new items.
 
         Args:
@@ -43,9 +43,7 @@ class MsgHelper:
             Iterable with messages.
         """
         msgs = []
-        for item in items:
-            if not item._is_loaded:
-                continue
+        if item._is_loaded:
             # Item
             msgs.append(ItemAdded(item))
             # States
@@ -56,7 +54,7 @@ class MsgHelper:
         return msgs
 
     @staticmethod
-    def get_items_removed_msgs(items):
+    def get_item_removed_msgs(item):
         """Generate messages about removed items.
 
         Args:
@@ -66,9 +64,7 @@ class MsgHelper:
             Iterable with messages.
         """
         msgs = []
-        for item in items:
-            if not item._is_loaded:
-                continue
+        if item._is_loaded:
             # Effects
             running_effect_ids = item._running_effect_ids
             if running_effect_ids:

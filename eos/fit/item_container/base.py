@@ -43,35 +43,33 @@ class ItemContainerBase:
         # container
         if item._container:
             raise ItemAlreadyAssignedError(item)
-        # Item updates
         item._container = container
-        child_items = item._get_child_items()
-        for subitem in (item, *child_items):
-            subitem._refresh_source()
-        # Fit updates
         fit = item._fit
         if fit is not None:
-            # Notify services about added item
-            msgs = MsgHelper.get_items_added_msgs((item, *child_items))
-            fit._publish_bulk(msgs)
+            source = fit.source
+            for subitem in (item, *item._get_child_items()):
+                # Services rely on data loaded into items, thus we reload first
+                subitem._reload(source)
+                msgs = MsgHelper.get_item_added_msgs(subitem)
+                fit._publish_bulk(msgs)
 
     def _handle_item_removal(self, item):
         """Do all the generic work to remove item to container.
 
         Must be called before item has been removed from specific container, so
-        that presence checks during removal should pass.
+        that presence checks during removal pass.
         """
         # Fit updates
-        child_items = item._get_child_items()
         fit = item._fit
         if fit is not None:
-            # Notify services about removed item
-            msgs = MsgHelper.get_items_removed_msgs((*child_items, item))
-            fit._publish_bulk(msgs)
+            for subitem in (item, *item._get_child_items()):
+                # Services rely on data loaded into items during removal, thus
+                # we remove item from services first, then unload it
+                msgs = MsgHelper.get_item_removed_msgs(subitem)
+                fit._publish_bulk(msgs)
+                subitem._reload(None)
         # Item updates
         item._container = None
-        for subitem in (item, *child_items):
-            subitem._refresh_source()
 
     def _check_class(self, item, allow_none=False):
         """Check if class of passed item corresponds to our expectations.

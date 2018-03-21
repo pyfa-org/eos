@@ -154,16 +154,16 @@ class Fit(MsgBroker):
         old_source = self.source
         if new_source is old_source:
             return
-        # Notify everyone about items being "removed"
-        msgs = MsgHelper.get_items_removed_msgs(self._item_iter())
-        self._publish_bulk(msgs)
-        # Refresh source and clear remaining source-dependent data
         self.__source = new_source
         for item in self._item_iter():
-            item._refresh_source()
-        # Notify everyone about items being "added"
-        msgs = MsgHelper.get_items_added_msgs(self._item_iter())
-        self._publish_bulk(msgs)
+            # Notify everyone about item being "removed"
+            msgs = MsgHelper.get_item_removed_msgs(item)
+            self._publish_bulk(msgs)
+            # Reload item data which clears remaining source-dependent data
+            item._reload(new_source)
+            # Notify everyone about item being "added"
+            msgs = MsgHelper.get_item_added_msgs(item)
+            self._publish_bulk(msgs)
 
     @property
     def default_incoming_dmg(self):

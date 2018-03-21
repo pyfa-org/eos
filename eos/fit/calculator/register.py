@@ -43,10 +43,6 @@ class AffectionRegister:
     def __init__(self, fit):
         self.__fit = fit
 
-        # All known items
-        # Format: {items}
-        self.__affectee = set()
-
         # Items belonging to certain domain
         # Format: {domain: set(affectee items)}
         self.__affectee_domain = KeyedStorage()
@@ -99,27 +95,29 @@ class AffectionRegister:
     # Helpers for affectee getter - they find map and get data from it according
     # to passed affector
     def __get_affectees_item_self(self, affector):
-        if affector.carrier_item in self.__affectee:
+        if affector.carrier_item._is_loaded:
             return [affector.carrier_item]
         else:
             return ()
 
     def __get_affectees_item_character(self, _):
         character = self.__fit.character
-        if character is not None and character in self.__affectee:
+        if character is not None and character._is_loaded:
             return [character]
         else:
             return ()
 
     def __get_affectees_item_ship(self, _):
         ship = self.__fit.ship
-        if ship is not None and ship in self.__affectee:
+        if ship is not None and ship._is_loaded:
             return [ship]
         else:
             return ()
 
     def __get_affectees_item_other(self, affector):
-        return self.__get_registered_affectees(affector.carrier_item._others)
+        return [
+            i for i in affector.carrier_item._others
+            if i._is_loaded]
 
     __affectees_getters_item = {
         ModDomain.self: __get_affectees_item_self,
@@ -185,7 +183,6 @@ class AffectionRegister:
         We track affectees to efficiently update attributes when set of items
         influencing them changes.
         """
-        self.__affectee.add(affectee_item)
         for key, affectee_map in self.__get_affectee_storages(affectee_item):
             affectee_map.add_data_entry(key, affectee_item)
         # Process special affectors separately. E.g., when item like ship is
@@ -195,7 +192,6 @@ class AffectionRegister:
 
     def unregister_affectee(self, affectee_item):
         """Remove passed affectee item from register."""
-        self.__affectee.discard(affectee_item)
         for key, affectee_map in self.__get_affectee_storages(affectee_item):
             affectee_map.rm_data_entry(key, affectee_item)
         # Deactivate all special affectors for item being unregistered
@@ -289,8 +285,6 @@ class AffectionRegister:
     def get_affectors(self, affectee_item):
         """Get all affectors, which influence passed item."""
         affectors = set()
-        if affectee_item not in self.__affectee:
-            return affectors
         # Item
         affectors.update(self.__affector_item_active.get(affectee_item, ()))
         domain = affectee_item._modifier_domain
@@ -342,21 +336,21 @@ class AffectionRegister:
     def __get_affector_storages_item_self(self, affector):
         # If item itself is not in affectees yet, affectors should not be added
         # to active storage
-        if affector.carrier_item in self.__affectee:
+        if affector.carrier_item._is_loaded:
             return [(affector.carrier_item, self.__affector_item_active)]
         else:
             return [(affector.carrier_item, self.__affector_item_awaitable)]
 
     def __get_affector_storages_item_character(self, affector):
         character = self.__fit.character
-        if character is not None and character in self.__affectee:
+        if character is not None and character._is_loaded:
             return [(character, self.__affector_item_active)]
         else:
             return [(affector.carrier_item, self.__affector_item_awaitable)]
 
     def __get_affector_storages_item_ship(self, affector):
         ship = self.__fit.ship
-        if ship is not None and ship in self.__affectee:
+        if ship is not None and ship._is_loaded:
             return [(ship, self.__affector_item_active)]
         else:
             return [(affector.carrier_item, self.__affector_item_awaitable)]
@@ -367,9 +361,9 @@ class AffectionRegister:
         storages = [(affector.carrier_item, self.__affector_item_other)]
         # And all those which have valid target are also stored in storage for
         # active direct affectors
-        for other_item in self.__get_registered_affectees(
-            affector.carrier_item._others
-        ):
+        for other_item in affector.carrier_item._others:
+            if not other_item._is_loaded:
+                continue
             storages.append((other_item, self.__affector_item_active))
         return storages
 
@@ -442,9 +436,6 @@ class AffectionRegister:
             return getter(self, affector)
 
     # Shared helpers
-    def __get_registered_affectees(self, items):
-        return self.__affectee.intersection(items)
-
     def __contextize_tgt_filter_domain(self, affector):
         """Convert relative domain into absolute.
 

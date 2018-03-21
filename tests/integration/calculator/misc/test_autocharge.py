@@ -77,8 +77,8 @@ class TestAutocharge(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_single_item_running(self):
-        # Autocharge should be able to modify container when effect which
-        # defines autocharge is running
+        # Autocharge should be able to modify container when effect, which
+        # defines autocharge, is running
         autocharge_modifier = self.mkmod_filter_item(ModDomain.ship)
         autocharge_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
@@ -105,8 +105,8 @@ class TestAutocharge(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_single_item_stopped(self):
-        # Autocharge should be able to modify container item even when effect
-        # which defines autocharge is stopped
+        # Autocharge should be able to modify container item even when effect,
+        # which defines autocharge, is stopped
         autocharge_modifier = self.mkmod_filter_item(ModDomain.ship)
         autocharge_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
