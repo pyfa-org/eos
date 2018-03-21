@@ -233,9 +233,9 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
 
     def test_no_charge_type(self):
         fit = Fit()
-        emoty_type_id = self.allocate_type_id()
+        empty_type_id = self.allocate_type_id()
         item = self.make_item({
-            AttrId.fighter_ability_launch_bomb_type: emoty_type_id,
+            AttrId.fighter_ability_launch_bomb_type: empty_type_id,
             AttrId.fighter_squadron_max_size: 9})
         fit.fighters.add(item)
         # Verification
