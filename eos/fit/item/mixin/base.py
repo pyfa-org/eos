@@ -24,6 +24,7 @@ from abc import abstractmethod
 from collections import namedtuple
 
 from eos.const.eos import EffectMode
+from eos.data.cache_handler import TypeFetchError
 from eos.fit.calculator import MutableAttrMap
 from eos.fit.item_container import ItemDict
 from eos.fit.message.helper import MsgHelper
@@ -258,12 +259,16 @@ class BaseItemMixin(metaclass=ABCMeta):
         try:
             type_getter = self._fit.source.cache_handler.get_type
         except AttributeError:
-            self._type = None
+            item_type = None
         else:
-            self._type = type_getter(self._type_id)
-            # Add autocharges, if effects specify any
-            for effect_id, effect in self._type_effects.items():
-                autocharge_type_id = effect.get_autocharge_type_id(self)
-                if autocharge_type_id is None:
-                    continue
-                self._add_autocharge(effect_id, autocharge_type_id)
+            try:
+                item_type = type_getter(self._type_id)
+            except TypeFetchError:
+                item_type = None
+        self._type = item_type
+        # Add autocharges, if effects specify any
+        for effect_id, effect in self._type_effects.items():
+            autocharge_type_id = effect.get_autocharge_type_id(self)
+            if autocharge_type_id is None:
+                continue
+            self._add_autocharge(effect_id, autocharge_type_id)
