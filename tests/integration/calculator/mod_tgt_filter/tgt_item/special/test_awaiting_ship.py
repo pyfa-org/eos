@@ -56,7 +56,6 @@ class TestTgtItemSpecialAwaitingShip(CalculatorTestCase):
         # Action
         # Manually remove target, then source, to make sure buffers are cleared
         # properly in this case
-        self.fit.source = None
         self.fit.ship = None
         self.fit.implants.remove(influence_src)
         # Cleanup

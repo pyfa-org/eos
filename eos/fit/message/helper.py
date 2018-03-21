@@ -34,10 +34,10 @@ class MsgHelper:
 
     @staticmethod
     def get_item_added_msgs(item):
-        """Generate messages about new items.
+        """Generate messages about new item.
 
         Args:
-            items: Iterable with items which were added.
+            items: Ttems which is being added.
 
         Returns:
             Iterable with messages.
@@ -55,10 +55,10 @@ class MsgHelper:
 
     @staticmethod
     def get_item_removed_msgs(item):
-        """Generate messages about removed items.
+        """Generate messages about removed item.
 
         Args:
-            items: Iterable with items which are to be removed.
+            item: Items which is to be removed.
 
         Returns:
             Iterable with messages.

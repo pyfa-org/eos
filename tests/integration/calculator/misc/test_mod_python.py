@@ -66,10 +66,9 @@ class TestModifierPython(CalculatorTestCase):
 
             def revise_modification(self, msg, carrier_item):
                 ship = carrier_item._fit.ship
-                if (
-                    (msg.item is carrier_item and msg.attr_id == attr2.id) or
-                    (msg.item is ship and msg.attr_id == attr3.id)
-                ):
+                if msg.item is carrier_item and msg.attr_id == attr2.id:
+                    return True
+                if msg.item is ship and msg.attr_id == attr3.id:
                     return True
                 return False
 
