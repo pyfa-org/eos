@@ -240,11 +240,11 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         fit.fighters.add(item)
         # Verification
         volley = item.get_volley()
-        self.assertAlmostEqual(volley.em, 468)
-        self.assertAlmostEqual(volley.thermal, 567)
-        self.assertAlmostEqual(volley.kinetic, 666)
-        self.assertAlmostEqual(volley.explosive, 765)
-        self.assertAlmostEqual(volley.total, 2466)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

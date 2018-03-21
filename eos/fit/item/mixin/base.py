@@ -247,6 +247,10 @@ class BaseItemMixin(metaclass=ABCMeta):
             self.__autocharges = None
 
     # Auxiliary methods
+    @property
+    def _is_loaded(self):
+        return False if self._type is None else True
+
     def _refresh_source(self):
         """Refresh item's source-dependent data.
 

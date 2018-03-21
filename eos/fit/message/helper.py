@@ -44,6 +44,8 @@ class MsgHelper:
         """
         msgs = []
         for item in items:
+            if not item._is_loaded:
+                continue
             # Item
             msgs.append(ItemAdded(item))
             # States
@@ -65,6 +67,8 @@ class MsgHelper:
         """
         msgs = []
         for item in items:
+            if not item._is_loaded:
+                continue
             # Effects
             running_effect_ids = item._running_effect_ids
             if running_effect_ids:
