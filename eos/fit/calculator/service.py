@@ -23,8 +23,6 @@ from eos.const.eos import ModDomain
 from eos.eve_object.modifier import BasePythonModifier
 from eos.eve_object.modifier import DogmaModifier
 from eos.eve_object.modifier import ModificationCalculationError
-from eos.fit.item import Character
-from eos.fit.item import Ship
 from eos.fit.message import AttrValueChanged
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
@@ -44,15 +42,13 @@ class CalculationService(BaseSubscriber):
     map to calculate modified attribute values.
     """
 
-    def __init__(self, msg_broker):
-        self._current_char = None
-        self._current_ship = None
-        self.__affections = AffectionRegister(self)
+    def __init__(self, fit):
+        self.__affections = AffectionRegister(fit)
         # Container with affectors which will receive messages
         # Format: {message type: set(affectors)}
         self.__subscribed_affectors = KeyedStorage()
-        self.__msg_broker = msg_broker
-        msg_broker._subscribe(self, self._handler_map.keys())
+        self.__fit = fit
+        fit._subscribe(self, self._handler_map.keys())
 
     def get_modifications(self, tgt_item, tgt_attr_id):
         """Get modifications of target attribute on target item.
@@ -73,8 +69,7 @@ class CalculationService(BaseSubscriber):
             modifier, carrier_item = affector
             if modifier.tgt_attr_id == tgt_attr_id:
                 try:
-                    mod_op, mod_value = modifier.get_modification(
-                        carrier_item, self._current_ship)
+                    mod_op, mod_value = modifier.get_modification(carrier_item)
                 # Do nothing here - errors should be logged in modification
                 # getter or even earlier
                 except ModificationCalculationError:
@@ -84,17 +79,9 @@ class CalculationService(BaseSubscriber):
 
     # Handle item changes which are significant for calculator
     def _handle_item_added(self, msg):
-        if isinstance(msg.item, Character):
-            self._current_char = msg.item
-        elif isinstance(msg.item, Ship):
-            self._current_ship = msg.item
         self.__affections.register_affectee(msg.item)
 
     def _handle_item_removed(self, msg):
-        if msg.item is self._current_char:
-            self._current_char = None
-        elif msg.item is self._current_ship:
-            self._current_ship = None
         self.__affections.unregister_affectee(msg.item)
 
     def _handle_effects_started(self, msg):
@@ -158,7 +145,7 @@ class CalculationService(BaseSubscriber):
         # if it should
         for affector in self.__subscribed_affectors[msg_type]:
             if not affector.modifier.revise_modification(
-                msg, affector.carrier_item, self._current_ship
+                msg, affector.carrier_item
             ):
                 continue
             for tgt_item in self.__affections.get_affectees(affector):
@@ -223,7 +210,7 @@ class CalculationService(BaseSubscriber):
             # Add affector to subscriber map to let it receive messages
             self.__subscribed_affectors.add_data_entry(msg_type, affector)
         if to_subscribe:
-            self.__msg_broker._subscribe(self, to_subscribe)
+            self.__fit._subscribe(self, to_subscribe)
 
     def __unsubscribe_affector(self, affector):
         """Unsubscribe python affector."""
@@ -241,4 +228,4 @@ class CalculationService(BaseSubscriber):
             ):
                 to_ubsubscribe.add(msg_type)
         if to_ubsubscribe:
-            self.__msg_broker._unsubscribe(self, to_ubsubscribe)
+            self.__fit._unsubscribe(self, to_ubsubscribe)

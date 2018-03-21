@@ -51,7 +51,8 @@ class TestModifierPython(CalculatorTestCase):
                     tgt_filter_extra_arg=None,
                     tgt_attr_id=attr1.id)
 
-            def get_modification(self, carrier_item, ship):
+            def get_modification(self, carrier_item):
+                ship = carrier_item._fit.ship
                 try:
                     carrier_mul = carrier_item.attrs[attr2.id]
                     ship_mul = ship.attrs[attr3.id]
@@ -63,7 +64,8 @@ class TestModifierPython(CalculatorTestCase):
             def revise_msg_types(self):
                 return {AttrValueChanged}
 
-            def revise_modification(self, msg, carrier_item, ship):
+            def revise_modification(self, msg, carrier_item):
+                ship = carrier_item._fit.ship
                 if (
                     (msg.item is carrier_item and msg.attr_id == attr2.id) or
                     (msg.item is ship and msg.attr_id == attr3.id)

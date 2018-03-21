@@ -40,7 +40,8 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             self, tgt_filter=ModTgtFilter.item, tgt_domain=ModDomain.ship,
             tgt_filter_extra_arg=None, tgt_attr_id=AttrId.max_velocity)
 
-    def get_modification(self, carrier_item, ship):
+    def get_modification(self, carrier_item):
+        ship = carrier_item._fit.ship
         # If attribute values of any necessary items are not available, do not
         # calculate anything
         try:
@@ -61,20 +62,22 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             mult = 1 + perc / 100
             return ModOperator.post_mul, mult
 
-    def __revise_on_attr_changed(self, msg, carrier_item, ship):
+    def __revise_on_attr_changed(self, msg, carrier_item):
         """
         If any of the attribute values this modifier relies on is changed, then
         modification value can be changed as well.
         """
+        ship = carrier_item._fit.ship
+        if msg.item is ship and msg.attr_id == AttrId.mass:
+            return True
         if (
-            (msg.item is ship and msg.attr_id == AttrId.mass) or
-            (
-                msg.item is carrier_item and
-                msg.attr_id == AttrId.speed_factor
-            ) or (
-                msg.item is carrier_item and
-                msg.attr_id == AttrId.speed_boost_factor
-            )
+            msg.item is carrier_item and
+            msg.attr_id == AttrId.speed_factor
+        ):
+            return True
+        if (
+            msg.item is carrier_item and
+            msg.attr_id == AttrId.speed_boost_factor
         ):
             return True
         return False
@@ -86,6 +89,6 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
     def revise_msg_types(self):
         return set(self.__revision_map)
 
-    def revise_modification(self, msg, carrier_item, ship):
+    def revise_modification(self, msg, carrier_item):
         revision_func = self.__revision_map[type(msg)]
-        return revision_func(self, msg, carrier_item, ship)
+        return revision_func(self, msg, carrier_item)

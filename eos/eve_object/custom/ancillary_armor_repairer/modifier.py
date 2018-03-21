@@ -38,7 +38,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             self, tgt_filter=ModTgtFilter.item, tgt_domain=ModDomain.self,
             tgt_filter_extra_arg=None, tgt_attr_id=AttrId.armor_dmg_amount)
 
-    def get_modification(self, carrier_item, _):
+    def get_modification(self, carrier_item):
         # If carrier item has charge and it's paste, use on-carrier rep amount
         # multiplier, otherwise do nothing (multiply by 1).
         charge = getattr(carrier_item, 'charge', None)
@@ -51,7 +51,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             value = 1
         return ModOperator.post_mul_immune, value
 
-    def __revise_on_item_added_removed(self, msg, carrier_item, _):
+    def __revise_on_item_added_removed(self, msg, carrier_item):
         # If added/removed item is charge of effect carrying item and charge is
         # paste, then modification value changes
         if (
@@ -61,7 +61,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             return True
         return False
 
-    def __revise_on_attr_changed(self, msg, carrier_item, _):
+    def __revise_on_attr_changed(self, msg, carrier_item):
         # If armor rep multiplier changes, then result of modification also
         # should change
         if (
@@ -80,6 +80,6 @@ class AncillaryRepAmountModifier(BasePythonModifier):
     def revise_msg_types(self):
         return set(self.__revision_map.keys())
 
-    def revise_modification(self, msg, carrier_item, ship):
+    def revise_modification(self, msg, carrier_item):
         revision_func = self.__revision_map[type(msg)]
-        return revision_func(self, msg, carrier_item, ship)
+        return revision_func(self, msg, carrier_item)

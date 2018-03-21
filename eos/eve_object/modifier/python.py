@@ -52,7 +52,7 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def revise_modification(self, msg, carrier_item, ship):
+    def revise_modification(self, msg, carrier_item):
         """Decide if modification value may change.
 
         Rely on provided event and context for it, decide if modification

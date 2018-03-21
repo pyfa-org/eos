@@ -23,9 +23,9 @@ from copy import copy
 
 from eos.const.eve import TypeGroupId
 from eos.const.eve import TypeId
+from eos.eve_object.modifier import DogmaModifier
 from eos.source import Source
 from eos.source import SourceManager
-from eos.eve_object.modifier import DogmaModifier
 from tests.testcase import EosTestCase
 from .environment import CacheHandler
 

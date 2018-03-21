@@ -40,8 +40,8 @@ class AffectionRegister:
     recalculation.
     """
 
-    def __init__(self, calc_svc):
-        self.__calc_svc = calc_svc
+    def __init__(self, fit):
+        self.__fit = fit
 
         # All known items
         # Format: {items}
@@ -105,14 +105,14 @@ class AffectionRegister:
             return ()
 
     def __get_affectees_item_character(self, _):
-        character = self.__calc_svc._current_char
+        character = self.__fit.character
         if character is not None and character in self.__affectee:
             return [character]
         else:
             return ()
 
     def __get_affectees_item_ship(self, _):
-        ship = self.__calc_svc._current_ship
+        ship = self.__fit.ship
         if ship is not None and ship in self.__affectee:
             return [ship]
         else:
@@ -237,11 +237,11 @@ class AffectionRegister:
                 domain = affector.modifier.tgt_domain
                 # Ship
                 if domain == ModDomain.ship:
-                    if affectee_item is self.__calc_svc._current_ship:
+                    if affectee_item is self.__fit.ship:
                         affectors_awaitable.add(affector)
                 # Character
                 elif domain == ModDomain.character:
-                    if affectee_item is self.__calc_svc._current_char:
+                    if affectee_item is self.__fit.character:
                         affectors_awaitable.add(affector)
                 # Self
                 elif domain == ModDomain.self:
@@ -348,14 +348,14 @@ class AffectionRegister:
             return [(affector.carrier_item, self.__affector_item_awaitable)]
 
     def __get_affector_storages_item_character(self, affector):
-        character = self.__calc_svc._current_char
+        character = self.__fit.character
         if character is not None and character in self.__affectee:
             return [(character, self.__affector_item_active)]
         else:
             return [(affector.carrier_item, self.__affector_item_awaitable)]
 
     def __get_affector_storages_item_ship(self, affector):
-        ship = self.__calc_svc._current_ship
+        ship = self.__fit.ship
         if ship is not None and ship in self.__affectee:
             return [(ship, self.__affector_item_active)]
         else:
@@ -459,9 +459,9 @@ class AffectionRegister:
         carrier_item = affector.carrier_item
         domain = affector.modifier.tgt_domain
         if domain == ModDomain.self:
-            if carrier_item is self.__calc_svc._current_ship:
+            if carrier_item is self.__fit.ship:
                 return ModDomain.ship
-            elif carrier_item is self.__calc_svc._current_char:
+            elif carrier_item is self.__fit.character:
                 return ModDomain.character
             else:
                 raise UnexpectedDomainError(domain)

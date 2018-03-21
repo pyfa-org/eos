@@ -42,12 +42,11 @@ class BaseModifier(metaclass=ABCMeta):
         self.tgt_attr_id = tgt_attr_id
 
     @abstractmethod
-    def get_modification(self, carrier_item, ship):
+    def get_modification(self, carrier_item):
         """Get modification parameters.
 
         Args:
             carrier_item: Item which carries the modifier.
-            ship: Ship of fit which is being modified.
 
         Returns:
             Tuple (operator, modification value) which is intermediate result of
