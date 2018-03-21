@@ -52,9 +52,8 @@ class ItemContainerBase:
         fit = item._fit
         if fit is not None:
             # Notify services about added item
-            if fit.source is not None:
-                msgs = MsgHelper.get_items_added_msgs((item, *child_items))
-                fit._publish_bulk(msgs)
+            msgs = MsgHelper.get_items_added_msgs((item, *child_items))
+            fit._publish_bulk(msgs)
 
     def _handle_item_removal(self, item):
         """Do all the generic work to remove item to container.
@@ -67,9 +66,8 @@ class ItemContainerBase:
         fit = item._fit
         if fit is not None:
             # Notify services about removed item
-            if fit.source is not None:
-                msgs = MsgHelper.get_items_removed_msgs((*child_items, item))
-                fit._publish_bulk(msgs)
+            msgs = MsgHelper.get_items_removed_msgs((*child_items, item))
+            fit._publish_bulk(msgs)
         # Item updates
         item._container = None
         for subitem in (item, *child_items):
