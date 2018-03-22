@@ -32,7 +32,7 @@ from eos.const.eve import EffectId
 from tests.integration.stats.testcase import StatsTestCase
 
 
-class TestLowSlot(StatsTestCase):
+class TestModuleLowSlot(StatsTestCase):
 
     def setUp(self):
         StatsTestCase.setUp(self)

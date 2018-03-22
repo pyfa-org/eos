@@ -22,13 +22,10 @@
 import math
 
 from eos.const.eve import AttrId
-from eos.fit.item import Ship
-from eos.fit.message import ItemLoaded
-from eos.fit.message import ItemUnloaded
 from eos.fit.stats_container import ItemHP
 from eos.fit.stats_container import ResistProfile
 from eos.fit.stats_container import TankingLayers
-from eos.util.pubsub.subscriber import BaseSubscriber
+from eos.fit.stats_container import SlotStats
 from .register import CalibrationRegister
 from .register import CpuRegister
 from .register import DmgDealerRegister
@@ -49,7 +46,7 @@ from .register import SubsystemSlotRegister
 from .register import TurretSlotRegister
 
 
-class StatService(BaseSubscriber):
+class StatService:
     """Object which is used as access points for all fit statistics.
 
     Args:
@@ -57,29 +54,59 @@ class StatService(BaseSubscriber):
             about context changes.
     """
 
-    def __init__(self, msg_broker):
-        BaseSubscriber.__init__(self)
-        self.__current_ship = None
-        self.__dd_reg = DmgDealerRegister(msg_broker)
+    def __init__(self, fit):
+        self.__fit = fit
+        self.__dd_reg = DmgDealerRegister(fit)
         # Initialize sub-containers
-        self.cpu = CpuRegister(msg_broker)
-        self.powergrid = PowergridRegister(msg_broker)
-        self.calibration = CalibrationRegister(msg_broker)
-        self.dronebay = DronebayVolumeRegister(msg_broker)
-        self.drone_bandwidth = DroneBandwidthRegister(msg_broker)
-        self.high_slots = HighSlotRegister(msg_broker)
-        self.med_slots = MediumSlotRegister(msg_broker)
-        self.low_slots = LowSlotRegister(msg_broker)
-        self.rig_slots = RigSlotRegister(msg_broker)
-        self.subsystem_slots = SubsystemSlotRegister(msg_broker)
-        self.turret_slots = TurretSlotRegister(msg_broker)
-        self.launcher_slots = LauncherSlotRegister(msg_broker)
-        self.launched_drones = LaunchedDroneRegister(msg_broker)
-        self.fighter_squads = FighterSquadRegister(msg_broker)
-        self.fighter_squads_support = FighterSquadSupportRegister(msg_broker)
-        self.fighter_squads_light = FighterSquadLightRegister(msg_broker)
-        self.fighter_squads_heavy = FighterSquadHeavyRegister(msg_broker)
-        msg_broker._subscribe(self, self._handler_map.keys())
+        self.cpu = CpuRegister(fit)
+        self.powergrid = PowergridRegister(fit)
+        self.calibration = CalibrationRegister(fit)
+        self.dronebay = DronebayVolumeRegister(fit)
+        self.drone_bandwidth = DroneBandwidthRegister(fit)
+        self.turret_slots = TurretSlotRegister(fit)
+        self.launcher_slots = LauncherSlotRegister(fit)
+        self.launched_drones = LaunchedDroneRegister(fit)
+        self.fighter_squads_support = FighterSquadSupportRegister(fit)
+        self.fighter_squads_light = FighterSquadLightRegister(fit)
+        self.fighter_squads_heavy = FighterSquadHeavyRegister(fit)
+
+    @property
+    def high_slots(self):
+        return self.__get_slot_stats(
+            self.__fit.modules.high, AttrId.hi_slots)
+
+    @property
+    def med_slots(self):
+        return self.__get_slot_stats(
+            self.__fit.modules.med, AttrId.med_slots)
+
+    @property
+    def low_slots(self):
+        return self.__get_slot_stats(
+            self.__fit.modules.low, AttrId.low_slots)
+
+    @property
+    def rig_slots(self):
+        return self.__get_slot_stats(
+            self.__fit.rigs, AttrId.rig_slots)
+
+    @property
+    def subsystem_slots(self):
+        return self.__get_slot_stats(
+            self.__fit.subsystems, AttrId.max_subsystems)
+
+    @property
+    def fighter_squads(self):
+        return self.__get_slot_stats(
+            self.__fit.fighters, AttrId.fighter_tubes)
+
+    def __get_slot_stats(self, container, attr_id):
+        used = len(container)
+        try:
+            total = self.__fit.ship.attrs[attr_id]
+        except (AttributeError, KeyError):
+            total = 0
+        return SlotStats(used, total)
 
     @property
     def hp(self):
@@ -90,7 +117,7 @@ class StatService(BaseSubscriber):
             fetched, HP values will be None.
         """
         try:
-            return self.__current_ship.hp
+            return self.__fit.ship.hp
         except AttributeError:
             return ItemHP(0, 0, 0)
 
@@ -104,7 +131,7 @@ class StatService(BaseSubscriber):
             resistance values will be None.
         """
         try:
-            return self.__current_ship.resists
+            return self.__fit.ship.resists
         except AttributeError:
             null_res = ResistProfile(0, 0, 0, 0)
             return TankingLayers(null_res, null_res, null_res)
@@ -121,7 +148,7 @@ class StatService(BaseSubscriber):
             fetched, EHP values will be None.
         """
         try:
-            return self.__current_ship.get_ehp(dmg_profile)
+            return self.__fit.ship.get_ehp(dmg_profile)
         except AttributeError:
             return ItemHP(0, 0, 0)
 
@@ -137,7 +164,7 @@ class StatService(BaseSubscriber):
             fetched, EHP values will be None.
         """
         try:
-            return self.__current_ship.worst_case_ehp
+            return self.__fit.ship.worst_case_ehp
         except AttributeError:
             return ItemHP(0, 0, 0)
 
@@ -182,8 +209,8 @@ class StatService(BaseSubscriber):
     @property
     def agility_factor(self):
         try:
-            agility = self.__current_ship.attrs[AttrId.agility]
-            mass = self.__current_ship.attrs[AttrId.mass]
+            agility = self.__fit.ship.attrs[AttrId.agility]
+            mass = self.__fit.ship.attrs[AttrId.mass]
         except (AttributeError, KeyError):
             return None
         agility_factor = -math.log(0.25) * agility * mass / 1000000
@@ -195,15 +222,3 @@ class StatService(BaseSubscriber):
             return math.ceil(self.agility_factor)
         except TypeError:
             return None
-
-    def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
-
-    def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
-
-    _handler_map = {
-        ItemLoaded: _handle_item_loaded,
-        ItemUnloaded: _handle_item_unloaded}

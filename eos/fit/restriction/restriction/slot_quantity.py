@@ -49,19 +49,16 @@ class OrderedSlotRestriction(BaseSlotRestriction):
     def validate(self):
         # Use stats module to get max and used quantity of slots
         stats = getattr(self._fit.stats, self._stat_name)
-        used = stats.used
-        # Can be None, so fall back to 0 in this case
-        total = stats.total or 0
         # If quantity of items which take this slot is bigger than quantity of
         # available slots, then all items which are positioned higher than
         # available index are tainted
-        if used > total:
+        if stats.used > stats.total:
             tainted_items = {}
             for item in stats._users:
                 position = item._container_position
                 if position is not None and position + 1 > total:
                     tainted_items[item] = SlotQuantityErrorData(
-                        used=used, total=total)
+                        used=stats.used, total=stats.total)
             raise RestrictionValidationError(tainted_items)
 
 

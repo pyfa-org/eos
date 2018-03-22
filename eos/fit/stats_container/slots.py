@@ -19,9 +19,7 @@
 # ==============================================================================
 
 
-from .dmg_types import DmgProfile
-from .dmg_types import DmgStats
-from .dmg_types import ResistProfile
-from .slots import SlotStats
-from .tanking_layers import ItemHP
-from .tanking_layers import TankingLayers
+from collections import namedtuple
+
+
+SlotStats = namedtuple('SlotStats', ('used', 'total'))
