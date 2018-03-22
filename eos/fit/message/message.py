@@ -22,6 +22,26 @@
 from eos.util.repr import make_repr_str
 
 
+class ItemAdded:
+
+    def __init__(self, item):
+        self.item = item
+
+    def __repr__(self):
+        spec = ['item']
+        return make_repr_str(self, spec)
+
+
+class ItemRemoved:
+
+    def __init__(self, item):
+        self.item = item
+
+    def __repr__(self):
+        spec = ['item']
+        return make_repr_str(self, spec)
+
+
 class ItemLoaded:
 
     def __init__(self, item):

@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from eos.fit.message import ItemAdded
+from eos.fit.message import ItemRemoved
 from .exception import ItemAlreadyAssignedError
 
 
@@ -43,7 +45,10 @@ class ItemContainerBase:
         if item._container:
             raise ItemAlreadyAssignedError(item)
         item._container = container
+        fit = item._fit
         for subitem in (item, *item._get_child_items()):
+            if fit is not None:
+                fit._publish(ItemAdded(subitem))
             subitem._load()
 
     def _handle_item_removal(self, item):
@@ -52,8 +57,11 @@ class ItemContainerBase:
         Must be called before item has been removed from specific container, so
         that presence checks during removal pass.
         """
+        fit = item._fit
         for subitem in (item, *item._get_child_items()):
             subitem._unload()
+            if fit is not None:
+                fit._publish(ItemRemoved(subitem))
         item._container = None
 
     def _check_class(self, item, allow_none=False):

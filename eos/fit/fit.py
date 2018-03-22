@@ -48,7 +48,6 @@ from .item_container import ItemSet
 from .item_container import ModuleRacks
 from .item_container import TypeUniqueItemSet
 from .message import DefaultIncomingDmgChanged
-from .message.helper import MsgHelper
 from .restriction import RestrictionService
 from .sim import ReactiveArmorHardenerSimulator
 from .stats import StatService
@@ -154,9 +153,10 @@ class Fit(MsgBroker):
         old_source = self.source
         if new_source is old_source:
             return
-        self.__source = new_source
         for item in self._item_iter():
             item._unload()
+        self.__source = new_source
+        for item in self._item_iter():
             item._load()
 
     @property
