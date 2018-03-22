@@ -43,14 +43,13 @@ class MsgHelper:
             Iterable with messages.
         """
         msgs = []
-        if item._is_loaded:
-            # Item
-            msgs.append(ItemLoaded(item))
-            # States
-            states = {s for s in State if s <= item.state}
-            msgs.append(StatesActivated(item, states))
-            # Effects
-            msgs.extend(MsgHelper.get_effects_status_update_msgs(item))
+        # Item
+        msgs.append(ItemLoaded(item))
+        # States
+        states = {s for s in State if s <= item.state}
+        msgs.append(StatesActivated(item, states))
+        # Effects
+        msgs.extend(MsgHelper.get_effects_status_update_msgs(item))
         return msgs
 
     @staticmethod
@@ -64,19 +63,18 @@ class MsgHelper:
             Iterable with messages.
         """
         msgs = []
-        if item._is_loaded:
-            # Effects
-            running_effect_ids = item._running_effect_ids
-            if running_effect_ids:
-                # Copy set to make sure messages keep full data despite it being
-                # cleared on the next line
-                msgs.append(EffectsStopped(item, set(running_effect_ids)))
-                running_effect_ids.clear()
-            # States
-            states = {s for s in State if s <= item.state}
-            msgs.append(StatesDeactivated(item, states))
-            # Item
-            msgs.append(ItemUnloaded(item))
+        # Effects
+        running_effect_ids = item._running_effect_ids
+        if running_effect_ids:
+            # Copy set to make sure messages keep full data despite it being
+            # cleared on the next line
+            msgs.append(EffectsStopped(item, set(running_effect_ids)))
+            running_effect_ids.clear()
+        # States
+        states = {s for s in State if s <= item.state}
+        msgs.append(StatesDeactivated(item, states))
+        # Item
+        msgs.append(ItemUnloaded(item))
         return msgs
 
     @staticmethod
