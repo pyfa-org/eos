@@ -30,15 +30,18 @@ from tests.integration.calculator.testcase import CalculatorTestCase
 
 class TestTgtItemSpecialOther(CalculatorTestCase):
 
+    def make_modifier(self, src_attr_id, tgt_attr_id):
+        return self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.other,
+            tgt_attr_id=tgt_attr_id,
+            operator=ModOperator.post_percent,
+            src_attr_id=src_attr_id)
+
     def test_other_container(self):
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
-        modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.other,
-            tgt_attr_id=tgt_attr.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
+        modifier = self.make_modifier(src_attr.id, tgt_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
@@ -48,8 +51,6 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         self.fit.modules.high.append(influence_src)
         influence_tgt = Charge(self.mktype(attrs={tgt_attr.id: 100}).id)
         # Action
-        # Here we add influence target after adding source, to make sure
-        # modifiers wait for target to appear, and then are applied onto it
         influence_src.charge = influence_tgt
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr.id], 120)
@@ -58,6 +59,38 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         # properly in this case
         influence_src.charge = None
         self.fit.modules.high.remove(influence_src)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_source_switch(self):
+        # Here we put both charge and
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier_container = self.make_modifier(src_attr.id, tgt_attr.id)
+        effect_container = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier_container])
+        container = ModuleHigh(self.mktype(
+            attrs={src_attr.id: 20, tgt_attr.id: 100},
+            effects=[effect_container]).id)
+        modifier_charge = self.make_modifier(src_attr.id, tgt_attr.id)
+        effect_charge = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier_charge])
+        charge = Charge(self.mktype(
+            attrs={src_attr.id: 40, tgt_attr.id: 50},
+            effects=[effect_charge]).id)
+        self.fit.source = None
+        self.fit.modules.high.append(container)
+        container.charge = charge
+        # Action
+        self.fit.source = 'src1'
+        # Verification
+        self.assertAlmostEqual(container.attrs[tgt_attr.id], 140)
+        self.assertAlmostEqual(charge.attrs[tgt_attr.id], 60)
+        # Action
+        self.fit.source = None
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

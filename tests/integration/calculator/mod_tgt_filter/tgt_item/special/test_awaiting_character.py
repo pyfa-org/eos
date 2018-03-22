@@ -30,34 +30,54 @@ from tests.integration.calculator.testcase import CalculatorTestCase
 
 class TestTgtItemSpecialAwaitingChar(CalculatorTestCase):
 
-    def test_character(self):
-        tgt_attr = self.mkattr()
+    def setUp(self):
+        CalculatorTestCase.setUp(self)
+        self.tgt_attr = self.mkattr()
         src_attr = self.mkattr()
         modifier = self.mkmod(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.character,
-            tgt_attr_id=tgt_attr.id,
+            tgt_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        influence_src = Implant(self.mktype(
+        self.influence_src = Implant(self.mktype(
             attrs={src_attr.id: 20},
             effects=[effect]).id)
-        self.fit.implants.add(influence_src)
-        influence_tgt = Character(self.mktype(attrs={tgt_attr.id: 100}).id)
+        self.influence_tgt = Character(self.mktype(
+            attrs={self.tgt_attr.id: 100}).id)
+
+    def test_manual(self):
+        self.fit.implants.add(self.influence_src)
         # Action
         # Here we add influence target after adding source, to make sure
         # modifiers wait for target to appear, and then are applied onto it
-        self.fit.character = influence_tgt
+        self.fit.character = self.influence_tgt
         # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr.id], 120)
+        self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 120)
         # Action
         # Manually remove target, then source, to make sure buffers are cleared
         # properly in this case
         self.fit.character = None
-        self.fit.implants.remove(influence_src)
+        self.fit.implants.remove(self.influence_src)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_source_switch(self):
+        # During source switch, calculator should put affectors/affectees into
+        # appropriate storage and remove them when source is switched to None
+        self.fit.source = None
+        self.fit.implants.add(self.influence_src)
+        self.fit.character = self.influence_tgt
+        # Action
+        self.fit.source = 'src1'
+        # Verification
+        self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 120)
+        # Action
+        self.fit.source = None
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
