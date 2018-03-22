@@ -47,13 +47,10 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestItemClass(RestrictionTestCase):
     """Check functionality of item class verification."""
 
-    def test_booster_pass_no_source(self):
-        # Make sure fit without a source doesn't cause any failures
-        item = Booster(self.mktype(
-            category_id=1008,
-            attrs={AttrId.boosterness: 3}).id)
+    def test_booster_pass_not_loaded(self):
+        # Make sure not loaded item doesn't cause any failures
+        item = Booster(self.allocate_type_id())
         self.fit.boosters.add(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.item_class)
         # Verification

@@ -95,17 +95,15 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             item type are taken.
     """
 
-    def __init__(self, msg_broker):
-        self.__current_ship = None
+    def __init__(self, fit):
+        self.__fit = fit
         # Container for items which possess ship type/group restriction
         # Format: {item: allowed data}
         self.__restricted_items = {}
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
-        elif not isinstance(msg.item, TRACKED_ITEM_CLASSES):
+        if not isinstance(msg.item, TRACKED_ITEM_CLASSES):
             return
         # Containers for type IDs and group IDs of ships, to which item is
         # allowed to fit
@@ -132,9 +130,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             group_ids=tuple(allowed_group_ids))
 
     def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
-        elif msg.item in self.__restricted_items:
+        if msg.item in self.__restricted_items:
             del self.__restricted_items[msg.item]
 
     _handler_map = {
@@ -146,8 +142,8 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # None; it's safe to set them to None because our primary data container
         # with restricted items can't contain None in its values anyway
         try:
-            ship_type_id = self.__current_ship._type_id
-            ship_group_id = self.__current_ship._type.group_id
+            ship_type_id = self.__fit.ship._type_id
+            ship_group_id = self.__fit.ship._type.group_id
         except AttributeError:
             ship_type_id = None
             ship_group_id = None

@@ -52,9 +52,24 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_undefined_output(self):
+    def test_fail_excess_single_ship_absent(self):
         # When stats module does not specify output, make sure it's assumed to
         # be 0
+        item = Drone(self.mktype(attrs={AttrId.volume: 5}).id)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.dronebay_volume)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 5)
+        self.assertEqual(error.item_use, 5)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_excess_single_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         item = Drone(self.mktype(attrs={AttrId.volume: 5}).id)
         self.fit.drones.add(item)
         # Action
@@ -150,11 +165,10 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 40}).id)
-        item = Drone(self.mktype(attrs={AttrId.volume: 50}).id)
+    def test_pass_consumer_not_loaded(self):
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 0}).id)
+        item = Drone(self.allocate_type_id())
         self.fit.drones.add(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.dronebay_volume)
         # Verification

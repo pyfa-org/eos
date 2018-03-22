@@ -32,7 +32,7 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestChargeVolume(RestrictionTestCase):
     """Check functionality of charge volume restriction."""
 
-    def test_fail_greater(self):
+    def test_fail_volume_greater(self):
         charge = Charge(self.mktype(attrs={AttrId.volume: 2}).id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.capacity: 1}).id,
@@ -53,7 +53,7 @@ class TestChargeVolume(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_capacity(self):
+    def test_fail_container_no_capacity(self):
         charge = Charge(self.mktype(attrs={AttrId.volume: 2}).id)
         container = ModuleHigh(self.mktype().id, state=State.offline)
         container.charge = charge
@@ -72,26 +72,7 @@ class TestChargeVolume(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_volume(self):
-        charge = Charge(self.mktype().id)
-        container = ModuleHigh(
-            self.mktype(attrs={AttrId.volume: 3}).id,
-            state=State.offline)
-        container.charge = charge
-        self.fit.modules.high.append(container)
-        # Action
-        error1 = self.get_error(container, Restriction.charge_volume)
-        # Verification
-        self.assertIsNone(error1)
-        # Action
-        error2 = self.get_error(charge, Restriction.charge_volume)
-        # Verification
-        self.assertIsNone(error2)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_pass_equal(self):
+    def test_pass_volume_equal(self):
         charge = Charge(self.mktype(attrs={AttrId.volume: 2}).id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.capacity: 2}).id,
@@ -110,10 +91,65 @@ class TestChargeVolume(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_lesser(self):
+    def test_pass_volume_lesser(self):
         charge = Charge(self.mktype(attrs={AttrId.volume: 2}).id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.capacity: 3}).id,
+            state=State.offline)
+        container.charge = charge
+        self.fit.modules.high.append(container)
+        # Action
+        error1 = self.get_error(container, Restriction.charge_volume)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(charge, Restriction.charge_volume)
+        # Verification
+        self.assertIsNone(error2)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_container_not_loaded(self):
+        charge = Charge(self.mktype(attrs={AttrId.volume: 2}).id)
+        container = ModuleHigh(self.allocate_type_id(), state=State.offline)
+        container.charge = charge
+        self.fit.modules.high.append(container)
+        # Action
+        error1 = self.get_error(container, Restriction.charge_volume)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(charge, Restriction.charge_volume)
+        # Verification
+        self.assertIsNone(error2)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_charge_no_volume(self):
+        charge = Charge(self.mktype().id)
+        container = ModuleHigh(
+            self.mktype(attrs={AttrId.volume: 3}).id,
+            state=State.offline)
+        container.charge = charge
+        self.fit.modules.high.append(container)
+        # Action
+        error1 = self.get_error(container, Restriction.charge_volume)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(charge, Restriction.charge_volume)
+        # Verification
+        self.assertIsNone(error2)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_charge_not_loaded(self):
+        charge = Charge(self.allocate_type_id())
+        container = ModuleHigh(
+            self.mktype(attrs={AttrId.volume: 3}).id,
             state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)

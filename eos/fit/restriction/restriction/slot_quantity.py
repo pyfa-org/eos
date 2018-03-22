@@ -34,8 +34,8 @@ SlotQuantityErrorData = namedtuple(
 
 class BaseSlotRestriction(BaseRestriction, metaclass=ABCMeta):
 
-    def __init__(self, stats):
-        self._stats = stats
+    def __init__(self, fit):
+        self._fit = fit
 
     @property
     @abstractmethod
@@ -48,7 +48,7 @@ class OrderedSlotRestriction(BaseSlotRestriction):
 
     def validate(self):
         # Use stats module to get max and used quantity of slots
-        stats = getattr(self._stats, self._stat_name)
+        stats = getattr(self._fit.stats, self._stat_name)
         used = stats.used
         # Can be None, so fall back to 0 in this case
         total = stats.total or 0
@@ -69,7 +69,7 @@ class UnorderedSlotRestriction(BaseSlotRestriction):
     """Base class for all unordered slot quantity restrictions."""
 
     def validate(self):
-        stats = getattr(self._stats, self._stat_name)
+        stats = getattr(self._fit.stats, self._stat_name)
         used = stats.used
         total = stats.total or 0
         # If quantity of items which take this slot is bigger than quantity of

@@ -48,19 +48,14 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         Rigs are ignored, they can be used regardless of skill requirements.
     """
 
-    def __init__(self, msg_broker):
-        self.__skills = {}
+    def __init__(self, fit):
+        self.__fit = fit
         # Set with items which have any skill requirements
         # Format: {items}
         self.__restricted_items = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_item_loaded(self, msg):
-        # Handle skill addition
-        if isinstance(msg.item, Skill):
-            self.__skills[msg.item._type_id] = msg.item
-        # Items which are not exceptions and which have any skill requirement
-        # are tracked
         if (
             msg.item._type.required_skills and
             not isinstance(msg.item, EXCEPTIONS)
@@ -68,10 +63,6 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
             self.__restricted_items.add(msg.item)
 
     def _handle_item_unloaded(self, msg):
-        # Handle skill removal
-        if isinstance(msg.item, Skill):
-            del self.__skills[msg.item._type_id]
-        # Handle restricted item removal
         self.__restricted_items.discard(msg.item)
 
     _handler_map = {
@@ -80,6 +71,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
 
     def validate(self):
         tainted_items = {}
+        skills = self.__fit.skills
         # Go through restricted items
         for item in self.__restricted_items:
             # Container for skill requirement errors for current item
@@ -89,11 +81,16 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
                 item._type.required_skills.items()
             ):
                 # Get skill level with None as fallback value for case when we
-                # don't have such skill
+                # don't have such skill or it's not loaded
                 try:
-                    skill_level = self.__skills[skillrq_type_id].level
+                    skill = skills[skillrq_type_id]
                 except KeyError:
                     skill_level = None
+                else:
+                    if skill._is_loaded:
+                        skill_level = skill.level
+                    else:
+                        skill_level = None
                 # Last check - if skill level is lower than expected, current
                 # item is tainted; mark it so and move to the next one
                 if skill_level is None or skill_level < skillrq_level:

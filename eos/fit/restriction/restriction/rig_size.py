@@ -24,11 +24,8 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.fit.item import Ship
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
-from eos.fit.message import ItemLoaded
-from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -44,19 +41,11 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         For validation, rigSize attribute value of item type is taken.
     """
 
-    def __init__(self, msg_broker):
-        self.__current_ship = None
+    def __init__(self, fit):
+        self.__fit = fit
         # Container for items which have rig size restriction
         self.__restricted_items = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
-
-    def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
-
-    def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_effects_started(self, msg):
         if (
@@ -70,8 +59,6 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
             self.__restricted_items.discard(msg.item)
 
     _handler_map = {
-        ItemLoaded: _handle_item_loaded,
-        ItemUnloaded: _handle_item_unloaded,
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped}
 
@@ -79,7 +66,7 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         # Do not apply restriction when fit doesn't have ship and when ship
         # doesn't have restriction attribute
         try:
-            allowed_rig_size = self.__current_ship._type_attrs[AttrId.rig_size]
+            allowed_rig_size = self.__fit.ship._type_attrs[AttrId.rig_size]
         except (AttributeError, KeyError):
             return
         tainted_items = {}

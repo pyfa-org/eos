@@ -50,20 +50,16 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         If ship specifies no drone group preference, validation always passes.
     """
 
-    def __init__(self, msg_broker):
-        self.__current_ship = None
+    def __init__(self, fit):
+        self.__fit = fit
         self.__drones = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
-        elif isinstance(msg.item, Drone):
+        if isinstance(msg.item, Drone):
             self.__drones.add(msg.item)
 
     def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
         self.__drones.discard(msg.item)
 
     _handler_map = {
@@ -71,11 +67,11 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         ItemUnloaded: _handle_item_unloaded}
 
     def validate(self):
-        ship = self.__current_ship
+        ship = self.__fit.ship
         # No ship - no restriction
         if ship is None:
             return
-        allowed_group_ids = []
+        allowed_group_ids = set()
         # Find out if we have restriction, and which drone groups it allows
         for allowed_group_attr_id in ALLOWED_GROUP_ATTR_IDS:
             try:
@@ -83,14 +79,14 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
             except KeyError:
                 continue
             else:
-                allowed_group_ids.append(allowed_group_id)
+                allowed_group_ids.add(allowed_group_id)
         # No allowed group attributes - no restriction
         if not allowed_group_ids:
             return
         tainted_items = {}
-        # Convert set to tuple, this way we can use it multiple times in error
-        # data, making sure that it can't be modified by validation caller
-        allowed_group_ids = tuple(allowed_group_ids)
+        # Freeze set, this way we can use it multiple times in error data,
+        # making sure that it can't be modified by validation caller
+        allowed_group_ids = frozenset(allowed_group_ids)
         for drone in self.__drones:
             # Taint items, whose group is not allowed
             group_id = drone._type.group_id

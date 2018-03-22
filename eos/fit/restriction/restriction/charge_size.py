@@ -45,9 +45,9 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             used.
     """
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         self.__restricted_containers = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_item_loaded(self, msg):
         # Ignore container items without charge attribute
@@ -71,7 +71,7 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
         # charge items
         for container in self.__restricted_containers:
             charge = container.charge
-            if charge is None:
+            if charge is None or not charge._is_loaded:
                 continue
             container_size = container._type_attrs[AttrId.charge_size]
             charge_size = charge._type_attrs.get(AttrId.charge_size)

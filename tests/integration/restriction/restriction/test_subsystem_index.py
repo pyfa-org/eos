@@ -86,7 +86,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_different(self):
+    def test_pass_slots_different(self):
         # Items taking different slots shouldn't trigger any errors
         item1 = Subsystem(self.mktype(attrs={self.index_attr.id: 120}).id)
         item2 = Subsystem(self.mktype(attrs={self.index_attr.id: 121}).id)
@@ -104,13 +104,12 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
-        item_type = self.mktype(attrs={self.index_attr.id: 120})
-        item1 = Subsystem(item_type.id)
-        item2 = Subsystem(item_type.id)
+    def test_pass_items_not_loaded(self):
+        item_type_id = self.allocate_type_id()
+        item1 = Subsystem(item_type_id)
+        item2 = Subsystem(item_type_id)
         self.fit.subsystems.add(item1)
         self.fit.subsystems.add(item2)
-        self.fit.source = None
         # Action
         error1 = self.get_error(item1, Restriction.subsystem_index)
         self.assertIsNone(error1)

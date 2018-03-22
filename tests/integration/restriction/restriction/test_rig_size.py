@@ -38,7 +38,7 @@ class TestRigSize(RestrictionTestCase):
             effect_id=EffectId.rig_slot,
             category_id=EffectCategoryId.passive)
 
-    def test_fail_mismatch(self):
+    def test_fail_size_mismatch(self):
         # Error should be raised when mismatching rig size is added to ship
         self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
         item = Rig(self.mktype(
@@ -55,8 +55,23 @@ class TestRigSize(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_ship(self):
+    def test_pass_ship_absent(self):
         # When no ship is assigned, no restriction should be applied to ships
+        item = Rig(self.mktype(
+            attrs={AttrId.rig_size: 10},
+            effects=[self.effect]).id)
+        self.fit.rigs.add(item)
+        # Action
+        error = self.get_error(item, Restriction.rig_size)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_ship_not_loaded(self):
+        # When no ship is assigned, no restriction should be applied to ships
+        self.fit.ship = Ship(self.allocate_type_id())
         item = Rig(self.mktype(
             attrs={AttrId.rig_size: 10},
             effects=[self.effect]).id)
@@ -100,13 +115,10 @@ class TestRigSize(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
+    def test_pass_rig_not_loaded(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
-        item = Rig(self.mktype(
-            attrs={AttrId.rig_size: 10},
-            effects=[self.effect]).id)
+        item = Rig(self.allocate_type_id())
         self.fit.rigs.add(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.rig_size)
         # Verification

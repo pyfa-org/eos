@@ -168,23 +168,13 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
-        item_type = self.mktype(
-            group_id=6,
-            attrs={AttrId.max_group_active: 1})
-        item1 = ModuleHigh(item_type.id, state=State.active)
-        self.fit.modules.high.append(item1)
-        item2 = ModuleHigh(item_type.id, state=State.active)
-        self.fit.modules.high.append(item2)
-        self.fit.source = None
+    def test_pass_not_loaded(self):
+        item = ModuleHigh(self.allocate_type_id(), state=State.active)
+        self.fit.modules.high.append(item)
         # Action
-        error1 = self.get_error(item1, Restriction.max_group_active)
+        error1 = self.get_error(item, Restriction.max_group_active)
         # Verification
         self.assertIsNone(error1)
-        # Action
-        error2 = self.get_error(item2, Restriction.max_group_active)
-        # Verification
-        self.assertIsNone(error2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

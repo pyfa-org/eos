@@ -30,7 +30,7 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestDroneGroup(RestrictionTestCase):
     """Check functionality of drone group restriction."""
 
-    def test_fail_mismatch1(self):
+    def test_fail_group1_mismatch(self):
         # Check that error is returned on attempt to add drone from group
         # mismatching to first restriction attr
         self.fit.ship = Ship(self.mktype(
@@ -47,7 +47,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_mismatch2(self):
+    def test_fail_group2_mismatch(self):
         # Check that error is returned on attempt to add drone from group
         # mismatching to second restriction attr
         self.fit.ship = Ship(self.mktype(
@@ -64,7 +64,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_mismatch_combined(self):
+    def test_fail_group_mismatch_combined(self):
         # Check that error is returned on attempt to add drone from group
         # mismatching to both restriction attributes
         self.fit.ship = Ship(self.mktype(attrs={
@@ -82,7 +82,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_drone_none(self):
+    def test_fail_drone_group_none(self):
         # Check that drone from None group is subject to restriction
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.allowed_drone_group_1: 1896}).id)
@@ -98,9 +98,21 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_ship(self):
+    def test_pass_ship_absent(self):
         # Check that restriction isn't applied when fit doesn't have ship
         item = Drone(self.mktype(group_id=None).id)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.drone_group)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        item = Drone(self.mktype(group_id=56).id)
         self.fit.drones.add(item)
         # Action
         error = self.get_error(item, Restriction.drone_group)
@@ -124,6 +136,19 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_pass_drone_not_loaded(self):
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.allowed_drone_group_1: 1896}).id)
+        item = Drone(self.allocate_type_id())
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.drone_group)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_pass_non_drone(self):
         # Check that restriction is not applied to items which are not drones
         self.fit.ship = Ship(self.mktype(
@@ -138,7 +163,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_match1(self):
+    def test_pass_group1_match(self):
         # Check that no error raised when drone of group matching to first
         # restriction attr is added
         self.fit.ship = Ship(self.mktype(
@@ -153,7 +178,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_match2(self):
+    def test_pass_group2_match(self):
         # Check that no error raised when drone of group matching to second
         # restriction attr is added
         self.fit.ship = Ship(self.mktype(
@@ -168,7 +193,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_match_combination(self):
+    def test_pass_group_combination_match(self):
         # Check that no error raised when drone of group matching to any of two
         # restriction attributes is added
         self.fit.ship = Ship(self.mktype(attrs={
@@ -176,20 +201,6 @@ class TestDroneGroup(RestrictionTestCase):
             AttrId.allowed_drone_group_2: 53}).id)
         item = Drone(self.mktype(group_id=53).id)
         self.fit.drones.add(item)
-        # Action
-        error = self.get_error(item, Restriction.drone_group)
-        # Verification
-        self.assertIsNone(error)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_pass_no_source(self):
-        self.fit.ship = Ship(self.mktype(
-            attrs={AttrId.allowed_drone_group_1: 4}).id)
-        item = Drone(self.mktype(group_id=56).id)
-        self.fit.drones.add(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.drone_group)
         # Verification

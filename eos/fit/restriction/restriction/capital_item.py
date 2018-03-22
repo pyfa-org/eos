@@ -51,14 +51,12 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
             value.
     """
 
-    def __init__(self, msg_broker):
-        self.__current_ship = None
+    def __init__(self, fit):
+        self.__fit = fit
         self.__capital_items = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
         if not isinstance(msg.item, TRACKED_ITEM_CLASSES):
             return
         # Ignore items with no volume attribute and items with volume which
@@ -72,8 +70,6 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
         self.__capital_items.add(msg.item)
 
     def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
         self.__capital_items.discard(msg.item)
 
     _handler_map = {
@@ -83,7 +79,7 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
     def validate(self):
         # Skip validation only if ship has special special attribute set value
         # which is evaluated as True
-        ship = self.__current_ship
+        ship = self.__fit.ship
         if ship is not None and ship._type_attrs.get(AttrId.is_capital_size):
             return
         # If we got here, then we're dealing with non-capital ship, and all

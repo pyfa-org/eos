@@ -137,7 +137,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_charge_none(self):
+    def test_fail_charge_group_none(self):
         charge = Charge(self.mktype(group_id=None).id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.charge_group_1: 3}).id,
@@ -158,7 +158,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_multiple_same(self):
+    def test_fail_container_groups_multiple_same(self):
         charge = Charge(self.mktype(group_id=1008).id)
         container = ModuleHigh(
             self.mktype(attrs={
@@ -181,7 +181,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_multiple_different(self):
+    def test_fail_container_groups_multiple_different(self):
         charge = Charge(self.mktype(group_id=1008).id)
         container = ModuleHigh(
             self.mktype(attrs={
@@ -223,7 +223,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_multiple(self):
+    def test_pass_container_groups_multiple(self):
         charge = Charge(self.mktype(group_id=1008).id)
         container = ModuleHigh(
             self.mktype(attrs={
@@ -244,9 +244,45 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_attr(self):
+    def test_pass_container_no_attr(self):
         charge = Charge(self.mktype(group_id=1008).id)
         container = ModuleHigh(self.mktype().id, state=State.offline)
+        container.charge = charge
+        self.fit.modules.high.append(container)
+        # Action
+        error1 = self.get_error(container, Restriction.charge_group)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(charge, Restriction.charge_group)
+        # Verification
+        self.assertIsNone(error2)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_container_not_loaded(self):
+        charge = Charge(self.mktype(group_id=1008).id)
+        container = ModuleHigh(self.allocate_type_id(), state=State.offline)
+        container.charge = charge
+        self.fit.modules.high.append(container)
+        # Action
+        error1 = self.get_error(container, Restriction.charge_group)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(charge, Restriction.charge_group)
+        # Verification
+        self.assertIsNone(error2)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_charge_not_loaded(self):
+        charge = Charge(self.allocate_type_id())
+        container = ModuleHigh(
+            self.mktype(attrs={AttrId.charge_group_1: 3}).id,
+            state=State.offline)
         container.charge = charge
         self.fit.modules.high.append(container)
         # Action
@@ -289,20 +325,26 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
-        charge = Charge(self.mktype(group_id=1008).id)
+    def test_pass_autocharge_not_loaded(self):
+        container_effect = self.mkeffect(
+            effect_id=EffectId.target_attack,
+            category_id=EffectCategoryId.target)
         container = ModuleHigh(
-            self.mktype(attrs={AttrId.charge_group_1: 3}).id,
+            self.mktype(
+                attrs={
+                    AttrId.charge_group_1: 3,
+                    AttrId.ammo_loaded: self.allocate_type_id()},
+                effects=[container_effect]).id,
             state=State.offline)
-        container.charge = charge
         self.fit.modules.high.append(container)
-        self.fit.source = None
+        self.assertIn(container_effect.id, container.autocharges)
+        autocharge = container.autocharges[container_effect.id]
         # Action
         error1 = self.get_error(container, Restriction.charge_group)
         # Verification
         self.assertIsNone(error1)
         # Action
-        error2 = self.get_error(charge, Restriction.charge_group)
+        error2 = self.get_error(autocharge, Restriction.charge_group)
         # Verification
         self.assertIsNone(error2)
         # Cleanup

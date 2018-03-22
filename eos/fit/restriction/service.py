@@ -64,47 +64,46 @@ class RestrictionService:
     and providing results to fit.
 
     Args:
-        msg_broker: message broker which is used to deliver all the messages
-            about context changes.
-        stats: stats module to use as data source for some restrictions.
+        fit: Fit instance which this service is attached to.
     """
 
-    def __init__(self, msg_broker, stats):
+    def __init__(self, fit):
         # Container for all restrictions
         self.__restrictions = {
-            BoosterIndexRestrictionRegister(msg_broker),
-            CalibrationRestriction(stats),
-            CapitalItemRestrictionRegister(msg_broker),
-            ChargeGroupRestrictionRegister(msg_broker),
-            ChargeSizeRestrictionRegister(msg_broker),
-            ChargeVolumeRestrictionRegister(msg_broker),
-            CpuRestriction(stats),
-            DroneBandwidthRestriction(stats),
-            DroneBayVolumeRestriction(stats),
-            DroneGroupRestrictionRegister(msg_broker),
-            FighterSquadHeavyRestriction(stats),
-            FighterSquadLightRestriction(stats),
-            FighterSquadRestriction(stats),
-            FighterSquadSupportRestriction(stats),
-            HighSlotRestriction(stats),
-            ImplantIndexRestrictionRegister(msg_broker),
-            ItemClassRestrictionRegister(msg_broker),
-            LaunchedDroneRestriction(stats),
-            LauncherSlotRestriction(stats),
-            LowSlotRestriction(stats),
-            MaxGroupActiveRestrictionRegister(msg_broker),
-            MaxGroupFittedRestrictionRegister(msg_broker),
-            MaxGroupOnlineRestrictionRegister(msg_broker),
-            MediumSlotRestriction(stats),
-            PowergridRestriction(stats),
-            RigSizeRestrictionRegister(msg_broker),
-            RigSlotRestriction(stats),
-            ShipTypeGroupRestrictionRegister(msg_broker),
-            SkillRequirementRestrictionRegister(msg_broker),
-            StateRestrictionRegister(msg_broker),
-            SubsystemIndexRestrictionRegister(msg_broker),
-            SubsystemSlotRestriction(stats),
-            TurretSlotRestriction(stats)}
+            BoosterIndexRestrictionRegister(fit),
+            CalibrationRestriction(fit),
+            CapitalItemRestrictionRegister(fit),
+            ChargeGroupRestrictionRegister(fit),
+            ChargeSizeRestrictionRegister(fit),
+            ChargeVolumeRestrictionRegister(fit),
+            CpuRestriction(fit),
+            DroneBandwidthRestriction(fit),
+            DroneBayVolumeRestriction(fit),
+            DroneGroupRestrictionRegister(fit),
+            # FighterSquadHeavyRestriction(fit),
+            # FighterSquadLightRestriction(fit),
+            # FighterSquadRestriction(fit),
+            # FighterSquadSupportRestriction(fit),
+            HighSlotRestriction(fit),
+            ImplantIndexRestrictionRegister(fit),
+            ItemClassRestrictionRegister(fit),
+            # LaunchedDroneRestriction(fit),
+            # LauncherSlotRestriction(fit),
+            # LowSlotRestriction(fit),
+            MaxGroupActiveRestrictionRegister(fit),
+            MaxGroupFittedRestrictionRegister(fit),
+            MaxGroupOnlineRestrictionRegister(fit),
+            # MediumSlotRestriction(fit),
+            PowergridRestriction(fit),
+            RigSizeRestrictionRegister(fit),
+            # RigSlotRestriction(fit),
+            ShipTypeGroupRestrictionRegister(fit),
+            SkillRequirementRestrictionRegister(fit),
+            StateRestrictionRegister(fit),
+            SubsystemIndexRestrictionRegister(fit),
+            # SubsystemSlotRestriction(fit),
+            # TurretSlotRestriction(fit)
+        }
 
     def validate(self, skip_checks=()):
         """Validate fit.

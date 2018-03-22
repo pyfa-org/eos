@@ -102,8 +102,8 @@ class Fit(MsgBroker):
         self.fighters = ItemSet(self, FighterSquad)
         # Initialize services
         self._calculator = CalculationService(self)
+        self._restriction = RestrictionService(self)
         self.stats = StatService(self)
-        self._restriction = RestrictionService(self, self.stats)
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Initialize source
@@ -199,6 +199,11 @@ class Fit(MsgBroker):
             yield item
             for child_item in item._get_child_items():
                 yield child_item
+
+    def _loaded_item_iter(self):
+        for item in self._item_iter():
+            if item._is_loaded:
+                yield item
 
     def __repr__(self):
         spec = [

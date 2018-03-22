@@ -63,9 +63,26 @@ class TestCalibration(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_undefined_output(self):
+    def test_fail_excess_single_ship_absent(self):
         # When stats module does not specify output, make sure it's assumed to
         # be 0
+        item = Rig(self.mktype(
+            attrs={AttrId.upgrade_cost: 5},
+            effects=[self.effect]).id)
+        self.fit.rigs.add(item)
+        # Action
+        error = self.get_error(item, Restriction.calibration)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 5)
+        self.assertEqual(error.item_use, 5)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_excess_single_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         item = Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 5},
             effects=[self.effect]).id)
@@ -210,14 +227,11 @@ class TestCalibration(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
+    def test_pass_consumer_not_loaded(self):
         self.fit.ship = Ship(self.mktype(
-            attrs={AttrId.upgrade_capacity: 40}).id)
-        item = Rig(self.mktype(
-            attrs={AttrId.upgrade_cost: 50},
-            effects=[self.effect]).id)
+            attrs={AttrId.upgrade_capacity: 0}).id)
+        item = Rig(self.allocate_type_id())
         self.fit.rigs.add(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.calibration)
         # Verification

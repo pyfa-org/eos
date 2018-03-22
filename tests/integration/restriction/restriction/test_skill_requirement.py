@@ -100,6 +100,21 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_skill_not_loaded(self):
+        item = ModuleHigh(self.mktype(attrs={
+            AttrId.required_skill_2: 50,
+            AttrId.required_skill_2_level: 3}).id)
+        self.fit.modules.high.append(item)
+        self.fit.skills.add(Skill(self.allocate_type_id(), level=3))
+        # Action
+        error = self.get_error(item, Restriction.skill_requirement)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertCountEqual(error, ((50, None, 3),))
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_pass_satisfied(self):
         # Check that error isn't raised when all skill requirements are met
         item = ModuleHigh(self.mktype(attrs={
@@ -129,12 +144,9 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
-        item = ModuleHigh(self.mktype(attrs={
-            AttrId.required_skill_1: 50,
-            AttrId.required_skill_1_level: 3}).id)
+    def test_pass_item_not_loaded(self):
+        item = ModuleHigh(self.allocate_type_id())
         self.fit.modules.high.append(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.skill_requirement)
         # Verification

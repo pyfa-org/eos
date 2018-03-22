@@ -23,7 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eos import State
-from eos.fit.item import Charge
+from eos.fit.item.charge import Autocharge
+from eos.fit.item.charge import Charge
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
 from .base import BaseRestrictionRegister
@@ -33,7 +34,7 @@ from ..exception import RestrictionValidationError
 StateErrorData = namedtuple(
     'StateErrorData', ('state', 'allowed_states'))
 
-EXCEPTIONS = (Charge,)
+EXCEPTIONS = (Charge, Autocharge)
 
 
 class StateRestrictionRegister(BaseRestrictionRegister):
@@ -42,9 +43,9 @@ class StateRestrictionRegister(BaseRestrictionRegister):
     I.e. check that passive modules are not active, etc.
     """
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         self.__restricted_items = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_states_activated(self, msg):
         if State.online in msg.states and not isinstance(msg.item, EXCEPTIONS):

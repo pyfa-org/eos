@@ -170,7 +170,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_no_ship(self):
+    def test_fail_ship_absent(self):
         # Absent ship should trigger this error too
         item = ModuleHigh(self.mktype(
             attrs={AttrId.can_fit_ship_type_1: 10}).id)
@@ -182,6 +182,24 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertEqual(error.ship_type_id, None)
         self.assertEqual(error.ship_group_id, None)
         self.assertCountEqual(error.allowed_type_ids, [10])
+        self.assertCountEqual(error.allowed_group_ids, ())
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_not_loaded(self):
+        ship_type_id = self.allocate_type_id()
+        self.fit.ship = Ship(ship_type_id)
+        item = ModuleHigh(self.mktype(
+            attrs={AttrId.can_fit_ship_type_1: ship_type_id}).id)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.ship_type_group)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.ship_type_id, None)
+        self.assertEqual(error.ship_group_id, None)
+        self.assertCountEqual(error.allowed_type_ids, [ship_type_id])
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
@@ -264,13 +282,10 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
-        ship_type = self.mktype(group_id=31)
-        self.fit.ship = Ship(ship_type.id)
-        item = ModuleHigh(self.mktype(
-            attrs={AttrId.can_fit_ship_type_1: 10}).id)
+    def test_pass_item_not_loaded(self):
+        self.fit.ship = Ship(self.mktype(group_id=31).id)
+        item = ModuleHigh(self.allocate_type_id())
         self.fit.modules.high.append(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.ship_type_group)
         # Verification

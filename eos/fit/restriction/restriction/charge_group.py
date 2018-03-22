@@ -51,10 +51,10 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             type are taken.
     """
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         # Format: {container item: (allowed groups)}
         self.__restricted_containers = {}
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def _handle_item_loaded(self, msg):
         # We're going to track containers, not charges; ignore all items which
@@ -90,7 +90,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             self.__restricted_containers.items()
         ):
             charge = container.charge
-            if charge is None:
+            if charge is None or not charge._is_loaded:
                 continue
             group_id = charge._type.group_id
             if group_id not in allowed_group_ids:

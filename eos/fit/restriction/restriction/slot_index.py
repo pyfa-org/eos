@@ -41,11 +41,11 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
     It doesn't allow multiple items to take the same numbered slot.
     """
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         # All items which possess index of slot are stored in this container
         # Format: {slot index: {items}}
         self.__index_item_map = KeyedStorage()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     @property
     @abstractmethod
@@ -72,8 +72,7 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
 
     def validate(self):
         tainted_items = {}
-        for slot_index in self.__index_item_map:
-            slot_index_items = self.__index_item_map[slot_index]
+        for slot_index, slot_index_items in self.__index_item_map.items():
             # If more than one item occupies the same slot, all items in this
             # slot are tainted
             if len(slot_index_items) > 1:

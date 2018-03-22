@@ -43,7 +43,7 @@ from eos.fit.item import Stance
 from eos.fit.item import Subsystem
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
-from .base import BaseRestrictionRegister
+from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
 
@@ -94,7 +94,7 @@ CLASS_VALIDATORS = {
         EffectId.subsystem in item_type.effects}
 
 
-class ItemClassRestrictionRegister(BaseRestrictionRegister):
+class ItemClassRestrictionRegister(BaseRestriction):
     """Check that item type is wrapped by corresponding item class instance.
 
     For example, cybernetic subprocessor should be represented by Implant class
@@ -105,23 +105,12 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
             are used.
     """
 
-    def __init__(self, msg_broker):
-        self.__items = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
-
-    def _handle_item_loaded(self, msg):
-        self.__items.add(msg.item)
-
-    def _handle_item_unloaded(self, msg):
-        self.__items.discard(msg.item)
-
-    _handler_map = {
-        ItemLoaded: _handle_item_loaded,
-        ItemUnloaded: _handle_item_unloaded}
+    def __init__(self, fit):
+        self.__fit = fit
 
     def validate(self):
         tainted_items = {}
-        for item in self.__items:
+        for item in self.__fit._loaded_item_iter():
             # Get validator function for class of passed item. If it is not
             # found or fails, seek for 'right' item class for the item type
             try:
@@ -135,15 +124,15 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
             raise RestrictionValidationError(tainted_items)
 
     def __get_error_data(self, item):
-        allowed_classes = []
+        allowed_classes = set()
         # Cycle through our class validator dictionary and seek for acceptable
         # classes for this item type
         for item_class, validator_func in CLASS_VALIDATORS.items():
             if validator_func(item._type) is True:
-                allowed_classes.append(item_class)
+                allowed_classes.add(item_class)
         error_data = ItemClassErrorData(
             item_class=type(item),
-            allowed_classes=tuple(allowed_classes))
+            allowed_classes=frozenset(allowed_classes))
         return error_data
 
     @property

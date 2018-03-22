@@ -23,14 +23,16 @@ from eos import Charge
 from eos import ModuleHigh
 from eos import Restriction
 from eos import State
+from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
+from eos.const.eve import EffectId
 from tests.integration.restriction.testcase import RestrictionTestCase
 
 
 class TestState(RestrictionTestCase):
     """Check functionality of item state restriction."""
 
-    def test_fail_state_higher(self):
+    def test_fail_item_state_higher(self):
         effect = self.mkeffect(category_id=EffectCategoryId.active)
         item = ModuleHigh(
             self.mktype(effects=[effect], default_effect=effect).id,
@@ -48,7 +50,20 @@ class TestState(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_state_lower(self):
+    def test_fail_item_state_higher_no_effects(self):
+        item = ModuleHigh(self.mktype().id, state=State.overload)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.state)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.state, State.overload)
+        self.assertCountEqual(error.allowed_states, [State.offline])
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_state_lower(self):
         effect = self.mkeffect(category_id=EffectCategoryId.active)
         item = ModuleHigh(
             self.mktype(effects=[effect], default_effect=effect).id,
@@ -62,7 +77,7 @@ class TestState(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_state_equal(self):
+    def test_pass_item_state_equal(self):
         effect = self.mkeffect(category_id=EffectCategoryId.active)
         item = ModuleHigh(
             self.mktype(effects=[effect], default_effect=effect).id,
@@ -98,13 +113,31 @@ class TestState(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
-        effect = self.mkeffect(category_id=EffectCategoryId.active)
-        item = ModuleHigh(
-            self.mktype(effects=[effect], default_effect=effect).id,
-            state=State.overload)
+    def test_pass_exception_autocharge(self):
+        # Autocharges are the same as charges, inherit state from container
+        autocharge_type = self.mktype()
+        container_effect = self.mkeffect(
+            effect_id=EffectId.target_attack,
+            category_id=EffectCategoryId.target)
+        container = ModuleHigh(
+            self.mktype(
+                attrs={AttrId.ammo_loaded: autocharge_type.id},
+                effects=[container_effect]).id,
+            state=State.active)
+        self.fit.modules.high.append(container)
+        self.assertIn(container_effect.id, container.autocharges)
+        autocharge = container.autocharges[container_effect.id]
+        # Action
+        error = self.get_error(autocharge, Restriction.state)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_not_loaded(self):
+        item = ModuleHigh(self.allocate_type_id(), state=State.overload)
         self.fit.modules.high.append(item)
-        self.fit.source = None
         # Action
         error = self.get_error(item, Restriction.state)
         # Verification

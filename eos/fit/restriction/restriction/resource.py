@@ -40,8 +40,8 @@ class ResourceRestriction(BaseRestriction, metaclass=ABCMeta):
     consumed by other items.
     """
 
-    def __init__(self, stats):
-        self.__stats = stats
+    def __init__(self, fit):
+        self.__fit = fit
 
     @property
     @abstractmethod
@@ -56,7 +56,7 @@ class ResourceRestriction(BaseRestriction, metaclass=ABCMeta):
 
     def validate(self):
         # Use stats module to get resource use and output
-        stats = getattr(self.__stats, self._stat_name)
+        stats = getattr(self.__fit.stats, self._stat_name)
         total_use = stats.used
         # Can be None, so fall back to 0 in this case
         output = stats.output or 0

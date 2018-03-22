@@ -48,7 +48,7 @@ MaxGroupErrorData = namedtuple(
 class MaxGroupRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
     """Base class for all max modules per group restrictions."""
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         # Container for all tracked items, keyed by their group ID
         # Format: {group ID: {items}}
         self.__group_item_map = KeyedStorage()
@@ -56,7 +56,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
         # operational
         # Format: {items}
         self.__restricted_items = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     @property
     @abstractmethod
