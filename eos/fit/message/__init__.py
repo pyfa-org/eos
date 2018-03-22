@@ -24,8 +24,7 @@ from .message import AttrValueChangedMasked
 from .message import DefaultIncomingDmgChanged
 from .message import EffectsStarted
 from .message import EffectsStopped
-from .message import ItemAdded
-from .message import ItemRemoved
-from .message import ItemTypeChanged
+from .message import ItemLoaded
+from .message import ItemUnloaded
 from .message import StatesActivated
 from .message import StatesDeactivated

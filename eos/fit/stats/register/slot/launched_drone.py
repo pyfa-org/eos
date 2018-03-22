@@ -23,8 +23,8 @@ from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.fit.item import Character
 from eos.fit.item import Drone
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
 from .base import BaseSlotRegister
@@ -53,11 +53,11 @@ class LaunchedDroneRegister(BaseSlotRegister):
     def _users(self):
         return self.__drones
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         if isinstance(msg.item, Character):
             self.__current_char = msg.item
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         if msg.item is self.__current_char:
             self.__current_char = None
 
@@ -70,7 +70,7 @@ class LaunchedDroneRegister(BaseSlotRegister):
             self.__drones.discard(msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed,
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded,
         StatesActivated: _handle_states_activated,
         StatesDeactivated: _handle_states_deactivated}

@@ -25,8 +25,8 @@ from abc import abstractmethod
 from eos.const.eve import AttrId
 from eos.fit.item import FighterSquad
 from eos.fit.item import Ship
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseSlotRegister
 
 
@@ -63,7 +63,7 @@ class FighterSquadTypeRegister(BaseSlotRegister, metaclass=ABCMeta):
     def _users(self):
         return self.__fighters
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         if (
             isinstance(msg.item, FighterSquad) and
             msg.item._type_attrs.get(self._fighter_attr_id)
@@ -72,14 +72,14 @@ class FighterSquadTypeRegister(BaseSlotRegister, metaclass=ABCMeta):
         elif isinstance(msg.item, Ship):
             self.__current_ship = msg.item
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         if msg.item is self.__current_ship:
             self.__current_ship = None
         self.__fighters.discard(msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
 
 class FighterSquadSupportRegister(FighterSquadTypeRegister):

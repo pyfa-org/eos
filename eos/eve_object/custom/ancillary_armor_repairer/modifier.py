@@ -27,8 +27,8 @@ from eos.const.eve import TypeId
 from eos.eve_object.modifier import BasePythonModifier
 from eos.eve_object.modifier import ModificationCalculationError
 from eos.fit.message import AttrValueChanged
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 
 
 class AncillaryRepAmountModifier(BasePythonModifier):
@@ -51,7 +51,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             value = 1
         return ModOperator.post_mul_immune, value
 
-    def __revise_on_item_added_removed(self, msg, carrier_item):
+    def __revise_on_item_loaded_unloaded(self, msg, carrier_item):
         # If added/removed item is charge of effect carrying item and charge is
         # paste, then modification value changes
         if (
@@ -72,8 +72,8 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         return False
 
     __revision_map = {
-        ItemAdded: __revise_on_item_added_removed,
-        ItemRemoved: __revise_on_item_added_removed,
+        ItemLoaded: __revise_on_item_loaded_unloaded,
+        ItemUnloaded: __revise_on_item_loaded_unloaded,
         AttrValueChanged: __revise_on_attr_changed}
 
     @property

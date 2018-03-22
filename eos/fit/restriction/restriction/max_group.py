@@ -29,8 +29,8 @@ from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh
 from eos.fit.item import ModuleLow
 from eos.fit.item import ModuleMed
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
 from eos.util.keyed_storage import KeyedStorage
@@ -116,15 +116,15 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
 
     _max_group_attr_id = AttrId.max_group_fitted
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         MaxGroupRestrictionRegister._register_item(self, msg.item)
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         MaxGroupRestrictionRegister._unregister_item(self, msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
     @property
     def type(self):

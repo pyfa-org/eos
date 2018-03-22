@@ -163,12 +163,12 @@ class Fit(MsgBroker):
         # instead of checking if item is loaded when needed).
         for item in self._item_iter():
             # Notify everyone about item being "removed"
-            msgs = MsgHelper.get_item_removed_msgs(item)
+            msgs = MsgHelper.get_item_unloaded_msgs(item)
             self._publish_bulk(msgs)
             # Reload item, which clears remaining source-dependent data
             item._reload(new_source)
             # Notify everyone about item being "added"
-            msgs = MsgHelper.get_item_added_msgs(item)
+            msgs = MsgHelper.get_item_loaded_msgs(item)
             self._publish_bulk(msgs)
 
     @property

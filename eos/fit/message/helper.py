@@ -23,21 +23,21 @@ from eos.const.eos import State
 from eos.fit.misc.effect_status import EffectStatusResolver
 from .message import EffectsStarted
 from .message import EffectsStopped
-from .message import ItemAdded
-from .message import ItemRemoved
+from .message import ItemLoaded
+from .message import ItemUnloaded
 from .message import StatesActivated
 from .message import StatesDeactivated
 
 
 class MsgHelper:
-    """Assists with generation of messages for various complex needs."""
+    """Assists with generation of messages."""
 
     @staticmethod
-    def get_item_added_msgs(item):
-        """Generate messages about new item.
+    def get_item_loaded_msgs(item):
+        """Generate messages about loaded item.
 
         Args:
-            items: Ttems which is being added.
+            items: Ttems which was loaded.
 
         Returns:
             Iterable with messages.
@@ -45,7 +45,7 @@ class MsgHelper:
         msgs = []
         if item._is_loaded:
             # Item
-            msgs.append(ItemAdded(item))
+            msgs.append(ItemLoaded(item))
             # States
             states = {s for s in State if s <= item.state}
             msgs.append(StatesActivated(item, states))
@@ -54,11 +54,11 @@ class MsgHelper:
         return msgs
 
     @staticmethod
-    def get_item_removed_msgs(item):
-        """Generate messages about removed item.
+    def get_item_unloaded_msgs(item):
+        """Generate messages about unloaded item.
 
         Args:
-            item: Items which is to be removed.
+            item: Items which will be unloaded.
 
         Returns:
             Iterable with messages.
@@ -76,7 +76,7 @@ class MsgHelper:
             states = {s for s in State if s <= item.state}
             msgs.append(StatesDeactivated(item, states))
             # Item
-            msgs.append(ItemRemoved(item))
+            msgs.append(ItemUnloaded(item))
         return msgs
 
     @staticmethod

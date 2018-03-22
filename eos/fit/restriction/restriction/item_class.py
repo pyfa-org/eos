@@ -41,8 +41,8 @@ from eos.fit.item import Ship
 from eos.fit.item import Skill
 from eos.fit.item import Stance
 from eos.fit.item import Subsystem
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -109,15 +109,15 @@ class ItemClassRestrictionRegister(BaseRestrictionRegister):
         self.__items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         self.__items.add(msg.item)
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         self.__items.discard(msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
     def validate(self):
         tainted_items = {}

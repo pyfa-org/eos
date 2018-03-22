@@ -22,8 +22,8 @@
 from eos.const.eve import AttrId
 from eos.fit.item import Drone
 from eos.fit.item import Ship
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseResourceRegister
 
 
@@ -50,7 +50,7 @@ class DronebayVolumeRegister(BaseResourceRegister):
     def _users(self):
         return self.__resource_users
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         if (
             isinstance(msg.item, Drone) and
             AttrId.volume in msg.item._type_attrs
@@ -59,12 +59,12 @@ class DronebayVolumeRegister(BaseResourceRegister):
         elif isinstance(msg.item, Ship):
             self.__current_ship = msg.item
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         if isinstance(msg.item, Drone):
             self.__resource_users.discard(msg.item)
         elif msg.item is self.__current_ship:
             self.__current_ship = None
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}

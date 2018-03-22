@@ -27,8 +27,8 @@ from eos.const.eve import EffectId
 from eos.fit.item import Ship
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseResourceRegister
 
 
@@ -72,11 +72,11 @@ class ShipRegularResourceRegister(BaseResourceRegister, metaclass=ABCMeta):
     def _users(self):
         return self.__resource_users
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         if isinstance(msg.item, Ship):
             self.__current_ship = msg.item
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         if msg.item is self.__current_ship:
             self.__current_ship = None
 
@@ -92,8 +92,8 @@ class ShipRegularResourceRegister(BaseResourceRegister, metaclass=ABCMeta):
             self.__resource_users.discard(msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed,
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded,
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped}
 

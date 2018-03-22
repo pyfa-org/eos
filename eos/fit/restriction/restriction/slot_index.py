@@ -25,8 +25,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -53,22 +53,22 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
         """This attribute's value on item represents index of slot."""
         ...
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         # Skip items which don't have index specified
         slot_index = msg.item._type_attrs.get(self._slot_index_attr_id)
         if slot_index is None:
             return
         self.__index_item_map.add_data_entry(slot_index, msg.item)
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         slot_index = msg.item._type_attrs.get(self._slot_index_attr_id)
         if slot_index is None:
             return
         self.__index_item_map.rm_data_entry(slot_index, msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
     def validate(self):
         tainted_items = {}

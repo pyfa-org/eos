@@ -50,7 +50,7 @@ class ItemContainerBase:
             for subitem in (item, *item._get_child_items()):
                 # Services rely on data loaded into items, thus we reload first
                 subitem._reload(source)
-                msgs = MsgHelper.get_item_added_msgs(subitem)
+                msgs = MsgHelper.get_item_loaded_msgs(subitem)
                 fit._publish_bulk(msgs)
 
     def _handle_item_removal(self, item):
@@ -59,16 +59,14 @@ class ItemContainerBase:
         Must be called before item has been removed from specific container, so
         that presence checks during removal pass.
         """
-        # Fit updates
         fit = item._fit
         if fit is not None:
             for subitem in (item, *item._get_child_items()):
                 # Services rely on data loaded into items during removal, thus
                 # we remove item from services first, then unload it
-                msgs = MsgHelper.get_item_removed_msgs(subitem)
+                msgs = MsgHelper.get_item_unloaded_msgs(subitem)
                 fit._publish_bulk(msgs)
                 subitem._reload(None)
-        # Item updates
         item._container = None
 
     def _check_class(self, item, allow_none=False):

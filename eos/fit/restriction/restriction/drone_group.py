@@ -25,8 +25,8 @@ from eos.const.eos import Restriction
 from eos.const.eve import AttrId
 from eos.fit.item import Drone
 from eos.fit.item import Ship
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -55,20 +55,20 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         self.__drones = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         if isinstance(msg.item, Ship):
             self.__current_ship = msg.item
         elif isinstance(msg.item, Drone):
             self.__drones.add(msg.item)
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         if msg.item is self.__current_ship:
             self.__current_ship = None
         self.__drones.discard(msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
     def validate(self):
         ship = self.__current_ship

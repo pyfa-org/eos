@@ -22,7 +22,7 @@
 from eos.util.repr import make_repr_str
 
 
-class ItemTypeChanged:
+class ItemLoaded:
 
     def __init__(self, item):
         self.item = item
@@ -32,17 +32,7 @@ class ItemTypeChanged:
         return make_repr_str(self, spec)
 
 
-class ItemAdded:
-
-    def __init__(self, item):
-        self.item = item
-
-    def __repr__(self):
-        spec = ['item']
-        return make_repr_str(self, spec)
-
-
-class ItemRemoved:
+class ItemUnloaded:
 
     def __init__(self, item):
         self.item = item

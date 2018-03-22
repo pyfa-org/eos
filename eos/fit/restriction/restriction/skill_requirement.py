@@ -24,8 +24,8 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.fit.item import Rig
 from eos.fit.item import Skill
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -55,7 +55,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = set()
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         # Handle skill addition
         if isinstance(msg.item, Skill):
             self.__skills[msg.item._type_id] = msg.item
@@ -67,7 +67,7 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         ):
             self.__restricted_items.add(msg.item)
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         # Handle skill removal
         if isinstance(msg.item, Skill):
             del self.__skills[msg.item._type_id]
@@ -75,8 +75,8 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items.discard(msg.item)
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
     def validate(self):
         tainted_items = {}

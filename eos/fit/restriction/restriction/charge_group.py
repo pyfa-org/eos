@@ -23,8 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -56,7 +56,7 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_containers = {}
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         # We're going to track containers, not charges; ignore all items which
         # can't fit a charge
         if not hasattr(msg.item, 'charge'):
@@ -74,13 +74,13 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
         if allowed_group_ids:
             self.__restricted_containers[msg.item] = tuple(allowed_group_ids)
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         if msg.item in self.__restricted_containers:
             del self.__restricted_containers[msg.item]
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
     def validate(self):
         tainted_items = {}

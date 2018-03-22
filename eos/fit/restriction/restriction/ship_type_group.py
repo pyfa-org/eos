@@ -27,8 +27,8 @@ from eos.fit.item import ModuleHigh
 from eos.fit.item import ModuleLow
 from eos.fit.item import ModuleMed
 from eos.fit.item import Ship
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message import ItemLoaded
+from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -102,7 +102,7 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = {}
         msg_broker._subscribe(self, self._handler_map.keys())
 
-    def _handle_item_added(self, msg):
+    def _handle_item_loaded(self, msg):
         if isinstance(msg.item, Ship):
             self.__current_ship = msg.item
         elif not isinstance(msg.item, TRACKED_ITEM_CLASSES):
@@ -131,15 +131,15 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             type_ids=tuple(allowed_type_ids),
             group_ids=tuple(allowed_group_ids))
 
-    def _handle_item_removed(self, msg):
+    def _handle_item_unloaded(self, msg):
         if msg.item is self.__current_ship:
             self.__current_ship = None
         elif msg.item in self.__restricted_items:
             del self.__restricted_items[msg.item]
 
     _handler_map = {
-        ItemAdded: _handle_item_added,
-        ItemRemoved: _handle_item_removed}
+        ItemLoaded: _handle_item_loaded,
+        ItemUnloaded: _handle_item_unloaded}
 
     def validate(self):
         # Get type ID and group ID of ship, if no ship available, assume they're
