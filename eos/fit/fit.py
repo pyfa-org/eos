@@ -155,21 +155,9 @@ class Fit(MsgBroker):
         if new_source is old_source:
             return
         self.__source = new_source
-        # Items should be reloaded strictly one-by-one. Previously they were
-        # processed in batches (send removal messages for all items, reload all
-        # items, send addition messages for all items), but it caused confusion
-        # in some services which could be resolved by making them more complex
-        # (e.g. calculator register had to store all known affectee items
-        # instead of checking if item is loaded when needed).
         for item in self._item_iter():
-            # Notify everyone about item being "removed"
-            msgs = MsgHelper.get_item_unloaded_msgs(item)
-            self._publish_bulk(msgs)
-            # Reload item, which clears remaining source-dependent data
-            item._reload(new_source)
-            # Notify everyone about item being "added"
-            msgs = MsgHelper.get_item_loaded_msgs(item)
-            self._publish_bulk(msgs)
+            item._unload()
+            item._load()
 
     @property
     def default_incoming_dmg(self):

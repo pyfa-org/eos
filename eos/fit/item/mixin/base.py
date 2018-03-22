@@ -246,30 +246,42 @@ class BaseItemMixin(metaclass=ABCMeta):
             self.__autocharges.clear()
             self.__autocharges = None
 
-    # Auxiliary methods
+    # Source-related methods
     @property
     def _is_loaded(self):
         return False if self._type is None else True
 
-    def _reload(self, source):
-        """Reload item's source-dependent data.
-
-        Each time item's underlying type is changed, this method should be
-        called.
-        """
-        self.attrs.clear()
-        self._clear_autocharges()
-        if source is not None:
-            try:
-                item_type = source.cache_handler.get_type(self._type_id)
-            except TypeFetchError:
-                item_type = None
-        else:
-            item_type = None
-        self._type = item_type
+    def _load(self):
+        """Load item's source-specific data."""
+        fit = self._fit
+        # Do nothing if we cannot reach cache handler
+        try:
+            getter = fit.source.cache_handler.get_type
+        except AttributeError:
+            return
+        # Do nothing if cache handler doesn't have item type we need
+        try:
+            self._type = getter(self._type_id)
+        except TypeFetchError:
+            return
+        # If fetch is successful, launch bunch of messages
+        if fit is not None:
+            msgs = MsgHelper.get_item_loaded_msgs(self)
+            fit._publish_bulk(msgs)
         # Add autocharges, if effects specify any
         for effect_id, effect in self._type_effects.items():
             autocharge_type_id = effect.get_autocharge_type_id(self)
             if autocharge_type_id is None:
                 continue
             self._add_autocharge(effect_id, autocharge_type_id)
+
+    def _unload(self):
+        """Clear item's source-dependent data."""
+        fit = self._fit
+        # Send notifications about item being unloaded if it was loaded
+        if fit is not None and self._is_loaded:
+            msgs = MsgHelper.get_item_unloaded_msgs(self)
+            fit._publish_bulk(msgs)
+        self.attrs.clear()
+        self._clear_autocharges()
+        self._type = None

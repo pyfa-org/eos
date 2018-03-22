@@ -19,7 +19,6 @@
 # ==============================================================================
 
 
-from eos.fit.message.helper import MsgHelper
 from .exception import ItemAlreadyAssignedError
 
 
@@ -44,14 +43,8 @@ class ItemContainerBase:
         if item._container:
             raise ItemAlreadyAssignedError(item)
         item._container = container
-        fit = item._fit
-        if fit is not None:
-            source = fit.source
-            for subitem in (item, *item._get_child_items()):
-                # Services rely on data loaded into items, thus we reload first
-                subitem._reload(source)
-                msgs = MsgHelper.get_item_loaded_msgs(subitem)
-                fit._publish_bulk(msgs)
+        for subitem in (item, *item._get_child_items()):
+            subitem._load()
 
     def _handle_item_removal(self, item):
         """Do all the generic work to remove item to container.
@@ -59,14 +52,8 @@ class ItemContainerBase:
         Must be called before item has been removed from specific container, so
         that presence checks during removal pass.
         """
-        fit = item._fit
-        if fit is not None:
-            for subitem in (item, *item._get_child_items()):
-                # Services rely on data loaded into items during removal, thus
-                # we remove item from services first, then unload it
-                msgs = MsgHelper.get_item_unloaded_msgs(subitem)
-                fit._publish_bulk(msgs)
-                subitem._reload(None)
+        for subitem in (item, *item._get_child_items()):
+            subitem._unload()
         item._container = None
 
     def _check_class(self, item, allow_none=False):
