@@ -19,13 +19,41 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
+
 from eos.const.eos import Restriction
 from eos.fit.restriction.exception import RestrictionValidationError
 from eos.fit.restriction.restriction.base import BaseRestriction
 from .error_data import SlotQuantityErrorData
 
 
-class HighSlotRestriction(BaseRestriction):
+class OrderedSlotRestriction(BaseRestriction, metaclass=ABCMeta):
+
+    def __init__(self, fit):
+        self._fit = fit
+
+    @property
+    @abstractmethod
+    def _slot_stats(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _container(self):
+        ...
+
+    def validate(self):
+        used, total = self._slot_stats
+        if used > total:
+            tainted_items = {}
+            for item in self._container[total:]:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
+
+
+class HighSlotRestriction(OrderedSlotRestriction):
     """Quantity of high-slot items should not exceed limit.
 
     Details:
@@ -34,24 +62,18 @@ class HighSlotRestriction(BaseRestriction):
             error.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.high_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.modules.high[total:]:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
+    type = Restriction.high_slot
 
     @property
-    def type(self):
-        return Restriction.high_slot
+    def _slot_stats(self):
+        return self._fit.stats.high_slots
+
+    @property
+    def _container(self):
+        return self._fit.modules.high
 
 
-class MediumSlotRestriction(BaseRestriction):
+class MediumSlotRestriction(OrderedSlotRestriction):
     """Quantity of medium-slot items should not exceed limit.
 
     Details:
@@ -60,24 +82,18 @@ class MediumSlotRestriction(BaseRestriction):
             error.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.med_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.modules.med[total:]:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
+    type = Restriction.medium_slot
 
     @property
-    def type(self):
-        return Restriction.medium_slot
+    def _slot_stats(self):
+        return self._fit.stats.med_slots
+
+    @property
+    def _container(self):
+        return self._fit.modules.med
 
 
-class LowSlotRestriction(BaseRestriction):
+class LowSlotRestriction(OrderedSlotRestriction):
     """Quantity of low-slot items should not exceed limit.
 
     Details:
@@ -86,18 +102,12 @@ class LowSlotRestriction(BaseRestriction):
             error.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.low_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.modules.low[total:]:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
+    type = Restriction.low_slot
 
     @property
-    def type(self):
-        return Restriction.low_slot
+    def _slot_stats(self):
+        return self._fit.stats.low_slots
+
+    @property
+    def _container(self):
+        return self._fit.modules.low

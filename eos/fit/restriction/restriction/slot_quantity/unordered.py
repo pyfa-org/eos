@@ -19,79 +19,89 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
+
 from eos.const.eos import Restriction
 from eos.fit.restriction.exception import RestrictionValidationError
 from eos.fit.restriction.restriction.base import BaseRestriction
 from .error_data import SlotQuantityErrorData
 
 
-class RigSlotRestriction(BaseRestriction):
+class UnorderedSlotRestriction(BaseRestriction, metaclass=ABCMeta):
+
+    def __init__(self, fit):
+        self._fit = fit
+
+    @property
+    @abstractmethod
+    def _slot_stats(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _container(self):
+        ...
+
+    def validate(self):
+        used, total = self._slot_stats
+        if used > total:
+            tainted_items = {}
+            for item in self._container:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
+
+
+class RigSlotRestriction(UnorderedSlotRestriction):
     """Quantity of rig items should not exceed limit.
 
     Details:
         Items which are not loaded are considered as occupying slot.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.rig_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.rigs:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
+    type = Restriction.rig_slot
 
     @property
-    def type(self):
-        return Restriction.rig_slot
+    def _slot_stats(self):
+        return self._fit.stats.rig_slots
+
+    @property
+    def _container(self):
+        return self._fit.rigs
 
 
-class SubsystemSlotRestriction(BaseRestriction):
+class SubsystemSlotRestriction(UnorderedSlotRestriction):
     """Quantity of subsystem items should not exceed limit.
 
     Details:
         Items which are not loaded are considered as occupying slot.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.subsystem_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.subsystems:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
+    type = Restriction.subsystem_slot
 
     @property
-    def type(self):
-        return Restriction.subsystem_slot
+    def _slot_stats(self):
+        return self._fit.stats.subsystem_slots
+
+    @property
+    def _container(self):
+        return self._fit.subsystems
 
 
-class FighterSquadRestriction(BaseRestriction):
+class FighterSquadRestriction(UnorderedSlotRestriction):
     """Quantity of fighter squads should not exceed limit.
 
     Details:
         Items which are not loaded are considered as occupying slot.
     """
 
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.fighter_squads
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.fighters:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
+    type = Restriction.fighter_squad
 
     @property
-    def type(self):
-        return Restriction.fighter_squad
+    def _slot_stats(self):
+        return self._fit.stats.fighter_squads
+
+    @property
+    def _container(self):
+        return self._fit.fighters
