@@ -19,9 +19,8 @@
 # ==============================================================================
 
 
-from .fighter_squad import FighterSquadHeavyRegister
-from .fighter_squad import FighterSquadLightRegister
-from .fighter_squad import FighterSquadSupportRegister
-from .hardpoint_effect import LauncherSlotRegister
-from .hardpoint_effect import TurretSlotRegister
-from .launched_drone import LaunchedDroneRegister
+from collections import namedtuple
+
+
+SlotQuantityErrorData = namedtuple(
+    'SlotQuantityErrorData', ('used', 'total'))

@@ -24,8 +24,8 @@ import math
 from eos.const.eve import AttrId
 from eos.fit.stats_container import ItemHP
 from eos.fit.stats_container import ResistProfile
-from eos.fit.stats_container import TankingLayers
 from eos.fit.stats_container import SlotStats
+from eos.fit.stats_container import TankingLayers
 from .register import CalibrationRegister
 from .register import CpuRegister
 from .register import DmgDealerRegister

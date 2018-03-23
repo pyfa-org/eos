@@ -19,9 +19,15 @@
 # ==============================================================================
 
 
-from .fighter_squad import FighterSquadHeavyRegister
-from .fighter_squad import FighterSquadLightRegister
-from .fighter_squad import FighterSquadSupportRegister
-from .hardpoint_effect import LauncherSlotRegister
-from .hardpoint_effect import TurretSlotRegister
-from .launched_drone import LaunchedDroneRegister
+from .ordered import HighSlotRestriction
+from .ordered import LowSlotRestriction
+from .ordered import MediumSlotRestriction
+from .stats import FighterSquadHeavyRestriction
+from .stats import FighterSquadLightRestriction
+from .stats import FighterSquadSupportRestriction
+from .stats import LaunchedDroneRestriction
+from .stats import LauncherSlotRestriction
+from .stats import TurretSlotRestriction
+from .unordered import FighterSquadRestriction
+from .unordered import RigSlotRestriction
+from .unordered import SubsystemSlotRestriction

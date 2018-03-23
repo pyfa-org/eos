@@ -19,141 +19,10 @@
 # ==============================================================================
 
 
-from collections import namedtuple
-
 from eos.const.eos import Restriction
-from .base import BaseRestriction
-from ..exception import RestrictionValidationError
-
-
-SlotQuantityErrorData = namedtuple(
-    'SlotQuantityErrorData', ('used', 'total'))
-
-
-class HighSlotRestriction(BaseRestriction):
-    """Quantity of high-slot items should not exceed limit.
-
-    Details:
-        Items which are not loaded are considered as occupying slot.
-        Only items which are positioned outside of slots provided by ship raise
-            error.
-    """
-
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.high_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.modules.high[total:]:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.high_slot
-
-
-class MediumSlotRestriction(BaseRestriction):
-    """Quantity of medium-slot items should not exceed limit.
-
-    Details:
-        Items which are not loaded are considered as occupying slot.
-        Only items which are positioned outside of slots provided by ship raise
-            error.
-    """
-
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.med_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.modules.med[total:]:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.medium_slot
-
-
-class LowSlotRestriction(BaseRestriction):
-    """Quantity of low-slot items should not exceed limit.
-
-    Details:
-        Items which are not loaded are considered as occupying slot.
-        Only items which are positioned outside of slots provided by ship raise
-            error.
-    """
-
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.low_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.modules.low[total:]:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.low_slot
-
-
-class RigSlotRestriction(BaseRestriction):
-    """Quantity of rig items should not exceed limit.
-
-    Details:
-        Items which are not loaded are considered as occupying slot.
-    """
-
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.rig_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.rigs:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.rig_slot
-
-
-class SubsystemSlotRestriction(BaseRestriction):
-    """Quantity of subsystem items should not exceed limit.
-
-    Details:
-        Items which are not loaded are considered as occupying slot.
-    """
-
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.subsystem_slots
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.subsystems:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.subsystem_slot
+from eos.fit.restriction.exception import RestrictionValidationError
+from eos.fit.restriction.restriction.base import BaseRestriction
+from .error_data import SlotQuantityErrorData
 
 
 class TurretSlotRestriction(BaseRestriction):
@@ -226,30 +95,6 @@ class LaunchedDroneRestriction(BaseRestriction):
     @property
     def type(self):
         return Restriction.launched_drone
-
-
-class FighterSquadRestriction(BaseRestriction):
-    """Quantity of fighter squads should not exceed limit.
-
-    Details:
-        Items which are not loaded are considered as occupying slot.
-    """
-
-    def __init__(self, fit):
-        self._fit = fit
-
-    def validate(self):
-        used, total = self._fit.stats.fighter_squads
-        if used > total:
-            tainted_items = {}
-            for item in self._fit.fighters:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.fighter_squad
 
 
 class FighterSquadSupportRestriction(BaseRestriction):
