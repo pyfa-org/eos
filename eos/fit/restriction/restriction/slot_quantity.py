@@ -32,34 +32,6 @@ SlotQuantityErrorData = namedtuple(
     'SlotQuantityErrorData', ('used', 'total'))
 
 
-class BaseSlotRestriction(BaseRestriction, metaclass=ABCMeta):
-
-    def __init__(self, fit):
-        self._fit = fit
-
-    @property
-    @abstractmethod
-    def _stat_name(self):
-        ...
-
-
-class UnorderedSlotRestriction(BaseSlotRestriction):
-    """Base class for all unordered slot quantity restrictions."""
-
-    def validate(self):
-        stats = getattr(self._fit.stats, self._stat_name)
-        used = stats.used
-        total = stats.total or 0
-        # If quantity of items which take this slot is bigger than quantity of
-        # available slots, then all items which use this slot are tainted
-        if used > total:
-            tainted_items = {}
-            for item in stats._users:
-                tainted_items[item] = SlotQuantityErrorData(
-                    used=used, total=total)
-            raise RestrictionValidationError(tainted_items)
-
-
 class HighSlotRestriction(BaseRestriction):
     """Quantity of high-slot items should not exceed limit.
 
@@ -234,70 +206,119 @@ class LauncherSlotRestriction(BaseRestriction):
         return Restriction.launcher_slot
 
 
-class LaunchedDroneRestriction(UnorderedSlotRestriction):
+class LaunchedDroneRestriction(BaseRestriction):
     """Quantity of launched drones should not exceed limit.
 
     Details:
         For validation, stats module data is used.
     """
 
-    _stat_name = 'launched_drones'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        stats = self._fit.stats.launched_drones
+        if stats.used > stats.total:
+            tainted_items = {}
+            for item in stats._users:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=stats.used, total=stats.total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.launched_drone
 
 
-class FighterSquadRestriction(UnorderedSlotRestriction):
+class FighterSquadRestriction(BaseRestriction):
     """Quantity of fighter squads should not exceed limit.
 
     Details:
-        For validation, stats module data is used.
+        Items which are not loaded are considered as occupying slot.
     """
 
-    _stat_name = 'fighter_squads'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        used, total = self._fit.stats.fighter_squads
+        if used > total:
+            tainted_items = {}
+            for item in self._fit.fighters:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.fighter_squad
 
 
-class FighterSquadSupportRestriction(UnorderedSlotRestriction):
+class FighterSquadSupportRestriction(BaseRestriction):
     """Quantity of support fighter squads should not exceed limit.
 
     Details:
         For validation, stats module data is used.
     """
 
-    _stat_name = 'fighter_squads_support'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        stats = self._fit.stats.fighter_squads_support
+        if stats.used > stats.total:
+            tainted_items = {}
+            for item in stats._users:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=stats.used, total=stats.total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.fighter_squad_support
 
 
-class FighterSquadLightRestriction(UnorderedSlotRestriction):
+class FighterSquadLightRestriction(BaseRestriction):
     """Quantity of light fighter squads should not exceed limit.
 
     Details:
         For validation, stats module data is used.
     """
 
-    _stat_name = 'fighter_squads_light'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        stats = self._fit.stats.fighter_squads_light
+        if stats.used > stats.total:
+            tainted_items = {}
+            for item in stats._users:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=stats.used, total=stats.total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.fighter_squad_light
 
 
-class FighterSquadHeavyRestriction(UnorderedSlotRestriction):
+class FighterSquadHeavyRestriction(BaseRestriction):
     """Quantity of heavy fighter squads should not exceed limit.
 
     Details:
         For validation, stats module data is used.
     """
+    def __init__(self, fit):
+        self._fit = fit
 
-    _stat_name = 'fighter_squads_heavy'
+    def validate(self):
+        stats = self._fit.stats.fighter_squads_heavy
+        if stats.used > stats.total:
+            tainted_items = {}
+            for item in stats._users:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=stats.used, total=stats.total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):

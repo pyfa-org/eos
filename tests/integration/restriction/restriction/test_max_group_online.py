@@ -30,7 +30,7 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestMaxGroupOnline(RestrictionTestCase):
     """Check functionality of max group online restriction."""
 
-    def test_fail_excess_all(self):
+    def test_fail_all(self):
         # Make sure error is raised for all items exceeding their group
         # restriction
         item_type = self.mktype(
@@ -58,7 +58,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_mix_excess_one(self):
+    def test_mix_one(self):
         # Make sure error is raised for just items which excess restriction,
         # even if both are from the same group
         item1 = ModuleHigh(
@@ -106,7 +106,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_item_none_group(self):
+    def test_pass_item_group_none(self):
         # Check that items with None group are not affected
         item_type = self.mktype(
             group_id=None,
@@ -127,7 +127,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_state(self):
+    def test_pass_item_state(self):
         # No errors should occur if items are not active+
         item_type = self.mktype(
             group_id=886,
@@ -168,7 +168,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_not_loaded(self):
+    def test_pass_item_not_loaded(self):
         item = ModuleHigh(self.allocate_type_id(), state=State.online)
         self.fit.modules.high.append(item)
         # Action

@@ -35,7 +35,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         RestrictionTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.max_active_drones)
 
-    def test_fail_excess_single(self):
+    def test_fail_single(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by char
         self.fit.character = Character(self.mktype(
@@ -52,23 +52,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_no_char(self):
-        # When stats module does not specify total slot quantity, make sure it's
-        # assumed to be 0
-        self.fit.character = None
-        item = Drone(self.mktype().id, state=State.online)
-        self.fit.drones.add(item)
-        # Action
-        error = self.get_error(item, Restriction.launched_drone)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.used, 1)
-        self.assertEqual(error.total, 0)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_multiple(self):
+    def test_fail_multiple(self):
         # Check that error works for multiple items
         self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 1}).id)
@@ -89,6 +73,36 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNotNone(error2)
         self.assertEqual(error2.used, 2)
         self.assertEqual(error2.total, 1)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_char_absent(self):
+        # When stats module does not specify total slot quantity, make sure it's
+        # assumed to be 0
+        self.fit.character = None
+        item = Drone(self.mktype().id, state=State.online)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.launched_drone)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_char_not_loaded(self):
+        self.fit.character = Character(self.allocate_type_id())
+        item = Drone(self.mktype().id, state=State.online)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.launched_drone)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -146,13 +160,11 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_other_item_class(self):
-        # Check that error is raised when quantity of used slots exceeds slot
-        # quantity provided by char
+    def test_pass_item_not_loaded(self):
         self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
-        item = ModuleHigh(self.mktype().id, state=State.online)
-        self.fit.modules.high.append(item)
+        item = Drone(self.allocate_type_id(), state=State.online)
+        self.fit.drones.add(item)
         # Action
         error = self.get_error(item, Restriction.launched_drone)
         # Verification
@@ -161,12 +173,11 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
+    def test_pass_other_item_class(self):
         self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
-        item = Drone(self.mktype().id, state=State.online)
-        self.fit.drones.add(item)
-        self.fit.source = None
+        item = ModuleHigh(self.mktype().id, state=State.online)
+        self.fit.modules.high.append(item)
         # Action
         error = self.get_error(item, Restriction.launched_drone)
         # Verification

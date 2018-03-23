@@ -33,10 +33,10 @@ class DmgDealerRegister(BaseStatRegister):
     Provides functionality to fetch various aggregated stats.
     """
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         # Format: {(item, effect), ...}
         self.__dmg_dealers = KeyedStorage()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     def get_volley(self, item_filter, tgt_resists):
         volleys = []

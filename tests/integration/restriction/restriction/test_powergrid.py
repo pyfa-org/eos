@@ -44,7 +44,7 @@ class TestPowerGrid(RestrictionTestCase):
             effect_id=EffectId.online,
             category_id=EffectCategoryId.online)
 
-    def test_fail_excess_single(self):
+    def test_fail_single(self):
         # When ship provides powergrid output, but single consumer demands for
         # more, error should be raised
         self.fit.ship = Ship(self.mktype(attrs={AttrId.power_output: 40}).id)
@@ -63,42 +63,7 @@ class TestPowerGrid(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_ship_absent(self):
-        # When stats module does not specify output, make sure it's assumed to
-        # be 0
-        item = ModuleHigh(
-            self.mktype(attrs={AttrId.power: 5}, effects=[self.effect]).id,
-            state=State.online)
-        self.fit.modules.high.append(item)
-        # Action
-        error = self.get_error(item, Restriction.powergrid)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.output, 0)
-        self.assertEqual(error.total_use, 5)
-        self.assertEqual(error.item_use, 5)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_single_ship_not_loaded(self):
-        self.fit.ship = Ship(self.allocate_type_id())
-        item = ModuleHigh(
-            self.mktype(attrs={AttrId.power: 5}, effects=[self.effect]).id,
-            state=State.online)
-        self.fit.modules.high.append(item)
-        # Action
-        error = self.get_error(item, Restriction.powergrid)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.output, 0)
-        self.assertEqual(error.total_use, 5)
-        self.assertEqual(error.item_use, 5)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_multiple(self):
+    def test_fail_multiple(self):
         # When multiple consumers require less than powergrid output alone, but
         # in sum want more than total output, it should be erroneous situation
         self.fit.ship = Ship(self.mktype(attrs={AttrId.power_output: 40}).id)
@@ -128,7 +93,7 @@ class TestPowerGrid(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_modified(self):
+    def test_fail_modified(self):
         # Make sure modified powergrid values are taken
         self.fit.ship = Ship(self.mktype(attrs={AttrId.power_output: 50}).id)
         src_attr = self.mkattr()
@@ -154,6 +119,41 @@ class TestPowerGrid(RestrictionTestCase):
         self.assertEqual(error.output, 50)
         self.assertEqual(error.total_use, 100)
         self.assertEqual(error.item_use, 100)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_absent(self):
+        # When stats module does not specify output, make sure it's assumed to
+        # be 0
+        item = ModuleHigh(
+            self.mktype(attrs={AttrId.power: 5}, effects=[self.effect]).id,
+            state=State.online)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.powergrid)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 5)
+        self.assertEqual(error.item_use, 5)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        item = ModuleHigh(
+            self.mktype(attrs={AttrId.power: 5}, effects=[self.effect]).id,
+            state=State.online)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.powergrid)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 5)
+        self.assertEqual(error.item_use, 5)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -208,7 +208,7 @@ class TestPowerGrid(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_state(self):
+    def test_pass_item_state(self):
         # When item isn't online, it shouldn't consume anything
         self.fit.ship = Ship(self.mktype(attrs={AttrId.power_output: 40}).id)
         item = ModuleHigh(
@@ -223,7 +223,7 @@ class TestPowerGrid(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_disabled_effect(self):
+    def test_pass_effect_disabled(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.power_output: 40}).id)
         item = ModuleHigh(
             self.mktype(attrs={AttrId.power: 50}, effects=[self.effect]).id,
@@ -238,7 +238,7 @@ class TestPowerGrid(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_consumer_not_loaded(self):
+    def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.power_output: 0}).id)
         item = ModuleHigh(self.allocate_type_id(), state=State.online)
         self.fit.modules.high.append(item)

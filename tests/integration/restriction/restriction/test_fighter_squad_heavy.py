@@ -33,7 +33,7 @@ class TestFighterSquadHeavy(RestrictionTestCase):
         RestrictionTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.fighter_heavy_slots)
 
-    def test_fail_excess_single(self):
+    def test_fail_single(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
         self.fit.ship = Ship(self.mktype(
@@ -51,23 +51,7 @@ class TestFighterSquadHeavy(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_no_ship(self):
-        # When stats module does not specify total tube quantity, make sure it's
-        # assumed to be 0
-        item = FighterSquad(self.mktype(
-            attrs={AttrId.fighter_squadron_is_heavy: 1}).id)
-        self.fit.fighters.add(item)
-        # Action
-        error = self.get_error(item, Restriction.fighter_squad_heavy)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.used, 1)
-        self.assertEqual(error.total, 0)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_multiple(self):
+    def test_fail_multiple(self):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.fighter_heavy_slots: 1}).id)
@@ -88,6 +72,37 @@ class TestFighterSquadHeavy(RestrictionTestCase):
         self.assertIsNotNone(error2)
         self.assertEqual(error2.used, 2)
         self.assertEqual(error2.total, 1)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_absent(self):
+        # When stats module does not specify total tube quantity, make sure it's
+        # assumed to be 0
+        item = FighterSquad(self.mktype(
+            attrs={AttrId.fighter_squadron_is_heavy: 1}).id)
+        self.fit.fighters.add(item)
+        # Action
+        error = self.get_error(item, Restriction.fighter_squad_heavy)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        item = FighterSquad(self.mktype(
+            attrs={AttrId.fighter_squadron_is_heavy: 1}).id)
+        self.fit.fighters.add(item)
+        # Action
+        error = self.get_error(item, Restriction.fighter_squad_heavy)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -132,13 +147,24 @@ class TestFighterSquadHeavy(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
+    def test_pass_attr_absent(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.fighter_heavy_slots: 0}).id)
-        item = FighterSquad(self.mktype(
-            attrs={AttrId.fighter_squadron_is_heavy: 1}).id)
+        item = FighterSquad(self.mktype().id)
         self.fit.fighters.add(item)
-        self.fit.source = None
+        # Action
+        error = self.get_error(item, Restriction.fighter_squad_heavy)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_not_loaded(self):
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.fighter_heavy_slots: 0}).id)
+        item = FighterSquad(self.allocate_type_id())
+        self.fit.fighters.add(item)
         # Action
         error = self.get_error(item, Restriction.fighter_squad_heavy)
         # Verification

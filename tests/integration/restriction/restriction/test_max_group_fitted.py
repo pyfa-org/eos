@@ -29,7 +29,7 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestMaxGroupFitted(RestrictionTestCase):
     """Check functionality of max group fitted restriction."""
 
-    def test_fail_excess_all(self):
+    def test_fail_all(self):
         # Make sure error is raised for all items exceeding their group
         # restriction
         item_type = self.mktype(
@@ -57,7 +57,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_mix_excess_one(self):
+    def test_mix_one(self):
         # Make sure error is raised for just items which excess restriction,
         # even if both are from the same group
         item1 = ModuleHigh(self.mktype(
@@ -105,7 +105,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_item_none_group(self):
+    def test_pass_item_group_none(self):
         # Check that items with None group are not affected
         item_type = self.mktype(
             group_id=None,
@@ -146,7 +146,7 @@ class TestMaxGroupFitted(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_not_loaded(self):
+    def test_pass_item_not_loaded(self):
         item = ModuleHigh(self.allocate_type_id())
         self.fit.modules.high.append(item)
         # Action

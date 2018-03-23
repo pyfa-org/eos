@@ -132,7 +132,7 @@ class TestHighSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_ship_not_loaded(self):
+    def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         item = ModuleHigh(self.mktype().id)
         self.fit.modules.high.append(item)

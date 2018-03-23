@@ -21,10 +21,7 @@
 
 from eos.const.eos import State
 from eos.const.eve import AttrId
-from eos.fit.item import Character
 from eos.fit.item import Drone
-from eos.fit.message import ItemLoaded
-from eos.fit.message import ItemUnloaded
 from eos.fit.message import StatesActivated
 from eos.fit.message import StatesDeactivated
 from .base import BaseSlotRegister
@@ -32,11 +29,11 @@ from .base import BaseSlotRegister
 
 class LaunchedDroneRegister(BaseSlotRegister):
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         BaseSlotRegister.__init__(self)
-        self.__current_char = None
+        self.__fit = fit
         self.__drones = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     @property
     def used(self):
@@ -45,21 +42,13 @@ class LaunchedDroneRegister(BaseSlotRegister):
     @property
     def total(self):
         try:
-            return int(self.__current_char.attrs[AttrId.max_active_drones])
+            return int(self.__fit.character.attrs[AttrId.max_active_drones])
         except (AttributeError, KeyError):
-            return None
+            return 0
 
     @property
     def _users(self):
         return self.__drones
-
-    def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Character):
-            self.__current_char = msg.item
-
-    def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_char:
-            self.__current_char = None
 
     def _handle_states_activated(self, msg):
         if isinstance(msg.item, Drone) and State.online in msg.states:
@@ -70,7 +59,5 @@ class LaunchedDroneRegister(BaseSlotRegister):
             self.__drones.discard(msg.item)
 
     _handler_map = {
-        ItemLoaded: _handle_item_loaded,
-        ItemUnloaded: _handle_item_unloaded,
         StatesActivated: _handle_states_activated,
         StatesDeactivated: _handle_states_deactivated}

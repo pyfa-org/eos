@@ -49,7 +49,7 @@ class TestRigSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_multiple(self):
+    def test_fail_multiple(self):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_slots: 1}).id)
         item_type = self.mktype()

@@ -88,7 +88,7 @@ class TestSubsystemSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_single_ship_absent(self):
+    def test_fail_ship_absent(self):
         # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
         item = Subsystem(self.mktype().id)
@@ -103,7 +103,7 @@ class TestSubsystemSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_single_ship_not_loaded(self):
+    def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         item = Subsystem(self.mktype().id)
         self.fit.subsystems.add(item)

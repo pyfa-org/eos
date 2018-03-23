@@ -19,6 +19,9 @@
 # ==============================================================================
 
 
+from abc import ABCMeta
+from abc import abstractmethod
+
 from eos.const.eve import AttrId
 from eos.fit.item import FighterSquad
 from eos.fit.item import Ship
@@ -27,13 +30,23 @@ from eos.fit.message import ItemUnloaded
 from .base import BaseSlotRegister
 
 
-class FighterSquadRegister(BaseSlotRegister):
+class FighterSquadTypeRegister(BaseSlotRegister, metaclass=ABCMeta):
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         BaseSlotRegister.__init__(self)
-        self.__current_ship = None
+        self.__fit = fit
         self.__fighters = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
+
+    @property
+    @abstractmethod
+    def _fighter_attr_id(self):
+        ...
+
+    @property
+    @abstractmethod
+    def _ship_attr_id(self):
+        ...
 
     @property
     def used(self):
@@ -42,25 +55,42 @@ class FighterSquadRegister(BaseSlotRegister):
     @property
     def total(self):
         try:
-            return int(self.__current_ship.attrs[AttrId.fighter_tubes])
+            return int(self.__fit.ship.attrs[self._ship_attr_id])
         except (AttributeError, KeyError):
-            return None
+            return 0
 
     @property
     def _users(self):
         return self.__fighters
 
     def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, FighterSquad):
+        if (
+            isinstance(msg.item, FighterSquad) and
+            msg.item._type_attrs.get(self._fighter_attr_id)
+        ):
             self.__fighters.add(msg.item)
-        elif isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
 
     def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
         self.__fighters.discard(msg.item)
 
     _handler_map = {
         ItemLoaded: _handle_item_loaded,
         ItemUnloaded: _handle_item_unloaded}
+
+
+class FighterSquadSupportRegister(FighterSquadTypeRegister):
+
+    _fighter_attr_id = AttrId.fighter_squadron_is_support
+    _ship_attr_id = AttrId.fighter_support_slots
+
+
+class FighterSquadLightRegister(FighterSquadTypeRegister):
+
+    _fighter_attr_id = AttrId.fighter_squadron_is_light
+    _ship_attr_id = AttrId.fighter_light_slots
+
+
+class FighterSquadHeavyRegister(FighterSquadTypeRegister):
+
+    _fighter_attr_id = AttrId.fighter_squadron_is_heavy
+    _ship_attr_id = AttrId.fighter_heavy_slots

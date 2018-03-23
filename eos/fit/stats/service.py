@@ -33,7 +33,6 @@ from .register import DroneBandwidthRegister
 from .register import DronebayVolumeRegister
 from .register import FighterSquadHeavyRegister
 from .register import FighterSquadLightRegister
-from .register import FighterSquadRegister
 from .register import FighterSquadSupportRegister
 from .register import LaunchedDroneRegister
 from .register import LauncherSlotRegister

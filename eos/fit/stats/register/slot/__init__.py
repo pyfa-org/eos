@@ -19,10 +19,9 @@
 # ==============================================================================
 
 
-from .fighter_squad import FighterSquadRegister
-from .fighter_squad_type import FighterSquadHeavyRegister
-from .fighter_squad_type import FighterSquadLightRegister
-from .fighter_squad_type import FighterSquadSupportRegister
+from .fighter_squad import FighterSquadHeavyRegister
+from .fighter_squad import FighterSquadLightRegister
+from .fighter_squad import FighterSquadSupportRegister
 from .launched_drone import LaunchedDroneRegister
 from .hardpoint_effect import LauncherSlotRegister
 from .hardpoint_effect import TurretSlotRegister

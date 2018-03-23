@@ -39,7 +39,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.mkattr(attr_id=AttrId.drone_bandwidth)
         self.mkattr(attr_id=AttrId.drone_bandwidth_used)
 
-    def test_fail_excess_single(self):
+    def test_fail_single(self):
         # When ship provides drone bandwidth output, but single consumer demands
         # for more, error should be raised
         self.fit.ship = Ship(self.mktype(
@@ -59,42 +59,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_ship_absent(self):
-        # When stats module does not specify output, make sure it's assumed to
-        # be 0
-        item = Drone(
-            self.mktype(attrs={AttrId.drone_bandwidth_used: 5}).id,
-            state=State.online)
-        self.fit.drones.add(item)
-        # Action
-        error = self.get_error(item, Restriction.drone_bandwidth)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.output, 0)
-        self.assertEqual(error.total_use, 5)
-        self.assertEqual(error.item_use, 5)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_single_ship_not_loaded(self):
-        self.fit.ship = Ship(self.allocate_type_id())
-        item = Drone(
-            self.mktype(attrs={AttrId.drone_bandwidth_used: 5}).id,
-            state=State.online)
-        self.fit.drones.add(item)
-        # Action
-        error = self.get_error(item, Restriction.drone_bandwidth)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.output, 0)
-        self.assertEqual(error.total_use, 5)
-        self.assertEqual(error.item_use, 5)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_multiple(self):
+    def test_fail_multiple(self):
         # When multiple consumers require less than drone bandwidth output
         # alone, but in sum want more than total output, it should be erroneous
         # situation
@@ -126,7 +91,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_modified(self):
+    def test_fail_modified(self):
         # Make sure modified drone bandwidth values are taken
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.drone_bandwidth: 50}).id)
@@ -153,6 +118,41 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.output, 50)
         self.assertEqual(error.total_use, 100)
         self.assertEqual(error.item_use, 100)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_absent(self):
+        # When stats module does not specify output, make sure it's assumed to
+        # be 0
+        item = Drone(
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 5}).id,
+            state=State.online)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.drone_bandwidth)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 5)
+        self.assertEqual(error.item_use, 5)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        item = Drone(
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 5}).id,
+            state=State.online)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.drone_bandwidth)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 5)
+        self.assertEqual(error.item_use, 5)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -209,7 +209,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_state(self):
+    def test_pass_item_state(self):
         # When item isn't online, it shouldn't consume anything
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.drone_bandwidth: 40}).id)
@@ -225,7 +225,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_consumer_not_loaded(self):
+    def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.drone_bandwidth: 0}).id)
         item = Drone(self.allocate_type_id(), state=State.online)

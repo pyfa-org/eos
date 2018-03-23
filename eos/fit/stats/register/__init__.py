@@ -27,7 +27,6 @@ from .resource import DronebayVolumeRegister
 from .resource import PowergridRegister
 from .slot import FighterSquadHeavyRegister
 from .slot import FighterSquadLightRegister
-from .slot import FighterSquadRegister
 from .slot import FighterSquadSupportRegister
 from .slot import LaunchedDroneRegister
 from .slot import LauncherSlotRegister
