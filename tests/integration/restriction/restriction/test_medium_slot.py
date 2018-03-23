@@ -19,13 +19,10 @@
 # ==============================================================================
 
 
-from eos import EffectMode
 from eos import ModuleMed
 from eos import Restriction
 from eos import Ship
 from eos.const.eve import AttrId
-from eos.const.eve import EffectCategoryId
-from eos.const.eve import EffectId
 from tests.integration.restriction.testcase import RestrictionTestCase
 
 
@@ -35,15 +32,12 @@ class TestMediumSlot(RestrictionTestCase):
     def setUp(self):
         RestrictionTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.med_slots)
-        self.effect = self.mkeffect(
-            effect_id=EffectId.med_power,
-            category_id=EffectCategoryId.passive)
 
     def test_fail_single(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 0}).id)
-        item = ModuleMed(self.mktype(effects=[self.effect]).id)
+        item = ModuleMed(self.mktype().id)
         self.fit.modules.med.append(item)
         # Action
         error = self.get_error(item, Restriction.medium_slot)
@@ -59,7 +53,7 @@ class TestMediumSlot(RestrictionTestCase):
         # Check that error works for multiple items, and raised only for those
         # which lie out of bounds
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 1}).id)
-        item_type = self.mktype(effects=[self.effect])
+        item_type = self.mktype()
         item1 = ModuleMed(item_type.id)
         item2 = ModuleMed(item_type.id)
         self.fit.modules.med.append(item1)
@@ -81,7 +75,7 @@ class TestMediumSlot(RestrictionTestCase):
     def test_fail_multiple_with_nones(self):
         # Make sure Nones are processed properly
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 3}).id)
-        item_type = self.mktype(effects=[self.effect])
+        item_type = self.mktype()
         item1 = ModuleMed(item_type.id)
         item2 = ModuleMed(item_type.id)
         item3 = ModuleMed(item_type.id)
@@ -108,22 +102,6 @@ class TestMediumSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_disabled_effect(self):
-        # Item still counts even when slot effect is stopped
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 0}).id)
-        item = ModuleMed(self.mktype(effects=[self.effect]).id)
-        item.set_effect_mode(self.effect.id, EffectMode.force_stop)
-        self.fit.modules.med.append(item)
-        # Action
-        error = self.get_error(item, Restriction.medium_slot)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.used, 1)
-        self.assertEqual(error.total, 0)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
     def test_fail_item_not_loaded(self):
         # Item still counts even when it's not loaded
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 0}).id)
@@ -142,7 +120,7 @@ class TestMediumSlot(RestrictionTestCase):
     def test_fail_ship_absent(self):
         # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
-        item = ModuleMed(self.mktype(effects=[self.effect]).id)
+        item = ModuleMed(self.mktype().id)
         self.fit.modules.med.append(item)
         # Action
         error = self.get_error(item, Restriction.medium_slot)
@@ -156,7 +134,7 @@ class TestMediumSlot(RestrictionTestCase):
 
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
-        item = ModuleMed(self.mktype(effects=[self.effect]).id)
+        item = ModuleMed(self.mktype().id)
         self.fit.modules.med.append(item)
         # Action
         error = self.get_error(item, Restriction.medium_slot)
@@ -170,7 +148,7 @@ class TestMediumSlot(RestrictionTestCase):
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 2}).id)
-        item_type = self.mktype(effects=[self.effect])
+        item_type = self.mktype()
         item1 = ModuleMed(item_type.id)
         item2 = ModuleMed(item_type.id)
         self.fit.modules.med.append(item1)
@@ -189,7 +167,7 @@ class TestMediumSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 5}).id)
-        item_type = self.mktype(effects=[self.effect])
+        item_type = self.mktype()
         item1 = ModuleMed(item_type.id)
         item2 = ModuleMed(item_type.id)
         self.fit.modules.med.append(item1)
@@ -209,7 +187,7 @@ class TestMediumSlot(RestrictionTestCase):
     def test_pass_no_source(self):
         # Error shouldn't be raised when fit has no source
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 0}).id)
-        item = ModuleMed(self.mktype(effects=[self.effect]).id)
+        item = ModuleMed(self.mktype().id)
         self.fit.modules.med.append(item)
         self.fit.source = None
         # Action

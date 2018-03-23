@@ -64,7 +64,7 @@ class HighSlotRestriction(BaseRestriction):
     """Quantity of high-slot items should not exceed limit.
 
     Details:
-        Container with high slot items is used for validation.
+        Items which are not loaded are considered as occupying slot.
         Only items which are positioned outside of slots provided by ship raise
             error.
     """
@@ -90,7 +90,7 @@ class MediumSlotRestriction(BaseRestriction):
     """Quantity of medium-slot items should not exceed limit.
 
     Details:
-        Container with medium slot items is used for validation.
+        Items which are not loaded are considered as occupying slot.
         Only items which are positioned outside of slots provided by ship raise
             error.
     """
@@ -116,7 +116,7 @@ class LowSlotRestriction(BaseRestriction):
     """Quantity of low-slot items should not exceed limit.
 
     Details:
-        Container with low slot items is used for validation.
+        Items which are not loaded are considered as occupying slot.
         Only items which are positioned outside of slots provided by ship raise
             error.
     """
@@ -138,28 +138,48 @@ class LowSlotRestriction(BaseRestriction):
         return Restriction.low_slot
 
 
-class RigSlotRestriction(UnorderedSlotRestriction):
+class RigSlotRestriction(BaseRestriction):
     """Quantity of rig items should not exceed limit.
 
     Details:
-        For validation, stats module data is used.
+        Items which are not loaded are considered as occupying slot.
     """
 
-    _stat_name = 'rig_slots'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        used, total = self._fit.stats.rig_slots
+        if used > total:
+            tainted_items = {}
+            for item in self._fit.rigs:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.rig_slot
 
 
-class SubsystemSlotRestriction(UnorderedSlotRestriction):
+class SubsystemSlotRestriction(BaseRestriction):
     """Quantity of subsystem items should not exceed limit.
 
     Details:
-        For validation, stats module data is used.
+        Items which are not loaded are considered as occupying slot.
     """
 
-    _stat_name = 'subsystem_slots'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        used, total = self._fit.stats.subsystem_slots
+        if used > total:
+            tainted_items = {}
+            for item in self._fit.subsystems:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):

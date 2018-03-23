@@ -26,7 +26,6 @@ from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh
 from eos.fit.item import ModuleLow
 from eos.fit.item import ModuleMed
-from eos.fit.item import Ship
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister

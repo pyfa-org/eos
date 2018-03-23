@@ -31,6 +31,4 @@ from .slot import FighterSquadRegister
 from .slot import FighterSquadSupportRegister
 from .slot import LaunchedDroneRegister
 from .slot import LauncherSlotRegister
-from .slot import RigSlotRegister
-from .slot import SubsystemSlotRegister
 from .slot import TurretSlotRegister

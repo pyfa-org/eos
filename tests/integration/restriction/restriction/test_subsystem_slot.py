@@ -19,13 +19,10 @@
 # ==============================================================================
 
 
-from eos import EffectMode
 from eos import Restriction
 from eos import Ship
 from eos import Subsystem
 from eos.const.eve import AttrId
-from eos.const.eve import EffectCategoryId
-from eos.const.eve import EffectId
 from tests.integration.restriction.testcase import RestrictionTestCase
 
 
@@ -35,15 +32,12 @@ class TestSubsystemSlot(RestrictionTestCase):
     def setUp(self):
         RestrictionTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.max_subsystems)
-        self.effect = self.mkeffect(
-            effect_id=EffectId.subsystem,
-            category_id=EffectCategoryId.passive)
 
-    def test_fail_excess_single(self):
+    def test_fail_single(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
         self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 0}).id)
-        item = Subsystem(self.mktype(effects=[self.effect]).id)
+        item = Subsystem(self.mktype().id)
         self.fit.subsystems.add(item)
         # Action
         error = self.get_error(item, Restriction.subsystem_slot)
@@ -55,25 +49,10 @@ class TestSubsystemSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_no_ship(self):
-        # When stats module does not specify total slot quantity, make sure it's
-        # assumed to be 0
-        item = Subsystem(self.mktype(effects=[self.effect]).id)
-        self.fit.subsystems.add(item)
-        # Action
-        error = self.get_error(item, Restriction.subsystem_slot)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.used, 1)
-        self.assertEqual(error.total, 0)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_multiple(self):
+    def test_fail_multiple(self):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 1}).id)
-        item_type = self.mktype(effects=[self.effect])
+        item_type = self.mktype()
         item1 = Subsystem(item_type.id)
         item2 = Subsystem(item_type.id)
         self.fit.subsystems.add(item1)
@@ -94,9 +73,53 @@ class TestSubsystemSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_item_not_loaded(self):
+        # Item still counts even when it's not loaded
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 0}).id)
+        item = Subsystem(self.allocate_type_id())
+        self.fit.subsystems.add(item)
+        # Action
+        error = self.get_error(item, Restriction.subsystem_slot)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_single_ship_absent(self):
+        # When stats module does not specify total slot quantity, make sure it's
+        # assumed to be 0
+        item = Subsystem(self.mktype().id)
+        self.fit.subsystems.add(item)
+        # Action
+        error = self.get_error(item, Restriction.subsystem_slot)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_single_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        item = Subsystem(self.mktype().id)
+        self.fit.subsystems.add(item)
+        # Action
+        error = self.get_error(item, Restriction.subsystem_slot)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_pass_equal(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 2}).id)
-        item_type = self.mktype(effects=[self.effect])
+        item_type = self.mktype()
         item1 = Subsystem(item_type.id)
         item2 = Subsystem(item_type.id)
         self.fit.subsystems.add(item1)
@@ -115,7 +138,7 @@ class TestSubsystemSlot(RestrictionTestCase):
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 5}).id)
-        item_type = self.mktype(effects=[self.effect])
+        item_type = self.mktype()
         item1 = Subsystem(item_type.id)
         item2 = Subsystem(item_type.id)
         self.fit.subsystems.add(item1)
@@ -132,22 +155,10 @@ class TestSubsystemSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_disabled_effect(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 0}).id)
-        item = Subsystem(self.mktype(effects=[self.effect]).id)
-        item.set_effect_mode(self.effect.id, EffectMode.force_stop)
-        self.fit.subsystems.add(item)
-        # Action
-        error = self.get_error(item, Restriction.subsystem_slot)
-        # Verification
-        self.assertIsNone(error)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
     def test_pass_no_source(self):
+        # Error shouldn't be raised when fit has no source
         self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 0}).id)
-        item = Subsystem(self.mktype(effects=[self.effect]).id)
+        item = Subsystem(self.mktype().id)
         self.fit.subsystems.add(item)
         self.fit.source = None
         # Action

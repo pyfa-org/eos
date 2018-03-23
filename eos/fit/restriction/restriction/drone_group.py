@@ -24,7 +24,6 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
 from eos.fit.item import Drone
-from eos.fit.item import Ship
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister

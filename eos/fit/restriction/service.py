@@ -96,12 +96,12 @@ class RestrictionService:
             MediumSlotRestriction(fit),
             PowergridRestriction(fit),
             RigSizeRestrictionRegister(fit),
-            # RigSlotRestriction(fit),
+            RigSlotRestriction(fit),
             ShipTypeGroupRestrictionRegister(fit),
             SkillRequirementRestrictionRegister(fit),
             StateRestrictionRegister(fit),
             SubsystemIndexRestrictionRegister(fit),
-            # SubsystemSlotRestriction(fit),
+            SubsystemSlotRestriction(fit),
             # TurretSlotRestriction(fit)
         }
 

@@ -23,7 +23,6 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.fit.item import Rig
-from eos.fit.item import Skill
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister

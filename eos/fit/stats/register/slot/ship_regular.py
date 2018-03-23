@@ -88,18 +88,6 @@ class ShipRegularSlotRegister(BaseSlotRegister, metaclass=ABCMeta):
         EffectsStopped: _handle_effects_stopped}
 
 
-class RigSlotRegister(ShipRegularSlotRegister):
-
-    _slot_effect_id = EffectId.rig_slot
-    _slot_attr_id = AttrId.rig_slots
-
-
-class SubsystemSlotRegister(ShipRegularSlotRegister):
-
-    _slot_effect_id = EffectId.subsystem
-    _slot_attr_id = AttrId.max_subsystems
-
-
 class TurretSlotRegister(ShipRegularSlotRegister):
 
     _slot_effect_id = EffectId.turret_fitted
