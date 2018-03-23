@@ -50,6 +50,8 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
             value.
     """
 
+    type = Restriction.capital_item
+
     def __init__(self, fit):
         self.__fit = fit
         self.__capital_items = set()
@@ -91,7 +93,3 @@ class CapitalItemRestrictionRegister(BaseRestrictionRegister):
                     item_volume=item_type_volume,
                     max_subcap_volume=MAX_SUBCAP_VOLUME)
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.capital_item

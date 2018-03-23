@@ -43,6 +43,8 @@ class StateRestrictionRegister(BaseRestrictionRegister):
     I.e. check that passive modules are not active, etc.
     """
 
+    type = Restriction.state
+
     def __init__(self, fit):
         self.__restricted_items = set()
         fit._subscribe(self, self._handler_map.keys())
@@ -70,7 +72,3 @@ class StateRestrictionRegister(BaseRestrictionRegister):
                     allowed_states=allowed_states)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.state

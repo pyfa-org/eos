@@ -45,6 +45,8 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
             used.
     """
 
+    type = Restriction.charge_size
+
     def __init__(self, fit):
         self.__restricted_containers = set()
         fit._subscribe(self, self._handler_map.keys())
@@ -81,7 +83,3 @@ class ChargeSizeRestrictionRegister(BaseRestrictionRegister):
                     allowed_size=container_size)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.charge_size

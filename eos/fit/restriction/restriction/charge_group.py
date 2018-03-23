@@ -51,6 +51,8 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
             type are taken.
     """
 
+    type = Restriction.charge_group
+
     def __init__(self, fit):
         # Format: {container item: (allowed groups)}
         self.__restricted_containers = {}
@@ -99,7 +101,3 @@ class ChargeGroupRestrictionRegister(BaseRestrictionRegister):
                     allowed_group_ids=allowed_group_ids)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.charge_group

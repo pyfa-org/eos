@@ -42,6 +42,8 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
         If not specified, volume and/or capacity are assumed to be 0.
     """
 
+    type = Restriction.charge_volume
+
     def __init__(self, msg_broker):
         self.__containers = set()
         msg_broker._subscribe(self, self._handler_map.keys())
@@ -75,7 +77,3 @@ class ChargeVolumeRestrictionRegister(BaseRestrictionRegister):
                     max_allowed_volume=container_capacity)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.charge_volume

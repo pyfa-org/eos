@@ -114,6 +114,7 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
         For validation, modified value of restriction attribute is taken.
     """
 
+    type = Restriction.max_group_fitted
     _max_group_attr_id = AttrId.max_group_fitted
 
     def _handle_item_loaded(self, msg):
@@ -126,10 +127,6 @@ class MaxGroupFittedRestrictionRegister(MaxGroupRestrictionRegister):
         ItemLoaded: _handle_item_loaded,
         ItemUnloaded: _handle_item_unloaded}
 
-    @property
-    def type(self):
-        return Restriction.max_group_fitted
-
 
 class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
     """Prohibit to online items of certain groups beyond limit.
@@ -139,6 +136,7 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
         For validation, modified value of restriction attribute is taken.
     """
 
+    type = Restriction.max_group_online
     _max_group_attr_id = AttrId.max_group_online
 
     def _handle_states_activated(self, msg):
@@ -153,10 +151,6 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
         StatesActivated: _handle_states_activated,
         StatesDeactivated: _handle_states_deactivated}
 
-    @property
-    def type(self):
-        return Restriction.max_group_online
-
 
 class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     """Prohibit to activate items of certain group beyond limit.
@@ -166,6 +160,7 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
         For validation, modified value of restriction attribute is taken.
     """
 
+    type = Restriction.max_group_active
     _max_group_attr_id = AttrId.max_group_active
 
     def _handle_states_activated(self, msg):
@@ -179,7 +174,3 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     _handler_map = {
         StatesActivated: _handle_states_activated,
         StatesDeactivated: _handle_states_deactivated}
-
-    @property
-    def type(self):
-        return Restriction.max_group_active

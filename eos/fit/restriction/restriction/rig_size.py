@@ -41,6 +41,8 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
         For validation, rigSize attribute value of item type is taken.
     """
 
+    type = Restriction.rig_size
+
     def __init__(self, fit):
         self.__fit = fit
         # Container for items which have rig size restriction
@@ -80,7 +82,3 @@ class RigSizeRestrictionRegister(BaseRestrictionRegister):
                     allowed_size=allowed_rig_size)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.rig_size

@@ -90,11 +90,8 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
         Slot to occupy is determined by item type attributes.
     """
 
+    type = Restriction.subsystem_index
     _slot_index_attr_id = AttrId.subsystem_slot
-
-    @property
-    def type(self):
-        return Restriction.subsystem_index
 
 
 class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
@@ -104,11 +101,8 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
         Slot to occupy is determined by item type attributes.
     """
 
+    type = Restriction.implant_index
     _slot_index_attr_id = AttrId.implantness
-
-    @property
-    def type(self):
-        return Restriction.implant_index
 
 
 class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
@@ -118,8 +112,5 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
         Slot to occupy is determined by item type attributes.
     """
 
+    type = Restriction.booster_index
     _slot_index_attr_id = AttrId.boosterness
-
-    @property
-    def type(self):
-        return Restriction.booster_index

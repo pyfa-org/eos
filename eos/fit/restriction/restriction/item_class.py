@@ -103,6 +103,8 @@ class ItemClassRestrictionRegister(BaseRestriction):
             are used.
     """
 
+    type = Restriction.item_class
+
     def __init__(self, fit):
         self.__fit = fit
 
@@ -132,7 +134,3 @@ class ItemClassRestrictionRegister(BaseRestriction):
             item_class=type(item),
             allowed_classes=frozenset(allowed_classes))
         return error_data
-
-    @property
-    def type(self):
-        return Restriction.item_class

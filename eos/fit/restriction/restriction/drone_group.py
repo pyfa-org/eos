@@ -49,6 +49,8 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
         If ship specifies no drone group preference, validation always passes.
     """
 
+    type = Restriction.drone_group
+
     def __init__(self, fit):
         self.__fit = fit
         self.__drones = set()
@@ -95,7 +97,3 @@ class DroneGroupRestrictionRegister(BaseRestrictionRegister):
                     allowed_group_ids=allowed_group_ids)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.drone_group

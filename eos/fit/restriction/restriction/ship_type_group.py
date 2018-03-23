@@ -94,6 +94,8 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
             item type are taken.
     """
 
+    type = Restriction.ship_type_group
+
     def __init__(self, fit):
         self.__fit = fit
         # Container for items which possess ship type/group restriction
@@ -165,7 +167,3 @@ class ShipTypeGroupRestrictionRegister(BaseRestrictionRegister):
         # Raise error if there're any tainted items
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.ship_type_group

@@ -83,12 +83,9 @@ class CpuRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
+    type = Restriction.cpu
     _stat_name = 'cpu'
     _use_attr_id = AttrId.cpu
-
-    @property
-    def type(self):
-        return Restriction.cpu
 
 
 class PowergridRestriction(ResourceRestriction):
@@ -98,13 +95,9 @@ class PowergridRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
+    type = Restriction.powergrid
     _stat_name = 'powergrid'
     _use_attr_id = AttrId.power
-
-    @property
-    def type(self):
-        return Restriction.powergrid
-
 
 class CalibrationRestriction(ResourceRestriction):
     """Calibration use by items should not exceed ship calibration output.
@@ -113,12 +106,9 @@ class CalibrationRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
+    type = Restriction.calibration
     _stat_name = 'calibration'
     _use_attr_id = AttrId.upgrade_cost
-
-    @property
-    def type(self):
-        return Restriction.calibration
 
 
 class DroneBayVolumeRestriction(ResourceRestriction):
@@ -128,12 +118,9 @@ class DroneBayVolumeRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
+    type = Restriction.dronebay_volume
     _stat_name = 'dronebay'
     _use_attr_id = AttrId.volume
-
-    @property
-    def type(self):
-        return Restriction.dronebay_volume
 
 
 class DroneBandwidthRestriction(ResourceRestriction):
@@ -143,9 +130,6 @@ class DroneBandwidthRestriction(ResourceRestriction):
         For validation, stats module data is used.
     """
 
+    type = Restriction.drone_bandwidth
     _stat_name = 'drone_bandwidth'
     _use_attr_id = AttrId.drone_bandwidth_used
-
-    @property
-    def type(self):
-        return Restriction.drone_bandwidth

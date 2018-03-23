@@ -47,6 +47,8 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
         Rigs are ignored, they can be used regardless of skill requirements.
     """
 
+    type = Restriction.skill_requirement
+
     def __init__(self, fit):
         self.__fit = fit
         # Set with items which have any skill requirements
@@ -102,7 +104,3 @@ class SkillRequirementRestrictionRegister(BaseRestrictionRegister):
                 tainted_items[item] = tuple(skillrq_errors)
         if tainted_items:
             raise RestrictionValidationError(tainted_items)
-
-    @property
-    def type(self):
-        return Restriction.skill_requirement
