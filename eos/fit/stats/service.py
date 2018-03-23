@@ -38,8 +38,6 @@ from .register import FighterSquadSupportRegister
 from .register import LaunchedDroneRegister
 from .register import LauncherSlotRegister
 from .register import PowergridRegister
-from .register import RigSlotRegister
-from .register import SubsystemSlotRegister
 from .register import TurretSlotRegister
 
 

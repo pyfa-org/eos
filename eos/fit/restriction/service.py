@@ -88,7 +88,7 @@ class RestrictionService:
             ImplantIndexRestrictionRegister(fit),
             ItemClassRestrictionRegister(fit),
             # LaunchedDroneRestriction(fit),
-            # LauncherSlotRestriction(fit),
+            LauncherSlotRestriction(fit),
             LowSlotRestriction(fit),
             MaxGroupActiveRestrictionRegister(fit),
             MaxGroupFittedRestrictionRegister(fit),
@@ -102,7 +102,7 @@ class RestrictionService:
             StateRestrictionRegister(fit),
             SubsystemIndexRestrictionRegister(fit),
             SubsystemSlotRestriction(fit),
-            # TurretSlotRestriction(fit)
+            TurretSlotRestriction(fit)
         }
 
     def validate(self, skip_checks=()):

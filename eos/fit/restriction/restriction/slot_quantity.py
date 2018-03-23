@@ -186,28 +186,48 @@ class SubsystemSlotRestriction(BaseRestriction):
         return Restriction.subsystem_slot
 
 
-class TurretSlotRestriction(UnorderedSlotRestriction):
+class TurretSlotRestriction(BaseRestriction):
     """Quantity of turrets should not exceed limit.
 
     Details:
         For validation, stats module data is used.
     """
 
-    _stat_name = 'turret_slots'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        stats = self._fit.stats.turret_slots
+        if stats.used > stats.total:
+            tainted_items = {}
+            for item in stats._users:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=stats.used, total=stats.total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.turret_slot
 
 
-class LauncherSlotRestriction(UnorderedSlotRestriction):
+class LauncherSlotRestriction(BaseRestriction):
     """Quantity of launchers should not exceed limit.
 
     Details:
         For validation, stats module data is used.
     """
 
-    _stat_name = 'launcher_slots'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        stats = self._fit.stats.launcher_slots
+        if stats.used > stats.total:
+            tainted_items = {}
+            for item in stats._users:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=stats.used, total=stats.total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):

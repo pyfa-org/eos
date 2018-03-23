@@ -39,7 +39,7 @@ class TestLauncherSlot(RestrictionTestCase):
             effect_id=EffectId.launcher_fitted,
             category_id=EffectCategoryId.passive)
 
-    def test_fail_excess_single(self):
+    def test_fail_single(self):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
         self.fit.ship = Ship(self.mktype(
@@ -56,22 +56,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_excess_single_no_ship(self):
-        # When stats module does not specify total slot quantity, make sure it's
-        # assumed to be 0
-        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
-        self.fit.modules.high.append(item)
-        # Action
-        error = self.get_error(item, Restriction.launcher_slot)
-        # Verification
-        self.assertIsNotNone(error)
-        self.assertEqual(error.used, 1)
-        self.assertEqual(error.total, 0)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_fail_excess_multiple(self):
+    def test_fail_multiple(self):
         # Check that error works for multiple items
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 1}).id)
@@ -92,6 +77,35 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertIsNotNone(error2)
         self.assertEqual(error2.used, 2)
         self.assertEqual(error2.total, 1)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_absent(self):
+        # When stats module does not specify total slot quantity, make sure it's
+        # assumed to be 0
+        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.launcher_slot)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_fail_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.launcher_slot)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -136,7 +150,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_disabled_effect(self):
+    def test_pass_effect_disabled(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 0}).id)
         item = ModuleHigh(self.mktype(effects=[self.effect]).id)
@@ -150,12 +164,24 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
+    def test_pass_effect_absent(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 0}).id)
-        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
+        item = ModuleHigh(self.mktype().id)
         self.fit.modules.high.append(item)
-        self.fit.source = None
+        # Action
+        error = self.get_error(item, Restriction.launcher_slot)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_not_loaded(self):
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.launcher_slots_left: 0}).id)
+        item = ModuleHigh(self.allocate_type_id())
+        self.fit.modules.high.append(item)
         # Action
         error = self.get_error(item, Restriction.launcher_slot)
         # Verification

@@ -24,21 +24,18 @@ from abc import abstractmethod
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.fit.item import Ship
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
-from eos.fit.message import ItemLoaded
-from eos.fit.message import ItemUnloaded
 from .base import BaseSlotRegister
 
 
-class ShipRegularSlotRegister(BaseSlotRegister, metaclass=ABCMeta):
+class HardpointEffectSlotRegister(BaseSlotRegister, metaclass=ABCMeta):
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         BaseSlotRegister.__init__(self)
-        self.__current_ship = None
+        self.__fit = fit
         self.__slot_users = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     @property
     @abstractmethod
@@ -57,21 +54,13 @@ class ShipRegularSlotRegister(BaseSlotRegister, metaclass=ABCMeta):
     @property
     def total(self):
         try:
-            return int(self.__current_ship.attrs[self._slot_attr_id])
+            return int(self.__fit.ship.attrs[self._slot_attr_id])
         except (AttributeError, KeyError):
-            return None
+            return 0
 
     @property
     def _users(self):
         return self.__slot_users
-
-    def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
-
-    def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
 
     def _handle_effects_started(self, msg):
         if self._slot_effect_id in msg.effect_ids:
@@ -82,19 +71,17 @@ class ShipRegularSlotRegister(BaseSlotRegister, metaclass=ABCMeta):
             self.__slot_users.discard(msg.item)
 
     _handler_map = {
-        ItemLoaded: _handle_item_loaded,
-        ItemUnloaded: _handle_item_unloaded,
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped}
 
 
-class TurretSlotRegister(ShipRegularSlotRegister):
+class TurretSlotRegister(HardpointEffectSlotRegister):
 
     _slot_effect_id = EffectId.turret_fitted
     _slot_attr_id = AttrId.turret_slots_left
 
 
-class LauncherSlotRegister(ShipRegularSlotRegister):
+class LauncherSlotRegister(HardpointEffectSlotRegister):
 
     _slot_effect_id = EffectId.launcher_fitted
     _slot_attr_id = AttrId.launcher_slots_left
