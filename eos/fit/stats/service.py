@@ -35,11 +35,8 @@ from .register import FighterSquadHeavyRegister
 from .register import FighterSquadLightRegister
 from .register import FighterSquadRegister
 from .register import FighterSquadSupportRegister
-from .register import HighSlotRegister
 from .register import LaunchedDroneRegister
 from .register import LauncherSlotRegister
-from .register import LowSlotRegister
-from .register import MediumSlotRegister
 from .register import PowergridRegister
 from .register import RigSlotRegister
 from .register import SubsystemSlotRegister

@@ -29,11 +29,8 @@ from .slot import FighterSquadHeavyRegister
 from .slot import FighterSquadLightRegister
 from .slot import FighterSquadRegister
 from .slot import FighterSquadSupportRegister
-from .slot import HighSlotRegister
 from .slot import LaunchedDroneRegister
 from .slot import LauncherSlotRegister
-from .slot import LowSlotRegister
-from .slot import MediumSlotRegister
 from .slot import RigSlotRegister
 from .slot import SubsystemSlotRegister
 from .slot import TurretSlotRegister

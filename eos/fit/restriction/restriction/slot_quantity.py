@@ -43,25 +43,6 @@ class BaseSlotRestriction(BaseRestriction, metaclass=ABCMeta):
         ...
 
 
-class OrderedSlotRestriction(BaseSlotRestriction):
-    """Base class for all ordered slot quantity restrictions."""
-
-    def validate(self):
-        # Use stats module to get max and used quantity of slots
-        stats = getattr(self._fit.stats, self._stat_name)
-        # If quantity of items which take this slot is bigger than quantity of
-        # available slots, then all items which are positioned higher than
-        # available index are tainted
-        if stats.used > stats.total:
-            tainted_items = {}
-            for item in stats._users:
-                position = item._container_position
-                if position is not None and position + 1 > total:
-                    tainted_items[item] = SlotQuantityErrorData(
-                        used=stats.used, total=stats.total)
-            raise RestrictionValidationError(tainted_items)
-
-
 class UnorderedSlotRestriction(BaseSlotRestriction):
     """Base class for all unordered slot quantity restrictions."""
 
@@ -79,42 +60,78 @@ class UnorderedSlotRestriction(BaseSlotRestriction):
             raise RestrictionValidationError(tainted_items)
 
 
-class HighSlotRestriction(OrderedSlotRestriction):
+class HighSlotRestriction(BaseRestriction):
     """Quantity of high-slot items should not exceed limit.
 
     Details:
-        For validation, stats module data is used.
+        Container with high slot items is used for validation.
+        Only items which are positioned outside of slots provided by ship raise
+            error.
     """
 
-    _stat_name = 'high_slots'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        used, total = self._fit.stats.high_slots
+        if used > total:
+            tainted_items = {}
+            for item in self._fit.modules.high[total:]:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.high_slot
 
 
-class MediumSlotRestriction(OrderedSlotRestriction):
-    """Quantity of med-slot items should not exceed limit.
+class MediumSlotRestriction(BaseRestriction):
+    """Quantity of medium-slot items should not exceed limit.
 
     Details:
-        For validation, stats module data is used.
+        Container with medium slot items is used for validation.
+        Only items which are positioned outside of slots provided by ship raise
+            error.
     """
 
-    _stat_name = 'med_slots'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        used, total = self._fit.stats.med_slots
+        if used > total:
+            tainted_items = {}
+            for item in self._fit.modules.med[total:]:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):
         return Restriction.medium_slot
 
 
-class LowSlotRestriction(OrderedSlotRestriction):
+class LowSlotRestriction(BaseRestriction):
     """Quantity of low-slot items should not exceed limit.
 
     Details:
-        For validation, stats module data is used.
+        Container with low slot items is used for validation.
+        Only items which are positioned outside of slots provided by ship raise
+            error.
     """
 
-    _stat_name = 'low_slots'
+    def __init__(self, fit):
+        self._fit = fit
+
+    def validate(self):
+        used, total = self._fit.stats.low_slots
+        if used > total:
+            tainted_items = {}
+            for item in self._fit.modules.low[total:]:
+                tainted_items[item] = SlotQuantityErrorData(
+                    used=used, total=total)
+            raise RestrictionValidationError(tainted_items)
 
     @property
     def type(self):

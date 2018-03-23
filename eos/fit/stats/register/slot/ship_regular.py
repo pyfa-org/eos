@@ -88,34 +88,6 @@ class ShipRegularSlotRegister(BaseSlotRegister, metaclass=ABCMeta):
         EffectsStopped: _handle_effects_stopped}
 
 
-class OrderedShipRegularSlotRegister(ShipRegularSlotRegister):
-
-    @property
-    def used(self):
-        return max((
-            i._container_position + 1
-            for i in self._users
-            if i._container_position is not None), default=0)
-
-
-class HighSlotRegister(OrderedShipRegularSlotRegister):
-
-    _slot_effect_id = EffectId.hi_power
-    _slot_attr_id = AttrId.hi_slots
-
-
-class MediumSlotRegister(OrderedShipRegularSlotRegister):
-
-    _slot_effect_id = EffectId.med_power
-    _slot_attr_id = AttrId.med_slots
-
-
-class LowSlotRegister(OrderedShipRegularSlotRegister):
-
-    _slot_effect_id = EffectId.lo_power
-    _slot_attr_id = AttrId.low_slots
-
-
 class RigSlotRegister(ShipRegularSlotRegister):
 
     _slot_effect_id = EffectId.rig_slot

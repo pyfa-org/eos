@@ -24,10 +24,7 @@ from .fighter_squad_type import FighterSquadHeavyRegister
 from .fighter_squad_type import FighterSquadLightRegister
 from .fighter_squad_type import FighterSquadSupportRegister
 from .launched_drone import LaunchedDroneRegister
-from .ship_regular import HighSlotRegister
 from .ship_regular import LauncherSlotRegister
-from .ship_regular import LowSlotRegister
-from .ship_regular import MediumSlotRegister
 from .ship_regular import RigSlotRegister
 from .ship_regular import SubsystemSlotRegister
 from .ship_regular import TurretSlotRegister
