@@ -49,7 +49,7 @@ class ItemContainerBase:
         for subitem in (item, *item._get_child_items()):
             if fit is not None:
                 fit._publish(ItemAdded(subitem))
-            subitem._load()
+                subitem._load()
 
     def _handle_item_removal(self, item):
         """Do all the generic work to remove item to container.
