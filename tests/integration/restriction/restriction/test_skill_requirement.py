@@ -130,7 +130,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_exception_rig(self):
+    def test_pass_item_exception_rig(self):
         # Check that skillreqs on rigs are not checked
         item = Rig(self.mktype(attrs={
             AttrId.required_skill_2: 50,

@@ -147,7 +147,7 @@ class TestFighterSquadHeavy(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_attr_absent(self):
+    def test_pass_item_attr_absent(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.fighter_heavy_slots: 0}).id)
         item = FighterSquad(self.mktype().id)

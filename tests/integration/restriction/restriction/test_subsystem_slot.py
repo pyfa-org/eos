@@ -103,6 +103,20 @@ class TestSubsystemSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_ship_attr_absent(self):
+        self.fit.ship = Ship(self.mktype().id)
+        item = Subsystem(self.mktype().id)
+        self.fit.subsystems.add(item)
+        # Action
+        error = self.get_error(item, Restriction.subsystem_slot)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         item = Subsystem(self.mktype().id)

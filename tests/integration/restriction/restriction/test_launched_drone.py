@@ -93,6 +93,20 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_char_attr_absent(self):
+        self.fit.character = Character(self.mktype().id)
+        item = Drone(self.mktype().id, state=State.online)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.launched_drone)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_char_not_loaded(self):
         self.fit.character = Character(self.allocate_type_id())
         item = Drone(self.mktype().id, state=State.online)
@@ -173,7 +187,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_other_item_class(self):
+    def test_pass_item_other_class(self):
         self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
         item = ModuleHigh(self.mktype().id, state=State.online)

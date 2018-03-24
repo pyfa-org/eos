@@ -142,6 +142,23 @@ class TestCalibration(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_ship_attr_absent(self):
+        self.fit.ship = Ship(self.mktype().id)
+        item = Rig(self.mktype(
+            attrs={AttrId.upgrade_cost: 50},
+            effects=[self.effect]).id)
+        self.fit.rigs.add(item)
+        # Action
+        error = self.get_error(item, Restriction.calibration)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 50)
+        self.assertEqual(error.item_use, 50)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         item = Rig(self.mktype(
@@ -218,6 +235,19 @@ class TestCalibration(RestrictionTestCase):
             attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
+        self.fit.rigs.add(item)
+        # Action
+        error = self.get_error(item, Restriction.calibration)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_effect_absent(self):
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.upgrade_capacity: 40}).id)
+        item = Rig(self.mktype(attrs={AttrId.upgrade_cost: 50}).id)
         self.fit.rigs.add(item)
         # Action
         error = self.get_error(item, Restriction.calibration)

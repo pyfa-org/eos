@@ -172,9 +172,9 @@ class TestMaxGroupActive(RestrictionTestCase):
         item = ModuleHigh(self.allocate_type_id(), state=State.active)
         self.fit.modules.high.append(item)
         # Action
-        error1 = self.get_error(item, Restriction.max_group_active)
+        error = self.get_error(item, Restriction.max_group_active)
         # Verification
-        self.assertIsNone(error1)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

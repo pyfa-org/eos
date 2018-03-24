@@ -37,7 +37,7 @@ class MsgHelper:
         """Generate messages about loaded item.
 
         Args:
-            items: Ttems which was loaded.
+            item: Item which was loaded.
 
         Returns:
             Iterable with messages.
@@ -57,7 +57,7 @@ class MsgHelper:
         """Generate messages about unloaded item.
 
         Args:
-            item: Items which will be unloaded.
+            item: Item which will be unloaded.
 
         Returns:
             Iterable with messages.

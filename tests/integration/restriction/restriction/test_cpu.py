@@ -141,6 +141,23 @@ class TestCpu(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_ship_attr_absent(self):
+        self.fit.ship = Ship(self.mktype().id)
+        item = ModuleHigh(
+            self.mktype(attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
+            state=State.online)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.cpu)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 50)
+        self.assertEqual(error.item_use, 50)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         item = ModuleHigh(
@@ -229,6 +246,20 @@ class TestCpu(RestrictionTestCase):
             self.mktype(attrs={AttrId.cpu: 50}, effects=[self.effect]).id,
             state=State.online)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.cpu)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_effect_absent(self):
+        self.fit.ship = Ship(self.mktype(attrs={AttrId.cpu_output: 40}).id)
+        item = ModuleHigh(
+            self.mktype(attrs={AttrId.cpu: 50}).id,
+            state=State.online)
         self.fit.modules.high.append(item)
         # Action
         error = self.get_error(item, Restriction.cpu)

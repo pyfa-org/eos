@@ -50,7 +50,7 @@ class TestState(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_item_state_higher_no_effects(self):
+    def test_fail_item_state_higher_effects_absent(self):
         item = ModuleHigh(self.mktype().id, state=State.overload)
         self.fit.modules.high.append(item)
         # Action
@@ -91,7 +91,7 @@ class TestState(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_exception_charge(self):
+    def test_pass_item_exception_charge(self):
         # Charges do not store state at all (inherit from parent), thus they
         # should not be checked
         effect = self.mkeffect(category_id=EffectCategoryId.active)
@@ -113,7 +113,7 @@ class TestState(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_exception_autocharge(self):
+    def test_pass_item_exception_autocharge(self):
         # Autocharges are the same as charges, inherit state from container
         autocharge_type = self.mktype()
         container_effect = self.mkeffect(

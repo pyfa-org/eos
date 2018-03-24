@@ -244,7 +244,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_container_no_attr(self):
+    def test_pass_container_attr_absent(self):
         charge = Charge(self.mktype(group_id=1008).id)
         container = ModuleHigh(self.mktype().id, state=State.offline)
         container.charge = charge

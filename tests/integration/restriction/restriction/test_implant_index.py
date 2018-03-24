@@ -53,7 +53,7 @@ class TestImplantIndex(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_other_item_class(self):
+    def test_fail_item_other_class(self):
         # Make sure items of all classes are affected
         item_type = self.mktype(attrs={self.index_attr.id: 120})
         item1 = ModuleHigh(item_type.id)

@@ -140,6 +140,23 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_ship_attr_absent(self):
+        self.fit.ship = Ship(self.mktype().id)
+        item = Drone(
+            self.mktype(attrs={AttrId.drone_bandwidth_used: 50}).id,
+            state=State.online)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.drone_bandwidth)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.output, 0)
+        self.assertEqual(error.total_use, 50)
+        self.assertEqual(error.item_use, 50)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         item = Drone(
@@ -216,6 +233,19 @@ class TestDroneBandwidth(RestrictionTestCase):
         item = Drone(
             self.mktype(attrs={AttrId.drone_bandwidth_used: 50}).id,
             state=State.offline)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.drone_bandwidth)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_attr_absent(self):
+        self.fit.ship = Ship(self.mktype(
+            attrs={AttrId.drone_bandwidth: 40}).id)
+        item = Drone(self.mktype().id, state=State.online)
         self.fit.drones.add(item)
         # Action
         error = self.get_error(item, Restriction.drone_bandwidth)

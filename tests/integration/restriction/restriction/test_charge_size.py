@@ -32,7 +32,7 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestChargeSize(RestrictionTestCase):
     """Check functionality of charge size restriction."""
 
-    def test_fail_size_lesser(self):
+    def test_fail_charge_attr_lesser(self):
         charge = Charge(self.mktype(attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.charge_size: 3}).id,
@@ -53,7 +53,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_size_greater(self):
+    def test_fail_charge_attr_greater(self):
         charge = Charge(self.mktype(attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.charge_size: 1}).id,
@@ -74,7 +74,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fail_charge_no_attr(self):
+    def test_fail_charge_attr_absent(self):
         charge = Charge(self.mktype().id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.charge_size: 3}).id,
@@ -95,7 +95,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_size_equal(self):
+    def test_pass_charge_attr_equal(self):
         charge = Charge(self.mktype(attrs={AttrId.charge_size: 2}).id)
         container = ModuleHigh(
             self.mktype(attrs={AttrId.charge_size: 2}).id,

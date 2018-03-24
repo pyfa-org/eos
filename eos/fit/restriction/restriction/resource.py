@@ -99,6 +99,7 @@ class PowergridRestriction(ResourceRestriction):
     _stat_name = 'powergrid'
     _use_attr_id = AttrId.power
 
+
 class CalibrationRestriction(ResourceRestriction):
     """Calibration use by items should not exceed ship calibration output.
 

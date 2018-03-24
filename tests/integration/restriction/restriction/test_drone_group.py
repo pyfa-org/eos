@@ -110,19 +110,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_ship_not_loaded(self):
-        self.fit.ship = Ship(self.allocate_type_id())
-        item = Drone(self.mktype(group_id=56).id)
-        self.fit.drones.add(item)
-        # Action
-        error = self.get_error(item, Restriction.drone_group)
-        # Verification
-        self.assertIsNone(error)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_pass_ship_no_restriction(self):
+    def test_pass_ship_attr_absent(self):
         # Check that restriction isn't applied when fit has ship, but without
         # restriction attr
         self.fit.ship = Ship(self.mktype().id)
@@ -136,7 +124,19 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_drone_not_loaded(self):
+    def test_pass_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        item = Drone(self.mktype(group_id=56).id)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.drone_group)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.allowed_drone_group_1: 1896}).id)
         item = Drone(self.allocate_type_id())
@@ -149,7 +149,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_non_drone(self):
+    def test_pass_item_other_class(self):
         # Check that restriction is not applied to items which are not drones
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.allowed_drone_group_1: 4}).id)

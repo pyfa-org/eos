@@ -96,6 +96,20 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_ship_attr_absent(self):
+        self.fit.ship = Ship(self.mktype().id)
+        item = ModuleHigh(self.mktype(effects=[self.effect]).id)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.launcher_slot)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         item = ModuleHigh(self.mktype(effects=[self.effect]).id)
@@ -150,7 +164,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_effect_disabled(self):
+    def test_pass_item_effect_disabled(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 0}).id)
         item = ModuleHigh(self.mktype(effects=[self.effect]).id)
@@ -164,7 +178,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_effect_absent(self):
+    def test_pass_item_effect_absent(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.launcher_slots_left: 0}).id)
         item = ModuleHigh(self.mktype().id)

@@ -172,9 +172,9 @@ class TestMaxGroupOnline(RestrictionTestCase):
         item = ModuleHigh(self.allocate_type_id(), state=State.online)
         self.fit.modules.high.append(item)
         # Action
-        error1 = self.get_error(item, Restriction.max_group_online)
+        error = self.get_error(item, Restriction.max_group_online)
         # Verification
-        self.assertIsNone(error1)
+        self.assertIsNone(error)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

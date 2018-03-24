@@ -187,6 +187,24 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_ship_group_none(self):
+        ship_type = self.mktype()
+        self.fit.ship = Ship(ship_type.id)
+        item = ModuleHigh(self.mktype(
+            attrs={AttrId.can_fit_ship_type_1: 10}).id)
+        self.fit.modules.high.append(item)
+        # Action
+        error = self.get_error(item, Restriction.ship_type_group)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.ship_type_id, ship_type.id)
+        self.assertIsNone(error.ship_group_id)
+        self.assertCountEqual(error.allowed_type_ids, [10])
+        self.assertCountEqual(error.allowed_group_ids, ())
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_ship_not_loaded(self):
         ship_type_id = self.allocate_type_id()
         self.fit.ship = Ship(ship_type_id)
