@@ -81,19 +81,6 @@ class BaseItemMixin(metaclass=ABCMeta):
         return child_items
 
     @property
-    def _container_position(self):
-        """Index of the item within parent container.
-
-        Returns:
-            Position within parent ordered container. If item is not assigned or
-            container is not ordered, returns None.
-        """
-        try:
-            return self._container.index(self)
-        except AttributeError:
-            return None
-
-    @property
     def _fit(self):
         try:
             return self._container._fit
