@@ -46,8 +46,8 @@ class ItemContainerBase:
             raise ItemAlreadyAssignedError(item)
         item._container = container
         fit = item._fit
-        for subitem in (item, *item._get_child_items()):
-            if fit is not None:
+        if fit is not None:
+            for subitem in (item, *item._get_child_items()):
                 fit._publish(ItemAdded(subitem))
                 subitem._load()
 
