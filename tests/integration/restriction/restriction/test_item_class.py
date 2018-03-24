@@ -47,7 +47,7 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestItemClass(RestrictionTestCase):
     """Check functionality of item class verification."""
 
-    def test_booster_pass_not_loaded(self):
+    def test_item_pass_not_loaded(self):
         # Make sure not loaded item doesn't cause any failures
         item = Booster(self.allocate_type_id())
         self.fit.boosters.add(item)
