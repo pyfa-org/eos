@@ -146,6 +146,62 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_item_not_loaded(self):
+        item = ModuleHigh(self.allocate_type_id(), state=State.active)
+        item.charge = Charge(self.mktype(attrs={
+            AttrId.volume: 1.0,
+            AttrId.em_dmg: 1.2,
+            AttrId.therm_dmg: 2.4,
+            AttrId.kin_dmg: 4.8,
+            AttrId.expl_dmg: 9.6}).id)
+        self.fit.modules.high.append(item)
+        # Action
+        stats_volley = self.fit.stats.get_volley()
+        # Verification
+        self.assertAlmostEqual(stats_volley.em, 0)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
+        self.assertAlmostEqual(stats_volley.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_not_loaded(self):
+        src_attr = self.mkattr()
+        modifier = self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.self,
+            tgt_attr_id=AttrId.dmg_mult,
+            operator=ModOperator.post_mul,
+            src_attr_id=src_attr.id)
+        effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier])
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 2.0,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.dmg_mult: 2,
+                    src_attr.id: 1.5},
+                effects=(self.dd_effect, effect),
+                default_effect=self.dd_effect).id,
+            state=State.active)
+        item.charge = Charge(self.allocate_type_id())
+        self.fit.modules.high.append(item)
+        # Action
+        stats_volley = self.fit.stats.get_volley()
+        # Verification
+        self.assertAlmostEqual(stats_volley.em, 0)
+        self.assertAlmostEqual(stats_volley.thermal, 0)
+        self.assertAlmostEqual(stats_volley.kinetic, 0)
+        self.assertAlmostEqual(stats_volley.explosive, 0)
+        self.assertAlmostEqual(stats_volley.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_arguments_custom_profile(self):
         item = ModuleHigh(
             self.mktype(
@@ -224,7 +280,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_none_em(self):
+    def test_charge_attr_em_absent(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -252,7 +308,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_none_therm(self):
+    def test_charge_attr_therm_absent(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -280,7 +336,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_none_kin(self):
+    def test_charge_attr_kin_absent(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -308,7 +364,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_none_expl(self):
+    def test_charge_attr_expl_absent(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -336,7 +392,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_none_all(self):
+    def test_charge_attr_all_absent(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -360,7 +416,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_em(self):
+    def test_charge_attr_em_zero(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -386,7 +442,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_therm(self):
+    def test_charge_attr_therm_zero(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -412,7 +468,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_kin(self):
+    def test_charge_attr_kin_zero(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
@@ -438,7 +494,7 @@ class TestStatsDmgVolley(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_single_zero_expl(self):
+    def test_charge_attr_expl_zero(self):
         item = ModuleHigh(
             self.mktype(
                 attrs={
