@@ -19,16 +19,26 @@
 # ==============================================================================
 
 
-from .attr import AttrValueChanged
-from .attr import AttrValueChangedMasked
-from .fit import DefaultIncomingDmgChanged
-from .item import ItemAdded
-from .item import ItemRemoved
-from .item import StatesActivated
-from .item import StatesDeactivated
-from .item_loaded import EffectsStarted
-from .item_loaded import EffectsStopped
-from .item_loaded import ItemLoaded
-from .item_loaded import ItemUnloaded
-from .item_loaded import StatesActivatedLoaded
-from .item_loaded import StatesDeactivatedLoaded
+from eos.util.repr import make_repr_str
+
+
+class AttrValueChanged:
+
+    def __init__(self, item, attr_id):
+        self.item = item
+        self.attr_id = attr_id
+
+    def __repr__(self):
+        spec = ['item', 'attr_id']
+        return make_repr_str(self, spec)
+
+
+class AttrValueChangedMasked:
+
+    def __init__(self, item, attr_id):
+        self.item = item
+        self.attr_id = attr_id
+
+    def __repr__(self):
+        spec = ['item', 'attr_id']
+        return make_repr_str(self, spec)

@@ -22,26 +22,6 @@
 from eos.util.repr import make_repr_str
 
 
-class ItemAdded:
-
-    def __init__(self, item):
-        self.item = item
-
-    def __repr__(self):
-        spec = ['item']
-        return make_repr_str(self, spec)
-
-
-class ItemRemoved:
-
-    def __init__(self, item):
-        self.item = item
-
-    def __repr__(self):
-        spec = ['item']
-        return make_repr_str(self, spec)
-
-
 class ItemLoaded:
 
     def __init__(self, item):
@@ -59,30 +39,6 @@ class ItemUnloaded:
 
     def __repr__(self):
         spec = ['item']
-        return make_repr_str(self, spec)
-
-
-class StatesActivated:
-
-    def __init__(self, item, states):
-        self.item = item
-        # Format: {states}
-        self.states = states
-
-    def __repr__(self):
-        spec = ['item', 'states']
-        return make_repr_str(self, spec)
-
-
-class StatesDeactivated:
-
-    def __init__(self, item, states):
-        self.item = item
-        # Format: {states}
-        self.states = states
-
-    def __repr__(self):
-        spec = ['item', 'states']
         return make_repr_str(self, spec)
 
 
@@ -132,31 +88,3 @@ class EffectsStopped:
     def __repr__(self):
         spec = ['item', 'effect_ids']
         return make_repr_str(self, spec)
-
-
-class AttrValueChanged:
-
-    def __init__(self, item, attr_id):
-        self.item = item
-        self.attr_id = attr_id
-
-    def __repr__(self):
-        spec = ['item', 'attr_id']
-        return make_repr_str(self, spec)
-
-
-class AttrValueChangedMasked:
-
-    def __init__(self, item, attr_id):
-        self.item = item
-        self.attr_id = attr_id
-
-    def __repr__(self):
-        spec = ['item', 'attr_id']
-        return make_repr_str(self, spec)
-
-
-class DefaultIncomingDmgChanged:
-
-    def __repr__(self):
-        return make_repr_str(self)
