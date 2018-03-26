@@ -82,7 +82,7 @@ class MutableStateMixin(BaseItemMixin):
                 msgs.extend(MsgHelper.get_item_state_update_msgs(
                     self, old_state, new_state))
                 # Messages for all state-dependent child items
-                for child_item in self._get_child_items():
+                for child_item in self._child_item_iter():
                     if isinstance(child_item, ContainerStateMixin):
                         msgs.extend(MsgHelper.get_item_state_update_msgs(
                             child_item, old_state, new_state))

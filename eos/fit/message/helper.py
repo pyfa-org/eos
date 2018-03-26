@@ -23,45 +23,57 @@ from eos.const.eos import State
 from eos.fit.misc.effect_status import EffectStatusResolver
 from .message import EffectsStarted
 from .message import EffectsStopped
+from .message import ItemAdded
 from .message import ItemLoaded
+from .message import ItemRemoved
 from .message import ItemUnloaded
 from .message import StatesActivated
+from .message import StatesActivatedLoaded
 from .message import StatesDeactivated
+from .message import StatesDeactivatedLoaded
 
 
 class MsgHelper:
     """Assists with generation of messages."""
 
     @staticmethod
+    def get_item_added_msgs(item):
+        """Generate messages about added item."""
+        msgs = []
+        # Item
+        msgs.append(ItemAdded(item))
+        # States
+        states = {s for s in State if s <= item.state}
+        msgs.append(StatesActivated(item, states))
+        return msgs
+
+    @staticmethod
+    def get_item_removed_msgs(item):
+        """Generate messages about item being removed."""
+        msgs = []
+        # States
+        states = {s for s in State if s <= item.state}
+        msgs.append(StatesDeactivated(item, states))
+        # Item
+        msgs.append(ItemRemoved(item))
+        return msgs
+
+    @staticmethod
     def get_item_loaded_msgs(item):
-        """Generate messages about loaded item.
-
-        Args:
-            item: Item which was loaded.
-
-        Returns:
-            Iterable with messages.
-        """
+        """Generate messages about loaded item."""
         msgs = []
         # Item
         msgs.append(ItemLoaded(item))
         # States
         states = {s for s in State if s <= item.state}
-        msgs.append(StatesActivated(item, states))
+        msgs.append(StatesActivatedLoaded(item, states))
         # Effects
         msgs.extend(MsgHelper.get_effects_status_update_msgs(item))
         return msgs
 
     @staticmethod
     def get_item_unloaded_msgs(item):
-        """Generate messages about unloaded item.
-
-        Args:
-            item: Item which will be unloaded.
-
-        Returns:
-            Iterable with messages.
-        """
+        """Generate messages about unloaded item."""
         msgs = []
         # Effects
         running_effect_ids = item._running_effect_ids
@@ -72,34 +84,30 @@ class MsgHelper:
             running_effect_ids.clear()
         # States
         states = {s for s in State if s <= item.state}
-        msgs.append(StatesDeactivated(item, states))
+        msgs.append(StatesDeactivatedLoaded(item, states))
         # Item
         msgs.append(ItemUnloaded(item))
         return msgs
 
     @staticmethod
     def get_item_state_update_msgs(item, old_state, new_state):
-        """Generate messages about changed item state.
-
-        Args:
-            item: Item which had its state changed.
-            old_state: Old state of the item.
-            new_state: New state of the item.
-
-        Returns:
-            Iterable with messages.
-        """
+        """Generate messages about changed item state."""
         msgs = []
         # State switching upwards
         if new_state > old_state:
             states = {s for s in State if old_state < s <= new_state}
             msgs.append(StatesActivated(item, states))
+            if item._is_loaded:
+                msgs.append(StatesActivatedLoaded(item, states))
         # State switching downwards
         else:
             states = {s for s in State if new_state < s <= old_state}
+            if item._is_loaded:
+                msgs.append(StatesDeactivatedLoaded(item, states))
             msgs.append(StatesDeactivated(item, states))
         # Effects
-        msgs.extend(MsgHelper.get_effects_status_update_msgs(item))
+        if item._is_loaded:
+            msgs.extend(MsgHelper.get_effects_status_update_msgs(item))
         return msgs
 
     @staticmethod
@@ -108,12 +116,6 @@ class MsgHelper:
 
         Besides generating messages, it actually updates item's set of effects
         which are considered as running.
-
-        Args:
-            item: Item for which effect status updates is requested.
-
-        Returns:
-            Iterable with messages.
         """
         # Set of effects which should be running according to new conditions
         new_running_effect_ids = set()

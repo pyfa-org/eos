@@ -39,16 +39,18 @@ class Module(MutableStateMixin, EffectStatsMixin):
     # Charge-specific properties
     charge = ItemDescriptor('_charge', Charge)
 
-    def _get_child_items(self):
+    def _child_item_iter(self, **kwargs):
+        charge = self.charge
+        if charge is not None:
+            yield charge
+        # Try next in MRO
         try:
-            child_getter = super()._get_child_items
+            child_item_iter = super()._child_item_iter
         except AttributeError:
-            child_items = set()
+            pass
         else:
-            child_items = child_getter()
-        if self.charge is not None:
-            child_items.add(self.charge)
-        return child_items
+            for item in child_item_iter(**kwargs):
+                yield item
 
     @property
     def charge_quantity(self):

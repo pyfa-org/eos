@@ -19,8 +19,7 @@
 # ==============================================================================
 
 
-from eos.fit.message import ItemAdded
-from eos.fit.message import ItemRemoved
+from eos.fit.message.helper import MsgHelper
 from .exception import ItemAlreadyAssignedError
 
 
@@ -47,8 +46,9 @@ class ItemContainerBase:
         item._container = container
         fit = item._fit
         if fit is not None:
-            for subitem in (item, *item._get_child_items()):
-                fit._publish(ItemAdded(subitem))
+            for subitem in self.__subitem_iter(item):
+                msgs = MsgHelper.get_item_added_msgs(subitem)
+                fit._publish_bulk(msgs)
                 subitem._load()
 
     def _handle_item_removal(self, item):
@@ -58,11 +58,20 @@ class ItemContainerBase:
         that presence checks during removal pass.
         """
         fit = item._fit
-        for subitem in (item, *item._get_child_items()):
+        for subitem in self.__subitem_iter(item):
             subitem._unload()
             if fit is not None:
-                fit._publish(ItemRemoved(subitem))
+                msgs = MsgHelper.get_item_removed_msgs(subitem)
+                fit._publish_bulk(msgs)
         item._container = None
+
+    def __subitem_iter(self, item):
+        """Iterate through passed item and its child items."""
+        yield item
+        # Skip autoloaded items because they are handled by loading or unloading
+        # of parent item
+        for child_item in item._child_item_iter(skip_autoitems=True):
+            yield child_item
 
     def _check_class(self, item, allow_none=False):
         """Check if class of passed item corresponds to our expectations.

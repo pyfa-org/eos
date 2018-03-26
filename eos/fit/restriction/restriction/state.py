@@ -25,8 +25,8 @@ from eos.const.eos import Restriction
 from eos.const.eos import State
 from eos.fit.item.charge import Autocharge
 from eos.fit.item.charge import Charge
-from eos.fit.message import StatesActivated
-from eos.fit.message import StatesDeactivated
+from eos.fit.message import StatesActivatedLoaded
+from eos.fit.message import StatesDeactivatedLoaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
@@ -49,17 +49,17 @@ class StateRestrictionRegister(BaseRestrictionRegister):
         self.__restricted_items = set()
         fit._subscribe(self, self._handler_map.keys())
 
-    def _handle_states_activated(self, msg):
+    def _handle_states_activated_loaded(self, msg):
         if State.online in msg.states and not isinstance(msg.item, EXCEPTIONS):
             self.__restricted_items.add(msg.item)
 
-    def _handle_states_deactivated(self, msg):
+    def _handle_states_deactivated_loaded(self, msg):
         if State.online in msg.states:
             self.__restricted_items.discard(msg.item)
 
     _handler_map = {
-        StatesActivated: _handle_states_activated,
-        StatesDeactivated: _handle_states_deactivated}
+        StatesActivatedLoaded: _handle_states_activated_loaded,
+        StatesDeactivatedLoaded: _handle_states_deactivated_loaded}
 
     def validate(self):
         tainted_items = {}

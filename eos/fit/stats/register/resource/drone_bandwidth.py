@@ -25,8 +25,8 @@ from eos.fit.item import Drone
 from eos.fit.item import Ship
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
-from eos.fit.message import StatesActivated
-from eos.fit.message import StatesDeactivated
+from eos.fit.message import StatesActivatedLoaded
+from eos.fit.message import StatesDeactivatedLoaded
 from .base import BaseResourceRegister
 
 
@@ -63,7 +63,7 @@ class DroneBandwidthRegister(BaseResourceRegister):
         if msg.item is self.__current_ship:
             self.__current_ship = None
 
-    def _handle_states_activated(self, msg):
+    def _handle_states_activated_loaded(self, msg):
         if (
             isinstance(msg.item, Drone) and
             State.online in msg.states and
@@ -71,12 +71,12 @@ class DroneBandwidthRegister(BaseResourceRegister):
         ):
             self.__resource_users.add(msg.item)
 
-    def _handle_states_deactivated(self, msg):
+    def _handle_states_deactivated_loaded(self, msg):
         if isinstance(msg.item, Drone) and State.online in msg.states:
             self.__resource_users.discard(msg.item)
 
     _handler_map = {
         ItemLoaded: _handle_item_loaded,
         ItemUnloaded: _handle_item_unloaded,
-        StatesActivated: _handle_states_activated,
-        StatesDeactivated: _handle_states_deactivated}
+        StatesActivatedLoaded: _handle_states_activated_loaded,
+        StatesDeactivatedLoaded: _handle_states_deactivated_loaded}

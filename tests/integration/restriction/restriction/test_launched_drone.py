@@ -77,6 +77,21 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_fail_item_not_loaded(self):
+        self.fit.character = Character(self.mktype(
+            attrs={AttrId.max_active_drones: 0}).id)
+        item = Drone(self.allocate_type_id(), state=State.online)
+        self.fit.drones.add(item)
+        # Action
+        error = self.get_error(item, Restriction.launched_drone)
+        # Verification
+        self.assertIsNotNone(error)
+        self.assertEqual(error.used, 1)
+        self.assertEqual(error.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_fail_char_absent(self):
         # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
@@ -165,19 +180,6 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.fit.character = Character(self.mktype(
             attrs={AttrId.max_active_drones: 0}).id)
         item = Drone(self.mktype().id, state=State.offline)
-        self.fit.drones.add(item)
-        # Action
-        error = self.get_error(item, Restriction.launched_drone)
-        # Verification
-        self.assertIsNone(error)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_pass_item_not_loaded(self):
-        self.fit.character = Character(self.mktype(
-            attrs={AttrId.max_active_drones: 0}).id)
-        item = Drone(self.allocate_type_id(), state=State.online)
         self.fit.drones.add(item)
         # Action
         error = self.get_error(item, Restriction.launched_drone)

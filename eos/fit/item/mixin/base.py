@@ -49,7 +49,7 @@ class BaseItemMixin(metaclass=ABCMeta):
 
     Cooperative methods:
         __init__
-        _get_child_items
+        _child_item_iter
     """
 
     def __init__(self, type_id, **kwargs):
@@ -70,15 +70,18 @@ class BaseItemMixin(metaclass=ABCMeta):
         self._container = None
         super().__init__(**kwargs)
 
-    def _get_child_items(self):
+    def _child_item_iter(self, skip_autoitems=False, **kwargs):
+        if not skip_autoitems:
+            for item in self.autocharges.values():
+                yield item
+        # Try next in MRO
         try:
-            child_getter = super()._get_child_items
+            child_item_iter = super()._child_item_iter
         except AttributeError:
-            child_items = set()
+            pass
         else:
-            child_items = child_getter()
-        child_items.update(self.autocharges.values())
-        return child_items
+            for item in child_item_iter(skip_autoitems=skip_autoitems):
+                yield item
 
     @property
     def _fit(self):
@@ -138,7 +141,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         container = self._container
         if isinstance(container, BaseItemMixin):
             other_items.add(container)
-        other_items.update(self._get_child_items())
+        other_items.update(self._child_item_iter())
         return other_items
 
     # Effect methods

@@ -155,10 +155,10 @@ class Fit(MsgBroker):
         old_source = self.source
         if new_source is old_source:
             return
-        for item in self._item_iter():
+        for item in self._item_iter(skip_autoitems=True):
             item._unload()
         self.__source = new_source
-        for item in self._item_iter():
+        for item in self._item_iter(skip_autoitems=True):
             item._load()
 
     @property
@@ -185,7 +185,7 @@ class Fit(MsgBroker):
         # container's fit is used, thus fit's fit is self
         return self
 
-    def _item_iter(self):
+    def _item_iter(self, skip_autoitems=False):
         single = (self.character, self.ship, self.stance, self.effect_beacon)
         for item in chain(
             (i for i in single if i is not None),
@@ -199,7 +199,9 @@ class Fit(MsgBroker):
             self.fighters
         ):
             yield item
-            for child_item in item._get_child_items():
+            for child_item in item._child_item_iter(
+                skip_autoitems=skip_autoitems
+            ):
                 yield child_item
 
     def _loaded_item_iter(self):

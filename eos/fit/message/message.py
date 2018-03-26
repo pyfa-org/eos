@@ -86,6 +86,30 @@ class StatesDeactivated:
         return make_repr_str(self, spec)
 
 
+class StatesActivatedLoaded:
+
+    def __init__(self, item, states):
+        self.item = item
+        # Format: {states}
+        self.states = states
+
+    def __repr__(self):
+        spec = ['item', 'states']
+        return make_repr_str(self, spec)
+
+
+class StatesDeactivatedLoaded:
+
+    def __init__(self, item, states):
+        self.item = item
+        # Format: {states}
+        self.states = states
+
+    def __repr__(self):
+        spec = ['item', 'states']
+        return make_repr_str(self, spec)
+
+
 class EffectsStarted:
 
     def __init__(self, item, effect_ids):

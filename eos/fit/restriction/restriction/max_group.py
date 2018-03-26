@@ -31,8 +31,8 @@ from eos.fit.item import ModuleLow
 from eos.fit.item import ModuleMed
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
-from eos.fit.message import StatesActivated
-from eos.fit.message import StatesDeactivated
+from eos.fit.message import StatesActivatedLoaded
+from eos.fit.message import StatesDeactivatedLoaded
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
@@ -148,8 +148,8 @@ class MaxGroupOnlineRestrictionRegister(MaxGroupRestrictionRegister):
             MaxGroupRestrictionRegister._unregister_item(self, msg.item)
 
     _handler_map = {
-        StatesActivated: _handle_states_activated,
-        StatesDeactivated: _handle_states_deactivated}
+        StatesActivatedLoaded: _handle_states_activated,
+        StatesDeactivatedLoaded: _handle_states_deactivated}
 
 
 class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
@@ -163,14 +163,14 @@ class MaxGroupActiveRestrictionRegister(MaxGroupRestrictionRegister):
     type = Restriction.max_group_active
     _max_group_attr_id = AttrId.max_group_active
 
-    def _handle_states_activated(self, msg):
+    def _handle_states_activated_loaded(self, msg):
         if State.active in msg.states:
             MaxGroupRestrictionRegister._register_item(self, msg.item)
 
-    def _handle_states_deactivated(self, msg):
+    def _handle_states_deactivated_loaded(self, msg):
         if State.active in msg.states:
             MaxGroupRestrictionRegister._unregister_item(self, msg.item)
 
     _handler_map = {
-        StatesActivated: _handle_states_activated,
-        StatesDeactivated: _handle_states_deactivated}
+        StatesActivatedLoaded: _handle_states_activated_loaded,
+        StatesDeactivatedLoaded: _handle_states_deactivated_loaded}
