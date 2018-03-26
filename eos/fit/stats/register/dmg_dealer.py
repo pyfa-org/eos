@@ -34,7 +34,7 @@ class DmgDealerRegister(BaseStatRegister):
     """
 
     def __init__(self, fit):
-        # Format: {(item, effect), ...}
+        # Format: {item:, {effect1, effect2}}
         self.__dmg_dealers = KeyedStorage()
         fit._subscribe(self, self._handler_map.keys())
 
