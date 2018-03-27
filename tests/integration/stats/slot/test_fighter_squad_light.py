@@ -56,27 +56,26 @@ class TestFighterSquadLight(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_ship(self):
-        # None for slot quantity when no ship
+    def test_output_ship_absent(self):
         self.fit.ship = None
         # Verification
-        self.assertIsNone(self.fit.stats.fighter_squads_light.total)
+        self.assertEqual(self.fit.stats.fighter_squads_light.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_attr(self):
-        # None for slot quantity when no attribute on ship
+    def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertIsNone(self.fit.stats.fighter_squads_light.total)
+        self.assertEqual(self.fit.stats.fighter_squads_light.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_empty(self):
+    def test_output_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         # Verification
-        self.assertEqual(self.fit.stats.fighter_squads_light.used, 0)
+        self.assertEqual(self.fit.stats.fighter_squads_light.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -91,7 +90,7 @@ class TestFighterSquadLight(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_attr_absent(self):
+    def test_use_item_attr_absent(self):
         self.fit.fighters.add(FighterSquad(self.mktype().id))
         # Verification
         self.assertEqual(self.fit.stats.fighter_squads_light.used, 0)
@@ -99,7 +98,7 @@ class TestFighterSquadLight(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_attr_zero(self):
+    def test_use_item_attr_zero(self):
         self.fit.fighters.add(FighterSquad(self.mktype(
             attrs={AttrId.fighter_squadron_is_light: 0.0}).id))
         # Verification
@@ -108,7 +107,7 @@ class TestFighterSquadLight(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_other_item_class(self):
+    def test_use_item_other_class(self):
         self.fit.drones.add(Drone(self.mktype(
             attrs={AttrId.fighter_squadron_is_light: 1.0}).id))
         # Verification
@@ -117,15 +116,17 @@ class TestFighterSquadLight(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 3}).id)
-        item_type = self.mktype(attrs={AttrId.fighter_squadron_is_light: 1.0})
-        self.fit.fighters.add(FighterSquad(item_type.id))
-        self.fit.fighters.add(FighterSquad(item_type.id))
-        self.fit.source = None
+    def test_use_item_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.fighter_squads_light.used, 0)
-        self.assertIsNone(self.fit.stats.fighter_squads_light.total)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_not_loaded(self):
+        self.fit.fighters.add(FighterSquad(self.allocate_type_id()))
+        # Verification
+        self.assertEqual(self.fit.stats.fighter_squads_light.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

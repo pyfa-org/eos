@@ -19,13 +19,10 @@
 # ==============================================================================
 
 
-from eos import EffectMode
 from eos import ModuleMed
 from eos import Rig
 from eos import Ship
 from eos.const.eve import AttrId
-from eos.const.eve import EffectCategoryId
-from eos.const.eve import EffectId
 from tests.integration.stats.testcase import StatsTestCase
 
 
@@ -34,9 +31,6 @@ class TestRig(StatsTestCase):
     def setUp(self):
         StatsTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.rig_slots)
-        self.effect = self.mkeffect(
-            effect_id=EffectId.rig_slot,
-            category_id=EffectCategoryId.passive)
 
     def test_output(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_slots: 3}).id)
@@ -46,68 +40,57 @@ class TestRig(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_ship(self):
-        # None for slot quantity when no ship
+    def test_output_ship_absent(self):
         # Verification
-        self.assertIsNone(self.fit.stats.rig_slots.total)
+        self.assertEqual(self.fit.stats.rig_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_attr(self):
-        # None for slot quantity when no attribute on ship
+    def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertIsNone(self.fit.stats.rig_slots.total)
+        self.assertEqual(self.fit.stats.rig_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_empty(self):
+    def test_output_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         # Verification
-        self.assertEqual(self.fit.stats.rig_slots.used, 0)
+        self.assertEqual(self.fit.stats.rig_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
-        self.fit.rigs.add(Rig(self.mktype(effects=[self.effect]).id))
-        self.fit.rigs.add(Rig(self.mktype(effects=[self.effect]).id))
+        self.fit.rigs.add(Rig(self.mktype().id))
+        self.fit.rigs.add(Rig(self.mktype().id))
         # Verification
         self.assertEqual(self.fit.stats.rig_slots.used, 2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_disabled_effect(self):
-        item1 = Rig(self.mktype(effects=[self.effect]).id)
-        item2 = Rig(self.mktype(effects=[self.effect]).id)
-        item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
-        self.fit.rigs.add(item1)
-        self.fit.rigs.add(item2)
-        # Verification
-        self.assertEqual(self.fit.stats.rig_slots.used, 1)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_use_other_item_class(self):
-        self.fit.modules.med.append(
-            ModuleMed(self.mktype(effects=[self.effect]).id))
-        # Verification
-        self.assertEqual(self.fit.stats.rig_slots.used, 1)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_source_none(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_slots: 3}).id)
-        self.fit.rigs.add(Rig(self.mktype(effects=[self.effect]).id))
-        self.fit.rigs.add(Rig(self.mktype(effects=[self.effect]).id))
-        self.fit.source = None
+    def test_use_item_other_class(self):
+        self.fit.modules.med.append(ModuleMed(self.mktype().id))
         # Verification
         self.assertEqual(self.fit.stats.rig_slots.used, 0)
-        self.assertIsNone(self.fit.stats.rig_slots.total)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_absent(self):
+        # Verification
+        self.assertEqual(self.fit.stats.rig_slots.used, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_not_loaded(self):
+        self.fit.rigs.add(Rig(self.allocate_type_id()))
+        # Verification
+        self.assertEqual(self.fit.stats.rig_slots.used, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

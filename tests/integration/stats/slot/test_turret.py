@@ -61,26 +61,25 @@ class TestTurretSlot(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_ship(self):
-        # None for slot quantity when no ship
+    def test_output_ship_absent(self):
         # Verification
-        self.assertIsNone(self.fit.stats.turret_slots.total)
+        self.assertEqual(self.fit.stats.turret_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_attr(self):
-        # None for slot quantity when no attribute on ship
+    def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertIsNone(self.fit.stats.turret_slots.total)
+        self.assertEqual(self.fit.stats.turret_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_empty(self):
+    def test_output_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         # Verification
-        self.assertEqual(self.fit.stats.turret_slots.used, 0)
+        self.assertEqual(self.fit.stats.turret_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -108,7 +107,18 @@ class TestTurretSlot(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_disabled_effect(self):
+    def test_use_item_effect_absent(self):
+        item1 = ModuleHigh(self.mktype(effects=[self.effect]).id)
+        item2 = ModuleHigh(self.mktype().id)
+        self.fit.modules.high.append(item1)
+        self.fit.modules.high.append(item2)
+        # Verification
+        self.assertEqual(self.fit.stats.turret_slots.used, 1)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_effect_disabled(self):
         item1 = ModuleHigh(self.mktype(effects=[self.effect]).id)
         item2 = ModuleHigh(self.mktype(effects=[self.effect]).id)
         item2.set_effect_mode(self.effect.id, EffectMode.force_stop)
@@ -120,17 +130,17 @@ class TestTurretSlot(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
-        self.fit.ship = Ship(self.mktype(
-            attrs={AttrId.turret_slots_left: 3}).id)
-        self.fit.modules.high.append(
-            ModuleHigh(self.mktype(effects=[self.effect]).id))
-        self.fit.modules.high.append(
-            ModuleHigh(self.mktype(effects=[self.effect]).id))
-        self.fit.source = None
+    def test_use_item_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.used, 0)
-        self.assertIsNone(self.fit.stats.turret_slots.total)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_not_loaded(self):
+        self.fit.modules.high.append(ModuleHigh(self.allocate_type_id()))
+        # Verification
+        self.assertEqual(self.fit.stats.turret_slots.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
