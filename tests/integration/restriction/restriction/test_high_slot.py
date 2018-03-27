@@ -197,17 +197,3 @@ class TestHighSlot(RestrictionTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
-
-    def test_pass_source_none(self):
-        # Error shouldn't be raised when fit has no source
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.hi_slots: 0}).id)
-        item = ModuleHigh(self.mktype().id)
-        self.fit.modules.high.append(item)
-        self.fit.source = None
-        # Action
-        error = self.get_error(item, Restriction.high_slot)
-        # Verification
-        self.assertIsNone(error)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)

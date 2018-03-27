@@ -132,8 +132,6 @@ class Fit(MsgBroker):
                 contains extensive data on reason of failure. Refer to
                 restriction service docs for format of the data.
         """
-        if self.source is None:
-            return
         self._restriction.validate(skip_checks)
 
     @property

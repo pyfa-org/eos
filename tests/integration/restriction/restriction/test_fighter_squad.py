@@ -165,17 +165,3 @@ class TestFighterSquad(RestrictionTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
-
-    def test_pass_source_none(self):
-        # Error shouldn't be raised when fit has no source
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 0}).id)
-        item = FighterSquad(self.mktype().id)
-        self.fit.fighters.add(item)
-        self.fit.source = None
-        # Action
-        error = self.get_error(item, Restriction.fighter_squad)
-        # Verification
-        self.assertIsNone(error)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
