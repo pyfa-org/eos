@@ -75,41 +75,13 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_data_source_none(self):
+    def test_data_item_not_loaded(self):
         # Setup
-        chance_attr1 = self.mkattr()
-        chance_attr2 = self.mkattr()
-        src_attr = self.mkattr()
-        modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=chance_attr2.id,
-            operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
-        effect1 = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attr_id=chance_attr1.id)
-        effect2 = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            fitting_usage_chance_attr_id=chance_attr2.id)
-        effect3 = self.mkeffect(
-            category_id=EffectCategoryId.passive,
-            modifiers=[modifier])
-        fit = Fit(source=None)
-        item = Booster(self.mktype(
-            attrs={
-                chance_attr1.id: 0.5,
-                chance_attr2.id: 0.1,
-                src_attr.id: -25},
-            effects=(effect1, effect2, effect3)).id)
+        fit = Fit()
+        item = Booster(self.allocate_type_id())
         fit.boosters.add(item)
         # Verification
-        with self.assertRaises(NoSuchSideEffectError):
-            item.set_side_effect_status(effect2.id, True)
-        side_effects = item.side_effects
-        self.assertEqual(len(side_effects), 0)
-        self.assertNotIn(effect1.id, side_effects)
-        self.assertNotIn(effect2.id, side_effects)
+        self.assertEqual(len(item.side_effects), 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -175,6 +147,19 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
+    def test_enabling_item_not_loaded(self):
+        # Setup
+        effect_id = self.allocate_effect_id()
+        fit = Fit()
+        item = Booster(self.allocate_type_id())
+        fit.boosters.add(item)
+        # Verification
+        with self.assertRaises(NoSuchSideEffectError):
+            item.set_side_effect_status(effect_id, True)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
     def test_disabling(self):
         # Setup
         chance_attr = self.mkattr()
@@ -233,6 +218,19 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
             item.set_side_effect_status(effect.id, False)
         self.assertNotIn(effect.id, item.side_effects)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_disabling_item_not_loaded(self):
+        # Setup
+        effect_id = self.allocate_effect_id()
+        fit = Fit()
+        item = Booster(self.allocate_type_id())
+        fit.boosters.add(item)
+        # Verification
+        with self.assertRaises(NoSuchSideEffectError):
+            item.set_side_effect_status(effect_id, False)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
