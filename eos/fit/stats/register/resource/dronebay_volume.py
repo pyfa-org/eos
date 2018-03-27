@@ -21,7 +21,6 @@
 
 from eos.const.eve import AttrId
 from eos.fit.item import Drone
-from eos.fit.item import Ship
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
 from .base import BaseResourceRegister
@@ -29,11 +28,11 @@ from .base import BaseResourceRegister
 
 class DronebayVolumeRegister(BaseResourceRegister):
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         BaseResourceRegister.__init__(self)
-        self.__current_ship = None
+        self.__fit = fit
         self.__resource_users = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     @property
     def used(self):
@@ -42,9 +41,9 @@ class DronebayVolumeRegister(BaseResourceRegister):
     @property
     def output(self):
         try:
-            return self.__current_ship.attrs[AttrId.drone_capacity]
+            return self.__fit.ship.attrs[AttrId.drone_capacity]
         except (AttributeError, KeyError):
-            return None
+            return 0
 
     @property
     def _users(self):
@@ -56,14 +55,10 @@ class DronebayVolumeRegister(BaseResourceRegister):
             AttrId.volume in msg.item._type_attrs
         ):
             self.__resource_users.add(msg.item)
-        elif isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
 
     def _handle_item_unloaded(self, msg):
         if isinstance(msg.item, Drone):
             self.__resource_users.discard(msg.item)
-        elif msg.item is self.__current_ship:
-            self.__current_ship = None
 
     _handler_map = {
         ItemLoaded: _handle_item_loaded,

@@ -101,7 +101,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_status_no_source(self):
+    def test_status_source_none(self):
         # Setup
         effect1 = self.mkeffect(
             effect_id=EffectId.fighter_ability_attack_m,

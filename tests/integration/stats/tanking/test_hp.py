@@ -62,7 +62,7 @@ class TestHp(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
+    def test_source_none(self):
         # Check that stats service relays hp stats properly
         self.fit.ship = Ship(self.mktype(attrs={
             AttrId.hp: 10,

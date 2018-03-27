@@ -75,7 +75,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_data_no_source(self):
+    def test_data_source_none(self):
         # Setup
         chance_attr1 = self.mkattr()
         chance_attr2 = self.mkattr()

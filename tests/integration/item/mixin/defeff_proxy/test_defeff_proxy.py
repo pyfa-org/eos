@@ -96,7 +96,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     # Various errors are tested here, but just for one of access points
-    def test_optimal_no_source(self):
+    def test_optimal_source_none(self):
         fit = Fit(source=None)
         item = self.make_item_with_defeff_attr('range_attr_id')
         fit.modules.high.append(item)

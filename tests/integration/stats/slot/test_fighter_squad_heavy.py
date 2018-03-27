@@ -117,7 +117,7 @@ class TestFighterSquadHeavy(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
+    def test_source_none(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 3}).id)
         item_type = self.mktype(attrs={AttrId.fighter_squadron_is_heavy: 1.0})
         self.fit.fighters.add(FighterSquad(item_type.id))

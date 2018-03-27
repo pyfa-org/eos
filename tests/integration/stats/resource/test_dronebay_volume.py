@@ -57,19 +57,25 @@ class TestDroneBayVolume(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_ship(self):
-        # None for output when no ship
+    def test_output_ship_absent(self):
         # Verification
-        self.assertIsNone(self.fit.stats.dronebay.output)
+        self.assertAlmostEqual(self.fit.stats.dronebay.output, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_attr(self):
-        # None for output when no attribute on ship
+    def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertIsNone(self.fit.stats.dronebay.output)
+        self.assertAlmostEqual(self.fit.stats.dronebay.output, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_output_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        # Verification
+        self.assertAlmostEqual(self.fit.stats.dronebay.output, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -92,21 +98,17 @@ class TestDroneBayVolume(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_none(self):
+    def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.drone_capacity: 200}).id)
-        self.fit.drones.add(Drone(self.mktype(attrs={AttrId.volume: 50}).id))
-        self.fit.drones.add(Drone(self.mktype(attrs={AttrId.volume: 30}).id))
-        self.fit.source = None
+    def test_use_item_not_loaded(self):
+        self.fit.drones.add(Drone(self.allocate_type_id()))
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 0)
-        self.assertIsNone(self.fit.stats.dronebay.output)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

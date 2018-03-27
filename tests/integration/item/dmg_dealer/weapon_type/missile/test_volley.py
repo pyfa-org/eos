@@ -371,7 +371,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
+    def test_source_none(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(

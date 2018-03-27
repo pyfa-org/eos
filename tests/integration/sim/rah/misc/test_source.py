@@ -27,7 +27,7 @@ from tests.integration.sim.rah.testcase import RahSimTestCase
 
 class TestRahSimSource(RahSimTestCase):
 
-    def test_no_source(self):
+    def test_source_none(self):
         # Setup
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship

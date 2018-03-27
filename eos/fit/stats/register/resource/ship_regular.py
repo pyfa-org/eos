@@ -24,21 +24,18 @@ from abc import abstractmethod
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.fit.item import Ship
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
-from eos.fit.message import ItemLoaded
-from eos.fit.message import ItemUnloaded
 from .base import BaseResourceRegister
 
 
 class ShipRegularResourceRegister(BaseResourceRegister, metaclass=ABCMeta):
 
-    def __init__(self, msg_broker):
+    def __init__(self, fit):
         BaseResourceRegister.__init__(self)
-        self.__current_ship = None
+        self.__fit = fit
         self.__resource_users = set()
-        msg_broker._subscribe(self, self._handler_map.keys())
+        fit._subscribe(self, self._handler_map.keys())
 
     @property
     @abstractmethod
@@ -64,21 +61,13 @@ class ShipRegularResourceRegister(BaseResourceRegister, metaclass=ABCMeta):
     @property
     def output(self):
         try:
-            return self.__current_ship.attrs[self._output_attr_id]
+            return self.__fit.ship.attrs[self._output_attr_id]
         except (AttributeError, KeyError):
-            return None
+            return 0
 
     @property
     def _users(self):
         return self.__resource_users
-
-    def _handle_item_loaded(self, msg):
-        if isinstance(msg.item, Ship):
-            self.__current_ship = msg.item
-
-    def _handle_item_unloaded(self, msg):
-        if msg.item is self.__current_ship:
-            self.__current_ship = None
 
     def _handle_effects_started(self, msg):
         if (
@@ -92,8 +81,6 @@ class ShipRegularResourceRegister(BaseResourceRegister, metaclass=ABCMeta):
             self.__resource_users.discard(msg.item)
 
     _handler_map = {
-        ItemLoaded: _handle_item_loaded,
-        ItemUnloaded: _handle_item_unloaded,
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped}
 

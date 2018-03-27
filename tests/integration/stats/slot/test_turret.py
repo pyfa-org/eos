@@ -120,7 +120,7 @@ class TestTurretSlot(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
+    def test_source_none(self):
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.turret_slots_left: 3}).id)
         self.fit.modules.high.append(

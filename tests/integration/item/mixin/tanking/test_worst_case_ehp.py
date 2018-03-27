@@ -451,7 +451,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
+    def test_source_none(self):
         fit = Fit(source=None)
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,

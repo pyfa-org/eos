@@ -48,19 +48,25 @@ class TestCalibration(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_ship(self):
-        # None for output when no ship
+    def test_output_ship_absent(self):
         # Verification
-        self.assertIsNone(self.fit.stats.calibration.output)
+        self.assertAlmostEqual(self.fit.stats.calibration.output, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_attr(self):
-        # None for output when no attribute on ship
+    def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertIsNone(self.fit.stats.calibration.output)
+        self.assertAlmostEqual(self.fit.stats.calibration.output, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_output_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        # Verification
+        self.assertAlmostEqual(self.fit.stats.calibration.output, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -88,7 +94,20 @@ class TestCalibration(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_disabled_effect(self):
+    def test_use_item_effect_absent(self):
+        item1 = Rig(self.mktype(
+            attrs={AttrId.upgrade_cost: 50},
+            effects=[self.effect]).id)
+        item2 = Rig(self.mktype(attrs={AttrId.upgrade_cost: 30}).id)
+        self.fit.rigs.add(item1)
+        self.fit.rigs.add(item2)
+        # Verification
+        self.assertAlmostEqual(self.fit.stats.calibration.used, 50)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_effect_disabled(self):
         item1 = Rig(self.mktype(
             attrs={AttrId.upgrade_cost: 50},
             effects=[self.effect]).id)
@@ -104,26 +123,17 @@ class TestCalibration(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_none(self):
+    def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
-        self.fit.ship = Ship(self.mktype(
-            attrs={AttrId.upgrade_capacity: 350}).id)
-        self.fit.rigs.add(Rig(self.mktype(
-            attrs={AttrId.upgrade_cost: 50},
-            effects=[self.effect]).id))
-        self.fit.rigs.add(Rig(self.mktype(
-            attrs={AttrId.upgrade_cost: 30},
-            effects=[self.effect]).id))
-        self.fit.source = None
+    def test_use_item_not_loaded(self):
+        self.fit.rigs.add(Rig(self.allocate_type_id()))
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 0)
-        self.assertIsNone(self.fit.stats.calibration.output)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -169,7 +169,7 @@ class TestSubsystemSlot(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_no_source(self):
+    def test_pass_source_none(self):
         # Error shouldn't be raised when fit has no source
         self.fit.ship = Ship(self.mktype(attrs={AttrId.max_subsystems: 0}).id)
         item = Subsystem(self.mktype().id)

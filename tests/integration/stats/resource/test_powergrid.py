@@ -63,19 +63,25 @@ class TestPowergrid(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_ship(self):
-        # None for output when no ship
+    def test_output_ship_absent(self):
         # Verification
-        self.assertIsNone(self.fit.stats.powergrid.output)
+        self.assertAlmostEqual(self.fit.stats.powergrid.output, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_output_no_attr(self):
-        # None for output when no attribute on ship
+    def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertIsNone(self.fit.stats.powergrid.output)
+        self.assertAlmostEqual(self.fit.stats.powergrid.output, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_output_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
+        # Verification
+        self.assertAlmostEqual(self.fit.stats.powergrid.output, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -103,18 +109,6 @@ class TestPowergrid(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_single_rounding(self):
-        self.fit.modules.high.append(ModuleHigh(
-            self.mktype(
-                attrs={AttrId.power: 55.5555555555},
-                effects=[self.effect]).id,
-            state=State.online))
-        # Verification
-        self.assertAlmostEqual(self.fit.stats.powergrid.used, 55.56)
-        # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
-        self.assertEqual(len(self.get_log()), 0)
-
     def test_use_multiple(self):
         self.fit.modules.high.append(ModuleHigh(
             self.mktype(attrs={AttrId.power: 50}, effects=[self.effect]).id,
@@ -128,7 +122,19 @@ class TestPowergrid(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_state(self):
+    def test_use_rounding(self):
+        self.fit.modules.high.append(ModuleHigh(
+            self.mktype(
+                attrs={AttrId.power: 55.5555555555},
+                effects=[self.effect]).id,
+            state=State.online))
+        # Verification
+        self.assertAlmostEqual(self.fit.stats.powergrid.used, 55.56)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_state(self):
         self.fit.modules.high.append(ModuleHigh(
             self.mktype(attrs={AttrId.power: 50}, effects=[self.effect]).id,
             state=State.online))
@@ -141,7 +147,22 @@ class TestPowergrid(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_disabled_effect(self):
+    def test_use_item_effect_absent(self):
+        item1 = ModuleHigh(
+            self.mktype(attrs={AttrId.power: 50}, effects=[self.effect]).id,
+            state=State.online)
+        item2 = ModuleHigh(
+            self.mktype(attrs={AttrId.power: 30}).id,
+            state=State.online)
+        self.fit.modules.high.append(item1)
+        self.fit.modules.high.append(item2)
+        # Verification
+        self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_use_item_effect_disabled(self):
         item1 = ModuleHigh(
             self.mktype(attrs={AttrId.power: 50}, effects=[self.effect]).id,
             state=State.online)
@@ -157,25 +178,19 @@ class TestPowergrid(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_none(self):
+    def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_source(self):
-        self.fit.ship = Ship(self.mktype(attrs={AttrId.power_output: 200}).id)
+    def test_use_item_not_loaded(self):
         self.fit.modules.high.append(ModuleHigh(
-            self.mktype(attrs={AttrId.power: 50}, effects=[self.effect]).id,
+            self.allocate_type_id(),
             state=State.online))
-        self.fit.modules.high.append(ModuleHigh(
-            self.mktype(attrs={AttrId.power: 30}, effects=[self.effect]).id,
-            state=State.online))
-        self.fit.source = None
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 0)
-        self.assertIsNone(self.fit.stats.powergrid.output)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
