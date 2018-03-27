@@ -84,7 +84,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_em(self):
+    def test_charge_attr_em_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -114,7 +114,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_therm(self):
+    def test_charge_attr_therm_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -144,7 +144,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_kin(self):
+    def test_charge_attr_kin_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -174,7 +174,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_expl(self):
+    def test_charge_attr_expl_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -204,7 +204,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_mult(self):
+    def test_item_attr_mult_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -234,7 +234,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_insufficient_state(self):
+    def test_item_insufficient_state(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -265,7 +265,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_disabled_effect(self):
+    def test_item_effect_disabled(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -297,7 +297,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_charge(self):
+    def test_charge_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -322,7 +322,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_cycles_until_reload(self):
+    def test_cycles_until_reload_none(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -353,7 +353,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
+    def test_charge_not_loaded(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -366,14 +366,8 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
                 effects=[self.effect],
                 default_effect=self.effect).id,
             state=State.active)
-        item.charge = Charge(self.mktype(attrs={
-            AttrId.volume: 0.2,
-            AttrId.em_dmg: 5.2,
-            AttrId.therm_dmg: 6.3,
-            AttrId.kin_dmg: 7.4,
-            AttrId.expl_dmg: 8.5}).id)
+        item.charge = Charge(self.allocate_type_id())
         fit.modules.high.append(item)
-        fit.source = None
         # Verification
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 0)

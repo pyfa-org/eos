@@ -68,7 +68,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_em(self):
+    def test_attr_em_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -92,7 +92,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_therm(self):
+    def test_attr_therm_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -116,7 +116,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_kin(self):
+    def test_attr_kin_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -140,7 +140,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_expl(self):
+    def test_attr_expl_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -189,7 +189,7 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_disabled_effect(self):
+    def test_effect_disabled(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -204,32 +204,6 @@ class TestItemDmgSmartbombVolley(ItemMixinTestCase):
             state=State.active)
         item.set_effect_mode(self.effect.id, EffectMode.force_stop)
         fit.modules.high.append(item)
-        # Verification
-        volley = item.get_volley()
-        self.assertAlmostEqual(volley.em, 0)
-        self.assertAlmostEqual(volley.thermal, 0)
-        self.assertAlmostEqual(volley.kinetic, 0)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 0)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_source_none(self):
-        fit = Fit()
-        item = ModuleHigh(
-            self.mktype(
-                attrs={
-                    AttrId.em_dmg: 52,
-                    AttrId.therm_dmg: 63,
-                    AttrId.kin_dmg: 74,
-                    AttrId.expl_dmg: 85,
-                    self.cycle_attr.id: 5000},
-                effects=[self.effect],
-                default_effect=self.effect).id,
-            state=State.active)
-        fit.modules.high.append(item)
-        fit.source = None
         # Verification
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 0)

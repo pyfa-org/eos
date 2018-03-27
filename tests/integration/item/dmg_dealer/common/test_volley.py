@@ -49,7 +49,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
             category_id=EffectCategoryId.active,
             duration_attr_id=self.cycle_attr.id)
 
-    def test_total_no_attr_all(self):
+    def test_total_attr_all_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -76,7 +76,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_total_single_zero_attr_em(self):
+    def test_total_attr_single_em_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -103,7 +103,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_total_single_zero_attr_therm(self):
+    def test_total_attr_single_therm_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -130,7 +130,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_total_single_zero_attr_kin(self):
+    def test_total_attr_single_kin_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -157,7 +157,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_total_single_zero_attr_expl(self):
+    def test_total_attr_single_expl_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -172,6 +172,21 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(
             attrs={AttrId.volume: 0.2, AttrId.expl_dmg: 0}).id)
+        fit.modules.high.append(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_total_item_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(self.allocate_type_id(), state=State.active)
         fit.modules.high.append(item)
         # Verification
         volley = item.get_volley()
@@ -216,7 +231,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attr_single_em(self):
+    def test_effective_attr_em_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -247,7 +262,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attr_single_therm(self):
+    def test_effective_attr_therm_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -278,7 +293,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attr_single_kin(self):
+    def test_effective_attr_kin_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -309,7 +324,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attr_single_expl(self):
+    def test_effective_attr_expl_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -340,7 +355,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_no_attr_all(self):
+    def test_effective_attr_all_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -368,7 +383,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attr_em(self):
+    def test_effective_attr_single_em_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -396,7 +411,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attr_therm(self):
+    def test_effective_attr_single_therm_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -424,7 +439,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attr_kin(self):
+    def test_effective_attr_single_kin_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -452,7 +467,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effective_single_zero_attr_expl(self):
+    def test_effective_attr_single_expl_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -466,6 +481,22 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
             state=State.active)
         item.charge = Charge(self.mktype(
             attrs={AttrId.volume: 0.2, AttrId.expl_dmg: 0}).id)
+        fit.modules.high.append(item)
+        # Verification
+        profile = ResistProfile(0.2, 0.2, 0.8, 1)
+        volley = item.get_volley(tgt_resists=profile)
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_effective_item_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(self.allocate_type_id(), state=State.active)
         fit.modules.high.append(item)
         # Verification
         profile = ResistProfile(0.2, 0.2, 0.8, 1)

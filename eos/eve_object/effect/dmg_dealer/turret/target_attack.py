@@ -51,17 +51,17 @@ class TargetAttack(TurretDmgEffect):
 
     def get_cycles_until_reload(self, item):
         base_dmg_item = self._get_base_dmg_item(item)
+        if base_dmg_item is None:
+            return
         try:
             charge = item.charge
         except AttributeError:
             charge = None
+        # If charge carries damage stats, return how many cycles this charge
+        # survives
+        if charge is base_dmg_item:
+            return get_cycles_until_reload_crystal(item)
         # If item which contains base damage stats is not item's regular charge,
         # it means that either autocharge or item itself provides base damage
         # stats. In either case, effect can be cycled infinitely
-        if base_dmg_item is not charge:
-            return math.inf
-        # If charge should carry damage stats but charge is not there, effect
-        # cannot cycle
-        if charge is None:
-            return None
-        return get_cycles_until_reload_crystal(item)
+        return math.inf

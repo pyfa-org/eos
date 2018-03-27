@@ -78,7 +78,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_quantity(self):
+    def test_item_charge_quantity_none(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -94,7 +94,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_charge_rate_zero(self):
+    def test_item_attr_charge_rate_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -112,7 +112,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_charge_rate_absent(self):
+    def test_item_attr_charge_rate_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -121,6 +121,24 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
                 default_effect=self.effect).id,
             state=State.active)
         item.charge = Charge(self.mktype(attrs={AttrId.volume: 30.0}).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.cycles_until_reload)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 60.0,
+                    AttrId.charge_rate: 1.0},
+                effects=[self.effect],
+                default_effect=self.effect).id,
+            state=State.active)
+        item.charge = Charge(self.allocate_type_id())
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)

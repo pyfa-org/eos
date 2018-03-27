@@ -85,7 +85,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_em(self):
+    def test_attr_em_absent(self):
         fit = Fit()
         bomb_type = self.make_charge_type({
             AttrId.therm_dmg: 63,
@@ -106,7 +106,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_therm(self):
+    def test_attr_therm_absent(self):
         fit = Fit()
         bomb_type = self.make_charge_type({
             AttrId.em_dmg: 52,
@@ -127,7 +127,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_kin(self):
+    def test_attr_kin_absent(self):
         fit = Fit()
         bomb_type = self.make_charge_type({
             AttrId.em_dmg: 52,
@@ -148,7 +148,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_expl(self):
+    def test_attr_expl_absent(self):
         fit = Fit()
         bomb_type = self.make_charge_type({
             AttrId.em_dmg: 52,
@@ -169,7 +169,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_squad_size(self):
+    def test_item_squad_size_absent(self):
         fit = Fit()
         bomb_type = self.make_charge_type({
             AttrId.em_dmg: 52,
@@ -193,7 +193,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_charges(self):
+    def test_ability_charges_zero(self):
         self.abilities_data = {FighterAbilityId.launch_bomb: AbilityData(0, 0)}
         fit = Fit()
         bomb_type = self.make_charge_type({
@@ -216,7 +216,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_charge_type_attr(self):
+    def test_item_attr_autocharge_absent(self):
         fit = Fit()
         item = self.make_item({AttrId.fighter_squadron_max_size: 9})
         fit.fighters.add(item)
@@ -231,11 +231,10 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_charge_type(self):
+    def test_autocharge_not_loaded(self):
         fit = Fit()
-        empty_type_id = self.allocate_type_id()
         item = self.make_item({
-            AttrId.fighter_ability_launch_bomb_type: empty_type_id,
+            AttrId.fighter_ability_launch_bomb_type: self.allocate_type_id(),
             AttrId.fighter_squadron_max_size: 9})
         fit.fighters.add(item)
         # Verification

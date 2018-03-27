@@ -145,3 +145,18 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_item_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(self.allocate_type_id(), state=State.active)
+        fit.modules.high.append(item)
+        # Verification
+        dps = item.get_dps()
+        self.assertAlmostEqual(dps.em, 0)
+        self.assertAlmostEqual(dps.thermal, 0)
+        self.assertAlmostEqual(dps.kinetic, 0)
+        self.assertAlmostEqual(dps.explosive, 0)
+        self.assertAlmostEqual(dps.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

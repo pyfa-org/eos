@@ -101,7 +101,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_quantity(self):
+    def test_charge_quantity_none(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -125,7 +125,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_damageable_zero(self):
+    def test_charge_attr_damageable_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -150,7 +150,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_damageable_absent(self):
+    def test_charge_attr_damageable_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -174,7 +174,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_hp_zero(self):
+    def test_charge_attr_hp_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -199,7 +199,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_hp_absent(self):
+    def test_charge_attr_hp_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -224,7 +224,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_dmg_zero(self):
+    def test_charge_attr_dmg_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -249,7 +249,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_dmg_absent(self):
+    def test_charge_attr_dmg_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -273,7 +273,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_dmg_chance_zero(self):
+    def test_charge_attr_dmg_chance_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -298,7 +298,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_crystal_dmg_chance_absent(self):
+    def test_charge_attr_dmg_chance_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -315,6 +315,22 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
             AttrId.therm_dmg: 1.0,
             AttrId.kin_dmg: 1.0,
             AttrId.expl_dmg: 1.0}).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.cycles_until_reload)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={AttrId.capacity: 1.0},
+                effects=[self.effect],
+                default_effect=self.effect).id,
+            state=State.active)
+        item.charge = Charge(self.allocate_type_id())
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.cycles_until_reload)

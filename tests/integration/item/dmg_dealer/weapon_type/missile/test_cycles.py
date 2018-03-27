@@ -87,7 +87,7 @@ class TestItemDmgMissileCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_quantity(self):
+    def test_charge_quantity_none(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -106,7 +106,7 @@ class TestItemDmgMissileCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_charge_rate_zero(self):
+    def test_attr_charge_rate_zero(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -127,7 +127,7 @@ class TestItemDmgMissileCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_charge_rate_absent(self):
+    def test_attr_charge_rate_absent(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(

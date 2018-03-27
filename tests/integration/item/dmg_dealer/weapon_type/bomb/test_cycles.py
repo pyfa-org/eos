@@ -145,3 +145,21 @@ class TestItemDmgBombCycles(ItemMixinTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 60.0,
+                    AttrId.charge_rate: 1.0},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.allocate_type_id())
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.cycles_until_reload)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

@@ -168,7 +168,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_disabled_effect(self):
+    def test_effect_disabled(self):
         fit = Fit()
         item = ModuleHigh(
             self.mktype(
@@ -183,29 +183,6 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
             state=State.active)
         item.set_effect_mode(self.effect_amarr.id, EffectMode.force_stop)
         fit.modules.high.append(item)
-        # Verification
-        volley = item.get_volley()
-        self.assertAlmostEqual(volley.em, 0)
-        self.assertAlmostEqual(volley.thermal, 0)
-        self.assertAlmostEqual(volley.kinetic, 0)
-        self.assertAlmostEqual(volley.explosive, 0)
-        self.assertAlmostEqual(volley.total, 0)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_source_none(self):
-        fit = Fit()
-        item = ModuleHigh(
-            self.mktype(
-                attrs={
-                    AttrId.em_dmg: 52000,
-                    self.cycle_attr.id: 250000},
-                effects=[self.effect_amarr],
-                default_effect=self.effect_amarr).id,
-            state=State.active)
-        fit.modules.high.append(item)
-        fit.source = None
         # Verification
         volley = item.get_volley()
         self.assertAlmostEqual(volley.em, 0)

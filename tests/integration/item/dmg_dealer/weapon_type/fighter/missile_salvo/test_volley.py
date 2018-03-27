@@ -79,7 +79,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_em(self):
+    def test_attr_em_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
@@ -99,7 +99,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_therm(self):
+    def test_attr_therm_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
@@ -119,7 +119,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_kin(self):
+    def test_attr_kin_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
@@ -139,7 +139,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_expl(self):
+    def test_attr_expl_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_mult: 2.5,
@@ -159,7 +159,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_mult(self):
+    def test_attr_mult_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_missiles_dmg_em: 52,
@@ -179,7 +179,7 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_squad_size(self):
+    def test_item_squad_size_absent(self):
         fit = Fit()
         item = self.make_item(
             attrs={
@@ -198,6 +198,29 @@ class TestFighterSquadMissileSalvoDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.kinetic, 185)
         self.assertAlmostEqual(volley.explosive, 212.5)
         self.assertAlmostEqual(volley.total, 685)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_ability_charges_zero(self):
+        self.abilities_data = {
+            FighterAbilityId.heavy_rocket_salvo_em: AbilityData(0, 0)}
+        fit = Fit()
+        item = self.make_item({
+            AttrId.fighter_ability_attack_missile_dmg_mult: 2.5,
+            AttrId.fighter_ability_attack_missile_dmg_em: 52,
+            AttrId.fighter_ability_attack_missile_dmg_therm: 63,
+            AttrId.fighter_ability_attack_missile_dmg_kin: 74,
+            AttrId.fighter_ability_attack_missile_dmg_expl: 85,
+            AttrId.fighter_squadron_max_size: 9})
+        fit.fighters.add(item)
+        # Verification
+        volley = item.get_volley()
+        self.assertAlmostEqual(volley.em, 0)
+        self.assertAlmostEqual(volley.thermal, 0)
+        self.assertAlmostEqual(volley.kinetic, 0)
+        self.assertAlmostEqual(volley.explosive, 0)
+        self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -120,3 +120,29 @@ class TestItemDmgBombDps(ItemMixinTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(
+            self.mktype(
+                attrs={
+                    AttrId.capacity: 60.0,
+                    self.cycle_attr.id: 5000,
+                    AttrId.charge_rate: 1.0,
+                    AttrId.reload_time: 10000,
+                    AttrId.module_reactivation_delay: 120000},
+                effects=[self.effect_item],
+                default_effect=self.effect_item).id,
+            state=State.active)
+        item.charge = Charge(self.allocate_type_id())
+        fit.modules.high.append(item)
+        # Verification
+        dps = item.get_dps()
+        self.assertAlmostEqual(dps.em, 0)
+        self.assertAlmostEqual(dps.thermal, 0)
+        self.assertAlmostEqual(dps.kinetic, 0)
+        self.assertAlmostEqual(dps.explosive, 0)
+        self.assertAlmostEqual(dps.total, 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)

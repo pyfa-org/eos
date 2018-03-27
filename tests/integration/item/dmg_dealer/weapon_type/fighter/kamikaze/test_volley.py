@@ -79,7 +79,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_em(self):
+    def test_attr_em_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_kamikaze_dmg_therm: 50000,
@@ -98,7 +98,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_therm(self):
+    def test_attr_therm_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_kamikaze_dmg_em: 50000,
@@ -117,7 +117,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_kin(self):
+    def test_attr_kin_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_kamikaze_dmg_em: 50000,
@@ -136,7 +136,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_attr_expl(self):
+    def test_attr_expl_absent(self):
         fit = Fit()
         item = self.make_item({
             AttrId.fighter_ability_kamikaze_dmg_em: 50000,
@@ -155,7 +155,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_squad_size(self):
+    def test_item_squad_size_absent(self):
         fit = Fit()
         item = self.make_item(
             attrs={
