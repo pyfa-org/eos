@@ -49,8 +49,7 @@ class TestHp(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_ship(self):
-        # Check that something sane is returned in case of no ship
+    def test_ship_absent(self):
         # Action
         hp_stats = self.fit.stats.hp
         # Verification
@@ -62,13 +61,8 @@ class TestHp(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
-        # Check that stats service relays hp stats properly
-        self.fit.ship = Ship(self.mktype(attrs={
-            AttrId.hp: 10,
-            AttrId.armor_hp: 15,
-            AttrId.shield_capacity: 20}).id)
-        self.fit.source = None
+    def test_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         # Action
         hp_stats = self.fit.stats.hp
         # Verification

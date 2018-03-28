@@ -75,8 +75,7 @@ class TestResists(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_ship(self):
-        # Check that something sane is returned in case of no ship
+    def test_ship_absent(self):
         # Action
         res_stats = self.fit.stats.resists
         # Verification
@@ -96,21 +95,8 @@ class TestResists(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
-        self.fit.ship = Ship(self.mktype(attrs={
-            AttrId.em_dmg_resonance: 0.05,
-            AttrId.therm_dmg_resonance: 0.06,
-            AttrId.kin_dmg_resonance: 0.07,
-            AttrId.expl_dmg_resonance: 0.08,
-            AttrId.armor_em_dmg_resonance: 0.09,
-            AttrId.armor_therm_dmg_resonance: 0.1,
-            AttrId.armor_kin_dmg_resonance: 0.11,
-            AttrId.armor_expl_dmg_resonance: 0.12,
-            AttrId.shield_em_dmg_resonance: 0.13,
-            AttrId.shield_therm_dmg_resonance: 0.14,
-            AttrId.shield_kin_dmg_resonance: 0.15,
-            AttrId.shield_expl_dmg_resonance: 0.16}).id)
-        self.fit.source = None
+    def test_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         # Action
         res_stats = self.fit.stats.resists
         # Verification

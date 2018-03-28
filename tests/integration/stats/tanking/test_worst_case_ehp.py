@@ -73,8 +73,7 @@ class TestWorstCaseEhp(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_ship(self):
-        # Check that something sane is returned in case of no ship
+    def test_ship_absent(self):
         # Action
         worst_ehp_stats = self.fit.stats.worst_case_ehp
         # Verification
@@ -86,25 +85,8 @@ class TestWorstCaseEhp(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
-        # Check that stats service relays wcehp stats properly
-        self.fit.ship = Ship(self.mktype(attrs={
-            AttrId.hp: 10,
-            AttrId.em_dmg_resonance: 0.8,
-            AttrId.therm_dmg_resonance: 0.5,
-            AttrId.kin_dmg_resonance: 0.5,
-            AttrId.expl_dmg_resonance: 0.5,
-            AttrId.armor_hp: 15,
-            AttrId.armor_em_dmg_resonance: 0.5,
-            AttrId.armor_therm_dmg_resonance: 0.8,
-            AttrId.armor_kin_dmg_resonance: 0.5,
-            AttrId.armor_expl_dmg_resonance: 0.5,
-            AttrId.shield_capacity: 20,
-            AttrId.shield_em_dmg_resonance: 0.5,
-            AttrId.shield_therm_dmg_resonance: 0.5,
-            AttrId.shield_kin_dmg_resonance: 0.65,
-            AttrId.shield_expl_dmg_resonance: 0.8}).id)
-        self.fit.source = None
+    def test_ship_not_loaded(self):
+        self.fit.ship = Ship(self.allocate_type_id())
         # Action
         worst_ehp_stats = self.fit.stats.worst_case_ehp
         # Verification
