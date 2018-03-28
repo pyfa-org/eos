@@ -324,8 +324,24 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_ship(self):
+    def test_ship_absent(self):
         # Setup
+        rah = ModuleLow(
+            self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
+        self.fit.modules.low.equip(rah)
+        # Verification
+        self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_ship_not_loaded(self):
+        # Setup
+        self.fit.ship = Ship(self.allocate_type_id())
         rah = ModuleLow(
             self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
             state=State.active)

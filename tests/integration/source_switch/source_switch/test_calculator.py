@@ -32,11 +32,10 @@ from tests.integration.source_switch.testcase import SourceSwitchTestCase
 class TestSourceSwitchCalculator(SourceSwitchTestCase):
 
     def test_switch_item(self):
-        # Here we create 2 separate fits with ships affecting it; each ship
-        # affects module with different strength. When we pass module from one
-        # fit to another, its internal attribute storage should be cleared. If
-        # it wasn't cleared, we wouldn't be able to get refreshed value of
-        # attribute
+        # Here we create 2 separate fits with ships; each ship affects module
+        # with different strength. When we pass module from one fit to another,
+        # its internal attribute storage should be cleared. If it wasn't
+        # cleared, we wouldn't be able to get refreshed value of attribute
         # Setup
         src_attr_id = self.allocate_attr_id('src1', 'src2')
         self.mkattr(src='src1', attr_id=src_attr_id)

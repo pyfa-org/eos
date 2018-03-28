@@ -154,9 +154,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
 
         # If there's no ship, simulation is meaningless - keep unsimulated
         # results
-        try:
-            ship_attrs = self.__fit.ship.attrs
-        except AttributeError:
+        ship = self.__fit.ship
+        if ship is None or not ship._is_loaded:
             return
 
         # Containers for tick state history. We need history to detect loops,
@@ -177,6 +176,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         cycle_dmg_data = {
             item: {attr_id: 0 for attr_id in res_attr_ids}
             for item in self.__data}
+        ship_attrs = ship.attrs
 
         for tick_data in self.__sim_tick_iter(MAX_SIMULATION_TICKS):
             time_passed, cycled, cycling_data = tick_data

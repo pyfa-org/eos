@@ -129,3 +129,12 @@ class TestItemEffectData(EffectModeTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_item_not_loaded(self):
+        item = ModuleHigh(self.allocate_type_id(), state=State.offline)
+        self.fit.modules.high.append(item)
+        # Verification
+        self.assertEqual(len(item.effects), 0)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)

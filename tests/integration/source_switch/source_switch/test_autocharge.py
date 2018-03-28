@@ -53,7 +53,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
             operator=ModOperator.post_percent,
             src_attr_id=src_attr_id)
 
-    def test_autocharge_to_none_no_effect(self):
+    def test_autocharge_to_none_effect_absent(self):
         # Attribute setup
         src_attr_id = self.allocate_attr_id('src1', 'src2')
         tgt_attr_id = self.allocate_attr_id('src1', 'src2')
@@ -123,7 +123,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_no_effect_to_autocharge(self):
+    def test_none_effect_absent_to_autocharge(self):
         # Attribute setup
         src_attr_id = self.allocate_attr_id('src1', 'src2')
         tgt_attr_id = self.allocate_attr_id('src1', 'src2')

@@ -29,9 +29,19 @@ from eos.const.eve import EffectCategoryId
 from tests.integration.effect_mode.testcase import EffectModeTestCase
 
 
-class TestModeMultiset(EffectModeTestCase):
+class TestModeSetting(EffectModeTestCase):
 
-    def test_active(self):
+    def test_single_item_not_loaded(self):
+        effect_id = self.allocate_effect_id()
+        item = ModuleHigh(self.allocate_type_id())
+        self.fit.modules.high.append(item)
+        # Verification
+        item.set_effect_mode(effect_id, EffectMode.force_stop)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_multi(self):
         src_attr_fullcomp = self.mkattr()
         tgt_attr_fullcomp = self.mkattr()
         modifier_fullcomp = self.mkmod(
@@ -103,6 +113,23 @@ class TestModeMultiset(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr_statecomp.id], 12)
         self.assertAlmostEqual(item.attrs[tgt_attr_forcerun.id], 12)
         self.assertAlmostEqual(item.attrs[tgt_attr_forcestop.id], 10)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_multi_item_not_loaded(self):
+        effect1_id = self.allocate_effect_id()
+        effect2_id = self.allocate_effect_id()
+        effect3_id = self.allocate_effect_id()
+        effect4_id = self.allocate_effect_id()
+        item = ModuleHigh(self.allocate_type_id())
+        self.fit.modules.high.append(item)
+        # Verification
+        item._set_effects_modes({
+            effect1_id: EffectMode.full_compliance,
+            effect2_id: EffectMode.state_compliance,
+            effect3_id: EffectMode.force_run,
+            effect4_id: EffectMode.force_stop})
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

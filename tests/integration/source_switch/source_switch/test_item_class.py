@@ -98,6 +98,8 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
             effects=[effect_src2])
         return item_type_id
 
+    # Autocharges are tested in separate module
+
     def test_booster(self):
         booster = Booster(self.make_item_types())
         self.fit.boosters.add(booster)
