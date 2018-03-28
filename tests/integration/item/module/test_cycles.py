@@ -63,7 +63,7 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_default_effect(self):
+    def test_item_defeff_absent(self):
         fit = Fit()
         effect = self.mkeffect(
             effect_id=EffectId.target_attack,
@@ -86,14 +86,24 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
+    def test_item_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(self.allocate_type_id())
+        item.charge = Charge(self.mktype(attrs={AttrId.volume: 2.0}).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.cycles_until_reload)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_not_loaded(self):
         fit = Fit()
         item = ModuleHigh(self.mktype(attrs={
             AttrId.capacity: 100.0,
             AttrId.charge_rate: 2.0}).id)
-        item.charge = Charge(self.mktype(attrs={AttrId.volume: 2.0}).id)
+        item.charge = Charge(self.allocate_type_id())
         fit.modules.high.append(item)
-        fit.source = None
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup

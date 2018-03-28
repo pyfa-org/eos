@@ -66,18 +66,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_volume(self):
-        fit = Fit()
-        item = ModuleHigh(self.mktype(attrs={AttrId.capacity: 20.0}).id)
-        item.charge = Charge(self.mktype().id)
-        fit.modules.high.append(item)
-        # Verification
-        self.assertIsNone(item.charge_quantity)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_no_capacity(self):
+    def test_item_attr_capacity_absent(self):
         fit = Fit()
         item = ModuleHigh(self.mktype().id)
         item.charge = Charge(self.mktype(attrs={AttrId.volume: 2.0}).id)
@@ -88,7 +77,18 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_no_charge(self):
+    def test_charge_attr_volume_absent(self):
+        fit = Fit()
+        item = ModuleHigh(self.mktype(attrs={AttrId.capacity: 20.0}).id)
+        item.charge = Charge(self.mktype().id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.charge_quantity)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_absent(self):
         fit = Fit()
         item = ModuleHigh(self.mktype(attrs={AttrId.capacity: 20.0}).id)
         fit.modules.high.append(item)
@@ -98,12 +98,22 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
+    def test_item_not_loaded(self):
         fit = Fit()
-        item = ModuleHigh(self.mktype(attrs={AttrId.capacity: 20.0}).id)
+        item = ModuleHigh(self.allocate_type_id())
         item.charge = Charge(self.mktype(attrs={AttrId.volume: 2.0}).id)
         fit.modules.high.append(item)
-        fit.source = None
+        # Verification
+        self.assertIsNone(item.charge_quantity)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_charge_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(self.mktype(attrs={AttrId.capacity: 20.0}).id)
+        item.charge = Charge(self.allocate_type_id())
+        fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup

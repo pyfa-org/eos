@@ -96,24 +96,13 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     # Various errors are tested here, but just for one of access points
-    def test_optimal_source_none(self):
-        fit = Fit(source=None)
-        item = self.make_item_with_defeff_attr('range_attr_id')
-        fit.modules.high.append(item)
-        # Verification
-        self.assertIsNone(item.optimal_range)
-        # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assertEqual(len(self.get_log()), 0)
-
-    def test_optimal_no_defeff(self):
+    def test_item_defeff_absent(self):
         attr = self.mkattr()
         effect = self.mkeffect(
             category_id=EffectCategoryId.active,
             range_attr_id=attr.id)
         fit = Fit()
-        item = ModuleHigh(self.mktype(
-            attrs={attr.id: 50}, effects=[effect]).id)
+        item = ModuleHigh(self.mktype(attrs={attr.id: 50}, effects=[effect]).id)
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.optimal_range)
@@ -121,7 +110,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_optimal_no_description(self):
+    def test_item_attr_desc_absent(self):
         attr = self.mkattr()
         effect = self.mkeffect(category_id=EffectCategoryId.active)
         fit = Fit()
@@ -136,7 +125,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_optimal_no_attr(self):
+    def test_item_attr_value_absent(self):
         attr = self.mkattr()
         effect = self.mkeffect(
             category_id=EffectCategoryId.active,
@@ -145,6 +134,26 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         item = ModuleHigh(self.mktype(
             effects=[effect],
             default_effect=effect).id)
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.optimal_range)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_cycle_item_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(self.allocate_type_id())
+        fit.modules.high.append(item)
+        # Verification
+        self.assertIsNone(item.cycle_time)
+        # Cleanup
+        self.assert_fit_buffers_empty(fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_optimal_item_not_loaded(self):
+        fit = Fit()
+        item = ModuleHigh(self.allocate_type_id())
         fit.modules.high.append(item)
         # Verification
         self.assertIsNone(item.optimal_range)

@@ -213,7 +213,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_hp_hull(self):
+    def test_item_attr_hp_hull_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.8,
@@ -240,7 +240,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_hp_armor(self):
+    def test_item_attr_hp_armor_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
@@ -267,7 +267,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_hp_shield(self):
+    def test_item_attr_hp_shield_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
@@ -294,7 +294,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_hp_all(self):
+    def test_item_attr_hp_all_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.em_dmg_resonance: 0.8,
@@ -319,7 +319,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_resist_em(self):
+    def test_item_attr_resist_em_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
@@ -346,7 +346,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_resist_therm(self):
+    def test_item_attr_resist_therm_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
@@ -373,7 +373,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_resist_kin(self):
+    def test_item_attr_resist_kin_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
@@ -400,7 +400,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_resist_expl(self):
+    def test_item_attr_resist_expl_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
@@ -427,7 +427,7 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_none_resist_all(self):
+    def test_item_attr_resist_all_absent(self):
         fit = Fit()
         item = Ship(self.mktype(attrs={
             AttrId.hp: 1,
@@ -451,24 +451,9 @@ class TestItemMixinTankingWorstCaseEhp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
-        fit = Fit(source=None)
-        item = Ship(self.mktype(attrs={
-            AttrId.hp: 1,
-            AttrId.em_dmg_resonance: 0.8,
-            AttrId.therm_dmg_resonance: 0.8,
-            AttrId.kin_dmg_resonance: 0.8,
-            AttrId.expl_dmg_resonance: 0.8,
-            AttrId.armor_hp: 10,
-            AttrId.armor_em_dmg_resonance: 0.4,
-            AttrId.armor_therm_dmg_resonance: 0.4,
-            AttrId.armor_kin_dmg_resonance: 0.4,
-            AttrId.armor_expl_dmg_resonance: 0.4,
-            AttrId.shield_capacity: 100,
-            AttrId.shield_em_dmg_resonance: 0.2,
-            AttrId.shield_therm_dmg_resonance: 0.2,
-            AttrId.shield_kin_dmg_resonance: 0.2,
-            AttrId.shield_expl_dmg_resonance: 0.2}).id)
+    def test_item_not_loaded(self):
+        fit = Fit()
+        item = Ship(self.allocate_type_id())
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.worst_case_ehp.hull, 0)

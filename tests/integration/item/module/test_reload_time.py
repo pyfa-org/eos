@@ -46,7 +46,7 @@ class TestItemModuleChargeReloadTime(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_generic_no_attr(self):
+    def test_item_attr_reload_absent(self):
         fit = Fit()
         effect = self.mkeffect(category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
@@ -59,7 +59,7 @@ class TestItemModuleChargeReloadTime(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_generic_no_default_effect(self):
+    def test_item_defeff_absent(self):
         fit = Fit()
         effect = self.mkeffect(category_id=EffectCategoryId.active)
         item = ModuleHigh(self.mktype(
@@ -72,15 +72,10 @@ class TestItemModuleChargeReloadTime(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
+    def test_item_not_loaded(self):
         fit = Fit()
-        effect = self.mkeffect(category_id=EffectCategoryId.active)
-        item = ModuleHigh(self.mktype(
-            attrs={AttrId.reload_time: 5000.0},
-            effects=[effect],
-            default_effect=effect).id)
+        item = ModuleHigh(self.allocate_type_id())
         fit.modules.high.append(item)
-        fit.source = None
         # Verification
         self.assertIsNone(item.reload_time)
         # Cleanup

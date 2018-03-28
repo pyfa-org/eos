@@ -49,7 +49,7 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_unspecified(self):
+    def test_item_attr_all_absent(self):
         fit = Fit()
         item = Ship(self.mktype().id)
         fit.ship = item
@@ -62,12 +62,9 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_none(self):
-        fit = Fit(source=None)
-        item = Ship(self.mktype(attrs={
-            AttrId.hp: 8,
-            AttrId.armor_hp: 10,
-            AttrId.shield_capacity: 12}).id)
+    def test_item_not_loaded(self):
+        fit = Fit()
+        item = Ship(self.allocate_type_id())
         fit.ship = item
         # Verification
         self.assertAlmostEqual(item.hp.hull, 0)
