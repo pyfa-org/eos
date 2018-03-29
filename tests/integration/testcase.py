@@ -216,7 +216,7 @@ class IntegrationTestCase(EosTestCase):
             fit.effect_beacon = None
             fit.subsystems.clear(),
             fit.modules.high.clear(),
-            fit.modules.med.clear(),
+            fit.modules.mid.clear(),
             fit.modules.low.clear(),
             fit.rigs.clear(),
             fit.drones.clear(),

@@ -29,7 +29,7 @@ from eos import FighterSquad
 from eos import Implant
 from eos import ModuleHigh
 from eos import ModuleLow
-from eos import ModuleMed
+from eos import ModuleMid
 from eos import Restriction
 from eos import Rig
 from eos import Ship
@@ -349,14 +349,14 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_medium_pass(self):
+    def test_module_mid_pass(self):
         effect = self.mkeffect(
             effect_id=EffectId.med_power,
             category_id=EffectCategoryId.passive)
-        item = ModuleMed(self.mktype(
+        item = ModuleMid(self.mktype(
             category_id=TypeCategoryId.module,
             effects=[effect]).id)
-        self.fit.modules.med.append(item)
+        self.fit.modules.mid.append(item)
         # Action
         error = self.get_error(item, Restriction.item_class)
         # Verification
@@ -365,15 +365,15 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_medium_pass_disabled_effect(self):
+    def test_module_mid_pass_disabled_effect(self):
         effect = self.mkeffect(
             effect_id=EffectId.med_power,
             category_id=EffectCategoryId.passive)
-        item = ModuleMed(self.mktype(
+        item = ModuleMid(self.mktype(
             category_id=TypeCategoryId.module,
             effects=[effect]).id)
         item.set_effect_mode(effect.id, EffectMode.force_stop)
-        self.fit.modules.med.append(item)
+        self.fit.modules.mid.append(item)
         # Action
         error = self.get_error(item, Restriction.item_class)
         # Verification
@@ -382,35 +382,35 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_medium_fail_category(self):
+    def test_module_mid_fail_category(self):
         effect = self.mkeffect(
             effect_id=EffectId.med_power,
             category_id=EffectCategoryId.passive)
-        item = ModuleMed(self.mktype(category_id=1008, effects=[effect]).id)
-        self.fit.modules.med.append(item)
+        item = ModuleMid(self.mktype(category_id=1008, effects=[effect]).id)
+        self.fit.modules.mid.append(item)
         # Action
         error = self.get_error(item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(error)
-        self.assertEqual(error.item_class, ModuleMed)
+        self.assertEqual(error.item_class, ModuleMid)
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_medium_fail_effect(self):
+    def test_module_mid_fail_effect(self):
         effect = self.mkeffect(
             effect_id=1008,
             category_id=EffectCategoryId.passive)
-        item = ModuleMed(self.mktype(
+        item = ModuleMid(self.mktype(
             category_id=TypeCategoryId.module,
             effects=[effect]).id)
-        self.fit.modules.med.append(item)
+        self.fit.modules.mid.append(item)
         # Action
         error = self.get_error(item, Restriction.item_class)
         # Verification
         self.assertIsNotNone(error)
-        self.assertEqual(error.item_class, ModuleMed)
+        self.assertEqual(error.item_class, ModuleMid)
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

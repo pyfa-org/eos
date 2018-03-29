@@ -28,7 +28,7 @@ from eos import FighterSquad
 from eos import Implant
 from eos import ModuleHigh
 from eos import ModuleLow
-from eos import ModuleMed
+from eos import ModuleMid
 from eos import Rig
 from eos import Ship
 from eos import Skill
@@ -198,9 +198,9 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_med(self):
-        module = ModuleMed(self.make_item_types())
-        self.fit.modules.med.append(module)
+    def test_module_mid(self):
+        module = ModuleMid(self.make_item_types())
+        self.fit.modules.mid.append(module)
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 18)
         # Action
         self.fit.source = 'src2'

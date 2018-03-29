@@ -128,8 +128,8 @@ class ModuleHigh(Module):
     ...
 
 
-class ModuleMed(Module):
-    """Represents a med-slot module.
+class ModuleMid(Module):
+    """Represents a mid-slot module.
 
     Args:
         type_id: Identifier of item type which should serve as base for this

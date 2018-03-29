@@ -73,8 +73,8 @@ class HighSlotRestriction(OrderedSlotRestriction):
         return self._fit.modules.high
 
 
-class MediumSlotRestriction(OrderedSlotRestriction):
-    """Quantity of medium-slot items should not exceed limit.
+class MidSlotRestriction(OrderedSlotRestriction):
+    """Quantity of mid-slot items should not exceed limit.
 
     Details:
         Items which are not loaded are considered as occupying slot.
@@ -82,15 +82,15 @@ class MediumSlotRestriction(OrderedSlotRestriction):
             error.
     """
 
-    type = Restriction.medium_slot
+    type = Restriction.mid_slot
 
     @property
     def _slot_stats(self):
-        return self._fit.stats.med_slots
+        return self._fit.stats.mid_slots
 
     @property
     def _container(self):
-        return self._fit.modules.med
+        return self._fit.modules.mid
 
 
 class LowSlotRestriction(OrderedSlotRestriction):

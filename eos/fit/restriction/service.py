@@ -44,7 +44,7 @@ from .restriction import LowSlotRestriction
 from .restriction import MaxGroupActiveRestrictionRegister
 from .restriction import MaxGroupFittedRestrictionRegister
 from .restriction import MaxGroupOnlineRestrictionRegister
-from .restriction import MediumSlotRestriction
+from .restriction import MidSlotRestriction
 from .restriction import PowergridRestriction
 from .restriction import RigSizeRestrictionRegister
 from .restriction import RigSlotRestriction
@@ -93,7 +93,7 @@ class RestrictionService:
             MaxGroupActiveRestrictionRegister(fit),
             MaxGroupFittedRestrictionRegister(fit),
             MaxGroupOnlineRestrictionRegister(fit),
-            MediumSlotRestriction(fit),
+            MidSlotRestriction(fit),
             PowergridRestriction(fit),
             RigSizeRestrictionRegister(fit),
             RigSlotRestriction(fit),

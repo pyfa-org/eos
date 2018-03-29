@@ -20,7 +20,7 @@
 
 
 from eos import ModuleHigh
-from eos import ModuleMed
+from eos import ModuleMid
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
@@ -99,7 +99,7 @@ class TestModuleHighSlot(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_other_class(self):
-        self.fit.modules.med.place(3, ModuleMed(self.mktype().id))
+        self.fit.modules.mid.place(3, ModuleMid(self.mktype().id))
         # Verification
         self.assertEqual(self.fit.stats.high_slots.used, 0)
         # Cleanup

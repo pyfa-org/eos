@@ -21,7 +21,7 @@
 
 from eos import Fit
 from eos import ModuleHigh
-from eos import ModuleMed
+from eos import ModuleMid
 from tests.integration.container.testcase import ContainerTestCase
 
 
@@ -61,15 +61,15 @@ class TestContainerOrderedAppend(ContainerTestCase):
 
     def test_item_type_failure(self):
         fit = Fit()
-        item = ModuleMed(self.mktype().id)
+        item = ModuleMid(self.mktype().id)
         # Action
         with self.assertRaises(TypeError):
             fit.modules.high.append(item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
-        fit.modules.med.append(item)
+        fit.modules.mid.append(item)
         # Cleanup
-        fit.modules.med.remove(item)
+        fit.modules.mid.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 

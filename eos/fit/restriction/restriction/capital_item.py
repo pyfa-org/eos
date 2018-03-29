@@ -25,7 +25,7 @@ from eos.const.eos import Restriction
 from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh
 from eos.fit.item import ModuleLow
-from eos.fit.item import ModuleMed
+from eos.fit.item import ModuleMid
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
@@ -34,7 +34,7 @@ from ..exception import RestrictionValidationError
 
 # Items of volume bigger than this are considered as capital
 MAX_SUBCAP_VOLUME = 3500
-TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
+TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMid, ModuleLow)
 
 
 CapitalItemErrorData = namedtuple(

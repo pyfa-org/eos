@@ -20,7 +20,7 @@
 
 
 from eos import ModuleLow
-from eos import ModuleMed
+from eos import ModuleMid
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
@@ -52,14 +52,14 @@ class TestModuleMedSlot(StatsTestCase):
             attrs={AttrId.med_slots: 3, src_attr.id: 2},
             effects=[mod_effect]).id)
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.total, 6)
+        self.assertEqual(self.fit.stats.mid_slots.total, 6)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_absent(self):
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.total, 0)
+        self.assertEqual(self.fit.stats.mid_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -67,7 +67,7 @@ class TestModuleMedSlot(StatsTestCase):
     def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.total, 0)
+        self.assertEqual(self.fit.stats.mid_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -75,25 +75,25 @@ class TestModuleMedSlot(StatsTestCase):
     def test_output_ship_attr_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.total, 0)
+        self.assertEqual(self.fit.stats.mid_slots.total, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
-        self.fit.modules.med.append(ModuleMed(self.mktype().id))
-        self.fit.modules.med.append(ModuleMed(self.mktype().id))
+        self.fit.modules.mid.append(ModuleMid(self.mktype().id))
+        self.fit.modules.mid.append(ModuleMid(self.mktype().id))
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.used, 2)
+        self.assertEqual(self.fit.stats.mid_slots.used, 2)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple_with_none(self):
-        self.fit.modules.med.place(1, ModuleMed(self.mktype().id))
-        self.fit.modules.med.place(3, ModuleMed(self.mktype().id))
+        self.fit.modules.mid.place(1, ModuleMid(self.mktype().id))
+        self.fit.modules.mid.place(3, ModuleMid(self.mktype().id))
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.used, 4)
+        self.assertEqual(self.fit.stats.mid_slots.used, 4)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
@@ -101,22 +101,22 @@ class TestModuleMedSlot(StatsTestCase):
     def test_use_item_other_class(self):
         self.fit.modules.low.place(3, ModuleLow(self.mktype().id))
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.used, 0)
+        self.assertEqual(self.fit.stats.mid_slots.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_absent(self):
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.used, 0)
+        self.assertEqual(self.fit.stats.mid_slots.used, 0)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_not_loaded(self):
-        self.fit.modules.med.append(ModuleMed(self.allocate_type_id()))
+        self.fit.modules.mid.append(ModuleMid(self.allocate_type_id()))
         # Verification
-        self.assertEqual(self.fit.stats.med_slots.used, 1)
+        self.assertEqual(self.fit.stats.mid_slots.used, 1)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

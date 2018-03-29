@@ -21,7 +21,7 @@
 
 from .ordered import HighSlotRestriction
 from .ordered import LowSlotRestriction
-from .ordered import MediumSlotRestriction
+from .ordered import MidSlotRestriction
 from .stats_assisted import FighterSquadHeavyRestriction
 from .stats_assisted import FighterSquadLightRestriction
 from .stats_assisted import FighterSquadSupportRestriction

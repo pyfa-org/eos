@@ -141,7 +141,7 @@ class Restriction(IntEnum):
     launched_drone = 6
     drone_group = 7
     high_slot = 8
-    medium_slot = 9
+    mid_slot = 9
     low_slot = 10
     rig_slot = 11
     rig_size = 12

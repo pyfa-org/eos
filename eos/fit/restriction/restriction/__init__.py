@@ -47,7 +47,7 @@ from .slot_quantity import HighSlotRestriction
 from .slot_quantity import LaunchedDroneRestriction
 from .slot_quantity import LauncherSlotRestriction
 from .slot_quantity import LowSlotRestriction
-from .slot_quantity import MediumSlotRestriction
+from .slot_quantity import MidSlotRestriction
 from .slot_quantity import RigSlotRestriction
 from .slot_quantity import SubsystemSlotRestriction
 from .slot_quantity import TurretSlotRestriction

@@ -21,7 +21,7 @@
 
 from eos import Fit
 from eos import ModuleHigh
-from eos import ModuleMed
+from eos import ModuleMid
 from tests.integration.container.testcase import ContainerTestCase
 
 
@@ -92,7 +92,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         fit = Fit()
         item1 = ModuleHigh(self.mktype().id)
         item2 = ModuleHigh(self.mktype().id)
-        item3 = ModuleMed(self.mktype().id)
+        item3 = ModuleMid(self.mktype().id)
         fit.modules.high.append(item1)
         fit.modules.high.append(item2)
         # Action
@@ -102,11 +102,11 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 2)
         self.assertIs(fit.modules.high[0], item1)
         self.assertIs(fit.modules.high[1], item2)
-        fit.modules.med.insert(0, item3)
+        fit.modules.mid.insert(0, item3)
         # Cleanup
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
-        fit.modules.med.remove(item3)
+        fit.modules.mid.remove(item3)
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -138,15 +138,15 @@ class TestContainerOrderedInsert(ContainerTestCase):
 
     def test_item_outside_type_failure(self):
         fit = Fit()
-        item = ModuleMed(self.mktype().id)
+        item = ModuleMid(self.mktype().id)
         # Action
         with self.assertRaises(TypeError):
             fit.modules.high.insert(4, item)
         # Verification
         self.assertIs(len(fit.modules.high), 0)
-        fit.modules.med.insert(0, item)
+        fit.modules.mid.insert(0, item)
         # Cleanup
-        fit.modules.med.remove(item)
+        fit.modules.mid.remove(item)
         self.assert_fit_buffers_empty(fit)
         self.assertEqual(len(self.get_log()), 0)
 

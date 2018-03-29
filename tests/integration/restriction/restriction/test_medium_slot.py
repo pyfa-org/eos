@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos import ModuleMed
+from eos import ModuleMid
 from eos import Restriction
 from eos import Ship
 from eos.const.eve import AttrId
@@ -27,7 +27,7 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 
 
 class TestMediumSlot(RestrictionTestCase):
-    """Check functionality of medium slot quantity restriction."""
+    """Check functionality of mid slot quantity restriction."""
 
     def setUp(self):
         RestrictionTestCase.setUp(self)
@@ -37,10 +37,10 @@ class TestMediumSlot(RestrictionTestCase):
         # Check that error is raised when quantity of used slots exceeds slot
         # quantity provided by ship
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 0}).id)
-        item = ModuleMed(self.mktype().id)
-        self.fit.modules.med.append(item)
+        item = ModuleMid(self.mktype().id)
+        self.fit.modules.mid.append(item)
         # Action
-        error = self.get_error(item, Restriction.medium_slot)
+        error = self.get_error(item, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error)
         self.assertEqual(error.used, 1)
@@ -54,16 +54,16 @@ class TestMediumSlot(RestrictionTestCase):
         # which lie out of bounds
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 1}).id)
         item_type = self.mktype()
-        item1 = ModuleMed(item_type.id)
-        item2 = ModuleMed(item_type.id)
-        self.fit.modules.med.append(item1)
-        self.fit.modules.med.append(item2)
+        item1 = ModuleMid(item_type.id)
+        item2 = ModuleMid(item_type.id)
+        self.fit.modules.mid.append(item1)
+        self.fit.modules.mid.append(item2)
         # Action
-        error1 = self.get_error(item1, Restriction.medium_slot)
+        error1 = self.get_error(item1, Restriction.mid_slot)
         # Verification
         self.assertIsNone(error1)
         # Action
-        error2 = self.get_error(item2, Restriction.medium_slot)
+        error2 = self.get_error(item2, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error2)
         self.assertEqual(error2.used, 2)
@@ -76,24 +76,24 @@ class TestMediumSlot(RestrictionTestCase):
         # Make sure Nones are processed properly
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 3}).id)
         item_type = self.mktype()
-        item1 = ModuleMed(item_type.id)
-        item2 = ModuleMed(item_type.id)
-        item3 = ModuleMed(item_type.id)
-        self.fit.modules.med.place(1, item1)
-        self.fit.modules.med.place(4, item2)
-        self.fit.modules.med.place(6, item3)
+        item1 = ModuleMid(item_type.id)
+        item2 = ModuleMid(item_type.id)
+        item3 = ModuleMid(item_type.id)
+        self.fit.modules.mid.place(1, item1)
+        self.fit.modules.mid.place(4, item2)
+        self.fit.modules.mid.place(6, item3)
         # Action
-        error1 = self.get_error(item1, Restriction.medium_slot)
+        error1 = self.get_error(item1, Restriction.mid_slot)
         # Verification
         self.assertIsNone(error1)
         # Action
-        error2 = self.get_error(item2, Restriction.medium_slot)
+        error2 = self.get_error(item2, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error2)
         self.assertEqual(error2.used, 7)
         self.assertEqual(error2.total, 3)
         # Action
-        error3 = self.get_error(item2, Restriction.medium_slot)
+        error3 = self.get_error(item2, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error3)
         self.assertEqual(error3.used, 7)
@@ -105,10 +105,10 @@ class TestMediumSlot(RestrictionTestCase):
     def test_fail_item_not_loaded(self):
         # Item still counts even when it's not loaded
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 0}).id)
-        item = ModuleMed(self.allocate_type_id())
-        self.fit.modules.med.append(item)
+        item = ModuleMid(self.allocate_type_id())
+        self.fit.modules.mid.append(item)
         # Action
-        error = self.get_error(item, Restriction.medium_slot)
+        error = self.get_error(item, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error)
         self.assertEqual(error.used, 1)
@@ -120,10 +120,10 @@ class TestMediumSlot(RestrictionTestCase):
     def test_fail_ship_absent(self):
         # When stats module does not specify total slot quantity, make sure it's
         # assumed to be 0
-        item = ModuleMed(self.mktype().id)
-        self.fit.modules.med.append(item)
+        item = ModuleMid(self.mktype().id)
+        self.fit.modules.mid.append(item)
         # Action
-        error = self.get_error(item, Restriction.medium_slot)
+        error = self.get_error(item, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error)
         self.assertEqual(error.used, 1)
@@ -134,10 +134,10 @@ class TestMediumSlot(RestrictionTestCase):
 
     def test_fail_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
-        item = ModuleMed(self.mktype().id)
-        self.fit.modules.med.append(item)
+        item = ModuleMid(self.mktype().id)
+        self.fit.modules.mid.append(item)
         # Action
-        error = self.get_error(item, Restriction.medium_slot)
+        error = self.get_error(item, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error)
         self.assertEqual(error.used, 1)
@@ -148,10 +148,10 @@ class TestMediumSlot(RestrictionTestCase):
 
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
-        item = ModuleMed(self.mktype().id)
-        self.fit.modules.med.append(item)
+        item = ModuleMid(self.mktype().id)
+        self.fit.modules.mid.append(item)
         # Action
-        error = self.get_error(item, Restriction.medium_slot)
+        error = self.get_error(item, Restriction.mid_slot)
         # Verification
         self.assertIsNotNone(error)
         self.assertEqual(error.used, 1)
@@ -163,16 +163,16 @@ class TestMediumSlot(RestrictionTestCase):
     def test_pass_equal(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 2}).id)
         item_type = self.mktype()
-        item1 = ModuleMed(item_type.id)
-        item2 = ModuleMed(item_type.id)
-        self.fit.modules.med.append(item1)
-        self.fit.modules.med.append(item2)
+        item1 = ModuleMid(item_type.id)
+        item2 = ModuleMid(item_type.id)
+        self.fit.modules.mid.append(item1)
+        self.fit.modules.mid.append(item2)
         # Action
-        error1 = self.get_error(item1, Restriction.medium_slot)
+        error1 = self.get_error(item1, Restriction.mid_slot)
         # Verification
         self.assertIsNone(error1)
         # Action
-        error2 = self.get_error(item2, Restriction.medium_slot)
+        error2 = self.get_error(item2, Restriction.mid_slot)
         # Verification
         self.assertIsNone(error2)
         # Cleanup
@@ -182,16 +182,16 @@ class TestMediumSlot(RestrictionTestCase):
     def test_pass_greater(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.med_slots: 5}).id)
         item_type = self.mktype()
-        item1 = ModuleMed(item_type.id)
-        item2 = ModuleMed(item_type.id)
-        self.fit.modules.med.append(item1)
-        self.fit.modules.med.append(item2)
+        item1 = ModuleMid(item_type.id)
+        item2 = ModuleMid(item_type.id)
+        self.fit.modules.mid.append(item1)
+        self.fit.modules.mid.append(item2)
         # Action
-        error1 = self.get_error(item1, Restriction.medium_slot)
+        error1 = self.get_error(item1, Restriction.mid_slot)
         # Verification
         self.assertIsNone(error1)
         # Action
-        error2 = self.get_error(item2, Restriction.medium_slot)
+        error2 = self.get_error(item2, Restriction.mid_slot)
         # Verification
         self.assertIsNone(error2)
         # Cleanup

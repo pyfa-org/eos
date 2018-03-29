@@ -30,9 +30,9 @@ class ModuleRacks:
     Each rack is actually list container for module items.
     """
 
-    def __init__(self, high, med, low):
+    def __init__(self, high, mid, low):
         self.high = high
-        self.med = med
+        self.mid = mid
         self.low = low
 
     def items(self):
@@ -40,7 +40,7 @@ class ModuleRacks:
         return ModuleItemView(self)
 
     def __repr__(self):
-        spec = ['high', 'med', 'low']
+        spec = ['high', 'mid', 'low']
         return make_repr_str(self, spec)
 
 
@@ -53,7 +53,7 @@ class ModuleItemView:
     def __iter__(self):
         for item in chain(
             self.__racks.high,
-            self.__racks.med,
+            self.__racks.mid,
             self.__racks.low
         ):
             if item is None:
@@ -66,10 +66,10 @@ class ModuleItemView:
         racks = self.__racks
         return (
             racks.high.__contains__(value) or
-            racks.med.__contains__(value) or
+            racks.mid.__contains__(value) or
             racks.low.__contains__(value))
 
     def __len__(self):
         racks_chain = chain(
-            self.__racks.high, self.__racks.med, self.__racks.low)
+            self.__racks.high, self.__racks.mid, self.__racks.low)
         return sum(item is not None for item in racks_chain)

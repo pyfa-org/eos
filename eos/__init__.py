@@ -26,7 +26,7 @@ __all__ = [
     'JsonCacheHandler',
     'JsonDataHandler', 'SQLiteDataHandler',
     'Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon', 'FighterSquad',
-    'Implant', 'ModuleHigh', 'ModuleMed', 'ModuleLow', 'Rig', 'Ship', 'Skill',
+    'Implant', 'ModuleHigh', 'ModuleMid', 'ModuleLow', 'Rig', 'Ship', 'Skill',
     'Stance', 'Subsystem',
     'NoSuchAbilityError', 'NoSuchSideEffectError',
     'SlotTakenError',
@@ -54,7 +54,7 @@ from .fit.item import FighterSquad
 from .fit.item import Implant
 from .fit.item import ModuleHigh
 from .fit.item import ModuleLow
-from .fit.item import ModuleMed
+from .fit.item import ModuleMid
 from .fit.item import Rig
 from .fit.item import Ship
 from .fit.item import Skill

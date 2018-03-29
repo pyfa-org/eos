@@ -28,7 +28,7 @@ from .fighter_squad import FighterSquad
 from .implant import Implant
 from .module import ModuleHigh
 from .module import ModuleLow
-from .module import ModuleMed
+from .module import ModuleMid
 from .rig import Rig
 from .ship import Ship
 from .skill import Skill

@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos import ModuleMed
+from eos import ModuleMid
 from eos import Ship
 from eos import Subsystem
 from eos.const.eve import AttrId
@@ -73,7 +73,7 @@ class TestSubsystem(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_other_class(self):
-        self.fit.modules.med.append(ModuleMed(self.mktype().id))
+        self.fit.modules.mid.append(ModuleMid(self.mktype().id))
         # Verification
         self.assertEqual(self.fit.stats.subsystem_slots.used, 0)
         # Cleanup

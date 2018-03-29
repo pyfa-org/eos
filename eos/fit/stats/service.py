@@ -70,9 +70,9 @@ class StatService:
             self.__fit.modules.high, AttrId.hi_slots)
 
     @property
-    def med_slots(self):
+    def mid_slots(self):
         return self.__get_slot_stats(
-            self.__fit.modules.med, AttrId.med_slots)
+            self.__fit.modules.mid, AttrId.med_slots)
 
     @property
     def low_slots(self):

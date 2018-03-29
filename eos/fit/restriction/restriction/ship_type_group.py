@@ -25,14 +25,14 @@ from eos.const.eos import Restriction
 from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh
 from eos.fit.item import ModuleLow
-from eos.fit.item import ModuleMed
+from eos.fit.item import ModuleMid
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
 from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
+TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMid, ModuleLow)
 # Containers for attribute IDs which are used to restrict fitting
 ALLOWED_TYPE_ATTR_IDS = (
     AttrId.can_fit_ship_type_1,

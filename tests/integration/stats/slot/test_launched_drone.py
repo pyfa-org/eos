@@ -21,7 +21,7 @@
 
 from eos import Character
 from eos import Drone
-from eos import ModuleMed
+from eos import ModuleMid
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
@@ -99,8 +99,8 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_other_class(self):
-        self.fit.modules.med.append(
-            ModuleMed(self.mktype().id, state=State.online))
+        self.fit.modules.mid.append(
+            ModuleMid(self.mktype().id, state=State.online))
         # Verification
         self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup

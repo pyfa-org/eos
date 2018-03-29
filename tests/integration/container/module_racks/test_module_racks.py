@@ -22,7 +22,7 @@
 from eos import Fit
 from eos import ModuleHigh
 from eos import ModuleLow
-from eos import ModuleMed
+from eos import ModuleMid
 from tests.integration.container.testcase import ContainerTestCase
 
 
@@ -32,22 +32,22 @@ class TestContainerModuleRacks(ContainerTestCase):
         ContainerTestCase.setUp(self)
         self.mod_high1 = ModuleHigh(self.mktype().id)
         self.mod_high2 = ModuleHigh(self.mktype().id)
-        self.mod_med1 = ModuleMed(self.mktype().id)
-        self.mod_med2 = ModuleMed(self.mktype().id)
+        self.mod_mid1 = ModuleMid(self.mktype().id)
+        self.mod_mid2 = ModuleMid(self.mktype().id)
         self.mod_low1 = ModuleLow(self.mktype().id)
         self.mod_low2 = ModuleLow(self.mktype().id)
         self.mod_low3 = ModuleLow(self.mktype().id)
         self.fit = Fit()
         self.fit.modules.high.place(0, self.mod_high1)
         self.fit.modules.high.place(3, self.mod_high2)
-        self.fit.modules.med.place(1, self.mod_med1)
-        self.fit.modules.med.place(4, self.mod_med2)
+        self.fit.modules.mid.place(1, self.mod_mid1)
+        self.fit.modules.mid.place(4, self.mod_mid2)
         self.fit.modules.low.place(0, self.mod_low1)
         self.fit.modules.low.place(4, self.mod_low2)
 
     def remove_modules(self):
         self.fit.modules.high.clear()
-        self.fit.modules.med.clear()
+        self.fit.modules.mid.clear()
         self.fit.modules.low.clear()
 
     def test_items_len(self):
@@ -55,7 +55,7 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertEqual(len(module_items), 6)
         self.fit.modules.high.remove(self.mod_high1)
         self.assertEqual(len(module_items), 5)
-        self.fit.modules.med.remove(self.mod_med1)
+        self.fit.modules.mid.remove(self.mod_mid1)
         self.assertEqual(len(module_items), 4)
         self.fit.modules.low.append(self.mod_low3)
         self.assertEqual(len(module_items), 5)
@@ -68,25 +68,25 @@ class TestContainerModuleRacks(ContainerTestCase):
         module_items = self.fit.modules.items()
         expected = [
             self.mod_high1, self.mod_high2,
-            self.mod_med1, self.mod_med2,
+            self.mod_mid1, self.mod_mid2,
             self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.high.remove(self.mod_high1)
         expected = [
-            self.mod_high2, self.mod_med1,
-            self.mod_med2,
+            self.mod_high2, self.mod_mid1,
+            self.mod_mid2,
             self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
-        self.fit.modules.med.remove(self.mod_med1)
+        self.fit.modules.mid.remove(self.mod_mid1)
         expected = [
             self.mod_high2,
-            self.mod_med2,
+            self.mod_mid2,
             self.mod_low1, self.mod_low2]
         self.assertEqual(list(module_items), expected)
         self.fit.modules.low.append(self.mod_low3)
         expected = [
             self.mod_high2,
-            self.mod_med2,
+            self.mod_mid2,
             self.mod_low1, self.mod_low2, self.mod_low3]
         self.assertEqual(list(module_items), expected)
         # Cleanup
@@ -102,11 +102,11 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.fit.modules.high.remove(self.mod_high1)
         self.assertFalse(self.mod_high1 in module_items)
         self.assertTrue(self.mod_high2 in module_items)
-        self.assertTrue(self.mod_med1 in module_items)
-        self.assertTrue(self.mod_med2 in module_items)
-        self.fit.modules.med.remove(self.mod_med1)
-        self.assertFalse(self.mod_med1 in module_items)
-        self.assertTrue(self.mod_med2 in module_items)
+        self.assertTrue(self.mod_mid1 in module_items)
+        self.assertTrue(self.mod_mid2 in module_items)
+        self.fit.modules.mid.remove(self.mod_mid1)
+        self.assertFalse(self.mod_mid1 in module_items)
+        self.assertTrue(self.mod_mid2 in module_items)
         self.assertTrue(self.mod_low1 in module_items)
         self.assertTrue(self.mod_low2 in module_items)
         self.assertFalse(self.mod_low3 in module_items)

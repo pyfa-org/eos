@@ -35,7 +35,7 @@ from eos.fit.item import FighterSquad
 from eos.fit.item import Implant
 from eos.fit.item import ModuleHigh
 from eos.fit.item import ModuleLow
-from eos.fit.item import ModuleMed
+from eos.fit.item import ModuleMid
 from eos.fit.item import Rig
 from eos.fit.item import Ship
 from eos.fit.item import Skill
@@ -72,7 +72,7 @@ CLASS_VALIDATORS = {
     ModuleHigh: lambda item_type:
         item_type.category_id == TypeCategoryId.module and
         EffectId.hi_power in item_type.effects,
-    ModuleMed: lambda item_type:
+    ModuleMid: lambda item_type:
         item_type.category_id == TypeCategoryId.module and
         EffectId.med_power in item_type.effects,
     ModuleLow: lambda item_type:

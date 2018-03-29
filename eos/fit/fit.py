@@ -36,7 +36,7 @@ from .item import FighterSquad
 from .item import Implant
 from .item import ModuleHigh
 from .item import ModuleLow
-from .item import ModuleMed
+from .item import ModuleMid
 from .item import Rig
 from .item import Ship
 from .item import Skill
@@ -69,7 +69,7 @@ class Fit(MsgBroker):
         stance: Access point for ship stance, also known as tactical mode.
         subsystems: Set for subsystems.
         modules.high: List for high-slot modules.
-        modules.med: List for med-slot modules.
+        modules.mid: List for medium-slot modules.
         modules.low: List for low-slot modules.
         rigs: Set for rigs.
         drones: Set for drones.
@@ -95,7 +95,7 @@ class Fit(MsgBroker):
         self.subsystems = ItemSet(self, Subsystem)
         self.modules = ModuleRacks(
             high=ItemList(self, ModuleHigh),
-            med=ItemList(self, ModuleMed),
+            mid=ItemList(self, ModuleMid),
             low=ItemList(self, ModuleLow))
         self.rigs = ItemSet(self, Rig)
         self.drones = ItemSet(self, Drone)

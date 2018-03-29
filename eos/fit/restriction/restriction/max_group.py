@@ -28,7 +28,7 @@ from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.fit.item import ModuleHigh
 from eos.fit.item import ModuleLow
-from eos.fit.item import ModuleMed
+from eos.fit.item import ModuleMid
 from eos.fit.message import ItemLoaded
 from eos.fit.message import ItemUnloaded
 from eos.fit.message import StatesActivatedLoaded
@@ -38,7 +38,7 @@ from .base import BaseRestrictionRegister
 from ..exception import RestrictionValidationError
 
 
-TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMed, ModuleLow)
+TRACKED_ITEM_CLASSES = (ModuleHigh, ModuleMid, ModuleLow)
 
 
 MaxGroupErrorData = namedtuple(
