@@ -276,6 +276,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.fit.modules.mid.append(propmod)
         self.assertAlmostEqual(
             ship.attrs[AttrId.max_velocity], 2735.871, places=3)
+        # Action
         self.fit.modules.low.append(massmod)
         # Verification
         self.assertAlmostEqual(ship.attrs[AttrId.max_velocity], 2268)
@@ -304,6 +305,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.fit.modules.mid.append(propmod)
         self.assertAlmostEqual(
             ship.attrs[AttrId.max_velocity], 2735.871, places=3)
+        # Action
         self.fit.modules.low.append(boostmod)
         # Verification
         self.assertAlmostEqual(
@@ -333,6 +335,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.fit.modules.mid.append(propmod)
         self.assertAlmostEqual(
             ship.attrs[AttrId.max_velocity], 2735.871, places=3)
+        # Action
         self.fit.modules.low.append(thrustmod)
         # Verification
         self.assertAlmostEqual(
