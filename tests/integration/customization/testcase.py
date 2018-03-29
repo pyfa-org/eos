@@ -19,15 +19,20 @@
 # ==============================================================================
 
 
+from eos import Fit
 from tests.integration.testcase import IntegrationTestCase
 
 
-class ContainerTestCase(IntegrationTestCase):
-    """Class which should be used by item container tests."""
+class CustomizationTestCase(IntegrationTestCase):
+    """Class which should be used by eve object customization tests.
 
-    def assert_fit_buffers_empty(self, fit, clear_all=False):
-        IntegrationTestCase.assert_fit_buffers_empty(
-            self, fit, clear=clear_all)
+    Attributes:
+        fit: Pre-created fit.
+    """
 
-    def get_log(self, name='eos.fit.container*'):
+    def setUp(self):
+        IntegrationTestCase.setUp(self)
+        self.fit = Fit()
+
+    def get_log(self, name='eos.eve_object.custom*'):
         return IntegrationTestCase.get_log(self, name=name)

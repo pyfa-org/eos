@@ -21,8 +21,6 @@
 
 from copy import copy
 
-from eos.const.eve import TypeGroupId
-from eos.const.eve import TypeId
 from eos.eve_object.modifier import DogmaModifier
 from eos.source import Source
 from eos.source import SourceManager
@@ -60,10 +58,6 @@ class IntegrationTestCase(EosTestCase):
         SourceManager._sources[alias] = source
         if make_default is True:
             SourceManager.default = source
-        # Instantiate character type, as it's used in every test
-        cache_handler.mktype(
-            type_id=TypeId.character_static,
-            group_id=TypeGroupId.character)
         return source
 
     def mktype(self, *args, src=None, **kwargs):
@@ -181,18 +175,17 @@ class IntegrationTestCase(EosTestCase):
             SourceManager.get(src).cache_handler.allocate_effect_id()
             for src in srcs)
 
-    def assert_fit_buffers_empty(self, fit, clear_all=True):
+    def assert_fit_buffers_empty(self, fit, clear=True):
         """Checks if fit contains anything in object containers.
 
         Args:
             fit: Fit to verify.
-            clear_all (optional): Before checking, by default fit has all its
-                items removed. If necessary, they can be kept. Please note, that
-                character item is always removed anyway.
+            clear (optional): Before checking, by default fit has all its items
+                removed. If necessary, they can be kept.
 
         Only containers which are designed to hold temporary data are checked.
         """
-        self.__clear_fit(fit, clear_all)
+        self.__clear_fit(fit, clear)
         entry_num = 0
         entry_num += self._get_obj_buffer_entry_count(
             fit,
@@ -209,8 +202,8 @@ class IntegrationTestCase(EosTestCase):
             self.fail(msg=msg)
 
     def __clear_fit(self, fit, clear_all):
-        fit.character = None
         if clear_all:
+            fit.character = None
             fit.ship = None
             fit.stance = None
             fit.effect_beacon = None
