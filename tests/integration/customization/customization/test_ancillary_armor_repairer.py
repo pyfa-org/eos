@@ -256,3 +256,75 @@ class TestPropulsionModules(CustomizationTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_rep_amount_stacking(self):
+        # Multiplier shouldn't be stacking penalized against any other
+        # multiplicative modifications
+        multmod_src_attr_mul = self.mkattr()
+        multmod_src_attr_div = self.mkattr()
+        multmod_src_attr_perc = self.mkattr()
+        multmod_mod_premul = self.mkmod(
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.armor_dmg_amount,
+            operator=ModOperator.pre_mul,
+            src_attr_id=multmod_src_attr_mul.id)
+        multmod_mod_prediv = self.mkmod(
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.armor_dmg_amount,
+            operator=ModOperator.pre_div,
+            src_attr_id=multmod_src_attr_div.id)
+        multmod_mod_postmul = self.mkmod(
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.armor_dmg_amount,
+            operator=ModOperator.post_mul,
+            src_attr_id=multmod_src_attr_mul.id)
+        multmod_mod_postdiv = self.mkmod(
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.armor_dmg_amount,
+            operator=ModOperator.post_div,
+            src_attr_id=multmod_src_attr_div.id)
+        multmod_mod_postperc = self.mkmod(
+            tgt_filter=ModTgtFilter.domain,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.armor_dmg_amount,
+            operator=ModOperator.post_percent,
+            src_attr_id=multmod_src_attr_perc.id)
+        multmod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[
+                multmod_mod_premul,
+                multmod_mod_prediv,
+                multmod_mod_postmul,
+                multmod_mod_postdiv,
+                multmod_mod_postperc])
+        multmod = ModuleLow(self.mktype(
+            attrs={
+                multmod_src_attr_mul.id: 2,
+                multmod_src_attr_div.id: 0.5,
+                multmod_src_attr_perc.id: 100},
+            effects=[multmod_effect]).id)
+        effect = self.mkeffect(
+            effect_id=EffectId.fueled_armor_repair,
+            category_id=EffectCategoryId.active)
+        aar = ModuleLow(
+            self.mktype(
+                attrs={
+                    AttrId.armor_dmg_amount: 50,
+                    AttrId.charged_armor_dmg_mult: 3},
+                effects=[effect],
+                default_effect=effect).id,
+            state=State.active)
+        aar.charge = Charge(self.mktype(type_id=TypeId.nanite_repair_paste).id)
+        self.fit.modules.low.append(aar)
+        self.fit.modules.low.append(multmod)
+        # Verification
+        # If paste multiplier is not stacking penalized against any mods, final
+        # result will be 150 * 2 ^ 5
+        self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 4800)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
