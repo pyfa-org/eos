@@ -66,15 +66,21 @@ class TestTgtItemSpecialAwaitingShip(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_switch(self):
-        # During source switch, calculator should put affectors/affectees into
-        # appropriate storage and remove them when source is switched to None
+    def test_none_to_source(self):
         self.fit.source = None
         self.fit.implants.add(self.influence_src)
         self.fit.ship = self.influence_tgt
         # Action
         self.fit.source = 'src1'
         # Verification
+        self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 120)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_source_to_none(self):
+        self.fit.implants.add(self.influence_src)
+        self.fit.ship = self.influence_tgt
         self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 120)
         # Action
         self.fit.source = None

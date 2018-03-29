@@ -63,8 +63,7 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_source_switch(self):
-        # Here we put both charge and
+    def test_none_to_source(self):
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
         modifier_container = self.make_modifier(src_attr.id, tgt_attr.id)
@@ -87,6 +86,31 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         # Action
         self.fit.source = 'src1'
         # Verification
+        self.assertAlmostEqual(container.attrs[tgt_attr.id], 140)
+        self.assertAlmostEqual(charge.attrs[tgt_attr.id], 60)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_source_to_none(self):
+        tgt_attr = self.mkattr()
+        src_attr = self.mkattr()
+        modifier_container = self.make_modifier(src_attr.id, tgt_attr.id)
+        effect_container = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier_container])
+        container = ModuleHigh(self.mktype(
+            attrs={src_attr.id: 20, tgt_attr.id: 100},
+            effects=[effect_container]).id)
+        modifier_charge = self.make_modifier(src_attr.id, tgt_attr.id)
+        effect_charge = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier_charge])
+        charge = Charge(self.mktype(
+            attrs={src_attr.id: 40, tgt_attr.id: 50},
+            effects=[effect_charge]).id)
+        self.fit.modules.high.append(container)
+        container.charge = charge
         self.assertAlmostEqual(container.attrs[tgt_attr.id], 140)
         self.assertAlmostEqual(charge.attrs[tgt_attr.id], 60)
         # Action
