@@ -166,6 +166,7 @@ class Restriction(IntEnum):
     fighter_squad_support = 32
     fighter_squad_light = 33
     fighter_squad_heavy = 34
+    loaded_item = 35
 
 
 @unique

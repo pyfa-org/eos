@@ -24,7 +24,8 @@ from .charge_group import ChargeGroupRestrictionRegister
 from .charge_size import ChargeSizeRestrictionRegister
 from .charge_volume import ChargeVolumeRestrictionRegister
 from .drone_group import DroneGroupRestrictionRegister
-from .item_class import ItemClassRestrictionRegister
+from .item_class import ItemClassRestriction
+from .loaded_item import LoadedItemRestriction
 from .max_group import MaxGroupActiveRestrictionRegister
 from .max_group import MaxGroupFittedRestrictionRegister
 from .max_group import MaxGroupOnlineRestrictionRegister

@@ -37,9 +37,10 @@ from .restriction import FighterSquadRestriction
 from .restriction import FighterSquadSupportRestriction
 from .restriction import HighSlotRestriction
 from .restriction import ImplantIndexRestrictionRegister
-from .restriction import ItemClassRestrictionRegister
+from .restriction import ItemClassRestriction
 from .restriction import LaunchedDroneRestriction
 from .restriction import LauncherSlotRestriction
+from .restriction import LoadedItemRestriction
 from .restriction import LowSlotRestriction
 from .restriction import MaxGroupActiveRestrictionRegister
 from .restriction import MaxGroupFittedRestrictionRegister
@@ -86,9 +87,10 @@ class RestrictionService:
             FighterSquadSupportRestriction(fit),
             HighSlotRestriction(fit),
             ImplantIndexRestrictionRegister(fit),
-            ItemClassRestrictionRegister(fit),
+            ItemClassRestriction(fit),
             LaunchedDroneRestriction(fit),
             LauncherSlotRestriction(fit),
+            LoadedItemRestriction(fit),
             LowSlotRestriction(fit),
             MaxGroupActiveRestrictionRegister(fit),
             MaxGroupFittedRestrictionRegister(fit),

@@ -202,8 +202,8 @@ class Fit(MsgBroker):
             ):
                 yield child_item
 
-    def _loaded_item_iter(self):
-        for item in self._item_iter():
+    def _loaded_item_iter(self, skip_autoitems=False):
+        for item in self._item_iter(skip_autoitems=skip_autoitems):
             if item._is_loaded:
                 yield item
 

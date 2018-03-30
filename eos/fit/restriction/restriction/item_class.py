@@ -93,7 +93,7 @@ CLASS_VALIDATORS = {
         EffectId.subsystem in item_type.effects}
 
 
-class ItemClassRestrictionRegister(BaseRestriction):
+class ItemClassRestriction(BaseRestriction):
     """Check that item type is wrapped by corresponding item class instance.
 
     For example, cybernetic subprocessor should be represented by Implant class
@@ -102,6 +102,7 @@ class ItemClassRestrictionRegister(BaseRestriction):
     Details:
         To determine item class matching to item type, only item type attributes
             are used.
+        Autocharges are not restricted.
     """
 
     type = Restriction.item_class
@@ -111,11 +112,8 @@ class ItemClassRestrictionRegister(BaseRestriction):
 
     def validate(self):
         tainted_items = {}
-        for item in self.__fit._loaded_item_iter():
-            # User has no control over what kind of type is used for
-            # autocharges, so skip them
-            if isinstance(item, Autocharge):
-                continue
+        # User has no direct control over autoitems, so skip them
+        for item in self.__fit._loaded_item_iter(skip_autoitems=True):
             # Get validator function for class of passed item. If it is not
             # found or fails, seek for 'right' item class for the item type
             try:
