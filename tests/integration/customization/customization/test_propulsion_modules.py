@@ -40,8 +40,8 @@ class TestPropulsionModules(CustomizationTestCase):
         CustomizationTestCase.setUp(self)
         # Ship attrs
         self.mkattr(attr_id=AttrId.mass)
-        self.mkattr(attr_id=AttrId.max_velocity)
-        self.mkattr(attr_id=AttrId.signature_radius)
+        self.mkattr(attr_id=AttrId.max_velocity, stackable=False)
+        self.mkattr(attr_id=AttrId.signature_radius, stackable=False)
         # Prop mod attrs
         self.mkattr(attr_id=AttrId.mass_addition)
         self.mkattr(attr_id=AttrId.signature_radius_bonus)
@@ -340,6 +340,64 @@ class TestPropulsionModules(CustomizationTestCase):
         # Verification
         self.assertAlmostEqual(
             ship.attrs[AttrId.max_velocity], 3496.161, places=3)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stacking_velocity(self):
+        ship = self.make_ship()
+        mwd = self.make_prop_mod(EffectId.module_bonus_microwarpdrive)
+        mwd.state = State.active
+        self.fit.ship = ship
+        self.fit.modules.mid.append(mwd)
+        sigmod_src_attr = self.mkattr()
+        sigmod_mod = self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.max_velocity,
+            operator=ModOperator.post_mul,
+            src_attr_id=sigmod_src_attr.id)
+        sigmod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[sigmod_mod])
+        sigmod = ModuleLow(self.mktype(
+            attrs={sigmod_src_attr.id: 1.1},
+            effects=[sigmod_effect]).id)
+        self.fit.modules.low.append(sigmod)
+        # Verification
+        # One of modules are stacking penalized, if they were not, value would
+        # be higher
+        self.assertAlmostEqual(
+            ship.attrs[AttrId.max_velocity], 2973.651, places=3)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_stacking_signature(self):
+        ship = self.make_ship()
+        mwd = self.make_prop_mod(EffectId.module_bonus_microwarpdrive)
+        mwd.state = State.active
+        self.fit.ship = ship
+        self.fit.modules.mid.append(mwd)
+        sigmod_src_attr = self.mkattr()
+        sigmod_mod = self.mkmod(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.signature_radius,
+            operator=ModOperator.post_percent,
+            src_attr_id=sigmod_src_attr.id)
+        sigmod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[sigmod_mod])
+        sigmod = ModuleLow(self.mktype(
+            attrs={sigmod_src_attr.id: 10},
+            effects=[sigmod_effect]).id)
+        self.fit.modules.low.append(sigmod)
+        # Verification
+        # One of modules are stacking penalized, if they were not, value would
+        # be higher
+        self.assertAlmostEqual(
+            ship.attrs[AttrId.signature_radius], 177.384, places=3)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
