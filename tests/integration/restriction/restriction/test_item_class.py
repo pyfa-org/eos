@@ -36,6 +36,7 @@ from eos import Ship
 from eos import Skill
 from eos import Stance
 from eos import Subsystem
+from eos.fit.item.charge import Autocharge
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -51,6 +52,27 @@ class TestItemClass(RestrictionTestCase):
         # Make sure not loaded item doesn't cause any failures
         item = Booster(self.allocate_type_id())
         self.fit.boosters.add(item)
+        # Action
+        error = self.get_error(item, Restriction.item_class)
+        # Verification
+        self.assertIsNone(error)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_autocharge_ignore(self):
+        autocharge_type = self.mktype()
+        container_effect = self.mkeffect(
+            effect_id=EffectId.target_attack,
+            category_id=EffectCategoryId.target)
+        container = ModuleHigh(self.mktype(
+            attrs={
+                AttrId.charge_size: 3,
+                AttrId.ammo_loaded: autocharge_type.id},
+            effects=[container_effect]).id)
+        self.fit.modules.high.append(container)
+        self.assertIn(container_effect.id, container.autocharges)
+        item = container.autocharges[container_effect.id]
         # Action
         error = self.get_error(item, Restriction.item_class)
         # Verification

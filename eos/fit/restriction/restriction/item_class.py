@@ -41,6 +41,7 @@ from eos.fit.item import Ship
 from eos.fit.item import Skill
 from eos.fit.item import Stance
 from eos.fit.item import Subsystem
+from eos.fit.item.charge import Autocharge
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 
@@ -111,6 +112,10 @@ class ItemClassRestrictionRegister(BaseRestriction):
     def validate(self):
         tainted_items = {}
         for item in self.__fit._loaded_item_iter():
+            # User has no control over what kind of type is used for
+            # autocharges, so skip them
+            if isinstance(item, Autocharge):
+                continue
             # Get validator function for class of passed item. If it is not
             # found or fails, seek for 'right' item class for the item type
             try:
