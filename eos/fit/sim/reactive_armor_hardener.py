@@ -96,7 +96,7 @@ class RahState:
 
 
 class ReactiveArmorHardenerSimulator(BaseSubscriber):
-    """Adapts RAH's stats to incoming damage pattern.
+    """Adapts RAH's stats to incoming damage profile.
 
     It works by installing callbacks as RAH resistance attribute overrides.
     When any of these attributes is requested, simulator is run. Upon
@@ -168,8 +168,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {frozenset(RAH history entries), ...}
         ticks_seen = set()
 
-        # Use RAH incoming damage pattern if available, if it's not set - fall
-        # back to default pattern
+        # Use RAH incoming damage profile if available, if it's not set - fall
+        # back to default profile
         if self.__fit.rah_incoming_dmg is not None:
             incoming_dmg = self.__fit.rah_incoming_dmg
         else:
