@@ -37,7 +37,7 @@ class TestPropulsionModules(CustomizationTestCase):
     def setUp(self):
         CustomizationTestCase.setUp(self)
         self.mkattr(attr_id=AttrId.charged_armor_dmg_mult)
-        self.mkattr(attr_id=AttrId.armor_dmg_amount)
+        self.mkattr(attr_id=AttrId.armor_dmg_amount, stackable=False)
 
     def test_local_aar(self):
         effect = self.mkeffect(
@@ -323,7 +323,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.fit.modules.low.append(multmod)
         # Verification
         # If paste multiplier is not stacking penalized against any mods, final
-        # result will be 150 * 2 ^ 5
+        # result will be 50 * 3 * 2 ^ 5
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 4800)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)

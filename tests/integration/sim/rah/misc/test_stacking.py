@@ -82,7 +82,8 @@ class TestRahStacking(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
         self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.655)
         # These values should be set to ship armor if RAH uses premul operator,
-        # otherwise resistances will be better
+        # otherwise resistances will be better as there will be no stacking
+        # penalty
         self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.425, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.516, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.535, places=3)

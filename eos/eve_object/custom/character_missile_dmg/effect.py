@@ -44,7 +44,7 @@ def make_missile_dmg_effect():
             tgt_domain=ModDomain.character,
             tgt_filter_extra_arg=TypeId.missile_launcher_operation,
             tgt_attr_id=dmg_attr_id,
-            operator=ModOperator.pre_mul,
+            operator=ModOperator.post_mul_immune,
             src_attr_id=AttrId.missile_dmg_mult))
     missile_dmg_effect = EffectFactory.make(
         effect_id=EosEffectId.char_missile_dmg,
