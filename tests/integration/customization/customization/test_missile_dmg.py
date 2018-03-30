@@ -134,3 +134,65 @@ class TestMissileDmg(CustomizationTestCase):
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
+
+    def test_stacking(self):
+        self.mkattr(AttrId.em_dmg)
+        self.mkattr(AttrId.therm_dmg)
+        self.mkattr(AttrId.kin_dmg)
+        self.mkattr(AttrId.expl_dmg)
+        charge = Charge(self.mktype(attrs={
+            AttrId.em_dmg: 100,
+            AttrId.therm_dmg: 100,
+            AttrId.kin_dmg: 100,
+            AttrId.expl_dmg: 100,
+            AttrId.required_skill_1: TypeId.missile_launcher_operation,
+            AttrId.required_skill_1_level: 1}).id)
+        self.launcher.charge = charge
+        dmgmod_src_attr = self.mkattr()
+        dmgmod_mod_em = self.mkmod(
+            tgt_filter=ModTgtFilter.owner_skillrq,
+            tgt_domain=ModDomain.character,
+            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
+            tgt_attr_id=AttrId.em_dmg,
+            operator=ModOperator.pre_mul,
+            src_attr_id=dmgmod_src_attr.id)
+        dmgmod_mod_therm = self.mkmod(
+            tgt_filter=ModTgtFilter.owner_skillrq,
+            tgt_domain=ModDomain.character,
+            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
+            tgt_attr_id=AttrId.therm_dmg,
+            operator=ModOperator.pre_mul,
+            src_attr_id=dmgmod_src_attr.id)
+        dmgmod_mod_kin = self.mkmod(
+            tgt_filter=ModTgtFilter.owner_skillrq,
+            tgt_domain=ModDomain.character,
+            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
+            tgt_attr_id=AttrId.kin_dmg,
+            operator=ModOperator.pre_mul,
+            src_attr_id=dmgmod_src_attr.id)
+        dmgmod_mod_expl = self.mkmod(
+            tgt_filter=ModTgtFilter.owner_skillrq,
+            tgt_domain=ModDomain.character,
+            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
+            tgt_attr_id=AttrId.expl_dmg,
+            operator=ModOperator.pre_mul,
+            src_attr_id=dmgmod_src_attr.id)
+        dmgmod_effect = self.mkeffect(
+            category_id=EffectCategoryId.passive,
+            modifiers=[
+                dmgmod_mod_em,
+                dmgmod_mod_therm,
+                dmgmod_mod_kin,
+                dmgmod_mod_expl])
+        dmgmod = ModuleLow(self.mktype(
+            attrs={dmgmod_src_attr.id: 2},
+            effects=[dmgmod_effect]).id)
+        self.fit.modules.low.append(dmgmod)
+        # Verification
+        self.assertAlmostEqual(charge.attrs[AttrId.em_dmg], 220, places=3)
+        self.assertAlmostEqual(charge.attrs[AttrId.em_dmg], 220, places=3)
+        self.assertAlmostEqual(charge.attrs[AttrId.em_dmg], 220, places=3)
+        self.assertAlmostEqual(charge.attrs[AttrId.em_dmg], 220, places=3)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
