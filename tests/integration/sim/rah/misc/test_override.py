@@ -69,7 +69,7 @@ class TestRahSimAttrOverride(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Switch state up to enable RAH
         rah.state = State.active
-        # callbacks are installed, sim is doing its job
+        # Callbacks are installed, sim is doing its job
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.925)
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
