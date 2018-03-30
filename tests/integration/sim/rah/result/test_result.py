@@ -203,7 +203,7 @@ class TestRahSimResult(RahSimTestCase):
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_therm_kin_exp(self):
         # Setup
-        self.fit.default_incoming_dmg = DmgProfile(0, 1, 1, 1)
+        self.fit.rah_incoming_dmg = DmgProfile(0, 1, 1, 1)
         ship = Ship(self.make_ship_type((0.675, 0.675, 0.675, 0.675)).id)
         self.fit.ship = ship
         rah = ModuleLow(
@@ -234,7 +234,7 @@ class TestRahSimResult(RahSimTestCase):
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_kin_exp(self):
         # Setup
-        self.fit.default_incoming_dmg = DmgProfile(1, 0, 1, 1)
+        self.fit.rah_incoming_dmg = DmgProfile(1, 0, 1, 1)
         ship = Ship(self.make_ship_type((0.675, 0.675, 0.675, 0.675)).id)
         self.fit.ship = ship
         rah = ModuleLow(
@@ -265,7 +265,7 @@ class TestRahSimResult(RahSimTestCase):
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_exp(self):
         # Setup
-        self.fit.default_incoming_dmg = DmgProfile(1, 1, 0, 1)
+        self.fit.rah_incoming_dmg = DmgProfile(1, 1, 0, 1)
         ship = Ship(self.make_ship_type((0.675, 0.675, 0.675, 0.675)).id)
         self.fit.ship = ship
         rah = ModuleLow(
@@ -296,7 +296,7 @@ class TestRahSimResult(RahSimTestCase):
     @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_kin(self):
         # Setup
-        self.fit.default_incoming_dmg = DmgProfile(1, 1, 1, 0)
+        self.fit.rah_incoming_dmg = DmgProfile(1, 1, 1, 0)
         ship = Ship(self.make_ship_type((0.675, 0.675, 0.675, 0.675)).id)
         self.fit.ship = ship
         rah = ModuleLow(

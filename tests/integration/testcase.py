@@ -192,7 +192,8 @@ class IntegrationTestCase(EosTestCase):
             ignore_objs=[fit],
             ignore_attrs=(
                 ('Fit', '_Fit__source'),
-                ('Fit', '_Fit__default_incoming_dmg'),
+                ('Fit', '_Fit__incoming_dmg_default'),
+                ('Fit', '_Fit__incoming_dmg_rah'),
                 ('Fit', '_MsgBroker__subscribers'),
                 ('RestrictionService', '_RestrictionService__restrictions')))
         if entry_num:

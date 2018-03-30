@@ -22,6 +22,7 @@
 from .attr import AttrValueChanged
 from .attr import AttrValueChangedMasked
 from .fit import DefaultIncomingDmgChanged
+from .fit import RahIncomingDmgChanged
 from .item import ItemAdded
 from .item import ItemRemoved
 from .item import StatesActivated

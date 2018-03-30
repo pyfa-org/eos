@@ -48,6 +48,7 @@ from .item_container import ItemSet
 from .item_container import ModuleRacks
 from .item_container import TypeUniqueItemSet
 from .message import DefaultIncomingDmgChanged
+from .message import RahIncomingDmgChanged
 from .restriction import RestrictionService
 from .sim import ReactiveArmorHardenerSimulator
 from .stats import StatService
@@ -86,7 +87,8 @@ class Fit(MsgBroker):
     def __init__(self, source=DEFAULT):
         MsgBroker.__init__(self)
         self.__source = None
-        self.__default_incoming_dmg = DmgProfile(25, 25, 25, 25)
+        self.__incoming_dmg_default = DmgProfile(25, 25, 25, 25)
+        self.__incoming_dmg_rah = None
         # Character-related item containers
         self.skills = TypeUniqueItemSet(self, Skill)
         self.implants = ItemSet(self, Implant)
@@ -161,19 +163,50 @@ class Fit(MsgBroker):
 
     @property
     def default_incoming_dmg(self):
-        """Access point for default incoming damage pattern.
+        """Access point for default incoming damage profile.
 
-        This pattern will be used by default for things like EHP calculation,
-        RAH adaptation, etc.
+        This profile will be used by default for things like EHP calculation.
+        Setter accepts only DmgProfile instances.
         """
-        return self.__default_incoming_dmg
+        return self.__incoming_dmg_default
 
     @default_incoming_dmg.setter
     def default_incoming_dmg(self, new_profile):
-        old_profile = self.__default_incoming_dmg
-        self.__default_incoming_dmg = new_profile
+        if not isinstance(new_profile, DmgProfile):
+            msg = 'expected {} instance, received {} instead'.format(
+                DmgProfile.__name__, type(new_profile).__name__)
+            raise TypeError(msg)
+        old_profile = self.__incoming_dmg_default
+        self.__incoming_dmg_default = new_profile
         if new_profile != old_profile:
             self._publish(DefaultIncomingDmgChanged())
+            if self.rah_incoming_dmg is None:
+                self._publish(RahIncomingDmgChanged())
+
+    @property
+    def rah_incoming_dmg(self):
+        """Access point for RAH incoming damage profile.
+
+        This profile will be used for RAH adaptation. Setter accepts DmgProfile
+        instances and None. When None, default incoming damage profile is used.
+        """
+        return self.__incoming_dmg_rah
+
+    @rah_incoming_dmg.setter
+    def rah_incoming_dmg(self, new_profile):
+        if new_profile is not None and not isinstance(new_profile, DmgProfile):
+            msg = 'expected {} instance or None, received {} instead'.format(
+                DmgProfile.__name__, type(new_profile).__name__)
+            raise TypeError(msg)
+        if self.__incoming_dmg_rah is not None:
+            old_profile = self.__incoming_dmg_rah
+        # Use default incoming damage profile for comparison if RAH profile is
+        # not set
+        else:
+            old_profile = self.default_incoming_dmg
+        self.__incoming_dmg_rah = new_profile
+        if new_profile != old_profile:
+            self._publish(RahIncomingDmgChanged())
 
     # Auxiliary methods
     @property

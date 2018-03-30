@@ -26,3 +26,9 @@ class DefaultIncomingDmgChanged:
 
     def __repr__(self):
         return make_repr_str(self)
+
+
+class RahIncomingDmgChanged:
+
+    def __repr__(self):
+        return make_repr_str(self)

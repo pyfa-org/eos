@@ -349,7 +349,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Action
-        self.fit.default_incoming_dmg = DmgProfile(1, 0, 0, 0)
+        self.fit.rah_incoming_dmg = DmgProfile(1, 0, 0, 0)
         # Verification
         self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.4)
         self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 1)

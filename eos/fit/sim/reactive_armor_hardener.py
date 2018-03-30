@@ -27,9 +27,9 @@ from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.fit.message import AttrValueChanged
 from eos.fit.message import AttrValueChangedMasked
-from eos.fit.message import DefaultIncomingDmgChanged
 from eos.fit.message import EffectsStarted
 from eos.fit.message import EffectsStopped
+from eos.fit.message import RahIncomingDmgChanged
 from eos.util.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
 from eos.util.round import sig_round
@@ -168,7 +168,12 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # Format: {frozenset(RAH history entries), ...}
         ticks_seen = set()
 
-        incoming_dmg = self.__fit.default_incoming_dmg
+        # Use RAH incoming damage pattern if available, if it's not set - fall
+        # back to default pattern
+        if self.__fit.rah_incoming_dmg is not None:
+            incoming_dmg = self.__fit.rah_incoming_dmg
+        else:
+            incoming_dmg = self.__fit.default_incoming_dmg
 
         # Container for damage each RAH received during its cycle. May
         # span across several simulation ticks for multi-RAH setups
@@ -471,7 +476,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         EffectsStopped: _handle_effects_stopped,
         AttrValueChanged: _handle_attr_changed,
         AttrValueChangedMasked: _handle_attr_changed_masked,
-        DefaultIncomingDmgChanged: _handle_changed_dmg_profile}
+        RahIncomingDmgChanged: _handle_changed_dmg_profile}
 
     def _notify(self, msg):
         # Do not react to messages while sim is running
