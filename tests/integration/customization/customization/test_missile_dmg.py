@@ -122,7 +122,7 @@ class TestMissileDmg(CustomizationTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_other_class(self):
+    def test_class_other(self):
         self.mkattr(AttrId.em_dmg)
         item = Rig(self.mktype(attrs={
             AttrId.em_dmg: 100,

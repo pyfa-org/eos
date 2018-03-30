@@ -158,7 +158,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_item_other_class(self):
+    def test_pass_item_class_other(self):
         self.fit.ship = Ship(self.mktype().id)
         item = Rig(self.mktype(attrs={AttrId.volume: 3501}).id)
         self.fit.rigs.add(item)

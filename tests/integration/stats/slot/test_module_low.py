@@ -98,7 +98,7 @@ class TestModuleLowSlot(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_item_other_class(self):
+    def test_use_item_class_other(self):
         self.fit.modules.high.place(3, ModuleHigh(self.mktype().id))
         # Verification
         self.assertEqual(self.fit.stats.low_slots.used, 0)

@@ -107,7 +107,7 @@ class TestFighterSquadHeavy(StatsTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_use_item_other_class(self):
+    def test_use_item_class_other(self):
         self.fit.drones.add(Drone(self.mktype(
             attrs={AttrId.fighter_squadron_is_heavy: 1.0}).id))
         # Verification

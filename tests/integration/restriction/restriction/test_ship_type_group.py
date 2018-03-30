@@ -287,7 +287,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_item_other_class(self):
+    def test_pass_item_class_other(self):
         self.fit.ship = Ship(self.mktype(group_id=31).id)
         item = Rig(self.mktype(
             attrs={AttrId.can_fit_ship_type_1: 10}).id)

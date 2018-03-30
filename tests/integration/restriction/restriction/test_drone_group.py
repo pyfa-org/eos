@@ -149,7 +149,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_item_other_class(self):
+    def test_pass_item_class_other(self):
         # Check that restriction is not applied to items which are not drones
         self.fit.ship = Ship(self.mktype(
             attrs={AttrId.allowed_drone_group_1: 4}).id)

@@ -148,7 +148,7 @@ class TestMaxGroupOnline(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_pass_item_other_class(self):
+    def test_pass_item_class_other(self):
         item_type = self.mktype(
             group_id=12,
             attrs={AttrId.max_group_online: 1})
