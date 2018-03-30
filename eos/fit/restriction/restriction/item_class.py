@@ -41,7 +41,6 @@ from eos.fit.item import Ship
 from eos.fit.item import Skill
 from eos.fit.item import Stance
 from eos.fit.item import Subsystem
-from eos.fit.item.charge import Autocharge
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
 

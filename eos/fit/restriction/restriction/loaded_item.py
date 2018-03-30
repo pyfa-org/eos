@@ -19,9 +19,14 @@
 # ==============================================================================
 
 
+from collections import namedtuple
+
 from eos.const.eos import Restriction
 from .base import BaseRestriction
 from ..exception import RestrictionValidationError
+
+
+LoadedItemErrorData = namedtuple('LoadedItemErrorData', ())
 
 
 class LoadedItemRestriction(BaseRestriction):
@@ -37,10 +42,10 @@ class LoadedItemRestriction(BaseRestriction):
         self.__fit = fit
 
     def validate(self):
-        tainted_items = set()
+        tainted_items = {}
         # User has no direct control over autoitems, so skip them
         for item in self.__fit._item_iter(skip_autoitems=True):
             if not item._is_loaded:
-                tainted_items.add(item)
+                tainted_items[item] = LoadedItemErrorData()
         if tainted_items:
             raise RestrictionValidationError(tainted_items)

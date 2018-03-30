@@ -36,7 +36,6 @@ from eos import Ship
 from eos import Skill
 from eos import Stance
 from eos import Subsystem
-from eos.fit.item.charge import Autocharge
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -94,7 +93,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_booster_fail_category(self):
+    def test_booster_fail_category_other(self):
         item = Booster(self.mktype(
             category_id=1008,
             attrs={AttrId.boosterness: 3}).id)
@@ -109,7 +108,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_booster_fail_attr(self):
+    def test_booster_fail_attr_absent(self):
         item = Booster(self.mktype(category_id=TypeCategoryId.implant).id)
         self.fit.boosters.add(item)
         # Action
@@ -133,7 +132,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_character_fail_group(self):
+    def test_character_fail_group_other(self):
         item = Character(self.mktype(group_id=1008).id)
         self.fit.character = item
         # Action
@@ -159,7 +158,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_charge_fail_category(self):
+    def test_charge_fail_category_other(self):
         item = Charge(self.mktype(category_id=1008).id)
         container = ModuleHigh(self.mktype().id)
         container.charge = item
@@ -185,7 +184,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_drone_fail_category(self):
+    def test_drone_fail_category_other(self):
         item = Drone(self.mktype(category_id=1008).id)
         self.fit.drones.add(item)
         # Action
@@ -209,7 +208,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_effect_beacon_fail_group(self):
+    def test_effect_beacon_fail_group_other(self):
         item = EffectBeacon(self.mktype(group_id=1008).id)
         self.fit.effect_beacon = item
         # Action
@@ -235,7 +234,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fighter_squad_fail_category(self):
+    def test_fighter_squad_fail_category_other(self):
         item = FighterSquad(self.mktype(
             category_id=1008,
             attrs={AttrId.fighter_squadron_is_heavy: 1.0}).id)
@@ -250,7 +249,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_fighter_squad_fail_attr(self):
+    def test_fighter_squad_fail_attr_absent(self):
         item = FighterSquad(self.mktype(category_id=TypeCategoryId.fighter).id)
         self.fit.fighters.add(item)
         # Action
@@ -276,7 +275,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_implant_fail_category(self):
+    def test_implant_fail_category_other(self):
         item = Implant(self.mktype(
             category_id=1008,
             attrs={AttrId.implantness: 3}).id)
@@ -291,7 +290,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_implant_fail_attr(self):
+    def test_implant_fail_attr_absent(self):
         item = Implant(self.mktype(category_id=1008).id)
         self.fit.implants.add(item)
         # Action
@@ -320,7 +319,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_high_pass_disabled_effect(self):
+    def test_module_high_pass_effect_disabled(self):
         # Make sure disabled high slot effect doesn't prevent item from passing
         # the check
         effect = self.mkeffect(
@@ -339,7 +338,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_high_fail_category(self):
+    def test_module_high_fail_category_other(self):
         effect = self.mkeffect(
             effect_id=EffectId.hi_power,
             category_id=EffectCategoryId.passive)
@@ -355,7 +354,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_high_fail_effect(self):
+    def test_module_high_fail_effect_absent(self):
         effect = self.mkeffect(
             effect_id=1008,
             category_id=EffectCategoryId.passive)
@@ -387,7 +386,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_mid_pass_disabled_effect(self):
+    def test_module_mid_pass_effect_disabled(self):
         effect = self.mkeffect(
             effect_id=EffectId.med_power,
             category_id=EffectCategoryId.passive)
@@ -404,7 +403,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_mid_fail_category(self):
+    def test_module_mid_fail_category_other(self):
         effect = self.mkeffect(
             effect_id=EffectId.med_power,
             category_id=EffectCategoryId.passive)
@@ -420,7 +419,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_mid_fail_effect(self):
+    def test_module_mid_fail_effect_absent(self):
         effect = self.mkeffect(
             effect_id=1008,
             category_id=EffectCategoryId.passive)
@@ -454,7 +453,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_low_pass_disabled_effect(self):
+    def test_module_low_pass_effect_disabled(self):
         effect = self.mkeffect(
             effect_id=EffectId.lo_power,
             category_id=EffectCategoryId.passive)
@@ -471,7 +470,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_low_fail_category(self):
+    def test_module_low_fail_category_other(self):
         effect = self.mkeffect(
             effect_id=EffectId.lo_power,
             category_id=EffectCategoryId.passive)
@@ -487,7 +486,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_module_low_fail_effect(self):
+    def test_module_low_fail_effect_absent(self):
         effect = self.mkeffect(
             effect_id=1008,
             category_id=EffectCategoryId.passive)
@@ -521,7 +520,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_rig_pass_disabled_effect(self):
+    def test_rig_pass_effect_disabled(self):
         effect = self.mkeffect(
             effect_id=EffectId.rig_slot,
             category_id=EffectCategoryId.passive)
@@ -538,7 +537,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_rig_fail_category(self):
+    def test_rig_fail_category_other(self):
         effect = self.mkeffect(
             effect_id=EffectId.rig_slot,
             category_id=EffectCategoryId.passive)
@@ -554,7 +553,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_rig_fail_effect(self):
+    def test_rig_fail_effect_absent(self):
         effect = self.mkeffect(
             effect_id=1008,
             category_id=EffectCategoryId.passive)
@@ -583,7 +582,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_ship_fail_category(self):
+    def test_ship_fail_category_other(self):
         item = Ship(self.mktype(category_id=1008).id)
         self.fit.ship = item
         # Action
@@ -607,7 +606,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_skill_fail_category(self):
+    def test_skill_fail_category_other(self):
         item = Skill(self.mktype(category_id=1008).id)
         self.fit.skills.add(item)
         # Action
@@ -631,7 +630,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_stance_fail_group(self):
+    def test_stance_fail_group_other(self):
         item = Stance(self.mktype(group_id=1008).id)
         self.fit.stance = item
         # Action
@@ -660,7 +659,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_subsystem_pass_disabled_effect(self):
+    def test_subsystem_pass_effect_disabled(self):
         effect = self.mkeffect(
             effect_id=EffectId.subsystem,
             category_id=EffectCategoryId.passive)
@@ -677,7 +676,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_subsystem_fail_category(self):
+    def test_subsystem_fail_category_other(self):
         effect = self.mkeffect(
             effect_id=EffectId.subsystem,
             category_id=EffectCategoryId.passive)
@@ -693,7 +692,7 @@ class TestItemClass(RestrictionTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_subsystem_fail_effect(self):
+    def test_subsystem_fail_effect_absent(self):
         effect = self.mkeffect(
             effect_id=1008,
             category_id=EffectCategoryId.passive)
