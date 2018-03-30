@@ -22,8 +22,10 @@
 """
 Some modules, like ballistic control systems, do not affect missile attributes
 directly; instead, they affect an attribute on the character, which, in turn,
-should affect missiles. The problem is that it doesn't affect missiles (probably
-some hardcoding on CCP's part), so we're adding it manually.
+should affect missiles. In EVE, missile damage effect, when calculating final
+damage to deal to target, takes missile damage and multiplies it by value taken
+from character. We add special effect instead to help with tracing what affects
+what.
 """
 
 
