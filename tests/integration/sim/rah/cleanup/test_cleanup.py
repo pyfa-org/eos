@@ -331,7 +331,72 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    def test_dmg_profile_default(self):
+    def test_dmg_profile_default_change(self):
+        # Setup
+        ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship
+        rah = ModuleLow(
+            self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
+        self.fit.modules.low.equip(rah)
+        # Force resonance calculation
+        self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.655)
+        self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.60125)
+        self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
+        # Action
+        self.fit.default_incoming_dmg = DmgProfile(1, 0, 0, 0)
+        # Verification
+        self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.4)
+        self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 1)
+        self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.2)
+        self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.65)
+        self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_dmg_profile_rah_change(self):
+        # Setup
+        ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship
+        rah = ModuleLow(
+            self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
+        self.fit.modules.low.equip(rah)
+        self.fit.rah_incoming_dmg = DmgProfile(1, 0, 0, 0)
+        # Force resonance calculation
+        self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.4)
+        self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 1)
+        self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.2)
+        self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.65)
+        self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
+        # Action
+        self.fit.rah_incoming_dmg = DmgProfile(0, 1, 0, 0)
+        # Verification
+        self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.4)
+        self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 1)
+        self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.26)
+        self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_dmg_profile_default_to_rah(self):
         # Setup
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
         self.fit.ship = ship
@@ -359,6 +424,39 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.65)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
+        # Cleanup
+        self.assert_fit_buffers_empty(self.fit)
+        self.assertEqual(len(self.get_log()), 0)
+
+    def test_dmg_profile_rah_to_default(self):
+        # Setup
+        ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
+        self.fit.ship = ship
+        rah = ModuleLow(
+            self.make_rah_type((0.85, 0.85, 0.85, 0.85), 6, 1000).id,
+            state=State.active)
+        self.fit.modules.low.equip(rah)
+        self.fit.rah_incoming_dmg = DmgProfile(1, 0, 0, 0)
+        # Force resonance calculation
+        self.assertAlmostEqual(rah.attrs[self.armor_em.id], 0.4)
+        self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 1)
+        self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.2)
+        self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.65)
+        self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
+        # Action
+        self.fit.rah_incoming_dmg = None
+        # Verification
+        self.assertAlmostEqual(rah.attrs[self.armor_em.id], 1)
+        self.assertAlmostEqual(rah.attrs[self.armor_therm.id], 0.925)
+        self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.82)
+        self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.655)
+        self.assertAlmostEqual(ship.attrs[self.armor_em.id], 0.5)
+        self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.60125)
+        self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
+        self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)

@@ -52,6 +52,8 @@ class TankingLayers:
         yield self.shield
 
     def __eq__(self, other):
+        if not isinstance(other, TankingLayers):
+            return False
         return all((
             self.hull == other.hull,
             self.armor == other.armor,
@@ -59,7 +61,7 @@ class TankingLayers:
 
     def __hash__(self):
         return hash((
-            self.__class__.__name__,
+            TankingLayers.__name__,
             self.hull,
             self.armor,
             self.shield))

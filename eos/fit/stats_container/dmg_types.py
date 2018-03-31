@@ -58,6 +58,8 @@ class DmgTypes:
         yield self.explosive
 
     def __eq__(self, other):
+        if not isinstance(other, DmgTypes):
+            return False
         return all((
             self.em == other.em,
             self.thermal == other.thermal,
@@ -66,7 +68,7 @@ class DmgTypes:
 
     def __hash__(self):
         return hash((
-            self.__class__.__name__,
+            DmgTypes.__name__,
             self.em,
             self.thermal,
             self.kinetic,
