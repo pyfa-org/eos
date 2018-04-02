@@ -24,7 +24,7 @@ from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.eve_obj.modifier import DogmaModifier
-from ..exception import YamlParsingError
+from eos.eve_obj_builder.mod_builder.exception import YamlParsingError
 
 
 class ModInfoconverter:

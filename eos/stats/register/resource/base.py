@@ -22,8 +22,8 @@
 from abc import ABCMeta
 from abc import abstractmethod
 
+from eos.stats.register.base import BaseStatRegister
 from eos.util.repr import make_repr_str
-from ..base import BaseStatRegister
 
 
 class BaseResourceRegister(BaseStatRegister, metaclass=ABCMeta):

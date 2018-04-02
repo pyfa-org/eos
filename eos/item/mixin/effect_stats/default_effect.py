@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from ..base import BaseItemMixin
+from eos.item.mixin.base import BaseItemMixin
 
 
 class DefaultEffectProxyMixin(BaseItemMixin):
