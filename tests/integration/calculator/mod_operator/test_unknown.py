@@ -53,7 +53,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]
-        self.assertEqual(log_record.name, 'eos.fit.calculator.map')
+        self.assertEqual(log_record.name, 'eos.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -93,7 +93,7 @@ class TestOperatorUnknown(CalculatorTestCase):
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]
-        self.assertEqual(log_record.name, 'eos.fit.calculator.map')
+        self.assertEqual(log_record.name, 'eos.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,

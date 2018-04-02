@@ -27,9 +27,9 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestConversionEffect(EveObjBuilderTestCase):
     """Data should be saved into appropriate fields of an effect."""
 
-    logger_name = 'eos.data.eve_obj_builder.converter'
+    logger_name = 'eos.eve_obj_builder.converter'
 
-    @patch('eos.data.eve_obj_builder.converter.ModBuilder')
+    @patch('eos.eve_obj_builder.converter.ModBuilder')
     def test_fields(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append({'typeID': 1, 'effectID': 112})

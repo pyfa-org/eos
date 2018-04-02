@@ -34,5 +34,5 @@ class CustomizationTestCase(IntegrationTestCase):
         IntegrationTestCase.setUp(self)
         self.fit = Fit()
 
-    def get_log(self, name='eos.eve_object.custom*'):
+    def get_log(self, name='eos.eve_obj.custom*'):
         return IntegrationTestCase.get_log(self, name=name)

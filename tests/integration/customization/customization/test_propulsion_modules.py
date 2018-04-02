@@ -205,7 +205,7 @@ class TestPropulsionModules(CustomizationTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.eve_object.custom.propulsion_modules.modifier.python')
+            'eos.eve_obj.custom.propulsion_modules.modifier.python')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,

@@ -27,7 +27,7 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestDefaultEffects(EveObjBuilderTestCase):
     """Check that each item can have has max 1 default effect."""
 
-    logger_name = 'eos.data.eve_obj_builder.validator_preconv'
+    logger_name = 'eos.eve_obj_builder.validator_preconv'
 
     def setUp(self):
         EveObjBuilderTestCase.setUp(self)

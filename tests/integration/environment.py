@@ -19,15 +19,15 @@
 # ==============================================================================
 
 
-from eos.data.cache_handler.exception import AttrFetchError
-from eos.data.cache_handler.exception import EffectFetchError
-from eos.data.cache_handler.exception import TypeFetchError
-from eos.eve_object.attribute import AttrFactory
-from eos.eve_object.attribute import Attribute
-from eos.eve_object.effect import Effect
-from eos.eve_object.effect import EffectFactory
-from eos.eve_object.type import Type
-from eos.eve_object.type import TypeFactory
+from eos.cache_handler import AttrFetchError
+from eos.cache_handler import EffectFetchError
+from eos.cache_handler import TypeFetchError
+from eos.eve_obj.attribute import AttrFactory
+from eos.eve_obj.attribute import Attribute
+from eos.eve_obj.effect import Effect
+from eos.eve_obj.effect import EffectFactory
+from eos.eve_obj.type import Type
+from eos.eve_obj.type import TypeFactory
 
 
 TEST_ID_START = 1000000

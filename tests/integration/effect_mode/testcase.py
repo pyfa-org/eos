@@ -52,5 +52,5 @@ class EffectModeTestCase(IntegrationTestCase):
             operator=ModOperator.mod_add,
             src_attr_id=self.src_attr.id)
 
-    def get_log(self, name='eos.fit*'):
+    def get_log(self, name='eos.effect_status'):
         return IntegrationTestCase.get_log(self, name=name)

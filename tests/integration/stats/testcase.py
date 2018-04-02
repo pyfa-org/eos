@@ -34,5 +34,5 @@ class StatsTestCase(IntegrationTestCase):
         IntegrationTestCase.setUp(self)
         self.fit = Fit()
 
-    def get_log(self, name='eos.fit.stats*'):
+    def get_log(self, name='eos.stats*'):
         return IntegrationTestCase.get_log(self, name=name)

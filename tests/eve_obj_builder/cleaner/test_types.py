@@ -27,7 +27,7 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestCleanupTypes(EveObjBuilderTestCase):
     """Check which entries should stay in the data."""
 
-    logger_name = 'eos.data.eve_obj_builder.cleaner'
+    logger_name = 'eos.eve_obj_builder.cleaner'
 
     def test_group_character(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})

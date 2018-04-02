@@ -30,7 +30,7 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestPrimaryKey(EveObjBuilderTestCase):
     """Check that only valid primary keys pass checks."""
 
-    logger_name = 'eos.data.eve_obj_builder.validator_preclean'
+    logger_name = 'eos.eve_obj_builder.validator_preclean'
 
     def test_single_proper_pk(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
@@ -272,7 +272,7 @@ class TestPrimaryKey(EveObjBuilderTestCase):
             log_record.msg,
             '1 rows in table dgmtypeeffects have invalid PKs, removing them')
 
-    @patch('eos.data.eve_obj_builder.converter.ModBuilder')
+    @patch('eos.eve_obj_builder.converter.ModBuilder')
     def test_dgmexpressions(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeeffects'].append(

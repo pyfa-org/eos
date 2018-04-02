@@ -96,7 +96,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.mod_builder.builder')
+            'eos.eve_obj_builder.mod_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(
             log_record.msg, 'effect 4, building 2 modifiers: 1 build errors')
@@ -141,7 +141,7 @@ class TestBuilderEtreeErrorsUnknownPrimary(ModBuilderTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.mod_builder.builder')
+            'eos.eve_obj_builder.mod_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(
             log_record.msg, 'effect 44, building 2 modifiers: 1 build errors')

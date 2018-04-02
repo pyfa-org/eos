@@ -21,7 +21,7 @@
 
 from copy import copy
 
-from eos.eve_object.modifier import DogmaModifier
+from eos.eve_obj.modifier import DogmaModifier
 from eos.source import Source
 from eos.source import SourceManager
 from tests.testcase import EosTestCase

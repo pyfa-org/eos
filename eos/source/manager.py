@@ -22,7 +22,7 @@
 from logging import getLogger
 
 from eos import __version__ as eos_version
-from eos.data.eve_obj_builder import EveObjBuilder
+from eos.eve_obj_builder import EveObjBuilder
 from eos.util.repr import make_repr_str
 from .exception import ExistingSourceError
 from .exception import UnknownSourceError

@@ -26,11 +26,11 @@ from eos.const.eve import AttrId
 from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 
 
-@patch('eos.data.eve_obj_builder.converter.ModBuilder')
+@patch('eos.eve_obj_builder.converter.ModBuilder')
 class TestAssociatedData(EveObjBuilderTestCase):
     """Check that types, which passed filter, pull in all related data."""
 
-    logger_name = 'eos.data.eve_obj_builder.cleaner'
+    logger_name = 'eos.eve_obj_builder.cleaner'
 
     def __generate_data(self):
         self.dh.data['dgmtypeattribs'].append(

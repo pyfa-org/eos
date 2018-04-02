@@ -26,11 +26,11 @@ from eos.const.eve import OperandId
 from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 
 
-@patch('eos.data.eve_obj_builder.converter.ModBuilder')
+@patch('eos.eve_obj_builder.converter.ModBuilder')
 class TestNormalizationIdzing(EveObjBuilderTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
-    logger_name = 'eos.data.eve_obj_builder.normalizer'
+    logger_name = 'eos.eve_obj_builder.normalizer'
 
     def test_group_idzing(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})

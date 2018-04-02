@@ -63,7 +63,7 @@ class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.mod_builder.builder')
+            'eos.eve_obj_builder.mod_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(
             log_record.msg, 'effect 1, building 1 modifiers: 1 build errors')
@@ -108,7 +108,7 @@ class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.mod_builder.builder')
+            'eos.eve_obj_builder.mod_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(
             log_record.msg, 'effect 1, building 2 modifiers: 1 build errors')
@@ -153,7 +153,7 @@ class TestBuilderEtreeErrorsHandlerFailure(ModBuilderTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.mod_builder.builder')
+            'eos.eve_obj_builder.mod_builder.builder')
         self.assertEqual(log_record.levelno, logging.ERROR)
         self.assertEqual(
             log_record.msg, 'effect 1, building 2 modifiers: 1 build errors')

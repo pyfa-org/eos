@@ -34,5 +34,5 @@ class CalculatorTestCase(IntegrationTestCase):
         IntegrationTestCase.setUp(self)
         self.fit = Fit()
 
-    def get_log(self, name='eos.fit.calculator*'):
+    def get_log(self, name='eos.calculator*'):
         return IntegrationTestCase.get_log(self, name=name)

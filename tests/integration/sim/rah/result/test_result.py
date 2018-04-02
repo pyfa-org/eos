@@ -36,7 +36,7 @@ from tests.integration.sim.rah.testcase import RahSimTestCase
 
 class TestRahSimResult(RahSimTestCase):
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_single_run(self):
         # Setup
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -58,7 +58,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
     def test_double_run(self):
         # Setup
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -85,7 +85,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=82)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=82)
     def test_double_run_unsynced(self):
         # Setup
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -112,7 +112,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=75)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=75)
     def test_no_loop_ignore_initial_adaptation(self):
         # Same as double unsynced, but with quantity of ticks insufficient to
         # detect loop
@@ -145,7 +145,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=5)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=5)
     def test_no_loop_half_history(self):
         # Setup
         ship = Ship(self.make_ship_type((0.5, 0.65, 0.75, 0.9)).id)
@@ -174,7 +174,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=3)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=3)
     def test_order_multi(self):
         # Setup
         ship = Ship(self.make_ship_type((0.675, 0.675, 0.675, 0.675)).id)
@@ -200,7 +200,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_therm_kin_exp(self):
         # Setup
         self.fit.rah_incoming_dmg = DmgProfile(0, 1, 1, 1)
@@ -231,7 +231,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_kin_exp(self):
         # Setup
         self.fit.rah_incoming_dmg = DmgProfile(1, 0, 1, 1)
@@ -262,7 +262,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_exp(self):
         # Setup
         self.fit.rah_incoming_dmg = DmgProfile(1, 1, 0, 1)
@@ -293,7 +293,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
 
-    @patch('eos.fit.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
+    @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_kin(self):
         # Setup
         self.fit.rah_incoming_dmg = DmgProfile(1, 1, 1, 0)
@@ -376,7 +376,7 @@ class TestRahSimResult(RahSimTestCase):
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]
-        self.assertEqual(log_record.name, 'eos.fit.sim.reactive_armor_hardener')
+        self.assertEqual(log_record.name, 'eos.sim.reactive_armor_hardener')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -420,7 +420,7 @@ class TestRahSimResult(RahSimTestCase):
         log = self.get_log()
         self.assertEqual(len(log), 1)
         log_record = log[0]
-        self.assertEqual(log_record.name, 'eos.fit.sim.reactive_armor_hardener')
+        self.assertEqual(log_record.name, 'eos.sim.reactive_armor_hardener')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,

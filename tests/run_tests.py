@@ -21,7 +21,7 @@
 
 
 import argparse
-import os.path
+import os
 import sys
 import unittest
 

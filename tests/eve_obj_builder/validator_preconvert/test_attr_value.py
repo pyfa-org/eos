@@ -27,7 +27,7 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestAttrValue(EveObjBuilderTestCase):
     """Ensure that attributes values are properly checked."""
 
-    logger_name = 'eos.data.eve_obj_builder.validator_preconv'
+    logger_name = 'eos.eve_obj_builder.validator_preconv'
 
     def test_int(self):
         self.dh.data['evetypes'].append(

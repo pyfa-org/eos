@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.data.eve_obj_builder.mod_builder import ModBuilder
+from eos.eve_obj_builder.mod_builder import ModBuilder
 from tests.testcase import EosTestCase
 from .environment import ExpressionFactory
 
@@ -44,5 +44,5 @@ class ModBuilderTestCase(EosTestCase):
         builder = ModBuilder(self.ef.data)
         return builder.build(effect_row)
 
-    def get_log(self, name='eos.data.eve_obj_builder.mod_builder*'):
+    def get_log(self, name='eos.eve_obj_builder.mod_builder*'):
         return EosTestCase.get_log(self, name=name)

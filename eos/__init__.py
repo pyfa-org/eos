@@ -20,50 +20,49 @@
 
 
 __all__ = [
+    'JsonCacheHandler', 'TypeFetchError',
     'EffectMode', 'Restriction', 'State',
-    'TypeFetchError',
-    'Fit',
-    'JsonCacheHandler',
     'JsonDataHandler', 'SQLiteDataHandler',
+    'Fit',
     'Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon', 'FighterSquad',
     'Implant', 'ModuleHigh', 'ModuleMid', 'ModuleLow', 'Rig', 'Ship', 'Skill',
     'Stance', 'Subsystem',
     'NoSuchAbilityError', 'NoSuchSideEffectError',
     'SlotTakenError',
     'ValidationError',
-    'DmgProfile', 'ResistProfile',
-    'SourceManager'
+    'SourceManager',
+    'DmgProfile', 'ResistProfile'
 ]
 __version__ = '0.0.0.dev10'
 
 
-from .const.eos import EffectMode
-from .const.eos import Restriction
-from .const.eos import State
-from .data.cache_handler import JsonCacheHandler
-from .data.cache_handler import TypeFetchError
-from .data.data_handler import JsonDataHandler
-from .data.data_handler import SQLiteDataHandler
-from .fit.fit import Fit
-from .fit.item import Booster
-from .fit.item import Character
-from .fit.item import Charge
-from .fit.item import Drone
-from .fit.item import EffectBeacon
-from .fit.item import FighterSquad
-from .fit.item import Implant
-from .fit.item import ModuleHigh
-from .fit.item import ModuleLow
-from .fit.item import ModuleMid
-from .fit.item import Rig
-from .fit.item import Ship
-from .fit.item import Skill
-from .fit.item import Stance
-from .fit.item import Subsystem
-from .fit.item.exception import NoSuchAbilityError
-from .fit.item.exception import NoSuchSideEffectError
-from .fit.item_container.exception import SlotTakenError
-from .fit.restriction.exception import ValidationError
-from .fit.stats_container import DmgProfile
-from .fit.stats_container import ResistProfile
-from .source import SourceManager
+from eos.cache_handler import JsonCacheHandler
+from eos.cache_handler import TypeFetchError
+from eos.const.eos import EffectMode
+from eos.const.eos import Restriction
+from eos.const.eos import State
+from eos.data_handler import JsonDataHandler
+from eos.data_handler import SQLiteDataHandler
+from eos.fit import Fit
+from eos.item import Booster
+from eos.item import Character
+from eos.item import Charge
+from eos.item import Drone
+from eos.item import EffectBeacon
+from eos.item import FighterSquad
+from eos.item import Implant
+from eos.item import ModuleHigh
+from eos.item import ModuleLow
+from eos.item import ModuleMid
+from eos.item import Rig
+from eos.item import Ship
+from eos.item import Skill
+from eos.item import Stance
+from eos.item import Subsystem
+from eos.item.exception import NoSuchAbilityError
+from eos.item.exception import NoSuchSideEffectError
+from eos.item_container import SlotTakenError
+from eos.restriction import ValidationError
+from eos.source import SourceManager
+from eos.stats_container import DmgProfile
+from eos.stats_container import ResistProfile

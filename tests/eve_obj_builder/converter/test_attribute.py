@@ -25,7 +25,7 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestConversionAttribute(EveObjBuilderTestCase):
     """Data should be saved into appropriate fields of an attribute."""
 
-    logger_name = 'eos.data.eve_obj_builder.converter'
+    logger_name = 'eos.eve_obj_builder.converter'
 
     def test_fields(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})

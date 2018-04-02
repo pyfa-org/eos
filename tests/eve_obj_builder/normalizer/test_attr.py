@@ -28,7 +28,7 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestNormalizationIdzing(EveObjBuilderTestCase):
     """Check that symbolic references are converted into IDs."""
 
-    logger_name = 'eos.data.eve_obj_builder.normalizer'
+    logger_name = 'eos.eve_obj_builder.normalizer'
 
     def test_basic_attr_radius(self):
         self.dh.data['evetypes'].append(

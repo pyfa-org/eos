@@ -28,7 +28,7 @@ from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
 from eos.const.eve import FighterAbilityId
-from eos.eve_object.type import AbilityData
+from eos.eve_obj.type import AbilityData
 from tests.integration.item.testcase import ItemMixinTestCase
 
 

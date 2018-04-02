@@ -42,7 +42,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.mod_builder.builder')
+            'eos.eve_obj_builder.mod_builder.builder')
         self.assertEqual(log_record.levelno, logging.INFO)
         self.assertEqual(
             log_record.msg,
@@ -62,7 +62,7 @@ class TestBuilderEtreeUnknownRoot(ModBuilderTestCase):
         log_record = log[0]
         self.assertEqual(
             log_record.name,
-            'eos.data.eve_obj_builder.mod_builder.builder')
+            'eos.eve_obj_builder.mod_builder.builder')
         self.assertEqual(log_record.levelno, logging.INFO)
         self.assertEqual(
             log_record.msg,

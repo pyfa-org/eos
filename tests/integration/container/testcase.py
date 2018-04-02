@@ -29,5 +29,5 @@ class ContainerTestCase(IntegrationTestCase):
         IntegrationTestCase.assert_fit_buffers_empty(
             self, fit, clear=clear_all)
 
-    def get_log(self, name='eos.fit.container*'):
+    def get_log(self, name='eos.item_container*'):
         return IntegrationTestCase.get_log(self, name=name)

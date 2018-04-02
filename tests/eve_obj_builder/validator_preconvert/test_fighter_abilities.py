@@ -29,7 +29,7 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestFighterAbilities(EveObjBuilderTestCase):
     """Check that only known abilities in valud configurations pass."""
 
-    logger_name = 'eos.data.eve_obj_builder.validator_preconv'
+    logger_name = 'eos.eve_obj_builder.validator_preconv'
 
     def test_unknown_ability(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 6})

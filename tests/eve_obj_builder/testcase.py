@@ -19,8 +19,9 @@
 # ==============================================================================
 
 
-from eos.data.eve_obj_builder import EveObjBuilder
-from eos.eve_object.modifier import DogmaModifier
+from eos.eve_obj.modifier import DogmaModifier
+
+from eos.eve_obj_builder import EveObjBuilder
 from tests.testcase import EosTestCase
 from .environment import DataHandler
 
