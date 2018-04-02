@@ -53,7 +53,7 @@ class TankingLayers:
 
     def __eq__(self, other):
         if not isinstance(other, TankingLayers):
-            return False
+            return NotImplemented
         return all((
             self.hull == other.hull,
             self.armor == other.armor,
@@ -61,7 +61,7 @@ class TankingLayers:
 
     def __hash__(self):
         return hash((
-            TankingLayers.__name__,
+            TankingLayers.__qualname__,
             self.hull,
             self.armor,
             self.shield))

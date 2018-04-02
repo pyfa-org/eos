@@ -59,7 +59,7 @@ class DmgTypes:
 
     def __eq__(self, other):
         if not isinstance(other, DmgTypes):
-            return False
+            return NotImplemented
         return all((
             self.em == other.em,
             self.thermal == other.thermal,
@@ -68,7 +68,7 @@ class DmgTypes:
 
     def __hash__(self):
         return hash((
-            DmgTypes.__name__,
+            DmgTypes.__qualname__,
             self.em,
             self.thermal,
             self.kinetic,

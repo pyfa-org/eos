@@ -174,7 +174,7 @@ class Fit(MsgBroker):
     def default_incoming_dmg(self, new_profile):
         if not isinstance(new_profile, DmgProfile):
             msg = 'expected {} instance, received {} instead'.format(
-                DmgProfile.__name__, type(new_profile).__name__)
+                DmgProfile.__qualname__, type(new_profile).__qualname__)
             raise TypeError(msg)
         old_profile = self.__incoming_dmg_default
         self.__incoming_dmg_default = new_profile
@@ -196,7 +196,7 @@ class Fit(MsgBroker):
     def rah_incoming_dmg(self, new_profile):
         if new_profile is not None and not isinstance(new_profile, DmgProfile):
             msg = 'expected {} instance or None, received {} instead'.format(
-                DmgProfile.__name__, type(new_profile).__name__)
+                DmgProfile.__qualname__, type(new_profile).__qualname__)
             raise TypeError(msg)
         if self.__incoming_dmg_rah is not None:
             old_profile = self.__incoming_dmg_rah

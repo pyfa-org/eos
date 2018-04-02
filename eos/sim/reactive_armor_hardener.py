@@ -268,7 +268,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             been in current cycle) format.
         """
         if max_ticks < 1:
-            raise StopIteration
+            return
         # Keep track of RAH cycle data in this map
         # Format: {RAH item: current cycle time}
         iter_cycle_data = {item: 0 for item in self.__data}
@@ -281,7 +281,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             # Stop iteration when current tick exceedes limit
             tick += 1
             if tick > max_ticks:
-                raise StopIteration
+                return
             # Pick time remaining until some RAH finishes its cycle
             time_passed = min(
                 self.__get_rah_duration(item) - cycling
