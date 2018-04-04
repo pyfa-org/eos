@@ -1,6 +1,6 @@
 # ==============================================================================
 # Copyright (C) 2011 Diego Duclos
-# Copyright (C) 2011-2017 Anton Vorobyov
+# Copyright (C) 2011-2018 Anton Vorobyov
 #
 # This file is part of Eos.
 #
