@@ -76,17 +76,16 @@ class MutableStateMixin(BaseItemMixin):
         # state switch of our item
         fit = self._fit
         if fit is not None:
-            if fit.source is not None:
-                msgs = []
-                # Messages for item itself
-                msgs.extend(MsgHelper.get_item_state_update_msgs(
-                    self, old_state, new_state))
-                # Messages for all state-dependent child items
-                for child_item in self._child_item_iter():
-                    if isinstance(child_item, ContainerStateMixin):
-                        msgs.extend(MsgHelper.get_item_state_update_msgs(
-                            child_item, old_state, new_state))
-                fit._publish_bulk(msgs)
+            msgs = []
+            # Messages for item itself
+            msgs.extend(MsgHelper.get_item_state_update_msgs(
+                self, old_state, new_state))
+            # Messages for all state-dependent child items
+            for child_item in self._child_item_iter():
+                if isinstance(child_item, ContainerStateMixin):
+                    msgs.extend(MsgHelper.get_item_state_update_msgs(
+                        child_item, old_state, new_state))
+            fit._publish_bulk(msgs)
 
 
 class ContainerStateMixin(BaseItemMixin):

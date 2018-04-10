@@ -19,7 +19,49 @@
 # ==============================================================================
 
 
-class SolarSystem:
+from eos.source import Source
+from eos.source import SourceManager
+from eos.util.default import DEFAULT
 
-    def __init__(self):
+
+class SolarSystem:
+    """Defines solar system.
+
+    Args:
+        source (optional): Source to use for fits located in this solar system.
+            When not specified, source which is set as default in source manager
+            will be used.
+    """
+
+    def __init__(self, source=DEFAULT):
+        self.__source = None
         self.fits = set()
+        # Initialize defaults
+        if source is DEFAULT:
+            source = SourceManager.default
+        self.source = source
+
+    @property
+    def source(self):
+        """Access point for solar system's source.
+
+        Source is used to load fits' items.
+        """
+        return self.__source
+
+    @source.setter
+    def source(self, new_source):
+        # Attempt to fetch source from source manager if passed object is not
+        # instance of source class
+        if not isinstance(new_source, Source) and new_source is not None:
+            new_source = SourceManager.get(new_source)
+        old_source = self.source
+        if new_source is old_source:
+            return
+        for fit in self.fits:
+            for item in fit._item_iter(skip_autoitems=True):
+                item._unload()
+        self.__source = new_source
+        for fit in self.fits:
+            for item in fit._item_iter(skip_autoitems=True):
+                item._load()

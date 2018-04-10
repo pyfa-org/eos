@@ -226,7 +226,7 @@ class MutableAttrMap:
         item = self.__item
         # Attribute object for attribute being calculated
         try:
-            attr = item._fit.source.cache_handler.get_attr(attr_id)
+            attr = item._fit.solar_system.source.cache_handler.get_attr(attr_id)
         # Raise error if we can't get metadata for requested attribute
         except (AttributeError, AttrFetchError) as e:
             msg = (

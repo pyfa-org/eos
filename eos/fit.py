@@ -47,11 +47,8 @@ from eos.message import RahIncomingDmgChanged
 from eos.restriction import RestrictionService
 from eos.sim import ReactiveArmorHardenerSimulator
 from eos.solar_system import SolarSystem
-from eos.source import Source
-from eos.source import SourceManager
 from eos.stats import StatService
 from eos.stats_container import DmgProfile
-from eos.util.default import DEFAULT
 from eos.util.pubsub.broker import MsgBroker
 from eos.util.repr import make_repr_str
 
@@ -63,8 +60,8 @@ class Fit(MsgBroker):
     to calculate their attributes and do many other tasks.
 
     Args:
-        source (optional): Source to use with this fit. When not specified,
-            source which is set as default in source manager will be used.
+        solar_system (optional): Assign instantiated fit to this solar system.
+            If not specified, new solar system is created.
 
     Attributes:
         ship: Access point for ship.
@@ -85,10 +82,9 @@ class Fit(MsgBroker):
             point.
     """
 
-    def __init__(self, source=DEFAULT):
+    def __init__(self, solar_system=None):
         MsgBroker.__init__(self)
         self.__solar_system = None
-        self.__source = None
         self.__incoming_dmg_default = None
         self.__incoming_dmg_rah = None
         # Character-related item containers
@@ -111,10 +107,9 @@ class Fit(MsgBroker):
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Initialize defaults
-        self.solar_system = SolarSystem()
-        if source is DEFAULT:
-            source = SourceManager.default
-        self.source = source
+        if solar_system is None:
+            solar_system = SolarSystem()
+        self.solar_system = solar_system
         self.default_incoming_dmg = DmgProfile(25, 25, 25, 25)
         # As character object shouldn't change in any sane cases, initialize it
         # here. It has to be assigned after fit starts to track list of items
@@ -162,31 +157,6 @@ class Fit(MsgBroker):
             old_solar_system.fits.remove(self)
         self.__solar_system = new_solar_system
         new_solar_system.fits.add(self)
-
-    @property
-    def source(self):
-        """Access point for fit's source.
-
-        Source 'fills' fit with actual eve objects, which carry info about
-        attributes, how they should be modified, and other important data.
-        Without source set, calculating anything meaningful is not possible.
-        """
-        return self.__source
-
-    @source.setter
-    def source(self, new_source):
-        # Attempt to fetch source from source manager if passed object is not
-        # instance of source class
-        if not isinstance(new_source, Source) and new_source is not None:
-            new_source = SourceManager.get(new_source)
-        old_source = self.source
-        if new_source is old_source:
-            return
-        for item in self._item_iter(skip_autoitems=True):
-            item._unload()
-        self.__source = new_source
-        for item in self._item_iter(skip_autoitems=True):
-            item._load()
 
     @property
     def default_incoming_dmg(self):

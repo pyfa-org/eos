@@ -205,7 +205,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         ):
             self.__effect_mode_overrides = None
         fit = self._fit
-        if fit is not None and fit.source is not None:
+        if fit is not None:
             msgs = MsgHelper.get_effects_status_update_msgs(self)
             if msgs:
                 fit._publish_bulk(msgs)
@@ -246,7 +246,7 @@ class BaseItemMixin(metaclass=ABCMeta):
         fit = self._fit
         # Do nothing if we cannot reach cache handler
         try:
-            getter = fit.source.cache_handler.get_type
+            getter = fit.solar_system.source.cache_handler.get_type
         except AttributeError:
             return
         # Do nothing if cache handler doesn't have item type we need
