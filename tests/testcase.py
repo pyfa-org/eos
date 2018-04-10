@@ -152,7 +152,7 @@ class EosTestCase(TestCase):
             # Do nothing if we have no idea what to do with object attributes
             else:
                 return entry_count
-        obj_classname = type(obj).__name__
+        obj_classname = type(obj).__qualname__
         for attr_name, attr_val in obj_vars:
             # Skip internal python attributes
             if (

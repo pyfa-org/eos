@@ -20,4 +20,6 @@
 
 
 class SolarSystem:
-    pass
+
+    def __init__(self):
+        self.fits = set()

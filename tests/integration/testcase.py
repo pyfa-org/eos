@@ -191,6 +191,7 @@ class IntegrationTestCase(EosTestCase):
             fit,
             ignore_objs=[fit],
             ignore_attrs=(
+                ('SolarSystem', 'fits'),
                 ('Fit', '_Fit__source'),
                 ('Fit', '_Fit__incoming_dmg_default'),
                 ('Fit', '_Fit__incoming_dmg_rah'),

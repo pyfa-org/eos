@@ -46,6 +46,7 @@ from eos.message import DefaultIncomingDmgChanged
 from eos.message import RahIncomingDmgChanged
 from eos.restriction import RestrictionService
 from eos.sim import ReactiveArmorHardenerSimulator
+from eos.solar_system import SolarSystem
 from eos.source import Source
 from eos.source import SourceManager
 from eos.stats import StatService
@@ -86,8 +87,9 @@ class Fit(MsgBroker):
 
     def __init__(self, source=DEFAULT):
         MsgBroker.__init__(self)
+        self.__solar_system = None
         self.__source = None
-        self.__incoming_dmg_default = DmgProfile(25, 25, 25, 25)
+        self.__incoming_dmg_default = None
         self.__incoming_dmg_rah = None
         # Character-related item containers
         self.skills = TypeUniqueItemSet(self, Skill)
@@ -108,10 +110,12 @@ class Fit(MsgBroker):
         self.stats = StatService(self)
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
-        # Initialize source
+        # Initialize defaults
+        self.solar_system = SolarSystem()
         if source is DEFAULT:
             source = SourceManager.default
         self.source = source
+        self.default_incoming_dmg = DmgProfile(25, 25, 25, 25)
         # As character object shouldn't change in any sane cases, initialize it
         # here. It has to be assigned after fit starts to track list of items
         # to make sure it's part of it
@@ -135,6 +139,29 @@ class Fit(MsgBroker):
                 restriction service docs for format of the data.
         """
         self._restriction.validate(skip_checks)
+
+    @property
+    def solar_system(self):
+        """Solar system this fit is placed into.
+
+        Raises:
+            TypeError: If non-solar system object is being assigned.
+        """
+        return self.__solar_system
+
+    @solar_system.setter
+    def solar_system(self, new_solar_system):
+        old_solar_system = self.__solar_system
+        if old_solar_system is new_solar_system:
+            return
+        if not isinstance(new_solar_system, SolarSystem):
+            msg = 'expected {} instance, received {} instead'.format(
+                SolarSystem.__qualname__, type(new_solar_system).__qualname__)
+            raise TypeError(msg)
+        if old_solar_system is not None:
+            old_solar_system.fits.remove(self)
+        self.__solar_system = new_solar_system
+        new_solar_system.fits.add(self)
 
     @property
     def source(self):
