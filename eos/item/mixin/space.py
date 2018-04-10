@@ -19,29 +19,30 @@
 # ==============================================================================
 
 
-from eos.const.eos import State
-from eos.util.repr import make_repr_str
-from .mixin.space import SpaceItemMixin
-from .mixin.state import ImmutableStateMixin
-from .mixin.tanking import BufferTankingMixin
+class SpaceItemMixin:
+    """Defines properties of in-space items.
 
-
-class Ship(ImmutableStateMixin, BufferTankingMixin, SpaceItemMixin):
-    """Represents a ship.
-
-    Args:
-        type_id: Identifier of item type which should serve as base for this
-            ship.
+    Cooperative methods:
+        __init__
     """
 
-    def __init__(self, type_id):
-        super().__init__(type_id=type_id, state=State.offline)
+    def __init__(self, **kwargs):
+        self.__coordinate = None
+        self.__direction = None
+        super().__init__(**kwargs)
 
-    # Attribute calculation-related properties
-    _modifier_domain = None
-    _owner_modifiable = False
+    @property
+    def coordinate(self):
+        return self.__coordinate
 
-    # Auxiliary methods
-    def __repr__(self):
-        spec = [['type_id', '_type_id']]
-        return make_repr_str(self, spec)
+    @coordinate.setter
+    def coordinate(self, new_coordinate):
+        self.__coordinate = new_coordinate
+
+    @property
+    def direction(self):
+        return self.__direction
+
+    @direction.setter
+    def direction(self, new_direction):
+        self.__direction = new_direction
