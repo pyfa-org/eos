@@ -105,7 +105,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.boosters.add(booster)
         self.assertAlmostEqual(booster.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(booster.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -117,7 +117,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.character = character
         self.assertAlmostEqual(character.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(character.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -131,7 +131,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.modules.high.append(module)
         self.assertAlmostEqual(charge.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(charge.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -143,7 +143,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.drones.add(drone)
         self.assertAlmostEqual(drone.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(drone.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -155,7 +155,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.effect_beacon = effect_beacon
         self.assertAlmostEqual(effect_beacon.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(effect_beacon.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -167,7 +167,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.fighters.add(fighter_squad)
         self.assertAlmostEqual(fighter_squad.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(fighter_squad.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -179,7 +179,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.implants.add(implant)
         self.assertAlmostEqual(implant.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(implant.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -191,7 +191,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.modules.high.append(module)
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -203,7 +203,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.modules.mid.append(module)
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -215,7 +215,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.modules.low.append(module)
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -227,7 +227,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.rigs.add(rig)
         self.assertAlmostEqual(rig.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(rig.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -239,7 +239,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.ship = ship
         self.assertAlmostEqual(ship.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(ship.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -251,7 +251,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.skills.add(skill)
         self.assertAlmostEqual(skill.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(skill.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -263,7 +263,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.stance = stance
         self.assertAlmostEqual(stance.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(stance.attrs[self.tgt_attr_id], 14)
         # Cleanup
@@ -275,7 +275,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         self.fit.subsystems.add(subsystem)
         self.assertAlmostEqual(subsystem.attrs[self.tgt_attr_id], 18)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(subsystem.attrs[self.tgt_attr_id], 14)
         # Cleanup

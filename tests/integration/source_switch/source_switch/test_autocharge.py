@@ -116,7 +116,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 10)
         # Cleanup
@@ -186,7 +186,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 10)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
         # Cleanup
@@ -256,7 +256,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 210)
         # Cleanup
@@ -337,7 +337,7 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.fit.modules.high.append(container)
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
         # Action
-        self.fit.source = 'src2'
+        self.fit.solar_system.source = 'src2'
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 20)
         # Cleanup

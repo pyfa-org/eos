@@ -90,7 +90,7 @@ class TestSourceSwitchSideEffect(SourceSwitchTestCase):
         item.set_side_effect_status(effect2_id, True)
         item.set_side_effect_status(effect3_id, True)
         # Action
-        fit.source = 'src2'
+        fit.solar_system.source = 'src2'
         # Verification
         side_effects = item.side_effects
         self.assertEqual(len(side_effects), 1)
@@ -99,7 +99,7 @@ class TestSourceSwitchSideEffect(SourceSwitchTestCase):
         self.assertAlmostEqual(side_effect1.chance, 0.7)
         self.assertIs(side_effect1.status, True)
         # Action
-        fit.source = 'src1'
+        fit.solar_system.source = 'src1'
         # Verification
         side_effects = item.side_effects
         self.assertEqual(len(side_effects), 3)

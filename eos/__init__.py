@@ -30,6 +30,7 @@ __all__ = [
     'NoSuchAbilityError', 'NoSuchSideEffectError',
     'SlotTakenError',
     'ValidationError',
+    'SolarSystem',
     'SourceManager',
     'Coordinates', 'DmgProfile', 'Orientation', 'ResistProfile'
 ]
@@ -63,6 +64,7 @@ from eos.item.exception import NoSuchAbilityError
 from eos.item.exception import NoSuchSideEffectError
 from eos.item_container import SlotTakenError
 from eos.restriction import ValidationError
+from eos.solar_system import SolarSystem
 from eos.source import SourceManager
 from eos.stats_container import Coordinates
 from eos.stats_container import DmgProfile

@@ -90,7 +90,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 2)
 
     def test_getattr_not_loaded(self):
-        self.fit.source = None
+        self.fit.solar_system.source = None
         with self.assertRaises(KeyError):
             self.item.attrs[self.attr1.id]
         with self.assertRaises(KeyError):
@@ -124,7 +124,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 3)
 
     def test_get_not_loaded(self):
-        self.fit.source = None
+        self.fit.solar_system.source = None
         self.assertIsNone(self.item.attrs.get(self.attr1.id))
         self.assertIsNone(self.item.attrs.get(self.attr2.id))
         self.assertIsNone(self.item.attrs.get(self.attr3.id))
@@ -150,7 +150,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 2)
 
     def test_len_not_loaded(self):
-        self.fit.source = None
+        self.fit.solar_system.source = None
         self.assertEqual(len(self.item.attrs), 0)
         self.calculate_attrs(special=[1008])
         self.assertEqual(len(self.item.attrs), 0)
@@ -180,7 +180,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 2)
 
     def test_contains_not_loaded(self):
-        self.fit.source = None
+        self.fit.solar_system.source = None
         self.assertFalse(self.attr1.id in self.item.attrs)
         self.assertFalse(self.attr2.id in self.item.attrs)
         self.assertFalse(self.attr3.id in self.item.attrs)
@@ -214,7 +214,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 2)
 
     def test_keys_not_loaded(self):
-        self.fit.source = None
+        self.fit.solar_system.source = None
         self.assertCountEqual(self.item.attrs.keys(), ())
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(self.item.attrs.keys(), ())
@@ -239,7 +239,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 2)
 
     def test_items_not_loaded(self):
-        self.fit.source = None
+        self.fit.solar_system.source = None
         self.assertCountEqual(self.item.attrs.items(), ())
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(self.item.attrs.items(), ())
@@ -264,7 +264,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.get_log()), 2)
 
     def test_iter_not_loaded(self):
-        self.fit.source = None
+        self.fit.solar_system.source = None
         self.assertCountEqual(self.item.attrs, ())
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(self.item.attrs, ())

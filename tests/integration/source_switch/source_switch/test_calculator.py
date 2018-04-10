@@ -22,6 +22,7 @@
 from eos import Fit
 from eos import Rig
 from eos import Ship
+from eos import SolarSystem
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
@@ -75,9 +76,9 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         self.mktype(src='src1', type_id=item_type_id, attrs={tgt_attr_id: 50})
         self.mktype(src='src2', type_id=item_type_id, attrs={tgt_attr_id: 50})
         item = Rig(item_type_id)
-        fit1 = Fit('src1')
+        fit1 = Fit(SolarSystem('src1'))
         fit1.ship = ship1
-        fit2 = Fit('src2')
+        fit2 = Fit(SolarSystem('src2'))
         fit2.ship = ship2
         fit1.rigs.add(item)
         self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 55)
@@ -143,7 +144,7 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         # 50 * 1.1, but capped at 54.5
         self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 54.5)
         # Action
-        fit.source = 'src2'
+        fit.solar_system.source = 'src2'
         # Verification
         # 75 * 1.2, but capped at 88
         self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 88)

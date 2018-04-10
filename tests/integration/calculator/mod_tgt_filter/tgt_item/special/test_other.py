@@ -80,11 +80,11 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         charge = Charge(self.mktype(
             attrs={src_attr.id: 40, tgt_attr.id: 50},
             effects=[effect_charge]).id)
-        self.fit.source = None
+        self.fit.solar_system.source = None
         self.fit.modules.high.append(container)
         container.charge = charge
         # Action
-        self.fit.source = 'src1'
+        self.fit.solar_system.source = 'src1'
         # Verification
         self.assertAlmostEqual(container.attrs[tgt_attr.id], 140)
         self.assertAlmostEqual(charge.attrs[tgt_attr.id], 60)
@@ -114,7 +114,7 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         self.assertAlmostEqual(container.attrs[tgt_attr.id], 140)
         self.assertAlmostEqual(charge.attrs[tgt_attr.id], 60)
         # Action
-        self.fit.source = None
+        self.fit.solar_system.source = None
         # Cleanup
         self.assert_fit_buffers_empty(self.fit)
         self.assertEqual(len(self.get_log()), 0)
