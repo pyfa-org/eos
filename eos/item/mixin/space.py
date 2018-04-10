@@ -19,6 +19,10 @@
 # ==============================================================================
 
 
+from eos.stats_container import Coordinates
+from eos.stats_container import Orientation
+
+
 class SpaceItemMixin:
     """Defines properties of in-space items.
 
@@ -27,8 +31,8 @@ class SpaceItemMixin:
     """
 
     def __init__(self, **kwargs):
-        self.__coordinate = None
-        self.__direction = None
+        self.__coordinate = Coordinates(0, 0, 0)
+        self.__orientation = Orientation(1, 0, 0)
         super().__init__(**kwargs)
 
     @property
@@ -40,9 +44,9 @@ class SpaceItemMixin:
         self.__coordinate = new_coordinate
 
     @property
-    def direction(self):
-        return self.__direction
+    def orientation(self):
+        return self.__orientation
 
-    @direction.setter
-    def direction(self, new_direction):
-        self.__direction = new_direction
+    @orientation.setter
+    def orientation(self, new_orientation):
+        self.__orientation = new_orientation

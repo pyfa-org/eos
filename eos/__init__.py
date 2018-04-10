@@ -31,7 +31,7 @@ __all__ = [
     'SlotTakenError',
     'ValidationError',
     'SourceManager',
-    'DmgProfile', 'ResistProfile'
+    'Coordinates', 'DmgProfile', 'Orientation', 'ResistProfile'
 ]
 __version__ = '0.0.0.dev10'
 
@@ -64,5 +64,7 @@ from eos.item.exception import NoSuchSideEffectError
 from eos.item_container import SlotTakenError
 from eos.restriction import ValidationError
 from eos.source import SourceManager
+from eos.stats_container import Coordinates
 from eos.stats_container import DmgProfile
+from eos.stats_container import Orientation
 from eos.stats_container import ResistProfile

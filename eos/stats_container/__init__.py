@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from .coordinates import Coordinates
+from .coordinates import Orientation
 from .dmg_types import DmgProfile
 from .dmg_types import DmgStats
 from .dmg_types import ResistProfile
