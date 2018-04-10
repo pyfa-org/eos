@@ -21,6 +21,7 @@
 
 from math import sqrt
 
+from eos.const.eve import AttrId
 from eos.source import Source
 from eos.source import SourceManager
 from eos.util.default import DEFAULT
@@ -71,7 +72,7 @@ class SolarSystem:
                 fit._load_items()
 
     def get_ctc_range(self, item1, item2):
-        """Return center-to-center range between two items."""
+        """Calculate center-to-center range between two items."""
         try:
             item1_ss = item1._fit.solar_system
         except AttributeError:
@@ -81,13 +82,20 @@ class SolarSystem:
         except AttributeError:
             item2_ss = None
         if item1_ss is not self or item2_ss is not self:
-            msg = 'one of passed items doesn\'t belong to this solar system'
+            msg = 'both passed items must belong to this solar system'
             raise ItemSolarSystemMismatchError(msg)
         ctc_range = sqrt(
             (item1.x - item2.x) ** 2 +
             (item1.y - item2.y) ** 2 +
             (item1.z - item2.z) ** 2)
         return ctc_range
+
+    def get_sts_range(self, item1, item2):
+        """Calculate surface-to-surface range between two items."""
+        ctc_range = self.get_ctc_range(item1, item2)
+        item1_radius = item1._type_attrs.get(AttrId.radius, 0)
+        item2_radius = item2._type_attrs.get(AttrId.radius, 0)
+        return max(0, ctc_range - item1_radius - item2_radius)
 
     def __repr__(self):
         spec = ['source', 'fits']
