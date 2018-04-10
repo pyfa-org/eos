@@ -21,12 +21,12 @@
 
 from eos.const.eos import State
 from eos.util.repr import make_repr_str
-from .mixin.space import SpaceItemMixin
+from .mixin.solar_system import SolarSystemItemMixin
 from .mixin.state import ImmutableStateMixin
 from .mixin.tanking import BufferTankingMixin
 
 
-class Ship(ImmutableStateMixin, BufferTankingMixin, SpaceItemMixin):
+class Ship(ImmutableStateMixin, BufferTankingMixin, SolarSystemItemMixin):
     """Represents a ship.
 
     Args:

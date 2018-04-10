@@ -23,7 +23,7 @@ from eos.stats_container import Coordinates
 from eos.stats_container import Orientation
 
 
-class SpaceItemMixin:
+class SolarSystemItemMixin:
     """Defines properties of in-space items.
 
     Cooperative methods:

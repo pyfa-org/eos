@@ -27,7 +27,7 @@ from eos.effect_status import EffectStatusResolver
 from eos.util.repr import make_repr_str
 from .exception import NoSuchAbilityError
 from .mixin.effect_stats import EffectStatsMixin
-from .mixin.space import SpaceItemMixin
+from .mixin.solar_system import SolarSystemItemMixin
 from .mixin.state import MutableStateMixin
 from .mixin.tanking import BufferTankingMixin
 
@@ -37,7 +37,7 @@ ABILITY_EFFECT_STATE = State.active
 
 class FighterSquad(
         MutableStateMixin, BufferTankingMixin,
-        EffectStatsMixin, SpaceItemMixin):
+        EffectStatsMixin, SolarSystemItemMixin):
     """Represents a fighter squad.
 
     Unlike drones, fighter squad is single entity.
