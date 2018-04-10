@@ -22,6 +22,7 @@
 from eos.source import Source
 from eos.source import SourceManager
 from eos.util.default import DEFAULT
+from eos.util.repr import make_repr_str
 
 
 class SolarSystem:
@@ -58,10 +59,14 @@ class SolarSystem:
         old_source = self.source
         if new_source is old_source:
             return
-        for fit in self.fits:
-            for item in fit._item_iter(skip_autoitems=True):
-                item._unload()
+        if old_source is not None:
+            for fit in self.fits:
+                fit._unload_items()
         self.__source = new_source
-        for fit in self.fits:
-            for item in fit._item_iter(skip_autoitems=True):
-                item._load()
+        if new_source is not None:
+            for fit in self.fits:
+                fit._load_items()
+
+    def __repr__(self):
+        spec = ['source', 'fits']
+        return make_repr_str(self, spec)

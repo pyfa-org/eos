@@ -149,14 +149,15 @@ class Fit(MsgBroker):
         old_solar_system = self.__solar_system
         if old_solar_system is new_solar_system:
             return
-        if not isinstance(new_solar_system, SolarSystem):
-            msg = 'expected {} instance, received {} instead'.format(
-                SolarSystem.__qualname__, type(new_solar_system).__qualname__)
-            raise TypeError(msg)
         if old_solar_system is not None:
             old_solar_system.fits.remove(self)
+            if old_solar_system.source is not None:
+                self._unload_items()
         self.__solar_system = new_solar_system
-        new_solar_system.fits.add(self)
+        if new_solar_system is not None:
+            new_solar_system.fits.add(self)
+            if new_solar_system.source is not None:
+                self._load_items()
 
     @property
     def default_incoming_dmg(self):
@@ -205,6 +206,14 @@ class Fit(MsgBroker):
         if new_profile != old_profile:
             self._publish(RahIncomingDmgChanged())
 
+    def _unload_items(self):
+        for item in self._item_iter(skip_autoitems=True):
+            item._unload()
+
+    def _load_items(self):
+        for item in self._item_iter(skip_autoitems=True):
+            item._load()
+
     # Auxiliary methods
     @property
     def _fit(self):
@@ -241,5 +250,5 @@ class Fit(MsgBroker):
         spec = [
             'ship', 'stance', 'subsystems', 'modules', 'rigs', 'drones',
             'fighters', 'character', 'skills', 'implants', 'boosters',
-            'effect_beacon', 'default_incoming_dmg', 'source']
+            'effect_beacon', 'default_incoming_dmg']
         return make_repr_str(self, spec)
