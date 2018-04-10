@@ -19,10 +19,13 @@
 # ==============================================================================
 
 
+from math import sqrt
+
 from eos.source import Source
 from eos.source import SourceManager
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
+from .exception import ItemSolarSystemMismatchError
 
 
 class SolarSystem:
@@ -66,6 +69,25 @@ class SolarSystem:
         if new_source is not None:
             for fit in self.fits:
                 fit._load_items()
+
+    def get_ctc_range(self, item1, item2):
+        """Return center-to-center range between two items."""
+        try:
+            item1_ss = item1._fit.solar_system
+        except AttributeError:
+            item1_ss = None
+        try:
+            item2_ss = item2._fit.solar_system
+        except AttributeError:
+            item2_ss = None
+        if item1_ss is not self or item2_ss is not self:
+            msg = 'one of passed items doesn\'t belong to this solar system'
+            raise ItemSolarSystemMismatchError(msg)
+        ctc_range = sqrt(
+            (item1.x - item2.x) ** 2 +
+            (item1.y - item2.y) ** 2 +
+            (item1.z - item2.z) ** 2)
+        return ctc_range
 
     def __repr__(self):
         spec = ['source', 'fits']
