@@ -25,42 +25,46 @@ from eos.util.repr import make_repr_str
 class ItemAdded:
 
     def __init__(self, item):
+        self.fit = None
         self.item = item
 
     def __repr__(self):
-        spec = ['item']
+        spec = ['fit', 'item']
         return make_repr_str(self, spec)
 
 
 class ItemRemoved:
 
     def __init__(self, item):
+        self.fit = None
         self.item = item
 
     def __repr__(self):
-        spec = ['item']
+        spec = ['fit', 'item']
         return make_repr_str(self, spec)
 
 
 class StatesActivated:
 
     def __init__(self, item, states):
+        self.fit = None
         self.item = item
         # Format: {states}
         self.states = states
 
     def __repr__(self):
-        spec = ['item', 'states']
+        spec = ['fit', 'item', 'states']
         return make_repr_str(self, spec)
 
 
 class StatesDeactivated:
 
     def __init__(self, item, states):
+        self.fit = None
         self.item = item
         # Format: {states}
         self.states = states
 
     def __repr__(self):
-        spec = ['item', 'states']
+        spec = ['fit', 'item', 'states']
         return make_repr_str(self, spec)

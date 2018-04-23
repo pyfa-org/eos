@@ -37,9 +37,9 @@ from .register import AffectionRegister
 class CalculationService(BaseSubscriber):
     """Service which supports attribute calculation.
 
-    This class collects data about fit items and relations between them, and via
-    exposed methods which provice data about these connections helps attribute
-    map to calculate modified attribute values.
+    This class collects data about various items and relations between them, and
+    via exposed methods which provice data about these connections helps
+    attribute map to calculate modified attribute values.
     """
 
     def __init__(self, fit):

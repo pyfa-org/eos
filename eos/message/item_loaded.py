@@ -25,66 +25,72 @@ from eos.util.repr import make_repr_str
 class ItemLoaded:
 
     def __init__(self, item):
+        self.fit = fit
         self.item = item
 
     def __repr__(self):
-        spec = ['item']
+        spec = ['fit', 'item']
         return make_repr_str(self, spec)
 
 
 class ItemUnloaded:
 
     def __init__(self, item):
+        self.fit = None
         self.item = item
 
     def __repr__(self):
-        spec = ['item']
+        spec = ['fit', 'item']
         return make_repr_str(self, spec)
 
 
 class StatesActivatedLoaded:
 
     def __init__(self, item, states):
+        self.fit = None
         self.item = item
         # Format: {states}
         self.states = states
 
     def __repr__(self):
-        spec = ['item', 'states']
+        spec = ['fit', 'item', 'states']
         return make_repr_str(self, spec)
 
 
 class StatesDeactivatedLoaded:
 
     def __init__(self, item, states):
+        self.fit = None
         self.item = item
         # Format: {states}
         self.states = states
 
     def __repr__(self):
-        spec = ['item', 'states']
+        spec = ['fit', 'item', 'states']
         return make_repr_str(self, spec)
 
 
 class EffectsStarted:
 
     def __init__(self, item, effect_ids):
+        self.fit = None
         self.item = item
         # Format: {effect IDs}
         self.effect_ids = effect_ids
 
     def __repr__(self):
-        spec = ['item', 'effect_ids']
+        spec = ['fit', 'item', 'effect_ids']
         return make_repr_str(self, spec)
 
 
 class EffectsStopped:
 
     def __init__(self, item, effect_ids):
+        self.fit = None
         self.item = item
         # Format: {effect IDs}
         self.effect_ids = effect_ids
 
     def __repr__(self):
-        spec = ['item', 'effect_ids']
+        spec = ['fit', 'item', 'effect_ids']
         return make_repr_str(self, spec)

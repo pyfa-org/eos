@@ -24,11 +24,19 @@ from eos.util.repr import make_repr_str
 
 class DefaultIncomingDmgChanged:
 
+    def __init__(self):
+        self.fit = None
+
     def __repr__(self):
-        return make_repr_str(self)
+        spec = ['fit']
+        return make_repr_str(self, spec)
 
 
 class RahIncomingDmgChanged:
 
+    def __init__(self):
+        self.fit = None
+
     def __repr__(self):
-        return make_repr_str(self)
+        spec = ['fit']
+        return make_repr_str(self, spec)

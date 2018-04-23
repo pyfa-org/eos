@@ -21,7 +21,6 @@
 
 from itertools import chain
 
-from eos.calculator import CalculationService
 from eos.const.eve import TypeId
 from eos.item import Booster
 from eos.item import Character
@@ -101,7 +100,6 @@ class Fit(MsgBroker):
         self.drones = ItemSet(self, Drone)
         self.fighters = ItemSet(self, FighterSquad)
         # Initialize services
-        self._calculator = CalculationService(self)
         self._restriction = RestrictionService(self)
         self.stats = StatService(self)
         # Initialize simulators

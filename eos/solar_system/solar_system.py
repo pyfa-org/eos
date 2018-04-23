@@ -21,6 +21,7 @@
 
 from math import sqrt
 
+from eos.calculator import CalculationService
 from eos.const.eve import AttrId
 from eos.source import Source
 from eos.source import SourceManager
@@ -41,6 +42,7 @@ class SolarSystem:
     def __init__(self, source=DEFAULT):
         self.__source = None
         self.fits = set()
+        self._calculator = CalculationService(self)
         # Initialize defaults
         if source is DEFAULT:
             source = SourceManager.default
