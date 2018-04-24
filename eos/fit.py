@@ -41,18 +41,18 @@ from eos.item_container import ItemList
 from eos.item_container import ItemSet
 from eos.item_container import ModuleRacks
 from eos.item_container import TypeUniqueItemSet
-from eos.message import DefaultIncomingDmgChanged
-from eos.message import RahIncomingDmgChanged
+from eos.pubsub.broker import FitMsgBroker
+from eos.pubsub.message import DefaultIncomingDmgChanged
+from eos.pubsub.message import RahIncomingDmgChanged
 from eos.restriction import RestrictionService
 from eos.sim import ReactiveArmorHardenerSimulator
 from eos.solar_system import SolarSystem
 from eos.stats import StatService
 from eos.stats_container import DmgProfile
-from eos.util.pubsub.broker import MsgBroker
 from eos.util.repr import make_repr_str
 
 
-class Fit(MsgBroker):
+class Fit(FitMsgBroker):
     """Definition of fit.
 
     Fit is one of eos' central objects - it holds all fit items and facilities
@@ -82,8 +82,7 @@ class Fit(MsgBroker):
     """
 
     def __init__(self, solar_system=None):
-        MsgBroker.__init__(self)
-        self.__solar_system = None
+        FitMsgBroker.__init__(self)
         self.__incoming_dmg_default = None
         self.__incoming_dmg_rah = None
         # Character-related item containers
@@ -105,14 +104,16 @@ class Fit(MsgBroker):
         # Initialize simulators
         self.__rah_sim = ReactiveArmorHardenerSimulator(self)
         # Initialize defaults
-        if solar_system is None:
-            solar_system = SolarSystem()
-        self.solar_system = solar_system
         self.default_incoming_dmg = DmgProfile(25, 25, 25, 25)
         # As character object shouldn't change in any sane cases, initialize it
         # here. It has to be assigned after fit starts to track list of items
         # to make sure it's part of it
         self.character = Character(TypeId.character_static)
+        # Add fit to solar system
+        if solar_system is None:
+            solar_system = SolarSystem()
+        solar_system.fits.add(self)
+        self.solar_system = solar_system
 
     character = ItemDescriptor('__character', Character)
     ship = ItemDescriptor('__ship', Ship)
@@ -132,30 +133,6 @@ class Fit(MsgBroker):
                 restriction service docs for format of the data.
         """
         self._restriction.validate(skip_checks)
-
-    @property
-    def solar_system(self):
-        """Solar system this fit is placed into.
-
-        Raises:
-            TypeError: If non-solar system object is being assigned.
-        """
-        return self.__solar_system
-
-    @solar_system.setter
-    def solar_system(self, new_solar_system):
-        old_solar_system = self.__solar_system
-        if old_solar_system is new_solar_system:
-            return
-        if old_solar_system is not None:
-            old_solar_system.fits.remove(self)
-            if old_solar_system.source is not None:
-                self._unload_items()
-        self.__solar_system = new_solar_system
-        if new_solar_system is not None:
-            new_solar_system.fits.add(self)
-            if new_solar_system.source is not None:
-                self._load_items()
 
     @property
     def default_incoming_dmg(self):

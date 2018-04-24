@@ -27,7 +27,7 @@ from eos.cache_handler import TypeFetchError
 from eos.calculator import MutableAttrMap
 from eos.const.eos import EffectMode
 from eos.item_container import ItemDict
-from eos.message.helper import MsgHelper
+from eos.pubsub.message.helper import MsgHelper
 
 
 DEFAULT_EFFECT_MODE = EffectMode.full_compliance

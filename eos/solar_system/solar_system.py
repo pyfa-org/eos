@@ -28,6 +28,7 @@ from eos.source import SourceManager
 from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 from .exception import ItemSolarSystemMismatchError
+from .fit_set import FitSet
 
 
 class SolarSystem:
@@ -41,8 +42,8 @@ class SolarSystem:
 
     def __init__(self, source=DEFAULT):
         self.__source = None
-        self.fits = set()
         self._calculator = CalculationService(self)
+        self.fits = FitSet(self)
         # Initialize defaults
         if source is DEFAULT:
             source = SourceManager.default

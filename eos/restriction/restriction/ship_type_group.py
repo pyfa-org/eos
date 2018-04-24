@@ -26,8 +26,8 @@ from eos.const.eve import AttrId
 from eos.item import ModuleHigh
 from eos.item import ModuleLow
 from eos.item import ModuleMid
-from eos.message import ItemLoaded
-from eos.message import ItemUnloaded
+from eos.pubsub.message import ItemLoaded
+from eos.pubsub.message import ItemUnloaded
 from eos.restriction.exception import RestrictionValidationError
 from .base import BaseRestrictionRegister
 

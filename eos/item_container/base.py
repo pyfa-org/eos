@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.message.helper import MsgHelper
+from eos.pubsub.message.helper import MsgHelper
 from .exception import ItemAlreadyAssignedError
 
 

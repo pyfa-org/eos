@@ -26,9 +26,9 @@ from eos.const.eve import AttrId
 from eos.const.eve import TypeId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import ModificationCalculationError
-from eos.message import AttrValueChanged
-from eos.message import ItemAdded
-from eos.message import ItemRemoved
+from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import ItemAdded
+from eos.pubsub.message import ItemRemoved
 
 
 class AncillaryRepAmountModifier(BasePythonModifier):

@@ -22,8 +22,8 @@
 from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.item import Drone
-from eos.message import StatesActivated
-from eos.message import StatesDeactivated
+from eos.pubsub.message import StatesActivated
+from eos.pubsub.message import StatesDeactivated
 from .base import BaseSlotRegister
 
 

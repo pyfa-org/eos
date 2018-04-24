@@ -25,7 +25,7 @@ from eos.util.repr import make_repr_str
 class ItemLoaded:
 
     def __init__(self, item):
-        self.fit = fit
+        self.fit = None
         self.item = item
 
     def __repr__(self):

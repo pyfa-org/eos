@@ -27,7 +27,7 @@ from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import ModificationCalculationError
-from eos.message import AttrValueChanged
+from eos.pubsub.message import AttrValueChanged
 
 
 logger = getLogger(__name__)

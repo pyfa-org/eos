@@ -29,10 +29,10 @@ from eos.const.eve import AttrId
 from eos.item import ModuleHigh
 from eos.item import ModuleLow
 from eos.item import ModuleMid
-from eos.message import ItemLoaded
-from eos.message import ItemUnloaded
-from eos.message import StatesActivatedLoaded
-from eos.message import StatesDeactivatedLoaded
+from eos.pubsub.message import ItemLoaded
+from eos.pubsub.message import ItemUnloaded
+from eos.pubsub.message import StatesActivatedLoaded
+from eos.pubsub.message import StatesDeactivatedLoaded
 from eos.restriction.exception import RestrictionValidationError
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister

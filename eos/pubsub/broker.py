@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-class MsgBroker:
+class FitMsgBroker:
     """Manages message subscriptions and dispatch messages to recipients."""
 
     def __init__(self):
@@ -47,11 +47,13 @@ class MsgBroker:
 
     def _publish(self, msg):
         """Publish single message."""
+        msg.fit = self
         for subscriber in self.__subscribers.get(type(msg), ()):
             subscriber._notify(msg)
 
     def _publish_bulk(self, msgs):
         """Publish multiple messages."""
         for msg in msgs:
+            msg.fit = self
             for subscriber in self.__subscribers.get(type(msg), ()):
                 subscriber._notify(msg)

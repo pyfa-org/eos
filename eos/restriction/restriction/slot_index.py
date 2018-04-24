@@ -25,8 +25,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
-from eos.message import ItemLoaded
-from eos.message import ItemUnloaded
+from eos.pubsub.message import ItemLoaded
+from eos.pubsub.message import ItemUnloaded
 from eos.restriction.exception import RestrictionValidationError
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseRestrictionRegister

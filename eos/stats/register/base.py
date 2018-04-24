@@ -19,7 +19,7 @@
 # ==============================================================================
 
 
-from eos.util.pubsub.subscriber import BaseSubscriber
+from eos.pubsub.subscriber import BaseSubscriber
 
 
 class BaseStatRegister(BaseSubscriber):

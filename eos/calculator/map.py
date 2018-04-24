@@ -28,8 +28,8 @@ from eos.cache_handler import AttrFetchError
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
 from eos.const.eve import TypeCategoryId
-from eos.message import AttrValueChanged
-from eos.message import AttrValueChangedMasked
+from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import AttrValueChangedMasked
 from eos.util.keyed_storage import KeyedStorage
 from .exception import AttrMetadataError
 from .exception import BaseValueError

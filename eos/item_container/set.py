@@ -46,7 +46,7 @@ class ItemSet(ItemContainerBase):
         """Add item to the container.
 
         Args:
-            item: item to add.
+            item: Item to add.
 
         Raises:
             TypeError: If item of unacceptable class is passed.

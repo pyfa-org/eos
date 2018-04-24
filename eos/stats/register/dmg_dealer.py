@@ -20,8 +20,8 @@
 
 
 from eos.eve_obj.effect.dmg_dealer.base import DmgDealerEffect
-from eos.message import EffectsStarted
-from eos.message import EffectsStopped
+from eos.pubsub.message import EffectsStarted
+from eos.pubsub.message import EffectsStopped
 from eos.stats_container import DmgStats
 from eos.util.keyed_storage import KeyedStorage
 from .base import BaseStatRegister

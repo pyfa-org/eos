@@ -24,8 +24,8 @@ from collections import namedtuple
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.message import EffectsStarted
-from eos.message import EffectsStopped
+from eos.pubsub.message import EffectsStarted
+from eos.pubsub.message import EffectsStopped
 from eos.restriction.exception import RestrictionValidationError
 from .base import BaseRestrictionRegister
 

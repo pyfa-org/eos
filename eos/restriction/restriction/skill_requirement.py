@@ -23,8 +23,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.item import Rig
-from eos.message import ItemLoaded
-from eos.message import ItemUnloaded
+from eos.pubsub.message import ItemLoaded
+from eos.pubsub.message import ItemUnloaded
 from eos.restriction.exception import RestrictionValidationError
 from .base import BaseRestrictionRegister
 

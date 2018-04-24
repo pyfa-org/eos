@@ -218,7 +218,7 @@ class ItemList(ItemContainerBase):
         """Get index of value.
 
         Args:
-            value: item or None. In case of None, searches for first seen None.
+            value: Item or None. In case of None, searches for first seen None.
         """
         return self.__list.index(value)
 

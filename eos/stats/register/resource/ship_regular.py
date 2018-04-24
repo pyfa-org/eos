@@ -24,8 +24,8 @@ from abc import abstractmethod
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.message import EffectsStarted
-from eos.message import EffectsStopped
+from eos.pubsub.message import EffectsStarted
+from eos.pubsub.message import EffectsStopped
 from .base import BaseResourceRegister
 
 

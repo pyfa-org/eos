@@ -23,13 +23,13 @@ from eos.const.eos import ModDomain
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj.modifier import ModificationCalculationError
-from eos.message import AttrValueChanged
-from eos.message import EffectsStarted
-from eos.message import EffectsStopped
-from eos.message import ItemLoaded
-from eos.message import ItemUnloaded
+from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import EffectsStarted
+from eos.pubsub.message import EffectsStopped
+from eos.pubsub.message import ItemLoaded
+from eos.pubsub.message import ItemUnloaded
+from eos.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_storage import KeyedStorage
-from eos.util.pubsub.subscriber import BaseSubscriber
 from .affector import Affector
 from .register import AffectionRegister
 

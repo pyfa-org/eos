@@ -25,12 +25,12 @@ from logging import getLogger
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.message import AttrValueChanged
-from eos.message import AttrValueChangedMasked
-from eos.message import EffectsStarted
-from eos.message import EffectsStopped
-from eos.message import RahIncomingDmgChanged
-from eos.util.pubsub.subscriber import BaseSubscriber
+from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import AttrValueChangedMasked
+from eos.pubsub.message import EffectsStarted
+from eos.pubsub.message import EffectsStopped
+from eos.pubsub.message import RahIncomingDmgChanged
+from eos.pubsub.subscriber import BaseSubscriber
 from eos.util.repr import make_repr_str
 from eos.util.round import sig_round
 

@@ -25,8 +25,8 @@ from eos.const.eos import Restriction
 from eos.const.eos import State
 from eos.item import Autocharge
 from eos.item import Charge
-from eos.message import StatesActivatedLoaded
-from eos.message import StatesDeactivatedLoaded
+from eos.pubsub.message import StatesActivatedLoaded
+from eos.pubsub.message import StatesDeactivatedLoaded
 from eos.restriction.exception import RestrictionValidationError
 from .base import BaseRestrictionRegister
 

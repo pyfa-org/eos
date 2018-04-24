@@ -25,7 +25,7 @@ from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import EffectCategoryId
 from eos.eve_obj.modifier import BasePythonModifier
-from eos.message import AttrValueChanged
+from eos.pubsub.message import AttrValueChanged
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 

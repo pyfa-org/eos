@@ -24,8 +24,8 @@ from abc import abstractmethod
 
 from eos.const.eve import AttrId
 from eos.item import FighterSquad
-from eos.message import ItemLoaded
-from eos.message import ItemUnloaded
+from eos.pubsub.message import ItemLoaded
+from eos.pubsub.message import ItemUnloaded
 from .base import BaseSlotRegister
 
 
