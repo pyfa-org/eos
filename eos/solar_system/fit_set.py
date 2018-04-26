@@ -47,6 +47,7 @@ class FitSet:
             raise ValueError(fit)
         self.__set.add(fit)
         fit.solar_system = self.__solar_system
+        self.__solar_system._calculator._handle_fit_added(fit)
         fit._load_items()
 
     def remove(self, fit):
@@ -71,6 +72,7 @@ class FitSet:
 
     def __handle_fit_removal(self, fit):
         fit._unload_items()
+        self.__solar_system._calculator._handle_fit_removed(fit)
         self.__set.remove(fit)
         fit.solar_system = None
 

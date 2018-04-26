@@ -256,7 +256,9 @@ class MutableAttrMap:
         # Format: {operator: [values]}
         penalized_mods = {}
         # Now, go through all affectors affecting our item
-        for mod_data in item._fit._calculator.get_modifications(item, attr_id):
+        for mod_data in item._fit.solar_system._calculator.get_modifications(
+            item, attr_id
+        ):
             operator, mod_value, carrier_item = mod_data
             # Normalize operations to just three types: assignments, additions,
             # multiplications

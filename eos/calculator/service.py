@@ -42,13 +42,11 @@ class CalculationService(BaseSubscriber):
     attribute map to calculate modified attribute values.
     """
 
-    def __init__(self, fit):
-        self.__affections = AffectionRegister(fit)
+    def __init__(self):
+        self.__affections = AffectionRegister()
         # Container with affectors which will receive messages
         # Format: {message type: set(affectors)}
         self.__subscribed_affectors = KeyedStorage()
-        self.__fit = fit
-        fit._subscribe(self, self._handler_map.keys())
 
     def get_modifications(self, tgt_item, tgt_attr_id):
         """Get modifications of target attribute on target item.
@@ -65,7 +63,9 @@ class CalculationService(BaseSubscriber):
         # Use list because we can have multiple tuples with the same values
         # as valid configuration
         modifications = []
-        for affector in self.__affections.get_affectors(tgt_item):
+        for affector in self.__affections.get_affectors(
+            tgt_item._fit, tgt_item
+        ):
             modifier, carrier_item = affector
             if modifier.tgt_attr_id == tgt_attr_id:
                 try:
@@ -77,28 +77,36 @@ class CalculationService(BaseSubscriber):
                 modifications.append((mod_op, mod_value, carrier_item))
         return modifications
 
+    def _handle_fit_added(self, fit):
+        fit._subscribe(self, self._handler_map.keys())
+
+    def _handle_fit_removed(self, fit):
+        fit._unsubscribe(self, self._handler_map.keys())
+
     # Handle item changes which are significant for calculator
     def _handle_item_loaded(self, msg):
-        self.__affections.register_affectee(msg.item)
+        self.__affections.register_affectee(msg.fit, msg.item)
 
     def _handle_item_unloaded(self, msg):
-        self.__affections.unregister_affectee(msg.item)
+        self.__affections.unregister_affectee(msg.fit, msg.item)
 
     def _handle_effects_started(self, msg):
+        fit = msg.fit
         affectors = self.__generate_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
-            self.__subscribe_affector(affector)
-            self.__affections.register_affector(affector)
-            for tgt_item in self.__affections.get_affectees(affector):
+            self.__subscribe_affector(fit, affector)
+            self.__affections.register_affector(fit, affector)
+            for tgt_item in self.__affections.get_affectees(fit, affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     def _handle_effects_stopped(self, msg):
+        fit = msg.fit
         affectors = self.__generate_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
-            for tgt_item in self.__affections.get_affectees(affector):
+            for tgt_item in self.__affections.get_affectees(fit, affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
-            self.__affections.unregister_affector(affector)
-            self.__unsubscribe_affector(affector)
+            self.__affections.unregister_affector(fit, affector)
+            self.__unsubscribe_affector(fit, affector)
 
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attr_dependents(self, msg):
@@ -126,7 +134,7 @@ class CalculationService(BaseSubscriber):
                 modifier.src_attr_id != attr_id
             ):
                 continue
-            for tgt_item in self.__affections.get_affectees(affector):
+            for tgt_item in self.__affections.get_affectees(msg.fit, affector):
                 del tgt_item.attrs[modifier.tgt_attr_id]
 
     def _revise_python_attr_dependents(self, msg):
@@ -148,7 +156,7 @@ class CalculationService(BaseSubscriber):
                 msg, affector.carrier_item
             ):
                 continue
-            for tgt_item in self.__affections.get_affectees(affector):
+            for tgt_item in self.__affections.get_affectees(msg.fit, affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     # Message routing
@@ -194,7 +202,7 @@ class CalculationService(BaseSubscriber):
         return affectors
 
     # Python affector subscription/unsubscription
-    def __subscribe_affector(self, affector):
+    def __subscribe_affector(self, fit, affector):
         """Subscribe python affector to message types it wants."""
         if not isinstance(affector.modifier, BasePythonModifier):
             return
@@ -210,9 +218,9 @@ class CalculationService(BaseSubscriber):
             # Add affector to subscriber map to let it receive messages
             self.__subscribed_affectors.add_data_entry(msg_type, affector)
         if to_subscribe:
-            self.__fit._subscribe(self, to_subscribe)
+            fit._subscribe(self, to_subscribe)
 
-    def __unsubscribe_affector(self, affector):
+    def __unsubscribe_affector(self, fit, affector):
         """Unsubscribe python affector."""
         if not isinstance(affector.modifier, BasePythonModifier):
             return
@@ -228,4 +236,4 @@ class CalculationService(BaseSubscriber):
             ):
                 to_ubsubscribe.add(msg_type)
         if to_ubsubscribe:
-            self.__fit._unsubscribe(self, to_ubsubscribe)
+            fit._unsubscribe(self, to_ubsubscribe)

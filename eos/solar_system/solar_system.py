@@ -42,7 +42,7 @@ class SolarSystem:
 
     def __init__(self, source=DEFAULT):
         self.__source = None
-        self._calculator = CalculationService(self)
+        self._calculator = CalculationService()
         self.fits = FitSet(self)
         # Initialize defaults
         if source is DEFAULT:

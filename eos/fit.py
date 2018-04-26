@@ -110,10 +110,10 @@ class Fit(FitMsgBroker):
         # to make sure it's part of it
         self.character = Character(TypeId.character_static)
         # Add fit to solar system
+        self.solar_system = None
         if solar_system is None:
             solar_system = SolarSystem()
         solar_system.fits.add(self)
-        self.solar_system = solar_system
 
     character = ItemDescriptor('__character', Character)
     ship = ItemDescriptor('__ship', Ship)

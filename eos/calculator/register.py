@@ -286,27 +286,30 @@ class AffectionRegister:
                 affectee_fit, awaitable_to_deactivate)
 
     # Affector processing
-    def get_affectors(self, affectee_item):
+    def get_affectors(self, affectee_fit, affectee_item):
         """Get all affectors, which influence passed item."""
         affectors = set()
         # Item
-        affectors.update(self.__affector_item_active.get(affectee_item, ()))
+        affectors.update(self.__affector_item_active.get(
+            affectee_item, ()))
         domain = affectee_item._modifier_domain
         if domain is not None:
             # Domain
-            affectors.update(self.__affector_domain.get(domain, ()))
+            affectors.update(self.__affector_domain.get(
+                (affectee_fit, domain), ()))
             # Domain and group
+            group_id = affectee_item._type.group_id
             affectors.update(self.__affector_domain_group.get(
-                (domain, affectee_item._type.group_id), ()))
+                (affectee_fit, domain, group_id), ()))
             for skill_type_id in affectee_item._type.required_skills:
                 # Domain and skill requirement
                 affectors.update(self.__affector_domain_skillrq.get(
-                    (domain, skill_type_id), ()))
+                    (affectee_fit, domain, skill_type_id), ()))
         if affectee_item._owner_modifiable is True:
             for skill_type_id in affectee_item._type.required_skills:
                 # Owner-modifiable and skill requirement
                 affectors.update(self.__affector_owner_skillrq.get(
-                    skill_type_id, ()))
+                    (affectee_fit, skill_type_id), ()))
         return affectors
 
     def register_affector(self, affector_fit, affector):
