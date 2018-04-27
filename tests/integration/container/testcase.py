@@ -25,9 +25,5 @@ from tests.integration.testcase import IntegrationTestCase
 class ContainerTestCase(IntegrationTestCase):
     """Class which should be used by item container tests."""
 
-    def assert_fit_buffers_empty(self, fit, clear_all=False):
-        IntegrationTestCase.assert_fit_buffers_empty(
-            self, fit, clear=clear_all)
-
     def get_log(self, name='eos.item_container*'):
         return IntegrationTestCase.get_log(self, name=name)

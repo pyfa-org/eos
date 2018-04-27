@@ -48,7 +48,8 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(fit.modules.high[0])
         self.assertIs(fit.modules.high[1], item2)
         # Cleanup
-        fit.modules.high.remove(item2)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -69,6 +70,8 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -91,6 +94,8 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.modules.high), 0)
         # Cleanup
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -119,7 +124,9 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
         # Cleanup
-        fit.modules.high.remove(item1)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
+        self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -140,6 +147,8 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.modules.high), 0)
         # Cleanup
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -154,7 +163,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertIsNone(fit.modules.high[0])
         self.assertIs(fit.modules.high[1], item)
         # Cleanup
-        fit.modules.high.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -183,7 +192,9 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
         # Cleanup
-        fit.modules.high.remove(item1)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
+        self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -198,6 +209,6 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)
         # Cleanup
-        fit.modules.high.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

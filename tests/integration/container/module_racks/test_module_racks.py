@@ -45,10 +45,15 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.fit.modules.low.place(0, self.mod_low1)
         self.fit.modules.low.place(4, self.mod_low2)
 
-    def remove_modules(self):
-        self.fit.modules.high.clear()
-        self.fit.modules.mid.clear()
-        self.fit.modules.low.clear()
+    def verify_buffers(self):
+        self.assert_item_buffers_empty(self.mod_high1)
+        self.assert_item_buffers_empty(self.mod_high2)
+        self.assert_item_buffers_empty(self.mod_mid1)
+        self.assert_item_buffers_empty(self.mod_mid2)
+        self.assert_item_buffers_empty(self.mod_low1)
+        self.assert_item_buffers_empty(self.mod_low2)
+        self.assert_item_buffers_empty(self.mod_low3)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
 
     def test_items_len(self):
         module_items = self.fit.modules.items()
@@ -60,8 +65,7 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.fit.modules.low.append(self.mod_low3)
         self.assertEqual(len(module_items), 5)
         # Cleanup
-        self.remove_modules()
-        self.assert_solsys_buffers_empty(self.fit.solar_system)
+        self.verify_buffers()
         self.assertEqual(len(self.get_log()), 0)
 
     def test_items_iter(self):
@@ -90,8 +94,7 @@ class TestContainerModuleRacks(ContainerTestCase):
             self.mod_low1, self.mod_low2, self.mod_low3]
         self.assertEqual(list(module_items), expected)
         # Cleanup
-        self.remove_modules()
-        self.assert_solsys_buffers_empty(self.fit.solar_system)
+        self.verify_buffers()
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_contains(self):
@@ -116,6 +119,5 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertTrue(self.mod_low3 in module_items)
         self.assertFalse(None in module_items)
         # Cleanup
-        self.remove_modules()
-        self.assert_solsys_buffers_empty(self.fit.solar_system)
+        self.verify_buffers()
         self.assertEqual(len(self.get_log()), 0)

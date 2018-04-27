@@ -50,7 +50,7 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         self.assertIn(item, fit.skills)
         self.assertIn(item_type.id, fit.skills)
         # Cleanup
-        fit.skills.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -67,7 +67,7 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         self.assertNotIn(item_type.id, fit.skills)
         fit.implants.add(item)
         # Cleanup
-        fit.implants.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -86,7 +86,7 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         self.assertIs(fit_other.skills[item_type.id], item)
         self.assertIn(item, fit_other.skills)
         # Cleanup
-        fit_other.skills.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
@@ -108,7 +108,8 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         fit.skills.remove(item1)
         fit.skills.add(item2)
         # Cleanup
-        fit.skills.remove(item2)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -124,6 +125,7 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         self.assertNotIn(item, fit.skills)
         self.assertNotIn(item_type.id, fit.skills)
         # Cleanup
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -140,7 +142,7 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         self.assertNotIn(item_type.id, fit.skills)
         fit.skills.add(item)
         # Cleanup
-        fit.skills.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -156,23 +158,25 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         self.assertNotIn(item, fit.skills)
         self.assertNotIn(item_type.id, fit.skills)
         # Cleanup
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_delitem_item_failure(self):
         fit = Fit()
         item_type = self.mktype()
+        empty_type_id = self.allocate_type_id()
         item = Skill(item_type.id)
         fit.skills.add(item)
         # Action
         with self.assertRaises(KeyError):
-            del fit.skills[item_type.id + 1]
+            del fit.skills[empty_type_id]
         # Verification
         self.assertEqual(len(fit.skills), 1)
         self.assertIn(item, fit.skills)
         self.assertIn(item_type.id, fit.skills)
         # Cleanup
-        fit.skills.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -187,7 +191,8 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         # Verification
         self.assertIs(fit.skills[item_type.id], item1)
         # Cleanup
-        fit.skills.remove(item1)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -208,6 +213,8 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         self.assertNotIn(item2, fit.skills)
         self.assertNotIn(item2_type.id, fit.skills)
         # Cleanup
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -220,5 +227,6 @@ class TestContainerTypeUniqueSet(ContainerTestCase):
         fit.skills.remove(item)
         self.assertIs(bool(fit.skills), False)
         # Cleanup
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

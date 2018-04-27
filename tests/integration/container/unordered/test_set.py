@@ -47,7 +47,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 1)
         self.assertIn(item, fit.implants)
         # Cleanup
-        fit.implants.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -61,7 +61,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit.implants), 0)
         fit.boosters.add(item)
         # Cleanup
-        fit.boosters.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -78,7 +78,7 @@ class TestContainerSet(ContainerTestCase):
         self.assertEqual(len(fit_other.implants), 1)
         self.assertIn(item, fit_other.implants)
         # Cleanup
-        fit_other.implants.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
@@ -92,6 +92,7 @@ class TestContainerSet(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -104,6 +105,7 @@ class TestContainerSet(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -118,6 +120,8 @@ class TestContainerSet(ContainerTestCase):
         # Verification
         self.assertEqual(len(fit.implants), 0)
         # Cleanup
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -130,5 +134,6 @@ class TestContainerSet(ContainerTestCase):
         fit.implants.remove(item)
         self.assertIs(bool(fit.implants), False)
         # Cleanup
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

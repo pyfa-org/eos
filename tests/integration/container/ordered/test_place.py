@@ -42,8 +42,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIsNone(fit.modules.high[2])
         self.assertIs(fit.modules.high[3], item2)
         # Cleanup
-        fit.modules.high.remove(item1)
-        fit.modules.high.remove(item2)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -58,7 +58,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)
         # Cleanup
-        fit.modules.high.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -78,9 +78,9 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIsNone(fit.modules.high[2])
         self.assertIs(fit.modules.high[3], item2)
         # Cleanup
-        fit.modules.high.remove(item1)
-        fit.modules.high.remove(item2)
-        fit.modules.high.remove(item3)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
+        self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -100,8 +100,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIsNone(fit.modules.high[2])
         self.assertIs(fit.modules.high[3], item2)
         # Cleanup
-        fit.modules.high.remove(item1)
-        fit.modules.high.remove(item2)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -117,7 +117,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item1)
         # Cleanup
-        fit.modules.high.remove(item1)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -132,7 +133,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 1)
         self.assertIs(fit.modules.high[0], item)
         # Cleanup
-        fit.modules.high.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -146,7 +147,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         fit.modules.mid.place(0, item)
         # Cleanup
-        fit.modules.mid.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -163,7 +164,7 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(len(fit_other.modules.high), 1)
         self.assertIs(fit_other.modules.high[0], item)
         # Cleanup
-        fit_other.modules.high.remove(item)
+        self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
@@ -182,8 +183,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(fit.modules.high[1], item1)
         fit.modules.mid.place(0, item2)
         # Cleanup
-        fit.modules.high.remove(item1)
-        fit.modules.mid.remove(item2)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
@@ -204,8 +205,8 @@ class TestContainerOrderedPlace(ContainerTestCase):
         self.assertIs(len(fit_other.modules.high), 1)
         self.assertIs(fit_other.modules.high[0], item2)
         # Cleanup
-        fit.modules.high.remove(item1)
-        fit_other.modules.high.remove(item2)
+        self.assert_item_buffers_empty(item1)
+        self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)

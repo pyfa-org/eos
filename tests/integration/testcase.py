@@ -21,6 +21,8 @@
 
 from copy import copy
 
+from eos.const.eve import AttrId
+from eos.item import Skill
 from eos.eve_obj.modifier import DogmaModifier
 from eos.source import Source
 from eos.source import SourceManager
@@ -258,9 +260,15 @@ class IntegrationTestCase(EosTestCase):
         entry_num = self._get_obj_buffer_entry_count(
             fit,
             ignore_attrs=(
+                # Disallow to investigate parent
+                ('Fit', 'solar_system'),
+                # Allowed to always reside on fit
                 ('Fit', '_Fit__incoming_dmg_default'),
+                # Allowed to always reside on fit
                 ('Fit', '_Fit__incoming_dmg_rah'),
+                # Restriction registers are always in subscribers
                 ('Fit', '_FitMsgBroker__subscribers'),
+                # Service is allowed to keep list of restrictions permanently
                 ('RestrictionService', '_RestrictionService__restrictions')))
         # Report
         if entry_num:
@@ -279,11 +287,17 @@ class IntegrationTestCase(EosTestCase):
         Args:
             item: Item to verify.
         """
+        # Clear
+        if isinstance(item, Skill):
+            item.attrs._del_override_callback(AttrId.skill_level)
         # Verify
         entry_num = self._get_obj_buffer_entry_count(
             item,
             ignore_attrs=(
-                ('BaseItemMixin', '_BaseItemMixin__effect_mode_overrides'),))
+                # Disallow to investigate parent
+                ('BaseItemMixin', '_container'),
+                # Allowed to carry effect settings permanently
+                ('BaseItemMixin', '_BaseItemMixin__effect_mode_overrides')))
         # Report
         if entry_num:
             msg = '{} entries in item buffers: buffers must be empty'.format(
