@@ -282,7 +282,7 @@ class AffectionRegister:
         # And make sure awaitable affectors are moved to appropriate container
         # for future use
         if awaitable_to_deactivate:
-            self.__affector_item_awaitable.add_data_entry(
+            self.__affector_item_awaitable.add_data_set(
                 affectee_fit, awaitable_to_deactivate)
 
     # Affector processing

@@ -66,9 +66,8 @@ class FitSet:
 
     def clear(self):
         """Remove everything from the container."""
-        for fit in self.__set:
+        for fit in set(self.__set):
             self.__handle_fit_removal(fit)
-        self.__set.clear()
 
     def __handle_fit_removal(self, fit):
         fit._unload_items()

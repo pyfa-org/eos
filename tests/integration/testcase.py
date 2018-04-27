@@ -175,47 +175,114 @@ class IntegrationTestCase(EosTestCase):
             SourceManager.get(src).cache_handler.allocate_effect_id()
             for src in srcs)
 
-    def assert_fit_buffers_empty(self, fit, clear=True):
+    def assert_solsys_buffers_empty(self, solsys):
+        """Verify if solar system contains anything in object containers.
+
+        Only containers which are designed to hold temporary data are verified.
+        Verifies fits too, after removing them from solar system.
+
+        Args:
+            solsys: Solar system to verify.
+        """
+        # Clear
+        solsys_fits = set(solsys.fits)
+        solsys.fits.clear()
+        # Verify
+        entry_num = self._get_obj_buffer_entry_count(
+            solsys,
+            ignore_attrs=(('SolarSystem', '_SolarSystem__source'),))
+        # Report
+        if entry_num:
+            msg = (
+                '{} entries in solar system buffers: '
+                'buffers must be empty').format(entry_num)
+            self.fail(msg=msg)
+        # Verify child objects
+        for solsys_fit in solsys_fits:
+            self.assert_fit_buffers_empty(solsys_fit)
+
+    def assert_fit_buffers_empty(self, fit):
         """Checks if fit contains anything in object containers.
+
+        Only containers which are designed to hold temporary data are checked.
+        Verifies items too, after removing them from fit.
 
         Args:
             fit: Fit to verify.
-            clear (optional): Before checking, by default fit has all its items
-                removed. If necessary, they can be kept.
-
-        Only containers which are designed to hold temporary data are checked.
         """
-        self.__clear_fit(fit, clear)
-        entry_num = 0
-        entry_num += self._get_obj_buffer_entry_count(
+
+        def clear_fit(fit):
+            # Container for items stored on fit - i.e. not including stuff like
+            # charges, as they will still be connected to their parent item and
+            # verified via it
+            top_level_items = set()
+            single_names = (
+                'character',
+                'ship',
+                'stance',
+                'effect_beacon')
+            for container_name in single_names:
+                item = getattr(fit, container_name)
+                if item is not None:
+                    top_level_items.add(item)
+                    setattr(fit, container_name, None)
+            ordered = (
+                fit.modules.high,
+                fit.modules.mid,
+                fit.modules.low)
+            for container in ordered:
+                if len(container.items()) == 0:
+                    continue
+                for item in container.items():
+                    top_level_items.add(item)
+                container.clear()
+            unordered = (
+                fit.subsystems,
+                fit.rigs,
+                fit.drones,
+                fit.fighters,
+                fit.skills,
+                fit.implants,
+                fit.boosters)
+            for container in unordered:
+                if len(container) == 0:
+                    continue
+                for item in container:
+                    top_level_items.add(item)
+                container.clear()
+            return top_level_items
+
+        # Clear
+        fit_items = clear_fit(fit)
+        # Verify
+        entry_num = self._get_obj_buffer_entry_count(
             fit,
-            ignore_objs=[fit],
             ignore_attrs=(
-                ('SolarSystem', 'fits'),
-                ('SolarSystem', '_SolarSystem__source'),
                 ('Fit', '_Fit__incoming_dmg_default'),
                 ('Fit', '_Fit__incoming_dmg_rah'),
-                ('Fit', '_MsgBroker__subscribers'),
+                ('Fit', '_FitMsgBroker__subscribers'),
                 ('RestrictionService', '_RestrictionService__restrictions')))
+        # Report
         if entry_num:
-            plu = 'y' if entry_num == 1 else 'ies'
-            msg = '{} entr{} in buffers: buffers must be empty'.format(
-                entry_num, plu)
+            msg = '{} entries in fit buffers: buffers must be empty'.format(
+                entry_num)
             self.fail(msg=msg)
+        # Verify child objects
+        for fit_item in fit_items:
+            self.assert_item_buffers_empty(fit_item)
 
-    def __clear_fit(self, fit, clear_all):
-        if clear_all:
-            fit.character = None
-            fit.ship = None
-            fit.stance = None
-            fit.effect_beacon = None
-            fit.subsystems.clear(),
-            fit.modules.high.clear(),
-            fit.modules.mid.clear(),
-            fit.modules.low.clear(),
-            fit.rigs.clear(),
-            fit.drones.clear(),
-            fit.fighters.clear(),
-            fit.skills.clear(),
-            fit.implants.clear(),
-            fit.boosters.clear()
+    def assert_item_buffers_empty(self, item):
+        """Checks if item contains anything in object containers.
+
+        Only containers which are designed to hold temporary data are checked.
+
+        Args:
+            item: Item to verify.
+        """
+        # Verify
+        entry_num = self._get_obj_buffer_entry_count(item)
+        # Report
+        if entry_num:
+            msg = '{} entries in item buffers: buffers must be empty'.format(
+                entry_num)
+            self.fail(msg=msg)
