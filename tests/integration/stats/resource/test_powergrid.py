@@ -60,14 +60,14 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.output, 400)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.output, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_attr_absent(self):
@@ -75,7 +75,7 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.output, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_not_loaded(self):
@@ -83,7 +83,7 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.output, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_single(self):
@@ -106,7 +106,7 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
@@ -119,7 +119,7 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 80)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_rounding(self):
@@ -131,7 +131,7 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 55.56)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_state(self):
@@ -144,7 +144,7 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_effect_absent(self):
@@ -159,7 +159,7 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_effect_disabled(self):
@@ -175,14 +175,14 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_not_loaded(self):
@@ -192,5 +192,5 @@ class TestPowergrid(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.powergrid.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

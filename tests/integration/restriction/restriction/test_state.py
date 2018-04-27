@@ -47,7 +47,7 @@ class TestState(RestrictionTestCase):
             error.allowed_states,
             (State.offline, State.online, State.active))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_item_state_higher_effects_absent(self):
@@ -60,7 +60,7 @@ class TestState(RestrictionTestCase):
         self.assertEqual(error.state, State.overload)
         self.assertCountEqual(error.allowed_states, [State.offline])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_state_lower(self):
@@ -74,7 +74,7 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_state_equal(self):
@@ -88,7 +88,7 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_exception_charge(self):
@@ -110,7 +110,7 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_exception_autocharge(self):
@@ -132,7 +132,7 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -143,5 +143,5 @@ class TestState(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

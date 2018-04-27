@@ -76,7 +76,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 300000)
         self.assertAlmostEqual(volley.total, 1200000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_attr_em_absent(self):
@@ -95,7 +95,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 300000)
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_attr_therm_absent(self):
@@ -114,7 +114,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 300000)
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_attr_kin_absent(self):
@@ -133,7 +133,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 300000)
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_attr_expl_absent(self):
@@ -152,7 +152,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_squad_size_absent(self):
@@ -174,5 +174,5 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 50000)
         self.assertAlmostEqual(volley.total, 200000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

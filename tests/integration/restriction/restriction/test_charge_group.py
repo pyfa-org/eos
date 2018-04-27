@@ -50,7 +50,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, 1008)
         self.assertCountEqual(error2.allowed_group_ids, [3])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group2(self):
@@ -71,7 +71,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, 1008)
         self.assertCountEqual(error2.allowed_group_ids, [3])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group3(self):
@@ -92,7 +92,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, 1008)
         self.assertCountEqual(error2.allowed_group_ids, [3])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group4(self):
@@ -113,7 +113,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, 1008)
         self.assertCountEqual(error2.allowed_group_ids, [3])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group5(self):
@@ -134,7 +134,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, 1008)
         self.assertCountEqual(error2.allowed_group_ids, [3])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_charge_group_none(self):
@@ -155,7 +155,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, None)
         self.assertCountEqual(error2.allowed_group_ids, [3])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_container_groups_multiple_same(self):
@@ -178,7 +178,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, 1008)
         self.assertCountEqual(error2.allowed_group_ids, [3])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_container_groups_multiple_different(self):
@@ -201,7 +201,7 @@ class TestChargeGroup(RestrictionTestCase):
         self.assertEqual(error2.group_id, 1008)
         self.assertCountEqual(error2.allowed_group_ids, [3, 5])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_match(self):
@@ -220,7 +220,7 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_container_groups_multiple(self):
@@ -241,7 +241,7 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_container_attr_absent(self):
@@ -258,7 +258,7 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_container_not_loaded(self):
@@ -275,7 +275,7 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_charge_not_loaded(self):
@@ -294,7 +294,7 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_autocharge(self):
@@ -322,7 +322,7 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_autocharge_not_loaded(self):
@@ -348,5 +348,5 @@ class TestChargeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

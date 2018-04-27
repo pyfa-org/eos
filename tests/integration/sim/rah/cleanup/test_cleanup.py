@@ -57,7 +57,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rah_removed(self):
@@ -85,7 +85,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rah_state_switch_up(self):
@@ -117,7 +117,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rah_state_switch_down(self):
@@ -149,7 +149,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_resonance(self):
@@ -195,7 +195,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.525)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.63)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rah_resonance(self):
@@ -241,7 +241,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.4875)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5085)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rah_shift(self):
@@ -287,7 +287,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.6015)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.603)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cycle_time(self):
@@ -328,7 +328,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.509, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.509, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_dmg_profile_default_change(self):
@@ -360,7 +360,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_dmg_profile_rah_change(self):
@@ -393,7 +393,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_dmg_profile_default_to_rah(self):
@@ -425,7 +425,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_dmg_profile_rah_to_default(self):
@@ -458,5 +458,5 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

@@ -78,7 +78,7 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 130)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_disabling_multiple(self):
@@ -92,7 +92,7 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 100)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_enabling(self):
@@ -105,7 +105,7 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_enabling_multiple(self):
@@ -122,5 +122,5 @@ class TestEffectToggling(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

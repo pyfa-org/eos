@@ -52,7 +52,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, [10])
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_type_multiple_different(self):
@@ -71,7 +71,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, (10, 11))
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_type_multiple_same(self):
@@ -90,7 +90,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, [10])
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group(self):
@@ -108,7 +108,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, ())
         self.assertCountEqual(error.allowed_group_ids, [38])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group_multiple_different(self):
@@ -127,7 +127,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, ())
         self.assertCountEqual(error.allowed_group_ids, (38, 83))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group_multiple_same(self):
@@ -146,7 +146,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, ())
         self.assertCountEqual(error.allowed_group_ids, [38])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_combined(self):
@@ -167,7 +167,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, [1089])
         self.assertCountEqual(error.allowed_group_ids, [23])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_absent(self):
@@ -184,7 +184,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, [10])
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_group_none(self):
@@ -202,7 +202,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, [10])
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_not_loaded(self):
@@ -220,7 +220,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_type_ids, [ship_type_id])
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_type_match(self):
@@ -236,7 +236,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_group_match(self):
@@ -251,7 +251,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_combined_type_match(self):
@@ -268,7 +268,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_combined_group_match(self):
@@ -284,7 +284,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_class_other(self):
@@ -297,7 +297,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -309,5 +309,5 @@ class TestShipTypeGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

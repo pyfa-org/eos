@@ -99,7 +99,7 @@ class TestCharge(ContainerTestCase):
         self.assertIs(module.charge, charge)
         fit_other.stance = non_charge
         # Cleanup
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_detached_module_none_to_partially_bound_charge(self):
@@ -134,7 +134,7 @@ class TestCharge(ContainerTestCase):
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
         # Cleanup
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_detached_module_charge_to_partially_bound_charge(self):
@@ -171,7 +171,7 @@ class TestCharge(ContainerTestCase):
         self.assertIs(module.charge, charge)
         self.assertIs(module_other.charge, charge_other)
         # Cleanup
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_none_to_none(self):
@@ -183,7 +183,7 @@ class TestCharge(ContainerTestCase):
         # Verification
         self.assertIsNone(module.charge)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_none_to_free_charge(self):
@@ -196,7 +196,7 @@ class TestCharge(ContainerTestCase):
         # Verification
         self.assertIs(module.charge, charge)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_charge_to_free_charge(self):
@@ -211,7 +211,7 @@ class TestCharge(ContainerTestCase):
         # Verification
         self.assertIs(module.charge, charge2)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_charge_to_none(self):
@@ -224,7 +224,7 @@ class TestCharge(ContainerTestCase):
         # Verification
         self.assertIsNone(module.charge)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_none_to_non_charge(self):
@@ -239,7 +239,7 @@ class TestCharge(ContainerTestCase):
         self.assertIsNone(module.charge)
         fit.stance = non_charge
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_charge_to_non_charge(self):
@@ -256,7 +256,7 @@ class TestCharge(ContainerTestCase):
         self.assertIs(module.charge, charge)
         fit.stance = non_charge
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_none_to_partially_bound_charge(self):
@@ -275,7 +275,7 @@ class TestCharge(ContainerTestCase):
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_none_to_fully_bound_charge(self):
@@ -296,8 +296,8 @@ class TestCharge(ContainerTestCase):
         self.assertIsNone(module.charge)
         self.assertIs(module_other.charge, charge_other)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit.solar_system)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_charge_to_partially_bound_charge(self):
@@ -317,7 +317,7 @@ class TestCharge(ContainerTestCase):
         self.assertIs(module.charge, charge)
         self.assertIs(module_other.charge, charge_other)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_charge_to_fully_bound_charge(self):
@@ -339,8 +339,8 @@ class TestCharge(ContainerTestCase):
         self.assertIs(module.charge, charge)
         self.assertIs(module_other.charge, charge_other)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit.solar_system)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_add_charged_module(self):
@@ -355,7 +355,7 @@ class TestCharge(ContainerTestCase):
         self.assertIs(fit.modules.high[0], module)
         self.assertIs(module.charge, charge)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fit_remove_charged_module(self):
@@ -370,5 +370,5 @@ class TestCharge(ContainerTestCase):
         self.assertEqual(len(fit.modules.high), 0)
         self.assertIs(module.charge, charge)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

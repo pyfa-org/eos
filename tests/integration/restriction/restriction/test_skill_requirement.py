@@ -42,7 +42,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(error)
         self.assertCountEqual(error, ((50, None, 3),))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple(self):
@@ -60,7 +60,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(error)
         self.assertCountEqual(error, ((50, 2, 5), (48, None, 1)))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_partial(self):
@@ -78,7 +78,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(error)
         self.assertCountEqual(error, ((50, None, 5),))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_replacement(self):
@@ -97,7 +97,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(error)
         self.assertCountEqual(error, ((50, 1, 3),))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_skill_not_loaded(self):
@@ -112,7 +112,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNotNone(error)
         self.assertCountEqual(error, ((50, None, 3),))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_satisfied(self):
@@ -127,7 +127,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_exception_rig(self):
@@ -141,7 +141,7 @@ class TestSkillRequirement(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -152,5 +152,5 @@ class TestSkillRequirement(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

@@ -73,7 +73,7 @@ class TestAutocharge(CalculatorTestCase):
         autocharge = container.autocharges[container_effect.id]
         self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_single_item_running(self):
@@ -101,7 +101,7 @@ class TestAutocharge(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_single_item_stopped(self):
@@ -129,7 +129,7 @@ class TestAutocharge(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_on_container(self):
@@ -157,7 +157,7 @@ class TestAutocharge(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(container.attrs[self.tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_from_container(self):
@@ -187,7 +187,7 @@ class TestAutocharge(CalculatorTestCase):
         autocharge = container.autocharges[container_effect_autocharge.id]
         self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_influence_from_container_with_charge(self):
@@ -220,7 +220,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
         self.assertAlmostEqual(charge.attrs[self.tgt_attr.id], 30)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_influence_to_charge(self):
@@ -247,7 +247,7 @@ class TestAutocharge(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(charge.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_influence_from_charge(self):
@@ -276,5 +276,5 @@ class TestAutocharge(CalculatorTestCase):
         autocharge = container.autocharges[container_effect.id]
         self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

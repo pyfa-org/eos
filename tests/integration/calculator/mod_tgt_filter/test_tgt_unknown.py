@@ -63,7 +63,7 @@ class TestTgtFilterUnknown(CalculatorTestCase):
                 'malformed modifier on item type {}: '
                 'invalid target filter 26500'.format(item_type.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
 
     def test_combination(self):
         valid_modifier = self.mkmod(
@@ -85,4 +85,4 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         # other modifiers
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 120)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)

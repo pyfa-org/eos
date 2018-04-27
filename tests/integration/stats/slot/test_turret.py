@@ -58,14 +58,14 @@ class TestTurretSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.total, 6)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_attr_absent(self):
@@ -73,7 +73,7 @@ class TestTurretSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_not_loaded(self):
@@ -81,7 +81,7 @@ class TestTurretSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
@@ -92,7 +92,7 @@ class TestTurretSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.used, 2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple_with_none(self):
@@ -104,7 +104,7 @@ class TestTurretSlot(StatsTestCase):
         # Positions do not matter
         self.assertEqual(self.fit.stats.turret_slots.used, 2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_effect_absent(self):
@@ -115,7 +115,7 @@ class TestTurretSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.used, 1)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_effect_disabled(self):
@@ -127,14 +127,14 @@ class TestTurretSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.used, 1)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_not_loaded(self):
@@ -142,5 +142,5 @@ class TestTurretSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.turret_slots.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

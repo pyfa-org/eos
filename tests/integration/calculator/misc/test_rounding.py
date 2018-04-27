@@ -37,7 +37,7 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.33)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_up(self):
@@ -47,7 +47,7 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_modified(self):
@@ -67,7 +67,7 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 2.33)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cpu_output(self):
@@ -77,7 +77,7 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power(self):
@@ -87,7 +87,7 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_power_output(self):
@@ -97,7 +97,7 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.67)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_other(self):
@@ -107,5 +107,5 @@ class TestRounding(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 2.6666)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

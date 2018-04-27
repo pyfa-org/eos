@@ -63,4 +63,4 @@ class TestTgtDomainSkillrqDomainOther(CalculatorTestCase):
                 'malformed modifier on item type {}: unsupported target '
                 'domain {}'.format(influence_src_type.id, ModDomain.other))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)

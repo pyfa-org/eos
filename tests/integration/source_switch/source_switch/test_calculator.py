@@ -88,8 +88,8 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 60)
         # Cleanup
-        self.assert_fit_buffers_empty(fit1)
-        self.assert_fit_buffers_empty(fit2)
+        self.assert_solsys_buffers_empty(fit1.solar_system)
+        self.assert_solsys_buffers_empty(fit2.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_switch_fit(self):
@@ -149,5 +149,5 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         # 75 * 1.2, but capped at 88
         self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 88)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

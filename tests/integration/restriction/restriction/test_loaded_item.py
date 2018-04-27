@@ -61,7 +61,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_booster_pass_loaded(self):
@@ -72,7 +72,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_booster_fail_not_loaded(self):
@@ -83,7 +83,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_character_pass_loaded(self):
@@ -94,7 +94,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_character_fail_not_loaded(self):
@@ -105,7 +105,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_pass_loaded(self):
@@ -118,7 +118,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_fail_not_loaded(self):
@@ -131,7 +131,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_drone_pass_loaded(self):
@@ -142,7 +142,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_drone_fail_not_loaded(self):
@@ -153,7 +153,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_beacon_pass_loaded(self):
@@ -164,7 +164,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_beacon_fail_not_loaded(self):
@@ -175,7 +175,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fighter_squad_pass_loaded(self):
@@ -186,7 +186,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fighter_squad_fail_not_loaded(self):
@@ -197,7 +197,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_implant_pass_loaded(self):
@@ -208,7 +208,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_implant_fail_not_loaded(self):
@@ -219,7 +219,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high_pass_loaded(self):
@@ -230,7 +230,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high_fail_not_loaded(self):
@@ -241,7 +241,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_mid_pass_loaded(self):
@@ -252,7 +252,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_mid_fail_not_loaded(self):
@@ -263,7 +263,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low_pass_loaded(self):
@@ -274,7 +274,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low_fail_not_loaded(self):
@@ -285,7 +285,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rig_pass_loaded(self):
@@ -296,7 +296,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rig_fail_not_loaded(self):
@@ -307,7 +307,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_pass_loaded(self):
@@ -318,7 +318,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_fail_not_loaded(self):
@@ -329,7 +329,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_skill_pass_loaded(self):
@@ -340,7 +340,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_skill_fail_not_loaded(self):
@@ -351,7 +351,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stance_pass_loaded(self):
@@ -362,7 +362,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stance_fail_not_loaded(self):
@@ -373,7 +373,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem_pass_loaded(self):
@@ -384,7 +384,7 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem_fail_not_loaded(self):
@@ -395,5 +395,5 @@ class TestLoadedItem(RestrictionTestCase):
         # Verification
         self.assertIsNotNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

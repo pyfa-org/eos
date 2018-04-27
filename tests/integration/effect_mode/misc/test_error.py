@@ -50,4 +50,4 @@ class TestEffectModeErrors(EffectModeTestCase):
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unknown effect mode 9999')
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)

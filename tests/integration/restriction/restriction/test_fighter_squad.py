@@ -46,7 +46,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple(self):
@@ -69,7 +69,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error2.used, 2)
         self.assertEqual(error2.total, 1)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_item_not_loaded(self):
@@ -84,7 +84,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_absent(self):
@@ -99,7 +99,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_attr_absent(self):
@@ -113,7 +113,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_not_loaded(self):
@@ -127,7 +127,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
@@ -145,7 +145,7 @@ class TestFighterSquad(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
@@ -163,5 +163,5 @@ class TestFighterSquad(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

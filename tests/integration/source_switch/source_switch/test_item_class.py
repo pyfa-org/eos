@@ -109,7 +109,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(booster.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_character(self):
@@ -121,7 +121,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(character.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge(self):
@@ -135,7 +135,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(charge.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_drone(self):
@@ -147,7 +147,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(drone.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_effect_beacon(self):
@@ -159,7 +159,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(effect_beacon.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fighter_squad(self):
@@ -171,7 +171,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(fighter_squad.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_implant(self):
@@ -183,7 +183,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(implant.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_high(self):
@@ -195,7 +195,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_mid(self):
@@ -207,7 +207,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_module_low(self):
@@ -219,7 +219,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(module.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_rig(self):
@@ -231,7 +231,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(rig.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship(self):
@@ -243,7 +243,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(ship.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_skill(self):
@@ -255,7 +255,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(skill.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stance(self):
@@ -267,7 +267,7 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(stance.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_subsystem(self):
@@ -279,5 +279,5 @@ class TestSourceSwitchItemClass(SourceSwitchTestCase):
         # Verification
         self.assertAlmostEqual(subsystem.attrs[self.tgt_attr_id], 14)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

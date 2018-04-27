@@ -56,7 +56,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.total_use, 50)
         self.assertEqual(error.item_use, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple(self):
@@ -88,7 +88,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error2.total_use, 45)
         self.assertEqual(error2.item_use, 20)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_modified(self):
@@ -119,7 +119,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.total_use, 100)
         self.assertEqual(error.item_use, 100)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_absent(self):
@@ -137,7 +137,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.total_use, 5)
         self.assertEqual(error.item_use, 5)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_attr_absent(self):
@@ -154,7 +154,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.total_use, 50)
         self.assertEqual(error.item_use, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_not_loaded(self):
@@ -171,7 +171,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.total_use, 5)
         self.assertEqual(error.item_use, 5)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_mix_usage_zero(self):
@@ -199,7 +199,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
@@ -223,7 +223,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_state(self):
@@ -239,7 +239,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_attr_absent(self):
@@ -252,7 +252,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -265,5 +265,5 @@ class TestDroneBandwidth(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

@@ -44,7 +44,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(error.group_id, 56)
         self.assertCountEqual(error.allowed_group_ids, [4])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group2_mismatch(self):
@@ -61,7 +61,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(error.group_id, 797)
         self.assertCountEqual(error.allowed_group_ids, [69])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_group_mismatch_combined(self):
@@ -79,7 +79,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(error.group_id, 803)
         self.assertCountEqual(error.allowed_group_ids, [48, 106])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_drone_group_none(self):
@@ -95,7 +95,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertEqual(error.group_id, None)
         self.assertCountEqual(error.allowed_group_ids, [1896])
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_ship_absent(self):
@@ -107,7 +107,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_ship_attr_absent(self):
@@ -121,7 +121,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_ship_not_loaded(self):
@@ -133,7 +133,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -146,7 +146,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_class_other(self):
@@ -160,7 +160,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_group1_match(self):
@@ -175,7 +175,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_group2_match(self):
@@ -190,7 +190,7 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_group_combination_match(self):
@@ -206,5 +206,5 @@ class TestDroneGroup(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

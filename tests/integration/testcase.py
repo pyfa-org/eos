@@ -280,7 +280,10 @@ class IntegrationTestCase(EosTestCase):
             item: Item to verify.
         """
         # Verify
-        entry_num = self._get_obj_buffer_entry_count(item)
+        entry_num = self._get_obj_buffer_entry_count(
+            item,
+            ignore_attrs=(
+                ('BaseItemMixin', '_BaseItemMixin__effect_mode_overrides'),))
         # Report
         if entry_num:
             msg = '{} entries in item buffers: buffers must be empty'.format(

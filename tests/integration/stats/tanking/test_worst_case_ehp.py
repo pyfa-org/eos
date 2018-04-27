@@ -70,7 +70,7 @@ class TestWorstCaseEhp(StatsTestCase):
         self.assertAlmostEqual(worst_ehp_stats.shield, 25)
         self.assertAlmostEqual(worst_ehp_stats.total, 56.25)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_absent(self):
@@ -82,7 +82,7 @@ class TestWorstCaseEhp(StatsTestCase):
         self.assertAlmostEqual(worst_ehp_stats.shield, 0)
         self.assertAlmostEqual(worst_ehp_stats.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_not_loaded(self):
@@ -95,5 +95,5 @@ class TestWorstCaseEhp(StatsTestCase):
         self.assertAlmostEqual(worst_ehp_stats.shield, 0)
         self.assertAlmostEqual(worst_ehp_stats.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

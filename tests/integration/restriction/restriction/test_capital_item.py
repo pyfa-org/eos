@@ -45,7 +45,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.item_volume, 3501)
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_not_loaded(self):
@@ -63,7 +63,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.item_volume, 3501)
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_attr_absent(self):
@@ -79,7 +79,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.item_volume, 3501)
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_attr_zero(self):
@@ -98,7 +98,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.item_volume, 3501)
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_ship_attr_capital(self):
@@ -114,7 +114,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_subcap(self):
@@ -128,7 +128,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_attr_absent(self):
@@ -142,7 +142,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -155,7 +155,7 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_class_other(self):
@@ -167,5 +167,5 @@ class TestCapitalItem(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

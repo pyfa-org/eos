@@ -55,7 +55,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
@@ -82,7 +82,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.501, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.522, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=82)
@@ -109,7 +109,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.509, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.509, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=75)
@@ -142,7 +142,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.506, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.508, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=5)
@@ -171,7 +171,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.535, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.52, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=3)
@@ -197,7 +197,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.554, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.594, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
@@ -228,7 +228,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.523, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.543, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
@@ -259,7 +259,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.553, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.523, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
@@ -290,7 +290,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.675, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.523, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
@@ -321,7 +321,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.523, places=3)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.675, places=3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_absent(self):
@@ -336,7 +336,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ship_not_loaded(self):
@@ -352,7 +352,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_kin.id], 0.85)
         self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_unexpected_exception(self):
@@ -382,7 +382,7 @@ class TestRahSimResult(RahSimTestCase):
             log_record.msg,
             'unexpected exception, setting unsimulated resonances')
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
 
     def test_unexpected_exception_with_modification(self):
         # Setup
@@ -426,4 +426,4 @@ class TestRahSimResult(RahSimTestCase):
             log_record.msg,
             'unexpected exception, setting unsimulated resonances')
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)

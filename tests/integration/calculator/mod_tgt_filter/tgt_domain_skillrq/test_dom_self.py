@@ -69,7 +69,7 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_character(self):
@@ -84,7 +84,7 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_unpositioned_error(self):
@@ -105,4 +105,4 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
                 'malformed modifier on item type {}: unsupported target '
                 'domain 1'.format(self.influence_src_type.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)

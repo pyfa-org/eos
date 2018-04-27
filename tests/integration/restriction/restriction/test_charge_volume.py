@@ -50,7 +50,7 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(error2.volume, 2)
         self.assertEqual(error2.max_allowed_volume, 1)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_container_attr_absent(self):
@@ -69,7 +69,7 @@ class TestChargeVolume(RestrictionTestCase):
         self.assertEqual(error2.volume, 2)
         self.assertEqual(error2.max_allowed_volume, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_charge_attr_equal(self):
@@ -88,7 +88,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_charge_attr_lesser(self):
@@ -107,7 +107,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_charge_attr_absent(self):
@@ -126,7 +126,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_charge_not_loaded(self):
@@ -145,7 +145,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_autocharge(self):
@@ -173,7 +173,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_autocharge_not_loaded(self):
@@ -199,7 +199,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_autocharge_with_charge(self):
@@ -232,7 +232,7 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_container_not_loaded(self):
@@ -249,5 +249,5 @@ class TestChargeVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

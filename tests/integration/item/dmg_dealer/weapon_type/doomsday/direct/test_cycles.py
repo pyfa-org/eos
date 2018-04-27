@@ -50,5 +50,5 @@ class TestItemDmgDoomsdayDirectCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

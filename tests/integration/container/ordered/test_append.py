@@ -35,7 +35,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item(self):
@@ -56,7 +56,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_type_failure(self):
@@ -70,7 +70,7 @@ class TestContainerOrderedAppend(ContainerTestCase):
         fit.modules.mid.append(item)
         # Cleanup
         fit.modules.mid.remove(item)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_value_failure(self):
@@ -87,6 +87,6 @@ class TestContainerOrderedAppend(ContainerTestCase):
         self.assertIs(fit_other.modules.high[0], item)
         # Cleanup
         fit_other.modules.high.remove(item)
-        self.assert_fit_buffers_empty(fit)
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit.solar_system)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)

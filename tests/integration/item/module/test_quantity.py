@@ -41,7 +41,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charge_quantity, 10)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_float_error(self):
@@ -52,7 +52,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charge_quantity, 23)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_round_down(self):
@@ -63,7 +63,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.charge_quantity, 9)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_attr_capacity_absent(self):
@@ -74,7 +74,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_volume_absent(self):
@@ -85,7 +85,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_absent(self):
@@ -95,7 +95,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_not_loaded(self):
@@ -106,7 +106,7 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_not_loaded(self):
@@ -117,5 +117,5 @@ class TestItemModuleChargeQuantity(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.charge_quantity)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

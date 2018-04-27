@@ -59,7 +59,7 @@ class TestOperatorSub(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 143)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_penalized(self):
@@ -67,5 +67,5 @@ class TestOperatorSub(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 143)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

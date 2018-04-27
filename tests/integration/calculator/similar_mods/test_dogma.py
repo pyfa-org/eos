@@ -59,7 +59,7 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_same_item_attr(self):
@@ -82,7 +82,7 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_same_item_effect(self):
@@ -103,7 +103,7 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_same_item_effect_attr(self):
@@ -123,5 +123,5 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 144)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

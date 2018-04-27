@@ -53,7 +53,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple(self):
@@ -78,7 +78,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(error2.used, 2)
         self.assertEqual(error2.total, 1)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_absent(self):
@@ -93,7 +93,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_attr_absent(self):
@@ -107,7 +107,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_not_loaded(self):
@@ -120,7 +120,7 @@ class TestTurretSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
@@ -140,7 +140,7 @@ class TestTurretSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
@@ -160,7 +160,7 @@ class TestTurretSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_effect_disabled(self):
@@ -174,7 +174,7 @@ class TestTurretSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_effect_absent(self):
@@ -187,7 +187,7 @@ class TestTurretSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -200,5 +200,5 @@ class TestTurretSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

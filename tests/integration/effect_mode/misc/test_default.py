@@ -42,7 +42,7 @@ class TestDefaultMode(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_offline_chance_based(self):
@@ -65,5 +65,5 @@ class TestDefaultMode(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

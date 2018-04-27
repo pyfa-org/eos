@@ -69,4 +69,4 @@ class TestSrcAttr(CalculatorTestCase):
             'unable to find base value for attribute {} '
             'on item type {}'.format(abs_attr.id, item_type.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)

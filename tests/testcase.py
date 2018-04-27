@@ -152,7 +152,10 @@ class EosTestCase(TestCase):
             # Do nothing if we have no idea what to do with object attributes
             else:
                 return entry_count
-        obj_classname = type(obj).__qualname__
+        # Get names of object class and of all its parent classes
+        obj_classnames = set()
+        for obj_class in type(obj).__mro__:
+            obj_classnames.add(obj_class.__qualname__)
         for attr_name, attr_val in obj_vars:
             # Skip internal python attributes
             if (
@@ -165,7 +168,8 @@ class EosTestCase(TestCase):
             if id(attr_val) in checked_objs:
                 continue
             # Skip attributes with names we should ignore
-            if (obj_classname, attr_name) in ignore_attrs:
+            attr_defs = {(cn, attr_name) for cn in obj_classnames}
+            if attr_defs.intersection(ignore_attrs):
                 continue
             # Skip attributes with values we should ignore
             if attr_val in ignore_objs:

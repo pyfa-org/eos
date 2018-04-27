@@ -54,14 +54,14 @@ class TestDroneBayVolume(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.output, 400)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.output, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_attr_absent(self):
@@ -69,7 +69,7 @@ class TestDroneBayVolume(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.output, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_not_loaded(self):
@@ -77,7 +77,7 @@ class TestDroneBayVolume(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.output, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_single_no_rounding(self):
@@ -86,7 +86,7 @@ class TestDroneBayVolume(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 55.5555555555)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
@@ -95,14 +95,14 @@ class TestDroneBayVolume(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 80)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_not_loaded(self):
@@ -110,5 +110,5 @@ class TestDroneBayVolume(StatsTestCase):
         # Verification
         self.assertAlmostEqual(self.fit.stats.dronebay.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

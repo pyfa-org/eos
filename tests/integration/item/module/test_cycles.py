@@ -60,7 +60,7 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_defeff_absent(self):
@@ -83,7 +83,7 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_not_loaded(self):
@@ -94,7 +94,7 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_not_loaded(self):
@@ -107,5 +107,5 @@ class TestItemModuleChargeCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

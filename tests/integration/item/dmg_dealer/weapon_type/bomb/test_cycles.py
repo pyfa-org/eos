@@ -63,7 +63,7 @@ class TestItemDmgBombCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, 2)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_round_down(self):
@@ -84,7 +84,7 @@ class TestItemDmgBombCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, 2)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_no_quantity(self):
@@ -103,7 +103,7 @@ class TestItemDmgBombCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_rate_zero(self):
@@ -124,7 +124,7 @@ class TestItemDmgBombCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_rate_absent(self):
@@ -143,7 +143,7 @@ class TestItemDmgBombCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_not_loaded(self):
@@ -161,5 +161,5 @@ class TestItemDmgBombCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

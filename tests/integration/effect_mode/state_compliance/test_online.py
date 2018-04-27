@@ -47,7 +47,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_on_state_switch(self):
@@ -70,7 +70,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_on_mode_switch(self):
@@ -93,7 +93,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_on_online_mode_switch(self):
@@ -117,7 +117,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_no_online_effect(self):
@@ -135,7 +135,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_started_disabled_online_effect(self):
@@ -157,7 +157,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state_on_add(self):
@@ -178,7 +178,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state_on_state_switch(self):
@@ -201,7 +201,7 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state_on_mode_switch(self):
@@ -224,5 +224,5 @@ class TestStateComplianceOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

@@ -47,7 +47,7 @@ class TestForceStopOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_on_state_switch(self):
@@ -70,7 +70,7 @@ class TestForceStopOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_on_mode_switch(self):
@@ -93,7 +93,7 @@ class TestForceStopOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_no_online_effect(self):
@@ -111,7 +111,7 @@ class TestForceStopOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_disabled_online_effect(self):
@@ -133,7 +133,7 @@ class TestForceStopOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_stopped_insufficient_state(self):
@@ -154,5 +154,5 @@ class TestForceStopOnline(EffectModeTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

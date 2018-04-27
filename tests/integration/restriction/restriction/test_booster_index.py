@@ -50,7 +50,7 @@ class TestBoosterIndex(RestrictionTestCase):
         self.assertIsNotNone(error2)
         self.assertEqual(error2.slot_index, 120)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_item_class_other(self):
@@ -71,7 +71,7 @@ class TestBoosterIndex(RestrictionTestCase):
         self.assertIsNotNone(error2)
         self.assertEqual(error2.slot_index, 120)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
@@ -83,7 +83,7 @@ class TestBoosterIndex(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_slots_different(self):
@@ -101,7 +101,7 @@ class TestBoosterIndex(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_items_not_loaded(self):
@@ -117,5 +117,5 @@ class TestBoosterIndex(RestrictionTestCase):
         error2 = self.get_error(item2, Restriction.booster_index)
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

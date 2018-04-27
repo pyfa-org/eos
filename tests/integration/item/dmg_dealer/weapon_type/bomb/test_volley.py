@@ -83,7 +83,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 8500)
         self.assertAlmostEqual(volley.total, 27400)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_em_absent(self):
@@ -116,7 +116,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 8500)
         self.assertAlmostEqual(volley.total, 22200)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_therm_absent(self):
@@ -149,7 +149,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 8500)
         self.assertAlmostEqual(volley.total, 21100)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_kin_absent(self):
@@ -182,7 +182,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 8500)
         self.assertAlmostEqual(volley.total, 20000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_expl_absent(self):
@@ -215,7 +215,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 18900)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_insufficient_state(self):
@@ -249,7 +249,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_effect_disabled(self):
@@ -284,7 +284,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_effect_absent(self):
@@ -316,7 +316,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_effect_disabled(self):
@@ -352,7 +352,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_absent(self):
@@ -377,7 +377,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cycles_until_reload_none(self):
@@ -411,7 +411,7 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_not_loaded(self):
@@ -437,5 +437,5 @@ class TestItemDmgBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 0)
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

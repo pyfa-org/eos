@@ -54,14 +54,14 @@ class TestModuleMedSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.total, 6)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_attr_absent(self):
@@ -69,7 +69,7 @@ class TestModuleMedSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_output_ship_attr_not_loaded(self):
@@ -77,7 +77,7 @@ class TestModuleMedSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple(self):
@@ -86,7 +86,7 @@ class TestModuleMedSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.used, 2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_multiple_with_none(self):
@@ -95,7 +95,7 @@ class TestModuleMedSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.used, 4)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_class_other(self):
@@ -103,14 +103,14 @@ class TestModuleMedSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.used, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_use_item_not_loaded(self):
@@ -118,5 +118,5 @@ class TestModuleMedSlot(StatsTestCase):
         # Verification
         self.assertEqual(self.fit.stats.mid_slots.used, 1)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

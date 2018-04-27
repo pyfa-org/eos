@@ -48,7 +48,7 @@ class TestNonExistent(CalculatorTestCase):
             'unable to fetch metadata for attribute 105,'
             ' requested for item type {}'.format(item_type.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
 
     def test_absent_base_value_error(self):
         # Check case when default value of attribute cannot be determined. and
@@ -71,7 +71,7 @@ class TestNonExistent(CalculatorTestCase):
             'unable to find base value for attribute {} '
             'on item type {}'.format(attr.id, item_type.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
 
     def test_absent_default_value(self):
         # Default value should be used if attribute value is not available on
@@ -83,5 +83,5 @@ class TestNonExistent(CalculatorTestCase):
         # Verification
         self.assertAlmostEqual(item.attrs[attr.id], 5.6)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

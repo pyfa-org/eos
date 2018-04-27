@@ -62,7 +62,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Cycle time is divided by 1000, as it's defined in ms
         self.assertAlmostEqual(item.cycle_time, 0.1)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal(self):
@@ -72,7 +72,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.optimal_range, 100)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_falloff(self):
@@ -82,7 +82,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.falloff_range, 100)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_tracking(self):
@@ -92,7 +92,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertAlmostEqual(item.tracking_speed, 100)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     # Various errors are tested here, but just for one of access points
@@ -107,7 +107,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_attr_desc_absent(self):
@@ -122,7 +122,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_attr_value_absent(self):
@@ -138,7 +138,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_cycle_item_not_loaded(self):
@@ -148,7 +148,7 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycle_time)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_optimal_item_not_loaded(self):
@@ -158,5 +158,5 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.optimal_range)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

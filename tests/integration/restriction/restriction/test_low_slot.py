@@ -46,7 +46,7 @@ class TestLowSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple(self):
@@ -69,7 +69,7 @@ class TestLowSlot(RestrictionTestCase):
         self.assertEqual(error2.used, 2)
         self.assertEqual(error2.total, 1)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple_with_nones(self):
@@ -99,7 +99,7 @@ class TestLowSlot(RestrictionTestCase):
         self.assertEqual(error3.used, 7)
         self.assertEqual(error3.total, 3)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_item_not_loaded(self):
@@ -114,7 +114,7 @@ class TestLowSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_absent(self):
@@ -129,7 +129,7 @@ class TestLowSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_attr_absent(self):
@@ -143,7 +143,7 @@ class TestLowSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_not_loaded(self):
@@ -157,7 +157,7 @@ class TestLowSlot(RestrictionTestCase):
         self.assertEqual(error.used, 1)
         self.assertEqual(error.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_equal(self):
@@ -176,7 +176,7 @@ class TestLowSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_greater(self):
@@ -195,5 +195,5 @@ class TestLowSlot(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

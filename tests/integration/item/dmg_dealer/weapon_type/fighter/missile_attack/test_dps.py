@@ -78,7 +78,7 @@ class TestFighterSquadMissileAttackDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 478.125)
         self.assertAlmostEqual(dps.total, 1541.25)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_reload(self):
@@ -100,5 +100,5 @@ class TestFighterSquadMissileAttackDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 478.125)
         self.assertAlmostEqual(dps.total, 1541.25)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

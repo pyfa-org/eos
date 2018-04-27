@@ -49,7 +49,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(error.total_use, 50)
         self.assertEqual(error.item_use, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_multiple(self):
@@ -76,7 +76,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(error2.total_use, 45)
         self.assertEqual(error2.item_use, 20)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_absent(self):
@@ -92,7 +92,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(error.total_use, 5)
         self.assertEqual(error.item_use, 5)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_attr_absent(self):
@@ -107,7 +107,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(error.total_use, 50)
         self.assertEqual(error.item_use, 50)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_fail_ship_not_loaded(self):
@@ -122,7 +122,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         self.assertEqual(error.total_use, 5)
         self.assertEqual(error.item_use, 5)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_mix_usage_zero(self):
@@ -145,7 +145,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass(self):
@@ -164,7 +164,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_class_other(self):
@@ -177,7 +177,7 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_pass_item_not_loaded(self):
@@ -189,5 +189,5 @@ class TestDroneBayVolume(RestrictionTestCase):
         # Verification
         self.assertIsNone(error)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

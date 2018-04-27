@@ -38,7 +38,7 @@ class TestModeSetting(EffectModeTestCase):
         # Verification
         item.set_effect_mode(effect_id, EffectMode.force_stop)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_multi(self):
@@ -114,7 +114,7 @@ class TestModeSetting(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr_forcerun.id], 12)
         self.assertAlmostEqual(item.attrs[tgt_attr_forcestop.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_multi_item_not_loaded(self):
@@ -131,5 +131,5 @@ class TestModeSetting(EffectModeTestCase):
             effect3_id: EffectMode.force_run,
             effect4_id: EffectMode.force_stop})
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

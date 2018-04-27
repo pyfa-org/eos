@@ -48,7 +48,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_active_switched(self):
@@ -71,7 +71,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.615)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_inactive_added(self):
@@ -93,7 +93,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_inactive_switched(self):
@@ -116,7 +116,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_not_rah(self):
@@ -143,5 +143,5 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.75)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

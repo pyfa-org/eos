@@ -116,5 +116,5 @@ class TestSourceSwitchSideEffect(SourceSwitchTestCase):
         self.assertAlmostEqual(side_effect3.chance, 0.4)
         self.assertIs(side_effect3.status, True)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

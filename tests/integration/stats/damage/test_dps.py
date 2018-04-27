@@ -62,7 +62,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_single(self):
@@ -104,7 +104,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 11.52)
         self.assertAlmostEqual(stats_dps.total, 21.6)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_multiple(self):
@@ -153,7 +153,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 103.68)
         self.assertAlmostEqual(stats_dps.total, 194.4)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_not_loaded(self):
@@ -174,7 +174,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_not_loaded(self):
@@ -211,7 +211,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_arguments_custom_profile(self):
@@ -243,7 +243,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0.96)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_arguments_custom_reload(self):
@@ -274,7 +274,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 3.84)
         self.assertAlmostEqual(stats_dps.total, 7.2)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_arguments_custom_filter(self):
@@ -326,7 +326,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 14.4)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_em_absent(self):
@@ -356,7 +356,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 13.44)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_therm_absent(self):
@@ -386,7 +386,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 12.48)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_kin_absent(self):
@@ -416,7 +416,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 10.56)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_expl_absent(self):
@@ -446,7 +446,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 6.72)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_all_absent(self):
@@ -472,7 +472,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_em_zero(self):
@@ -499,7 +499,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_therm_zero(self):
@@ -526,7 +526,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_kin_zero(self):
@@ -553,7 +553,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_expl_zero(self):
@@ -578,7 +578,7 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 0)
         self.assertAlmostEqual(stats_dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_none_and_data(self):
@@ -624,5 +624,5 @@ class TestStatsDmgDps(StatsTestCase):
         self.assertAlmostEqual(stats_dps.explosive, 7.68)
         self.assertAlmostEqual(stats_dps.total, 14.4)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

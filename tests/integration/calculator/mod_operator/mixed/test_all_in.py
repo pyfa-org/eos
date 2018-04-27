@@ -157,5 +157,5 @@ class TestOperatorAllIn(CalculatorTestCase):
             value_post_mul / value_post_div * (1 + value_post_perc / 100))
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr.id], expected_value)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

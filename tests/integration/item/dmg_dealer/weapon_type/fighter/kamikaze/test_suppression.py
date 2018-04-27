@@ -90,7 +90,7 @@ class TestFighterSquadKamikazeSuppression(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 300000)
         self.assertAlmostEqual(volley.total, 1200000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_not_suppressing(self):
@@ -115,5 +115,5 @@ class TestFighterSquadKamikazeSuppression(ItemMixinTestCase):
         self.assertAlmostEqual(volley.explosive, 1275)
         self.assertAlmostEqual(volley.total, 4110)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

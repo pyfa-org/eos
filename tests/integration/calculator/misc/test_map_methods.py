@@ -84,7 +84,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.attr5.id], 4)
         with self.assertRaises(KeyError):
             self.item.attrs[1008]
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
         self.assertEqual(len(self.get_log()), 2)
@@ -103,7 +103,7 @@ class TestMapMethods(CalculatorTestCase):
             self.item.attrs[self.attr5.id]
         with self.assertRaises(KeyError):
             self.item.attrs[1008]
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
         self.assertEqual(len(self.get_log()), 6)
@@ -118,7 +118,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs.get(self.attr5.id), 4)
         self.assertIsNone(self.item.attrs.get(1008))
         self.assertEqual(self.item.attrs.get(1008, 60), 60)
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
         self.assertEqual(len(self.get_log()), 3)
@@ -132,7 +132,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertIsNone(self.item.attrs.get(self.attr5.id))
         self.assertIsNone(self.item.attrs.get(1008))
         self.assertEqual(self.item.attrs.get(1008, 60), 60)
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 7)
 
     def test_len(self):
@@ -145,7 +145,7 @@ class TestMapMethods(CalculatorTestCase):
         # on item but has default value
         self.assertEqual(len(self.item.attrs), 4)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
         self.assertEqual(len(self.get_log()), 2)
 
@@ -155,7 +155,7 @@ class TestMapMethods(CalculatorTestCase):
         self.calculate_attrs(special=[1008])
         self.assertEqual(len(self.item.attrs), 0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 6)
 
     def test_contains(self):
@@ -175,7 +175,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertTrue(self.attr5.id in self.item.attrs)
         self.assertFalse(1008 in self.item.attrs)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
         self.assertEqual(len(self.get_log()), 2)
 
@@ -195,7 +195,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertFalse(self.attr5.id in self.item.attrs)
         self.assertFalse(1008 in self.item.attrs)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 6)
 
     def test_keys(self):
@@ -209,7 +209,7 @@ class TestMapMethods(CalculatorTestCase):
             self.item.attrs.keys(),
             (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
         self.assertEqual(len(self.get_log()), 2)
 
@@ -219,7 +219,7 @@ class TestMapMethods(CalculatorTestCase):
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(self.item.attrs.keys(), ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 6)
 
     def test_items(self):
@@ -234,7 +234,7 @@ class TestMapMethods(CalculatorTestCase):
                 (self.attr1.id, 20), (self.attr2.id, 40),
                 (self.attr3.id, 44), (self.attr5.id, 4)))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
         self.assertEqual(len(self.get_log()), 2)
 
@@ -244,7 +244,7 @@ class TestMapMethods(CalculatorTestCase):
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(self.item.attrs.items(), ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
         self.assertEqual(len(self.get_log()), 6)
 
@@ -259,7 +259,7 @@ class TestMapMethods(CalculatorTestCase):
             self.item.attrs,
             (self.attr1.id, self.attr2.id, self.attr3.id, self.attr5.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
         self.assertEqual(len(self.get_log()), 2)
 
@@ -269,5 +269,5 @@ class TestMapMethods(CalculatorTestCase):
         self.calculate_attrs(special=[1008])
         self.assertCountEqual(self.item.attrs, ())
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 6)

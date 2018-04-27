@@ -65,7 +65,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(abilities[FighterAbilityId.microwarpdrive], False)
         self.assertIs(abilities[FighterAbilityId.heavy_rocket_salvo_em], False)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_status_item_inactive(self):
@@ -98,7 +98,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(abilities[FighterAbilityId.microwarpdrive], False)
         self.assertIs(abilities[FighterAbilityId.heavy_rocket_salvo_em], False)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_status_item_not_loaded(self):
@@ -109,7 +109,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         # Verification
         self.assertEqual(len(item.abilities), 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_enabling_default_effect(self):
@@ -143,7 +143,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], True)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_enabling_nondefault_effect(self):
@@ -175,7 +175,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], True)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_enabling_no_ability(self):
@@ -209,7 +209,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], False)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_enabling_item_not_loaded(self):
@@ -221,7 +221,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         with self.assertRaises(NoSuchAbilityError):
             item.set_ability_status(FighterAbilityId.beam_cannon, True)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_disabling_default_effect(self):
@@ -254,7 +254,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], False)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_disabling_nondefault_effect(self):
@@ -287,7 +287,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], False)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_disabling_no_ability(self):
@@ -320,7 +320,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(item.abilities[FighterAbilityId.pulse_cannon], True)
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_ability_disabling_item_not_loaded(self):
@@ -332,5 +332,5 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         with self.assertRaises(NoSuchAbilityError):
             item.set_ability_status(FighterAbilityId.beam_cannon, False)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

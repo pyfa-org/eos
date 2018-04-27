@@ -34,7 +34,7 @@ class TestDirectItemShip(ContainerTestCase):
         # Verification
         self.assertIsNone(fit.ship)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_none_to_item(self):
@@ -46,7 +46,7 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIs(fit.ship, item)
         # Cleanup
         fit.ship = None
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_none_to_item_type_failure(self):
@@ -62,7 +62,7 @@ class TestDirectItemShip(ContainerTestCase):
         fit.stance = item
         # Cleanup
         fit.stance = None
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_none_to_item_value_failure(self):
@@ -78,8 +78,8 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIs(fit_other.ship, item)
         # Cleanup
         fit_other.ship = None
-        self.assert_fit_buffers_empty(fit)
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit.solar_system)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_item(self):
@@ -94,7 +94,7 @@ class TestDirectItemShip(ContainerTestCase):
         self.assertIs(fit.ship, item2)
         # Cleanup
         fit.ship = None
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_item_type_failure(self):
@@ -111,7 +111,7 @@ class TestDirectItemShip(ContainerTestCase):
         # Cleanup
         fit.ship = None
         fit.stance = None
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_item_value_failure(self):
@@ -131,8 +131,8 @@ class TestDirectItemShip(ContainerTestCase):
         # Cleanup
         fit.ship = None
         fit_other.ship = None
-        self.assert_fit_buffers_empty(fit)
-        self.assert_fit_buffers_empty(fit_other)
+        self.assert_solsys_buffers_empty(fit.solar_system)
+        self.assert_solsys_buffers_empty(fit_other.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_to_none(self):
@@ -144,5 +144,5 @@ class TestDirectItemShip(ContainerTestCase):
         # Verification
         self.assertIsNone(fit.ship)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

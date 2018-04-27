@@ -73,7 +73,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, 1000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_round_down(self):
@@ -98,7 +98,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, 1000)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_quantity_none(self):
@@ -122,7 +122,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_damageable_zero(self):
@@ -147,7 +147,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_damageable_absent(self):
@@ -171,7 +171,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_hp_zero(self):
@@ -196,7 +196,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_hp_absent(self):
@@ -221,7 +221,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_dmg_zero(self):
@@ -246,7 +246,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_dmg_absent(self):
@@ -270,7 +270,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_dmg_chance_zero(self):
@@ -295,7 +295,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertEqual(item.cycles_until_reload, math.inf)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_attr_dmg_chance_absent(self):
@@ -319,7 +319,7 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_charge_not_loaded(self):
@@ -335,5 +335,5 @@ class TestItemDmgTurretLaserCycles(ItemMixinTestCase):
         # Verification
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

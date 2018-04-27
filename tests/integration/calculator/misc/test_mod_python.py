@@ -92,7 +92,7 @@ class TestModifierPython(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.attr1.id], 600)
         # Cleanup
         self.fit.ship = None
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_disabling(self):
@@ -108,7 +108,7 @@ class TestModifierPython(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.attr1.id], 100)
         # Cleanup
         self.fit.ship = None
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_tgt_recalc_attr_change(self):
@@ -137,7 +137,7 @@ class TestModifierPython(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.attr1.id], 3000)
         # Cleanup
         self.fit.ship = None
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_unsubscription(self):
@@ -181,5 +181,5 @@ class TestModifierPython(CalculatorTestCase):
         self.assertAlmostEqual(dogma_item.attrs[self.attr1.id], 600)
         # Cleanup
         self.fit.ship = None
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

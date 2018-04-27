@@ -61,7 +61,7 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertEqual(len(module_items), 5)
         # Cleanup
         self.remove_modules()
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_items_iter(self):
@@ -91,7 +91,7 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertEqual(list(module_items), expected)
         # Cleanup
         self.remove_modules()
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_contains(self):
@@ -117,5 +117,5 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertFalse(None in module_items)
         # Cleanup
         self.remove_modules()
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

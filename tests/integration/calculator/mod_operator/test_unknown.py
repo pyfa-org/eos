@@ -60,7 +60,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             'malformed modifier on item type {}: '
             'unknown operator 1008'.format(item_type.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
 
     def test_log_unorderable_combination(self):
         # Check how non-orderable operator value influences attribute
@@ -100,7 +100,7 @@ class TestOperatorUnknown(CalculatorTestCase):
             'malformed modifier on item type {}: '
             'unknown operator None'.format(item_type.id))
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
 
     def test_combination(self):
         tgt_attr = self.mkattr()
@@ -130,5 +130,5 @@ class TestOperatorUnknown(CalculatorTestCase):
         # calculating value based on valid modifiers
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 150)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 1)

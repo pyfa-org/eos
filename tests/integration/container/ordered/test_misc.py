@@ -40,7 +40,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.modules.high.remove(item2)
         self.assertEqual(len(fit.modules.high), 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_contains(self):
@@ -67,7 +67,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(None in fit.modules.high)
         self.assertFalse(item2 in fit.modules.high)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_iter(self):
@@ -86,7 +86,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.modules.high.remove(item2)
         self.assertEqual(list(item for item in fit.modules.high), [])
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_clear(self):
@@ -100,7 +100,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         # Verification
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_slice(self):
@@ -130,7 +130,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         # Cleanup
         fit.modules.high.remove(item1)
         fit.modules.high.remove(item2)
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_bool(self):
@@ -142,7 +142,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         fit.modules.high.remove(item)
         self.assertIs(bool(fit.modules.high), False)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_view(self):
@@ -180,5 +180,5 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assertFalse(item2 in view)
         self.assertFalse(None in view)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

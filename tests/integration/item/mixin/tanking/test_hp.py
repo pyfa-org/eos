@@ -46,7 +46,7 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assertAlmostEqual(item.hp.shield, 12)
         self.assertAlmostEqual(item.hp.total, 30)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_attr_all_absent(self):
@@ -59,7 +59,7 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assertAlmostEqual(item.hp.shield, 0)
         self.assertAlmostEqual(item.hp.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_not_loaded(self):
@@ -72,5 +72,5 @@ class TestItemMixinTankingHp(ItemMixinTestCase):
         self.assertAlmostEqual(item.hp.shield, 0)
         self.assertAlmostEqual(item.hp.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

@@ -104,7 +104,7 @@ class TestStatsDmgSuppression(StatsTestCase):
         self.assertAlmostEqual(stats_volley.explosive, 50019.2)
         self.assertAlmostEqual(stats_volley.total, 200036.0)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_dps(self):
@@ -117,5 +117,5 @@ class TestStatsDmgSuppression(StatsTestCase):
         self.assertAlmostEqual(stats_volley.explosive, 7.68)
         self.assertAlmostEqual(stats_volley.total, 14.4)
         # Cleanup
-        self.assert_fit_buffers_empty(self.fit)
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)

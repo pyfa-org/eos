@@ -79,7 +79,7 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 0)
         self.assertAlmostEqual(dps.total, 53.4)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_reactivation_shorter_than_reload(self):
@@ -111,7 +111,7 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 8.5)
         self.assertAlmostEqual(dps.total, 27.4)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_reactivation_longer_than_reload(self):
@@ -143,7 +143,7 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 1.0625)
         self.assertAlmostEqual(dps.total, 3.425)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
 
     def test_item_not_loaded(self):
@@ -158,5 +158,5 @@ class TestItemDmgCommonDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.explosive, 0)
         self.assertAlmostEqual(dps.total, 0)
         # Cleanup
-        self.assert_fit_buffers_empty(fit)
+        self.assert_solsys_buffers_empty(fit.solar_system)
         self.assertEqual(len(self.get_log()), 0)
