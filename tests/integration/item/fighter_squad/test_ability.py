@@ -66,7 +66,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(abilities[FighterAbilityId.heavy_rocket_salvo_em], False)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_status_item_inactive(self):
         # Even when item is not set to active, ability statuses should be shown
@@ -99,7 +99,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertIs(abilities[FighterAbilityId.heavy_rocket_salvo_em], False)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_status_item_not_loaded(self):
         # Setup
@@ -110,7 +110,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertEqual(len(item.abilities), 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_enabling_default_effect(self):
         # Setup
@@ -144,7 +144,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_enabling_nondefault_effect(self):
         # Setup
@@ -176,7 +176,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_enabling_no_ability(self):
         # Setup
@@ -210,7 +210,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_enabling_item_not_loaded(self):
         # Setup
@@ -222,7 +222,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
             item.set_ability_status(FighterAbilityId.beam_cannon, True)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_disabling_default_effect(self):
         # Setup
@@ -255,7 +255,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_disabling_nondefault_effect(self):
         # Setup
@@ -288,7 +288,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_disabling_no_ability(self):
         # Setup
@@ -321,7 +321,7 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_disabling_item_not_loaded(self):
         # Setup
@@ -333,4 +333,4 @@ class TestItemFighterSquadAbility(ItemMixinTestCase):
             item.set_ability_status(FighterAbilityId.beam_cannon, False)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

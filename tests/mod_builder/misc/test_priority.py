@@ -68,7 +68,7 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr_id, 9)
         self.assertEqual(modifier.operator, ModOperator.post_percent)
         self.assertEqual(modifier.src_attr_id, 327)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_modinfo(self):
         effect_row = {
@@ -88,4 +88,4 @@ class TestBuilderPriority(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr_id, 164)
         self.assertEqual(modifier.operator, ModOperator.mod_add)
         self.assertEqual(modifier.src_attr_id, 175)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

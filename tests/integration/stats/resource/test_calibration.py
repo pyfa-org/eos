@@ -46,14 +46,14 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.output, 350)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -61,7 +61,7 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -69,7 +69,7 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_single_no_rounding(self):
         self.fit.rigs.add(Rig(self.mktype(
@@ -79,7 +79,7 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.used, 55.5555555555)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_multiple(self):
         self.fit.rigs.add(Rig(self.mktype(
@@ -92,7 +92,7 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.used, 80)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_effect_absent(self):
         item1 = Rig(self.mktype(
@@ -105,7 +105,7 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.used, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_effect_disabled(self):
         item1 = Rig(self.mktype(
@@ -121,14 +121,14 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.used, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.calibration.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_not_loaded(self):
         self.fit.rigs.add(Rig(self.allocate_type_id()))
@@ -136,4 +136,4 @@ class TestCalibration(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.calibration.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

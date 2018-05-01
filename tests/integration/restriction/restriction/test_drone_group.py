@@ -45,7 +45,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, [4])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_group2_mismatch(self):
         # Check that error is returned on attempt to add drone from group
@@ -62,7 +62,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, [69])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_group_mismatch_combined(self):
         # Check that error is returned on attempt to add drone from group
@@ -80,7 +80,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, [48, 106])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_drone_group_none(self):
         # Check that drone from None group is subject to restriction
@@ -96,7 +96,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, [1896])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_ship_absent(self):
         # Check that restriction isn't applied when fit doesn't have ship
@@ -108,7 +108,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_ship_attr_absent(self):
         # Check that restriction isn't applied when fit has ship, but without
@@ -122,7 +122,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -134,7 +134,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(
@@ -147,7 +147,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_class_other(self):
         # Check that restriction is not applied to items which are not drones
@@ -161,7 +161,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_group1_match(self):
         # Check that no error raised when drone of group matching to first
@@ -176,7 +176,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_group2_match(self):
         # Check that no error raised when drone of group matching to second
@@ -191,7 +191,7 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_group_combination_match(self):
         # Check that no error raised when drone of group matching to any of two
@@ -207,4 +207,4 @@ class TestDroneGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

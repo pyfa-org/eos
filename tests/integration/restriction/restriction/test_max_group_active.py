@@ -56,7 +56,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertEqual(error2.max_allowed_quantity, 1)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mix_one(self):
         # Make sure error is raised for just items which excess restriction,
@@ -82,7 +82,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass(self):
         # Make sure no errors are raised when quantity of added items doesn't
@@ -104,7 +104,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_group_none(self):
         # Check that items with None group are not affected
@@ -125,7 +125,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_state(self):
         # No errors should occur if items are not active+
@@ -146,7 +146,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_class_other(self):
         item_type = self.mktype(
@@ -166,7 +166,7 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         item = ModuleHigh(self.allocate_type_id(), state=State.active)
@@ -177,4 +177,4 @@ class TestMaxGroupActive(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

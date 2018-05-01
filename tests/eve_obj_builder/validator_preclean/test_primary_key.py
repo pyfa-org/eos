@@ -30,7 +30,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestPrimaryKey(EveObjBuilderTestCase):
     """Check that only valid primary keys pass checks."""
 
-    logger_name = 'eos.eve_obj_builder.validator_preclean'
+    def get_log(self, name='eos.eve_obj_builder.validator_preclean'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def test_single_proper_pk(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
@@ -38,15 +39,14 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.run_builder()
         self.assertIn(1, self.types)
         self.assertIn(2, self.types)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)
 
     def test_single_no_pk(self):
         self.dh.data['evetypes'].append({'groupID': 1})
         self.run_builder()
         self.assertEqual(len(self.types), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -56,9 +56,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1.5, 'groupID': 1})
         self.run_builder()
         self.assertEqual(len(self.types), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -70,9 +69,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].group_id, 1)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -85,9 +83,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].group_id, 920)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -99,9 +96,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 920})
         self.run_builder()
         self.assertEqual(len(self.types), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -117,16 +113,15 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         type_attrs = self.types[1].attrs
         self.assertEqual(type_attrs[100], 50.0)
         self.assertEqual(type_attrs[50], 100.0)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)
 
     def test_dual_no_pk(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
         self.dh.data['dgmtypeattribs'].append({'typeID': 1, 'value': 50.0})
         self.run_builder()
         self.assertEqual(len(self.types[1].attrs), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -138,9 +133,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': 100.1, 'value': 50.0})
         self.run_builder()
         self.assertEqual(len(self.types[1].attrs), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -156,9 +150,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         type_attrs = self.types[1].attrs
         self.assertEqual(len(type_attrs), 1)
         self.assertEqual(type_attrs[100], 50.0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -173,9 +166,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': 100, 'value': 5.0})
         self.run_builder()
         self.assertEqual(len(self.types), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -192,9 +184,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         type_attrs = self.types[1].attrs
         self.assertEqual(len(type_attrs), 1)
         self.assertEqual(type_attrs[100], 5.0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -210,9 +201,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].category_id, 7)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -229,9 +219,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.attrs), 1)
         self.assertEqual(self.attrs[7].max_attr_id, 50)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -246,9 +235,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.effects), 1)
         self.assertEqual(self.effects[7].category_id, 50)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -264,9 +252,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].default_effect.id, 100)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -300,9 +287,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         fields_to_check = set(expected).intersection(actual)
         actual_clean = {k: actual[k] for k in fields_to_check}
         self.assertEqual(actual_clean, expected)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -328,9 +314,8 @@ class TestPrimaryKey(EveObjBuilderTestCase):
         self.assertEqual(len(self.types), 1)
         type_abilities_data = self.types[1].abilities_data
         self.assertEqual(len(type_abilities_data), 2)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,

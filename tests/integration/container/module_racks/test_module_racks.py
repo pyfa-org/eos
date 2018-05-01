@@ -66,7 +66,7 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertEqual(len(module_items), 5)
         # Cleanup
         self.verify_buffers()
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_items_iter(self):
         module_items = self.fit.modules.items()
@@ -95,7 +95,7 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertEqual(list(module_items), expected)
         # Cleanup
         self.verify_buffers()
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_contains(self):
         module_items = self.fit.modules.items()
@@ -120,4 +120,4 @@ class TestContainerModuleRacks(ContainerTestCase):
         self.assertFalse(None in module_items)
         # Cleanup
         self.verify_buffers()
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

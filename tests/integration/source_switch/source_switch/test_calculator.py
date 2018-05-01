@@ -90,7 +90,7 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         # Cleanup
         self.assert_solsys_buffers_empty(fit1.solar_system)
         self.assert_solsys_buffers_empty(fit2.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_switch_fit(self):
         # Here we check if attributes are updated if fit gets new source
@@ -150,4 +150,4 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 88)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

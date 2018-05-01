@@ -61,14 +61,14 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.output, 400)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.cpu.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -76,7 +76,7 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -84,7 +84,7 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_single(self):
         # Check that modified consumption attribute is used
@@ -107,7 +107,7 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.used, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_multiple(self):
         self.fit.modules.high.append(ModuleHigh(
@@ -120,7 +120,7 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.used, 80)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_rounding(self):
         self.fit.modules.high.append(ModuleHigh(
@@ -132,7 +132,7 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.used, 55.56)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_state(self):
         self.fit.modules.high.append(ModuleHigh(
@@ -145,7 +145,7 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.used, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_effect_absent(self):
         item1 = ModuleHigh(
@@ -161,7 +161,7 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.used, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_effect_disabled(self):
         item1 = ModuleHigh(
@@ -177,14 +177,14 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.used, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.cpu.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_not_loaded(self):
         self.fit.modules.high.append(ModuleHigh(
@@ -194,4 +194,4 @@ class TestCpu(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.cpu.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -73,7 +73,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertIs(side_effect2.status, True)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_data_item_not_loaded(self):
         # Setup
@@ -84,7 +84,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertEqual(len(item.side_effects), 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_enabling(self):
         # Setup
@@ -117,7 +117,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_enabling_not_side_effect(self):
         # Setup
@@ -145,7 +145,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_enabling_item_not_loaded(self):
         # Setup
@@ -158,7 +158,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
             item.set_side_effect_status(effect_id, True)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_disabling(self):
         # Setup
@@ -192,7 +192,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_disabling_not_side_effect(self):
         # Setup
@@ -220,7 +220,7 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_disabling_item_not_loaded(self):
         # Setup
@@ -233,4 +233,4 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
             item.set_side_effect_status(effect_id, False)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

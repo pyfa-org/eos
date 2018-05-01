@@ -82,7 +82,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 27.4)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_em_absent(self):
         fit = Fit()
@@ -114,7 +114,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 22.2)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_therm_absent(self):
         fit = Fit()
@@ -146,7 +146,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 21.1)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_kin_absent(self):
         fit = Fit()
@@ -178,7 +178,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 20)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_expl_absent(self):
         fit = Fit()
@@ -210,7 +210,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 18.9)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_insufficient_state(self):
         fit = Fit()
@@ -243,7 +243,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_effect_disabled(self):
         fit = Fit()
@@ -277,7 +277,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_effect_absent(self):
         fit = Fit()
@@ -308,7 +308,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_effect_disabled(self):
         fit = Fit()
@@ -343,7 +343,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_cycles_until_reload_none(self):
         fit = Fit()
@@ -376,7 +376,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_absent(self):
         fit = Fit()
@@ -400,7 +400,7 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_not_loaded(self):
         fit = Fit()
@@ -425,4 +425,4 @@ class TestItemDmgMissileVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

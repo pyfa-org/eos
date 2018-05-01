@@ -53,9 +53,8 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         # Action
         self.fit.rigs.add(item)
         # Verification
-        log = self.get_log()
-        self.assertEqual(len(log), 2)
-        for log_record in log:
+        self.assert_log_entries(2)
+        for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.calculator.affection')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(

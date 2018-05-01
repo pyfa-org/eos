@@ -64,7 +64,7 @@ class TestTgtItemSpecialAwaitingChar(CalculatorTestCase):
         self.fit.implants.remove(self.influence_src)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_source_to_none(self):
         self.fit.implants.add(self.influence_src)
@@ -74,7 +74,7 @@ class TestTgtItemSpecialAwaitingChar(CalculatorTestCase):
         self.fit.solar_system.source = None
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_none_to_source(self):
         self.fit.solar_system.source = None
@@ -86,4 +86,4 @@ class TestTgtItemSpecialAwaitingChar(CalculatorTestCase):
         self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -83,7 +83,7 @@ class TestItemDmgBombDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.total, 219.2)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_reload(self):
         fit = Fit()
@@ -119,7 +119,7 @@ class TestItemDmgBombDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.total, 219.2)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_not_loaded(self):
         fit = Fit()
@@ -145,4 +145,4 @@ class TestItemDmgBombDps(ItemMixinTestCase):
         self.assertAlmostEqual(dps.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -57,7 +57,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_other_domain_charge(self):
         influence_src = Charge(self.mktype(
@@ -76,7 +76,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_self_container(self):
         # Check that source container isn't modified
@@ -91,7 +91,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assertAlmostEqual(influence_src.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_self_charge(self):
         # Check that source charge isn't modified
@@ -107,7 +107,7 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assertAlmostEqual(influence_src.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_other_item(self):
         # Here we check some "random" item, w/o linking items
@@ -122,4 +122,4 @@ class TestTgtItemDomainOther(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

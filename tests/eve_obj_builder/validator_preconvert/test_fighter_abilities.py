@@ -29,7 +29,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestFighterAbilities(EveObjBuilderTestCase):
     """Check that only known abilities in valud configurations pass."""
 
-    logger_name = 'eos.eve_obj_builder.validator_preconv'
+    def get_log(self, name='eos.eve_obj_builder.validator_preconv'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def test_unknown_ability(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 6})
@@ -43,9 +44,8 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         self.assertEqual(len(self.types[1].abilities_data), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -71,9 +71,8 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.assertEqual(len(type_abilities_data), 1)
         type_ability_data = type_abilities_data[FighterAbilityId.autocannon]
         self.assertEqual(type_ability_data.charge_quantity, 3)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -88,9 +87,8 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         self.assertEqual(len(self.types[1].abilities_data), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -107,4 +105,4 @@ class TestFighterAbilities(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)

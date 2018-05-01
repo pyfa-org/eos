@@ -43,7 +43,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_contains(self):
         fit = Fit()
@@ -72,7 +72,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_iter(self):
         fit = Fit()
@@ -93,7 +93,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_clear(self):
         fit = Fit()
@@ -109,7 +109,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_slice(self):
         fit = Fit()
@@ -139,7 +139,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_bool(self):
         fit = Fit()
@@ -152,7 +152,7 @@ class TestContainerOrderedMisc(ContainerTestCase):
         # Cleanup
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_view(self):
         fit = Fit()
@@ -192,4 +192,4 @@ class TestContainerOrderedMisc(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

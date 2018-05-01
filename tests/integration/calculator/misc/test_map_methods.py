@@ -87,7 +87,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
-        self.assertEqual(len(self.get_log()), 2)
+        self.assert_log_entries(2)
 
     def test_getattr_not_loaded(self):
         self.fit.solar_system.source = None
@@ -106,7 +106,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
-        self.assertEqual(len(self.get_log()), 6)
+        self.assert_log_entries(6)
 
     def test_get(self):
         # Make sure map's get method replicates functionality of dictionary get
@@ -121,7 +121,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Attempts to fetch non-existent attribute and attribute without base
         # value generate errors, which is not related to this test
-        self.assertEqual(len(self.get_log()), 3)
+        self.assert_log_entries(3)
 
     def test_get_not_loaded(self):
         self.fit.solar_system.source = None
@@ -133,7 +133,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertIsNone(self.item.attrs.get(1008))
         self.assertEqual(self.item.attrs.get(1008, 60), 60)
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 7)
+        self.assert_log_entries(7)
 
     def test_len(self):
         # Length should return length, counting unique IDs from both attribute
@@ -147,7 +147,7 @@ class TestMapMethods(CalculatorTestCase):
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
-        self.assertEqual(len(self.get_log()), 2)
+        self.assert_log_entries(2)
 
     def test_len_not_loaded(self):
         self.fit.solar_system.source = None
@@ -156,7 +156,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertEqual(len(self.item.attrs), 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 6)
+        self.assert_log_entries(6)
 
     def test_contains(self):
         # Make sure map reacts positively to items contained in any attribute
@@ -177,7 +177,7 @@ class TestMapMethods(CalculatorTestCase):
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
-        self.assertEqual(len(self.get_log()), 2)
+        self.assert_log_entries(2)
 
     def test_contains_not_loaded(self):
         self.fit.solar_system.source = None
@@ -196,7 +196,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertFalse(1008 in self.item.attrs)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 6)
+        self.assert_log_entries(6)
 
     def test_keys(self):
         # When we request map keys, they should include all unique attribute IDs
@@ -211,7 +211,7 @@ class TestMapMethods(CalculatorTestCase):
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
-        self.assertEqual(len(self.get_log()), 2)
+        self.assert_log_entries(2)
 
     def test_keys_not_loaded(self):
         self.fit.solar_system.source = None
@@ -220,7 +220,7 @@ class TestMapMethods(CalculatorTestCase):
         self.assertCountEqual(self.item.attrs.keys(), ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 6)
+        self.assert_log_entries(6)
 
     def test_items(self):
         # As with keys, we include unique attribute IDs, plus their calculated
@@ -236,7 +236,7 @@ class TestMapMethods(CalculatorTestCase):
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
-        self.assertEqual(len(self.get_log()), 2)
+        self.assert_log_entries(2)
 
     def test_items_not_loaded(self):
         self.fit.solar_system.source = None
@@ -246,7 +246,7 @@ class TestMapMethods(CalculatorTestCase):
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
-        self.assertEqual(len(self.get_log()), 6)
+        self.assert_log_entries(6)
 
     def test_iter(self):
         # Iter should return the same keys as keys(). CountEqual takes any
@@ -261,7 +261,7 @@ class TestMapMethods(CalculatorTestCase):
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         # Log entries are unrelated to this test
-        self.assertEqual(len(self.get_log()), 2)
+        self.assert_log_entries(2)
 
     def test_iter_not_loaded(self):
         self.fit.solar_system.source = None
@@ -270,4 +270,4 @@ class TestMapMethods(CalculatorTestCase):
         self.assertCountEqual(self.item.attrs, ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 6)
+        self.assert_log_entries(6)

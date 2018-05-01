@@ -83,7 +83,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 2466)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_em_absent(self):
         fit = Fit()
@@ -104,7 +104,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 1998)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_therm_absent(self):
         fit = Fit()
@@ -125,7 +125,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 1899)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_kin_absent(self):
         fit = Fit()
@@ -146,7 +146,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 1800)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_expl_absent(self):
         fit = Fit()
@@ -167,7 +167,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 1701)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_squad_size_absent(self):
         fit = Fit()
@@ -191,7 +191,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 274)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ability_charges_zero(self):
         self.abilities_data = {FighterAbilityId.launch_bomb: AbilityData(0, 0)}
@@ -214,7 +214,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_autocharge_absent(self):
         fit = Fit()
@@ -229,7 +229,7 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_autocharge_not_loaded(self):
         fit = Fit()
@@ -246,4 +246,4 @@ class TestFighterSquadLaunchBombVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

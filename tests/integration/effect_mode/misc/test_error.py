@@ -43,9 +43,8 @@ class TestEffectModeErrors(EffectModeTestCase):
         item.set_effect_mode(effect.id, 9999)
         # Verification
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.effect_status')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(log_record.msg, 'unknown effect mode 9999')

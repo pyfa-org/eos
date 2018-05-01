@@ -53,7 +53,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_type_multiple_different(self):
         ship_type = self.mktype(group_id=31)
@@ -72,7 +72,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_type_multiple_same(self):
         ship_type = self.mktype(group_id=31)
@@ -91,7 +91,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_group(self):
         ship_type = self.mktype(group_id=31)
@@ -109,7 +109,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, [38])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_group_multiple_different(self):
         ship_type = self.mktype(group_id=31)
@@ -128,7 +128,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, (38, 83))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_group_multiple_same(self):
         ship_type = self.mktype(group_id=31)
@@ -147,7 +147,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, [38])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_combined(self):
         # Check that failure is appropriately generated when item specifies both
@@ -168,7 +168,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, [23])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_absent(self):
         # Absent ship should trigger this error too
@@ -185,7 +185,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_group_none(self):
         ship_type = self.mktype()
@@ -203,7 +203,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_not_loaded(self):
         ship_type_id = self.allocate_type_id()
@@ -221,7 +221,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertCountEqual(error.allowed_group_ids, ())
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_type_match(self):
         # When type of ship matches type-restriction attribute, no error should
@@ -237,7 +237,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_group_match(self):
         # When type of ship matches group-restriction attribute, no error should
@@ -252,7 +252,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_combined_type_match(self):
         # Check that it's enough to match type condition to be fittable, even if
@@ -269,7 +269,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_combined_group_match(self):
         # Check that it's enough to match group condition to be fittable, even
@@ -285,7 +285,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_class_other(self):
         self.fit.ship = Ship(self.mktype(group_id=31).id)
@@ -298,7 +298,7 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(group_id=31).id)
@@ -310,4 +310,4 @@ class TestShipTypeGroup(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -93,7 +93,7 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_disabling(self):
         item = ModuleHigh(self.mktype(
@@ -109,7 +109,7 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_tgt_recalc_attr_change(self):
         # Here dogma modifier changes value of one of attributes which are used
@@ -138,7 +138,7 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_unsubscription(self):
         # Make sure that when python modifier unsubscribes from message type
@@ -182,4 +182,4 @@ class TestModifierPython(CalculatorTestCase):
         # Cleanup
         self.fit.ship = None
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

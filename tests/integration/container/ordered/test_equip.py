@@ -36,7 +36,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         self.assertIs(len(fit.modules.high), 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_to_empty(self):
         fit = Fit()
@@ -49,7 +49,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Cleanup
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_type_failure(self):
         fit = Fit()
@@ -63,7 +63,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         # Cleanup
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_value_failure(self):
         fit = Fit()
@@ -81,7 +81,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_solsys_buffers_empty(fit_other.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_solid(self):
         fit = Fit()
@@ -101,7 +101,7 @@ class TestContainerOrderedEquip(ContainerTestCase):
         self.assert_item_buffers_empty(item2)
         self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_first_hole(self):
         fit = Fit()
@@ -124,4 +124,4 @@ class TestContainerOrderedEquip(ContainerTestCase):
         self.assert_item_buffers_empty(item3)
         self.assert_item_buffers_empty(item4)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

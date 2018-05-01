@@ -46,7 +46,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item2)
         self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_to_end(self):
         fit = Fit()
@@ -67,7 +67,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item2)
         self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_outside(self):
         fit = Fit()
@@ -86,7 +86,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_inside_type_failure(self):
         fit = Fit()
@@ -108,7 +108,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item2)
         self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_inside_value_failure(self):
         fit = Fit()
@@ -134,7 +134,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_solsys_buffers_empty(fit_other.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_outside_type_failure(self):
         fit = Fit()
@@ -148,7 +148,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         # Cleanup
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_outside_value_failure(self):
         fit = Fit()
@@ -166,7 +166,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_solsys_buffers_empty(fit_other.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_none_inside(self):
         fit = Fit()
@@ -185,7 +185,7 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_none_outside(self):
         fit = Fit()
@@ -203,4 +203,4 @@ class TestContainerOrderedInsert(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

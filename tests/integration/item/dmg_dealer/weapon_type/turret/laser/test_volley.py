@@ -82,7 +82,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 68.5)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_attr_em_absent(self):
         fit = Fit()
@@ -112,7 +112,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 55.5)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_attr_therm_absent(self):
         fit = Fit()
@@ -142,7 +142,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 52.75)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_attr_kin_absent(self):
         fit = Fit()
@@ -172,7 +172,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_attr_expl_absent(self):
         fit = Fit()
@@ -202,7 +202,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 47.25)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_mult_absent(self):
         fit = Fit()
@@ -232,7 +232,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 27.4)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_insufficient_state(self):
         fit = Fit()
@@ -263,7 +263,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_effect_disabled(self):
         fit = Fit()
@@ -295,7 +295,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_absent(self):
         fit = Fit()
@@ -320,7 +320,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_cycles_until_reload_none(self):
         fit = Fit()
@@ -351,7 +351,7 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_not_loaded(self):
         fit = Fit()
@@ -377,4 +377,4 @@ class TestItemDmgTurretLaserVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

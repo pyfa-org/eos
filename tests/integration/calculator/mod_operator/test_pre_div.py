@@ -67,7 +67,7 @@ class TestOperatorPreDiv(CalculatorTestCase):
             self.influence_tgt.attrs[self.tgt_attr.id], 148.148, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_penalized(self):
         self.tgt_attr.stackable = False
@@ -76,4 +76,4 @@ class TestOperatorPreDiv(CalculatorTestCase):
             self.influence_tgt.attrs[self.tgt_attr.id], 165.791, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

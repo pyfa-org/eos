@@ -81,4 +81,4 @@ class TestItemDmgMissileAutotargetingVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 27.4)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

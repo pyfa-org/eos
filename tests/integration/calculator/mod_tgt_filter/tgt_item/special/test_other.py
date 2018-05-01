@@ -61,7 +61,7 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         self.fit.modules.high.remove(influence_src)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_none_to_source(self):
         tgt_attr = self.mkattr()
@@ -90,7 +90,7 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         self.assertAlmostEqual(charge.attrs[tgt_attr.id], 60)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_source_to_none(self):
         tgt_attr = self.mkattr()
@@ -117,4 +117,4 @@ class TestTgtItemSpecialOther(CalculatorTestCase):
         self.fit.solar_system.source = None
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

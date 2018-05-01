@@ -73,7 +73,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 526.25)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_non_uniform(self):
         fit = Fit()
@@ -102,7 +102,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 792.783, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_hull_hp_absent(self):
         fit = Fit()
@@ -130,7 +130,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 780.827, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_hp_armor_absent(self):
         fit = Fit()
@@ -158,7 +158,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 697.507, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_hp_shield_absent(self):
         fit = Fit()
@@ -186,7 +186,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 107.233, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_hp_all_absent(self):
         fit = Fit()
@@ -212,7 +212,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_resist_em_absent(self):
         fit = Fit()
@@ -240,7 +240,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 753.267, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_resist_therm_absent(self):
         fit = Fit()
@@ -268,7 +268,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 770.244, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_resist_kin_absent(self):
         fit = Fit()
@@ -296,7 +296,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 791.958, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_resist_expl_absent(self):
         fit = Fit()
@@ -324,7 +324,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 792.335, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_resist_all_absent(self):
         fit = Fit()
@@ -349,7 +349,7 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 707.233, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_not_loaded(self):
         fit = Fit()
@@ -363,4 +363,4 @@ class TestItemMixinTankingEhp(ItemMixinTestCase):
         self.assertAlmostEqual(results.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

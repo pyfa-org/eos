@@ -75,7 +75,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 52000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_caldari(self):
         fit = Fit()
@@ -97,7 +97,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 74000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_gallente(self):
         fit = Fit()
@@ -119,7 +119,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 63000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_minmatar(self):
         fit = Fit()
@@ -141,7 +141,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 85000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_insufficient_state(self):
         fit = Fit()
@@ -166,7 +166,7 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effect_disabled(self):
         fit = Fit()
@@ -192,4 +192,4 @@ class TestItemDmgDoomsdayDirectVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

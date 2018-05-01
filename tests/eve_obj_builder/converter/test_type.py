@@ -29,8 +29,6 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestConversionType(EveObjBuilderTestCase):
     """Data should be saved into appropriate fields of an item type."""
 
-    logger_name = 'eos.eve_obj_builder.converter'
-
     def test_fields(self):
         self.dh.data['evetypes'].append(
             {'randomField': 66, 'typeID': 1, 'groupID': 6})

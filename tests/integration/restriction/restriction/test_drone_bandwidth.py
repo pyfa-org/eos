@@ -57,7 +57,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.item_use, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_multiple(self):
         # When multiple consumers require less than drone bandwidth output
@@ -89,7 +89,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error2.item_use, 20)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_modified(self):
         # Make sure modified drone bandwidth values are taken
@@ -120,7 +120,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.item_use, 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_absent(self):
         # When stats module does not specify output, make sure it's assumed to
@@ -138,7 +138,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.item_use, 5)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -155,7 +155,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.item_use, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -172,7 +172,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertEqual(error.item_use, 5)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mix_usage_zero(self):
         # If some item has zero usage and drone bandwidth error is still raised,
@@ -200,7 +200,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass(self):
         # When total consumption is less than output, no errors should be raised
@@ -224,7 +224,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_state(self):
         # When item isn't online, it shouldn't consume anything
@@ -240,7 +240,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_attr_absent(self):
         self.fit.ship = Ship(self.mktype(
@@ -253,7 +253,7 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(
@@ -266,4 +266,4 @@ class TestDroneBandwidth(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -40,7 +40,7 @@ class TestItemEffectData(EffectModeTestCase):
         self.assertIs(effect_data.effect, effect)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mode_full_compliance(self):
         effect = self.mkeffect(category_id=EffectCategoryId.passive)
@@ -54,7 +54,7 @@ class TestItemEffectData(EffectModeTestCase):
         self.assertEqual(effect_data.mode, EffectMode.full_compliance)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mode_force_run(self):
         effect = self.mkeffect(category_id=EffectCategoryId.passive)
@@ -68,7 +68,7 @@ class TestItemEffectData(EffectModeTestCase):
         self.assertEqual(effect_data.mode, EffectMode.force_run)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_status_running(self):
         effect = self.mkeffect(category_id=EffectCategoryId.passive)
@@ -82,7 +82,7 @@ class TestItemEffectData(EffectModeTestCase):
         self.assertIs(effect_data.status, True)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_status_stopped(self):
         effect = self.mkeffect(category_id=EffectCategoryId.passive)
@@ -96,7 +96,7 @@ class TestItemEffectData(EffectModeTestCase):
         self.assertIs(effect_data.status, False)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_multiple(self):
         effect1 = self.mkeffect(category_id=EffectCategoryId.passive)
@@ -128,7 +128,7 @@ class TestItemEffectData(EffectModeTestCase):
         self.assertIs(effect3_data.status, True)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_not_loaded(self):
         item = ModuleHigh(self.allocate_type_id(), state=State.offline)
@@ -137,4 +137,4 @@ class TestItemEffectData(EffectModeTestCase):
         self.assertEqual(len(item.effects), 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

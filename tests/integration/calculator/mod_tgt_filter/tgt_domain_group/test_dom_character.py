@@ -64,7 +64,7 @@ class TestTgtDomainGroupDomainChar(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_domain_other(self):
         influence_tgt = Drone(self.mktype(
@@ -77,7 +77,7 @@ class TestTgtDomainGroupDomainChar(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_group_other(self):
         influence_tgt = Implant(self.mktype(
@@ -90,4 +90,4 @@ class TestTgtDomainGroupDomainChar(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -38,9 +38,8 @@ class TestNonExistent(CalculatorTestCase):
         with self.assertRaises(KeyError):
             item.attrs[105]
         # Verification
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
@@ -61,9 +60,8 @@ class TestNonExistent(CalculatorTestCase):
         with self.assertRaises(KeyError):
             item.attrs[attr.id]
         # Verification
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.calculator.map')
         self.assertEqual(log_record.levelno, logging.INFO)
         self.assertEqual(
@@ -84,4 +82,4 @@ class TestNonExistent(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[attr.id], 5.6)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

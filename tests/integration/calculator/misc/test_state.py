@@ -107,7 +107,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 110)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fit_online(self):
         # Setup
@@ -118,7 +118,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fit_active(self):
         # Setup
@@ -129,7 +129,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 214.5)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fit_overloaded(self):
         # Setup
@@ -140,7 +140,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 364.65)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_switch_up_single(self):
         # Setup
@@ -152,7 +152,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 143)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_switch_up_multiple(self):
         # Setup
@@ -164,7 +164,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 364.65)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_switch_down_single(self):
         # Setup
@@ -176,7 +176,7 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 214.5)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_switch_down_multiple(self):
         # Setup
@@ -188,4 +188,4 @@ class TestStateSwitching(CalculatorTestCase):
         self.assertAlmostEqual(self.item.attrs[self.tgt_attr.id], 110)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

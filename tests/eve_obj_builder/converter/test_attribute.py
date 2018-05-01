@@ -25,7 +25,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestConversionAttribute(EveObjBuilderTestCase):
     """Data should be saved into appropriate fields of an attribute."""
 
-    logger_name = 'eos.eve_obj_builder.converter'
+    def get_log(self, name='eos.eve_obj_builder.converter'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def test_fields(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
@@ -43,4 +44,4 @@ class TestConversionAttribute(EveObjBuilderTestCase):
         self.assertEqual(attr.default_value, 0.0)
         self.assertIs(attr.high_is_good, False)
         self.assertIs(attr.stackable, True)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)

@@ -58,7 +58,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assertEqual(item.cycles_until_reload, 2)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_round_down(self):
         fit = Fit()
@@ -76,7 +76,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assertEqual(item.cycles_until_reload, 2)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_charge_quantity_none(self):
         fit = Fit()
@@ -92,7 +92,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_charge_rate_zero(self):
         fit = Fit()
@@ -110,7 +110,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_charge_rate_absent(self):
         fit = Fit()
@@ -126,7 +126,7 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_not_loaded(self):
         fit = Fit()
@@ -144,4 +144,4 @@ class TestItemDmgTurretProjectileCycles(ItemMixinTestCase):
         self.assertIsNone(item.cycles_until_reload)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

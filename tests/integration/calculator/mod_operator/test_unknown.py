@@ -50,9 +50,8 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.fit.rigs.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 100)
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
@@ -90,9 +89,8 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.fit.rigs.add(item)
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.calculator.map')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
@@ -131,4 +129,4 @@ class TestOperatorUnknown(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 150)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 1)
+        self.assert_log_entries(1)

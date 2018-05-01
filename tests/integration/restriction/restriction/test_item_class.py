@@ -57,7 +57,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_autocharge_ignore(self):
         autocharge_type = self.mktype()
@@ -78,7 +78,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_booster_pass(self):
         item = Booster(self.mktype(
@@ -91,7 +91,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_booster_fail_category_other(self):
         item = Booster(self.mktype(
@@ -106,7 +106,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_booster_fail_attr_absent(self):
         item = Booster(self.mktype(category_id=TypeCategoryId.implant).id)
@@ -119,7 +119,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_character_pass(self):
         item = Character(self.mktype(group_id=TypeGroupId.character).id)
@@ -130,7 +130,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_character_fail_group_other(self):
         item = Character(self.mktype(group_id=1008).id)
@@ -143,7 +143,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_pass(self):
         item = Charge(self.mktype(category_id=TypeCategoryId.charge).id)
@@ -156,7 +156,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_fail_category_other(self):
         item = Charge(self.mktype(category_id=1008).id)
@@ -171,7 +171,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_drone_pass(self):
         item = Drone(self.mktype(category_id=TypeCategoryId.drone).id)
@@ -182,7 +182,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_drone_fail_category_other(self):
         item = Drone(self.mktype(category_id=1008).id)
@@ -195,7 +195,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effect_beacon_pass(self):
         item = EffectBeacon(self.mktype(group_id=TypeGroupId.effect_beacon).id)
@@ -206,7 +206,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effect_beacon_fail_group_other(self):
         item = EffectBeacon(self.mktype(group_id=1008).id)
@@ -219,7 +219,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fighter_squad_pass(self):
         item = FighterSquad(self.mktype(
@@ -232,7 +232,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fighter_squad_fail_category_other(self):
         item = FighterSquad(self.mktype(
@@ -247,7 +247,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fighter_squad_fail_attr_absent(self):
         item = FighterSquad(self.mktype(category_id=TypeCategoryId.fighter).id)
@@ -260,7 +260,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_implant_pass(self):
         item = Implant(self.mktype(
@@ -273,7 +273,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_implant_fail_category_other(self):
         item = Implant(self.mktype(
@@ -288,7 +288,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_implant_fail_attr_absent(self):
         item = Implant(self.mktype(category_id=1008).id)
@@ -301,7 +301,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_high_pass(self):
         effect = self.mkeffect(
@@ -317,7 +317,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_high_pass_effect_disabled(self):
         # Make sure disabled high slot effect doesn't prevent item from passing
@@ -336,7 +336,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_high_fail_category_other(self):
         effect = self.mkeffect(
@@ -352,7 +352,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_high_fail_effect_absent(self):
         effect = self.mkeffect(
@@ -368,7 +368,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_mid_pass(self):
         effect = self.mkeffect(
@@ -384,7 +384,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_mid_pass_effect_disabled(self):
         effect = self.mkeffect(
@@ -401,7 +401,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_mid_fail_category_other(self):
         effect = self.mkeffect(
@@ -417,7 +417,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_mid_fail_effect_absent(self):
         effect = self.mkeffect(
@@ -435,7 +435,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_low_pass(self):
         effect = self.mkeffect(
@@ -451,7 +451,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_low_pass_effect_disabled(self):
         effect = self.mkeffect(
@@ -468,7 +468,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_low_fail_category_other(self):
         effect = self.mkeffect(
@@ -484,7 +484,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_low_fail_effect_absent(self):
         effect = self.mkeffect(
@@ -502,7 +502,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rig_pass(self):
         effect = self.mkeffect(
@@ -518,7 +518,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rig_pass_effect_disabled(self):
         effect = self.mkeffect(
@@ -535,7 +535,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rig_fail_category_other(self):
         effect = self.mkeffect(
@@ -551,7 +551,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rig_fail_effect_absent(self):
         effect = self.mkeffect(
@@ -569,7 +569,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ship_pass(self):
         item = Ship(self.mktype(category_id=TypeCategoryId.ship).id)
@@ -580,7 +580,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ship_fail_category_other(self):
         item = Ship(self.mktype(category_id=1008).id)
@@ -593,7 +593,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_skill_pass(self):
         item = Skill(self.mktype(category_id=TypeCategoryId.skill).id)
@@ -604,7 +604,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_skill_fail_category_other(self):
         item = Skill(self.mktype(category_id=1008).id)
@@ -617,7 +617,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stance_pass(self):
         item = Stance(self.mktype(group_id=TypeGroupId.ship_modifier).id)
@@ -628,7 +628,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stance_fail_group_other(self):
         item = Stance(self.mktype(group_id=1008).id)
@@ -641,7 +641,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_subsystem_pass(self):
         effect = self.mkeffect(
@@ -657,7 +657,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_subsystem_pass_effect_disabled(self):
         effect = self.mkeffect(
@@ -674,7 +674,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_subsystem_fail_category_other(self):
         effect = self.mkeffect(
@@ -690,7 +690,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_subsystem_fail_effect_absent(self):
         effect = self.mkeffect(
@@ -708,7 +708,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_single_replacement(self):
         item = Implant(self.mktype(
@@ -723,7 +723,7 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [Booster])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_multiple_replacements(self):
         item = Drone(self.mktype(
@@ -738,4 +738,4 @@ class TestItemClass(RestrictionTestCase):
         self.assertCountEqual(error.allowed_classes, [Booster, Implant])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

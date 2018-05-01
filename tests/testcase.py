@@ -100,6 +100,13 @@ class EosTestCase(TestCase):
                 log.append(log_entry)
         return log
 
+    @property
+    def log(self):
+        return self.get_log()
+
+    def assert_log_entries(self, quantity, msg=None):
+        self.assertEqual(len(self.log), quantity, msg=msg)
+
     def assert_obj_buffers_empty(self, obj, ignore_objs=(), ignore_attrs=()):
         """Checks if buffers of passed object are clear.
 

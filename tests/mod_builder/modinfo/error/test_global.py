@@ -33,9 +33,8 @@ class TestBuilderModinfoErrorsGlobal(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(
             log_record.name,
             'eos.eve_obj_builder.mod_builder.builder')

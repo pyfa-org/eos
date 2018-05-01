@@ -60,7 +60,7 @@ class TestOperatorPreAssign(CalculatorTestCase):
         self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], 53)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_high_bad(self):
         self.tgt_attr.high_is_good = False
@@ -68,4 +68,4 @@ class TestOperatorPreAssign(CalculatorTestCase):
         self.assertAlmostEqual(self.influence_tgt.attrs[self.tgt_attr.id], -20)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

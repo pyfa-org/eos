@@ -51,7 +51,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item(self):
         fit = Fit()
@@ -73,7 +73,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_failure(self):
         fit = Fit()
@@ -97,7 +97,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_after_nones(self):
         fit = Fit()
@@ -128,7 +128,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_item_buffers_empty(item2)
         self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_index_item(self):
         fit = Fit()
@@ -150,7 +150,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_item_buffers_empty(item1)
         self.assert_item_buffers_empty(item2)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_index_none(self):
         fit = Fit()
@@ -165,7 +165,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Cleanup
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_index_after_nones(self):
         fit = Fit()
@@ -196,7 +196,7 @@ class TestContainerOrderedFree(ContainerTestCase):
         self.assert_item_buffers_empty(item2)
         self.assert_item_buffers_empty(item3)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_index_outside(self):
         fit = Fit()
@@ -211,4 +211,4 @@ class TestContainerOrderedFree(ContainerTestCase):
         # Cleanup
         self.assert_item_buffers_empty(item)
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

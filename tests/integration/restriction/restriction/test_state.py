@@ -48,7 +48,7 @@ class TestState(RestrictionTestCase):
             (State.offline, State.online, State.active))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_item_state_higher_effects_absent(self):
         item = ModuleHigh(self.mktype().id, state=State.overload)
@@ -61,7 +61,7 @@ class TestState(RestrictionTestCase):
         self.assertCountEqual(error.allowed_states, [State.offline])
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_state_lower(self):
         effect = self.mkeffect(category_id=EffectCategoryId.active)
@@ -75,7 +75,7 @@ class TestState(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_state_equal(self):
         effect = self.mkeffect(category_id=EffectCategoryId.active)
@@ -89,7 +89,7 @@ class TestState(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_exception_charge(self):
         # Charges do not store state at all (inherit from parent), thus they
@@ -111,7 +111,7 @@ class TestState(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_exception_autocharge(self):
         # Autocharges are the same as charges, inherit state from container
@@ -133,7 +133,7 @@ class TestState(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         item = ModuleHigh(self.allocate_type_id(), state=State.overload)
@@ -144,4 +144,4 @@ class TestState(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

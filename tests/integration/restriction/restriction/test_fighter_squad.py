@@ -47,7 +47,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_multiple(self):
         # Check that error works for multiple items
@@ -70,7 +70,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error2.total, 1)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_item_not_loaded(self):
         # Item still counts even when it's not loaded
@@ -85,7 +85,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_absent(self):
         # When stats module does not specify total tube quantity, make sure it's
@@ -100,7 +100,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -114,7 +114,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -128,7 +128,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 2}).id)
@@ -146,7 +146,7 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.fighter_tubes: 5}).id)
@@ -164,4 +164,4 @@ class TestFighterSquad(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

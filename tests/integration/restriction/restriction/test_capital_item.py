@@ -46,7 +46,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_not_loaded(self):
         # Ship which is not loaded is considered as ship absence, i.e. not
@@ -64,7 +64,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -80,7 +80,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_attr_zero(self):
         # Make sure that mere presence of isCapital attr on a ship (with zero
@@ -99,7 +99,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertEqual(error.max_subcap_volume, 3500)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_ship_attr_capital(self):
         # Check that capital items can be added to capital ship
@@ -115,7 +115,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_subcap(self):
         # Make sure no error raised when non-capital item is added to fit
@@ -129,7 +129,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_attr_absent(self):
         # Check that items with no volume attribute on item type are not
@@ -143,7 +143,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         # Not loaded items do not generate errors
@@ -156,7 +156,7 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_class_other(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -168,4 +168,4 @@ class TestCapitalItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

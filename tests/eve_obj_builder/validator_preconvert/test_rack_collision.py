@@ -27,7 +27,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestRackCollision(EveObjBuilderTestCase):
     """Check that each item can have has max 1 rack effect."""
 
-    logger_name = 'eos.eve_obj_builder.validator_preconv'
+    def get_log(self, name='eos.eve_obj_builder.validator_preconv'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def setUp(self):
         EveObjBuilderTestCase.setUp(self)
@@ -48,9 +49,8 @@ class TestRackCollision(EveObjBuilderTestCase):
         self.assertEqual(len(type_effects), 1)
         self.assertIn(13, type_effects)
         self.assertEqual(len(self.effects), 3)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -61,4 +61,4 @@ class TestRackCollision(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)

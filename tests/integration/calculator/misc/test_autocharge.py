@@ -74,7 +74,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_influence_single_item_running(self):
         # Autocharge should be able to modify container when effect, which
@@ -102,7 +102,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_influence_single_item_stopped(self):
         # Autocharge should be able to modify container item even when effect,
@@ -130,7 +130,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_influence_on_container(self):
         # Autocharge should be able to affect container. Civilian gun ammo does
@@ -158,7 +158,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(container.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_influence_from_container(self):
         # Container should be able to affect autocharge. So far I've seen no
@@ -188,7 +188,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_influence_from_container_with_charge(self):
         # Container should be able to affect all charges, both normal and auto,
@@ -221,7 +221,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(charge.attrs[self.tgt_attr.id], 30)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_no_influence_to_charge(self):
         # Autocharge shouldn't be able to affect charge
@@ -248,7 +248,7 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(charge.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_no_influence_from_charge(self):
         # Charge shouldn't be able to affect autocharge
@@ -277,4 +277,4 @@ class TestAutocharge(CalculatorTestCase):
         self.assertAlmostEqual(autocharge.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

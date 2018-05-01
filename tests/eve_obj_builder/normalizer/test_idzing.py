@@ -30,7 +30,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestNormalizationIdzing(EveObjBuilderTestCase):
     """Check that conversion of symbolic references to IDs functions."""
 
-    logger_name = 'eos.eve_obj_builder.normalizer'
+    def get_log(self, name='eos.eve_obj_builder.normalizer'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def test_group_idzing(self, mod_builder):
         self.dh.data['evetypes'].append({'typeID': 556, 'groupID': 1})
@@ -54,9 +55,8 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionGroupID': 53, 'expressionAttributeID': 102,
             'table_pos': 0}
         self.assertIn(expected, expressions)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
+        self.assert_log_entries(1)
+        idzing_stats = self.log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_group_ignorelist(self, mod_builder):
@@ -80,9 +80,8 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             'expressionGroupID': None, 'expressionAttributeID': 102,
             'table_pos': 0}
         self.assertIn(expected, expressions)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
+        self.assert_log_entries(1)
+        idzing_stats = self.log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_warning_unused(self, mod_builder):
@@ -90,9 +89,8 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
+        self.assert_log_entries(1)
+        idzing_stats = self.log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats.msg,
@@ -113,11 +111,10 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
         # Action
         self.run_builder()
         # Verification
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 2)
-        idzing_stats_unused = log[0]
+        self.assert_log_entries(2)
+        idzing_stats_unused = self.log[0]
         self.assertEqual(idzing_stats_unused.levelno, logging.WARNING)
-        idzing_stats_failures = log[1]
+        idzing_stats_failures = self.log[1]
         self.assertEqual(idzing_stats_failures.levelno, logging.WARNING)
         self.assertEqual(
             idzing_stats_failures.msg,

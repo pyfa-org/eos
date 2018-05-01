@@ -30,7 +30,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestAssociatedData(EveObjBuilderTestCase):
     """Check that types, which passed filter, pull in all related data."""
 
-    logger_name = 'eos.eve_obj_builder.cleaner'
+    def get_log(self, name='eos.eve_obj_builder.cleaner'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def __generate_data(self):
         self.dh.data['dgmtypeattribs'].append(
@@ -154,9 +155,8 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(len(expressions), 4)
         expression_ids = set(row['expressionID'] for row in expressions)
         self.assertEqual(expression_ids, {100, 101, 102, 103})
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        clean_stats = log[0]
+        self.assert_log_entries(1)
+        clean_stats = self.log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
@@ -174,9 +174,8 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(len(self.attrs), 0)
         self.assertEqual(len(self.effects), 0)
         self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        clean_stats = log[0]
+        self.assert_log_entries(1)
+        clean_stats = self.log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
@@ -192,9 +191,8 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(len(self.attrs), 0)
         self.assertEqual(len(self.effects), 0)
         self.assertEqual(len(mod_builder.mock_calls[0][1][0]), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        clean_stats = log[0]
+        self.assert_log_entries(1)
+        clean_stats = self.log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,
@@ -242,9 +240,8 @@ class TestAssociatedData(EveObjBuilderTestCase):
         self.assertEqual(len(expressions), 1)
         expression_ids = set(row['expressionID'] for row in expressions)
         self.assertEqual(expression_ids, {101})
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        clean_stats = log[0]
+        self.assert_log_entries(1)
+        clean_stats = self.log[0]
         self.assertEqual(clean_stats.levelno, logging.INFO)
         self.assertEqual(
             clean_stats.msg,

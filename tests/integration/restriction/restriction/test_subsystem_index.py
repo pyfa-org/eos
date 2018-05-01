@@ -51,7 +51,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertEqual(error2.slot_index, 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_item_class_other(self):
         # Make sure items of all classes are affected
@@ -72,7 +72,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertEqual(error2.slot_index, 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass(self):
         # Single item which takes some slot shouldn't trigger any errors
@@ -84,7 +84,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_slots_different(self):
         # Items taking different slots shouldn't trigger any errors
@@ -102,7 +102,7 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_items_not_loaded(self):
         item_type_id = self.allocate_type_id()
@@ -118,4 +118,4 @@ class TestSubsystemIndex(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

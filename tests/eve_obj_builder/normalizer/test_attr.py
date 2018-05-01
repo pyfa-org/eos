@@ -28,16 +28,16 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestNormalizationIdzing(EveObjBuilderTestCase):
     """Check that symbolic references are converted into IDs."""
 
-    logger_name = 'eos.eve_obj_builder.normalizer'
+    def get_log(self, name='eos.eve_obj_builder.normalizer'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def test_basic_attr_radius(self):
         self.dh.data['evetypes'].append(
             {'typeID': 1, 'groupID': 1, 'radius': 50.0})
         self.run_builder()
         self.assertEqual(self.types[1].attrs[AttrId.radius], 50.0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
+        self.assert_log_entries(1)
+        idzing_stats = self.log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_basic_attr_mass(self):
@@ -45,9 +45,8 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             {'typeID': 1, 'groupID': 1, 'mass': 5.0})
         self.run_builder()
         self.assertEqual(self.types[1].attrs[AttrId.mass], 5.0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
+        self.assert_log_entries(1)
+        idzing_stats = self.log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_basic_attr_volume(self):
@@ -55,9 +54,8 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             {'typeID': 1, 'groupID': 1, 'volume': 500.0})
         self.run_builder()
         self.assertEqual(self.types[1].attrs[AttrId.volume], 500.0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
+        self.assert_log_entries(1)
+        idzing_stats = self.log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_basic_attr_capacity(self):
@@ -65,9 +63,8 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             {'typeID': 1, 'groupID': 1, 'capacity': 0.5})
         self.run_builder()
         self.assertEqual(self.types[1].attrs[AttrId.capacity], 0.5)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        idzing_stats = log[0]
+        self.assert_log_entries(1)
+        idzing_stats = self.log[0]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)
 
     def test_duplicate_definition(self):
@@ -79,13 +76,12 @@ class TestNormalizationIdzing(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': AttrId.mass, 'value': 6.0})
         self.run_builder()
         self.assertEqual(self.types[1].attrs[AttrId.mass], 6.0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 2)
-        duplicate_error = log[0]
+        self.assert_log_entries(2)
+        duplicate_error = self.log[0]
         self.assertEqual(duplicate_error.levelno, logging.WARNING)
         self.assertEqual(
             duplicate_error.msg,
             '1 built-in attributes already have had value '
             'in dgmtypeattribs and were skipped')
-        idzing_stats = log[1]
+        idzing_stats = self.log[1]
         self.assertEqual(idzing_stats.levelno, logging.WARNING)

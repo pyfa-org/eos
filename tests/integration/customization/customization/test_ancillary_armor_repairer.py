@@ -57,7 +57,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 150)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_remote_aar(self):
         effect = self.mkeffect(
@@ -77,7 +77,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(raar.attrs[AttrId.armor_dmg_amount], 150)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_state(self):
         # Multiplier should be applied even when module is offline
@@ -98,7 +98,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 150)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_aar_attr_mult_absent(self):
         effect = self.mkeffect(
@@ -116,7 +116,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_aar_attr_rep_amount_absent(self):
         effect = self.mkeffect(
@@ -135,7 +135,7 @@ class TestPropulsionModules(CustomizationTestCase):
             aar.attrs[AttrId.armor_dmg_amount]
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_charge_absent(self):
         effect = self.mkeffect(
@@ -154,7 +154,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_charge_not_loaded(self):
         effect = self.mkeffect(
@@ -174,7 +174,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 150)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_recalc_aar_attr_mult_changed(self):
         multmod_src_attr = self.mkattr()
@@ -210,7 +210,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 225)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_recalc_charge_to_charge_absent(self):
         effect = self.mkeffect(
@@ -233,7 +233,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_recalc_charge_absent_to_charge(self):
         effect = self.mkeffect(
@@ -255,7 +255,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 150)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rep_amount_stacking(self):
         # Multiplier shouldn't be stacking penalized against any other
@@ -327,4 +327,4 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(aar.attrs[AttrId.armor_dmg_amount], 4800)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -27,7 +27,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestAttrValue(EveObjBuilderTestCase):
     """Ensure that attributes values are properly checked."""
 
-    logger_name = 'eos.eve_obj_builder.validator_preconv'
+    def get_log(self, name='eos.eve_obj_builder.validator_preconv'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def test_int(self):
         self.dh.data['evetypes'].append(
@@ -37,7 +38,7 @@ class TestAttrValue(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].attrs[5], 8)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)
 
     def test_float(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
@@ -46,7 +47,7 @@ class TestAttrValue(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 1)
         self.assertEqual(self.types[1].attrs[5], 8.5)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)
 
     def test_other(self):
         self.dh.data['evetypes'].append({'typeID': 1, 'groupID': 1})
@@ -56,9 +57,8 @@ class TestAttrValue(EveObjBuilderTestCase):
         self.assertEqual(len(self.types), 1)
         self.assertIn(1, self.types)
         self.assertEqual(len(self.types[1].attrs), 0)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -71,4 +71,4 @@ class TestAttrValue(EveObjBuilderTestCase):
             {'typeID': 1, 'attributeID': 5, 'value': None})
         self.run_builder()
         self.assertEqual(len(self.types), 0)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)

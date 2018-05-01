@@ -27,7 +27,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestDefaultEffects(EveObjBuilderTestCase):
     """Check that each item can have has max 1 default effect."""
 
-    logger_name = 'eos.eve_obj_builder.validator_preconv'
+    def get_log(self, name='eos.eve_obj_builder.validator_preconv'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     def setUp(self):
         EveObjBuilderTestCase.setUp(self)
@@ -50,7 +51,7 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.assertEqual(len(self.effects), 2)
         self.assertIn(2, self.effects)
         self.assertEqual(self.effects[2].falloff_attr_id, 20)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)
 
     def test_duplicate(self):
         self.eff_link1['isDefault'] = True
@@ -63,9 +64,8 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.assertIn(1, self.effects)
         self.assertIn(2, self.effects)
         self.assertEqual(self.effects[1].falloff_attr_id, 10)
-        log = self.get_log(name=self.logger_name)
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
             log_record.msg,
@@ -79,4 +79,4 @@ class TestDefaultEffects(EveObjBuilderTestCase):
         self.run_builder()
         self.assertEqual(len(self.types), 0)
         self.assertEqual(len(self.effects), 0)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)

@@ -53,7 +53,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertEqual(error.allowed_size, 6)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_ship_absent(self):
         # When no ship is assigned, no restriction should be applied to ships
@@ -67,7 +67,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_ship_attr_absent(self):
         # If ship doesn't have rig size attribute, no restriction is applied
@@ -83,7 +83,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_ship_not_loaded(self):
         # When no ship is assigned, no restriction should be applied to ships
@@ -98,7 +98,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_effect_disabled(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
@@ -113,7 +113,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_effect_absent(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
@@ -125,7 +125,7 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(attrs={AttrId.rig_size: 6}).id)
@@ -137,4 +137,4 @@ class TestRigSize(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

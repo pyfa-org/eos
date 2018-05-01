@@ -58,7 +58,7 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.capped_attr.id], 5)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_cap_attr_unmodified(self):
         # Make sure that item's own specified attribute value is taken as cap
@@ -72,7 +72,7 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.capped_attr.id], 2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_cap_attr_modified(self):
         # Make sure that item's own specified attribute value is taken as cap,
@@ -96,7 +96,7 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.capped_attr.id], 0.6)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_cap_update(self):
         # If cap updates, capped attributes should be updated too
@@ -125,4 +125,4 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.capped_attr.id], 7)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

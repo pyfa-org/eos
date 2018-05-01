@@ -80,7 +80,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.mass], 1550000)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ab_state(self):
         ship = self.make_ship()
@@ -94,7 +94,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.mass], 1050000)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mwd(self):
         ship = self.make_ship()
@@ -109,7 +109,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.mass], 1550000)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mwd_state(self):
         ship = self.make_ship()
@@ -123,7 +123,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.mass], 1050000)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_ship_not_loaded(self):
         # Here we check that ship which isn't loaded is not causing any severe
@@ -138,7 +138,7 @@ class TestPropulsionModules(CustomizationTestCase):
             ship.attrs[AttrId.max_velocity]
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_isolation(self):
         # When velocity cannot be modified due to errors, sig and mass still
@@ -163,7 +163,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.mass], 1550000)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_ship_attr_mass_absent(self):
         ship = Ship(self.mktype(attrs={
@@ -177,7 +177,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.max_velocity], 455)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_ship_attr_mass_zero(self):
         ship = Ship(self.mktype(attrs={
@@ -200,9 +200,8 @@ class TestPropulsionModules(CustomizationTestCase):
         self.fit.modules.mid.append(propmod)
         # Verification
         self.assertAlmostEqual(ship.attrs[AttrId.max_velocity], 455)
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(
             log_record.name,
             'eos.eve_obj.custom.propulsion_modules.modifier.python')
@@ -232,7 +231,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.max_velocity], 455)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_propmod_attr_thrust_absent(self):
         ship = self.make_ship()
@@ -253,7 +252,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.max_velocity], 455)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_recalc_ship_attr_mass_changed(self):
         massmod_src_attr = self.mkattr()
@@ -282,7 +281,7 @@ class TestPropulsionModules(CustomizationTestCase):
         self.assertAlmostEqual(ship.attrs[AttrId.max_velocity], 2268)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_recalc_propmod_attr_speed_boost_changed(self):
         boostmod_src_attr = self.mkattr()
@@ -312,7 +311,7 @@ class TestPropulsionModules(CustomizationTestCase):
             ship.attrs[AttrId.max_velocity], 3876.306, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_velocity_modifier_recalc_propmod_attr_thrust_changed(self):
         thrustmod_src_attr = self.mkattr()
@@ -342,7 +341,7 @@ class TestPropulsionModules(CustomizationTestCase):
             ship.attrs[AttrId.max_velocity], 3496.161, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stacking_velocity(self):
         ship = self.make_ship()
@@ -371,7 +370,7 @@ class TestPropulsionModules(CustomizationTestCase):
             ship.attrs[AttrId.max_velocity], 2973.651, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stacking_signature(self):
         ship = self.make_ship()
@@ -400,4 +399,4 @@ class TestPropulsionModules(CustomizationTestCase):
             ship.attrs[AttrId.signature_radius], 177.384, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -54,7 +54,7 @@ class TestFighterSquad(StatsTestCase):
         self.assertEqual(self.fit.stats.fighter_squads.total, 6)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_absent(self):
         self.fit.ship = None
@@ -62,7 +62,7 @@ class TestFighterSquad(StatsTestCase):
         self.assertEqual(self.fit.stats.fighter_squads.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -70,7 +70,7 @@ class TestFighterSquad(StatsTestCase):
         self.assertEqual(self.fit.stats.fighter_squads.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -78,7 +78,7 @@ class TestFighterSquad(StatsTestCase):
         self.assertEqual(self.fit.stats.fighter_squads.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_multiple(self):
         self.fit.fighters.add(FighterSquad(self.mktype().id))
@@ -87,7 +87,7 @@ class TestFighterSquad(StatsTestCase):
         self.assertEqual(self.fit.stats.fighter_squads.used, 2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_class_other(self):
         self.fit.drones.add(Drone(self.mktype().id))
@@ -95,14 +95,14 @@ class TestFighterSquad(StatsTestCase):
         self.assertEqual(self.fit.stats.fighter_squads.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.fighter_squads.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_not_loaded(self):
         self.fit.fighters.add(FighterSquad(self.allocate_type_id()))
@@ -110,4 +110,4 @@ class TestFighterSquad(StatsTestCase):
         self.assertEqual(self.fit.stats.fighter_squads.used, 1)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

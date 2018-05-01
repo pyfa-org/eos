@@ -56,14 +56,14 @@ class TestDroneBandwidth(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.output, 400)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -71,7 +71,7 @@ class TestDroneBandwidth(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -79,7 +79,7 @@ class TestDroneBandwidth(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.output, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_single_no_rounding(self):
         self.fit.drones.add(Drone(
@@ -90,7 +90,7 @@ class TestDroneBandwidth(StatsTestCase):
             self.fit.stats.drone_bandwidth.used, 55.5555555555)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_multiple(self):
         self.fit.drones.add(Drone(
@@ -103,7 +103,7 @@ class TestDroneBandwidth(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 80)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_state(self):
         self.fit.drones.add(Drone(
@@ -116,14 +116,14 @@ class TestDroneBandwidth(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_not_loaded(self):
         self.fit.drones.add(Drone(
@@ -133,4 +133,4 @@ class TestDroneBandwidth(StatsTestCase):
         self.assertAlmostEqual(self.fit.stats.drone_bandwidth.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

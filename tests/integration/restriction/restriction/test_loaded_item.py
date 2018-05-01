@@ -62,7 +62,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_booster_pass_loaded(self):
         item = Booster(self.mktype().id)
@@ -73,7 +73,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_booster_fail_not_loaded(self):
         item = Booster(self.allocate_type_id())
@@ -84,7 +84,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_character_pass_loaded(self):
         item = Character(self.mktype().id)
@@ -95,7 +95,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_character_fail_not_loaded(self):
         item = Character(self.allocate_type_id())
@@ -106,7 +106,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_pass_loaded(self):
         item = Charge(self.mktype().id)
@@ -119,7 +119,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_fail_not_loaded(self):
         item = Charge(self.allocate_type_id())
@@ -132,7 +132,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_drone_pass_loaded(self):
         item = Drone(self.mktype().id)
@@ -143,7 +143,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_drone_fail_not_loaded(self):
         item = Drone(self.allocate_type_id())
@@ -154,7 +154,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effect_beacon_pass_loaded(self):
         item = EffectBeacon(self.mktype().id)
@@ -165,7 +165,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effect_beacon_fail_not_loaded(self):
         item = EffectBeacon(self.allocate_type_id())
@@ -176,7 +176,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fighter_squad_pass_loaded(self):
         item = FighterSquad(self.mktype().id)
@@ -187,7 +187,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fighter_squad_fail_not_loaded(self):
         item = FighterSquad(self.allocate_type_id())
@@ -198,7 +198,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_implant_pass_loaded(self):
         item = Implant(self.mktype().id)
@@ -209,7 +209,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_implant_fail_not_loaded(self):
         item = Implant(self.allocate_type_id())
@@ -220,7 +220,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_high_pass_loaded(self):
         item = ModuleHigh(self.mktype().id)
@@ -231,7 +231,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_high_fail_not_loaded(self):
         item = ModuleHigh(self.allocate_type_id())
@@ -242,7 +242,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_mid_pass_loaded(self):
         item = ModuleMid(self.mktype().id)
@@ -253,7 +253,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_mid_fail_not_loaded(self):
         item = ModuleMid(self.allocate_type_id())
@@ -264,7 +264,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_low_pass_loaded(self):
         item = ModuleLow(self.mktype().id)
@@ -275,7 +275,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_module_low_fail_not_loaded(self):
         item = ModuleLow(self.allocate_type_id())
@@ -286,7 +286,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rig_pass_loaded(self):
         item = Rig(self.mktype().id)
@@ -297,7 +297,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rig_fail_not_loaded(self):
         item = Rig(self.allocate_type_id())
@@ -308,7 +308,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ship_pass_loaded(self):
         item = Ship(self.mktype().id)
@@ -319,7 +319,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ship_fail_not_loaded(self):
         item = Ship(self.allocate_type_id())
@@ -330,7 +330,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_skill_pass_loaded(self):
         item = Skill(self.mktype().id)
@@ -341,7 +341,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_skill_fail_not_loaded(self):
         item = Skill(self.allocate_type_id())
@@ -352,7 +352,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stance_pass_loaded(self):
         item = Stance(self.mktype().id)
@@ -363,7 +363,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stance_fail_not_loaded(self):
         item = Stance(self.allocate_type_id())
@@ -374,7 +374,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_subsystem_pass_loaded(self):
         item = Subsystem(self.mktype().id)
@@ -385,7 +385,7 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_subsystem_fail_not_loaded(self):
         item = Subsystem(self.allocate_type_id())
@@ -396,4 +396,4 @@ class TestLoadedItem(RestrictionTestCase):
         self.assertIsNotNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

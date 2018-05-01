@@ -49,7 +49,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_active_switched(self):
         # Setup
@@ -72,7 +72,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_inactive_added(self):
         # Setup
@@ -94,7 +94,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_inactive_switched(self):
         # Setup
@@ -117,7 +117,7 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_not_rah(self):
         # Setup
@@ -144,4 +144,4 @@ class TestRahSimCriteria(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

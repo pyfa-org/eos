@@ -74,7 +74,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_total_attr_single_em_zero(self):
         fit = Fit()
@@ -101,7 +101,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_total_attr_single_therm_zero(self):
         fit = Fit()
@@ -128,7 +128,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_total_attr_single_kin_zero(self):
         fit = Fit()
@@ -155,7 +155,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_total_attr_single_expl_zero(self):
         fit = Fit()
@@ -182,7 +182,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_total_item_not_loaded(self):
         fit = Fit()
@@ -197,7 +197,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective(self):
         fit = Fit()
@@ -229,7 +229,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 26.7)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_em_absent(self):
         fit = Fit()
@@ -260,7 +260,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 16.3)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_therm_absent(self):
         fit = Fit()
@@ -291,7 +291,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 14.1)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_kin_absent(self):
         fit = Fit()
@@ -322,7 +322,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 23)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_expl_absent(self):
         fit = Fit()
@@ -353,7 +353,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 26.7)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_all_absent(self):
         fit = Fit()
@@ -381,7 +381,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_single_em_zero(self):
         fit = Fit()
@@ -409,7 +409,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_single_therm_zero(self):
         fit = Fit()
@@ -437,7 +437,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_single_kin_zero(self):
         fit = Fit()
@@ -465,7 +465,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_attr_single_expl_zero(self):
         fit = Fit()
@@ -492,7 +492,7 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_effective_item_not_loaded(self):
         fit = Fit()
@@ -508,4 +508,4 @@ class TestItemDmgCommonVolley(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

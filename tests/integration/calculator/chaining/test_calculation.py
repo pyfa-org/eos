@@ -79,4 +79,4 @@ class TestCalculationChain(CalculatorTestCase):
         self.assertAlmostEqual(rig.attrs[attr4.id], 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

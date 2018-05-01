@@ -61,7 +61,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertEqual(error.item_use, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_multiple(self):
         # When multiple consumers require less than calibration output alone,
@@ -93,7 +93,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertEqual(error2.item_use, 20)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_modified(self):
         # Make sure modified calibration values are taken
@@ -122,7 +122,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertEqual(error.item_use, 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_absent(self):
         # When stats module does not specify output, make sure it's assumed to
@@ -140,7 +140,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertEqual(error.item_use, 5)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -157,7 +157,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertEqual(error.item_use, 50)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -174,7 +174,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertEqual(error.item_use, 5)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mix_usage_zero(self):
         # If some item has zero usage and calibration error is still raised,
@@ -202,7 +202,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass(self):
         # When total consumption is less than output, no errors should be raised
@@ -226,7 +226,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_effect_disabled(self):
         self.fit.ship = Ship(self.mktype(
@@ -242,7 +242,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_effect_absent(self):
         self.fit.ship = Ship(self.mktype(
@@ -255,7 +255,7 @@ class TestCalibration(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(
@@ -268,4 +268,4 @@ class TestCalibration(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

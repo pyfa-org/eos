@@ -44,7 +44,7 @@ class TestItemModuleChargeReloadTime(ItemMixinTestCase):
         self.assertAlmostEqual(item.reload_time, 5.0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_attr_reload_absent(self):
         fit = Fit()
@@ -57,7 +57,7 @@ class TestItemModuleChargeReloadTime(ItemMixinTestCase):
         self.assertIsNone(item.reload_time)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_defeff_absent(self):
         fit = Fit()
@@ -70,7 +70,7 @@ class TestItemModuleChargeReloadTime(ItemMixinTestCase):
         self.assertAlmostEqual(item.reload_time, 5.0)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_not_loaded(self):
         fit = Fit()
@@ -80,4 +80,4 @@ class TestItemModuleChargeReloadTime(ItemMixinTestCase):
         self.assertIsNone(item.reload_time)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

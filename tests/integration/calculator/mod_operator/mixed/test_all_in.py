@@ -158,4 +158,4 @@ class TestOperatorAllIn(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr.id], expected_value)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

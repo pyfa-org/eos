@@ -44,7 +44,7 @@ class TestForceStopOffline(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stopped_on_mode_switch(self):
         effect = self.mkeffect(
@@ -64,7 +64,7 @@ class TestForceStopOffline(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stopped_chance_based(self):
         chance_attr = self.mkattr()
@@ -87,4 +87,4 @@ class TestForceStopOffline(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

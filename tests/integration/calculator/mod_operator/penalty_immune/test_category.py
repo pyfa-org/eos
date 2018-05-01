@@ -63,7 +63,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge(self):
         influence_src1 = Implant(self.mktype(
@@ -83,7 +83,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_skill(self):
         influence_src1 = Implant(self.mktype(
@@ -103,7 +103,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_implant(self):
         influence_src1 = Implant(self.mktype(
@@ -123,7 +123,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_subsystem(self):
         influence_src1 = Implant(self.mktype(
@@ -143,7 +143,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_mixed(self):
         influence_src1 = Implant(self.mktype(
@@ -163,7 +163,7 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_with_not_immune(self):
         influence_src1 = Implant(self.mktype(
@@ -183,4 +183,4 @@ class TestOperatorPenaltyImmuneCategory(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 300)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

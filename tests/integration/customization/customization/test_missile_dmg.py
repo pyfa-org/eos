@@ -83,7 +83,7 @@ class TestMissileDmg(CustomizationTestCase):
         self.assertAlmostEqual(charge.attrs[AttrId.em_dmg], 110)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_attr_therm(self):
         charge = self.make_charge(AttrId.therm_dmg)
@@ -92,7 +92,7 @@ class TestMissileDmg(CustomizationTestCase):
         self.assertAlmostEqual(charge.attrs[AttrId.therm_dmg], 110)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_attr_kin(self):
         charge = self.make_charge(AttrId.kin_dmg)
@@ -101,7 +101,7 @@ class TestMissileDmg(CustomizationTestCase):
         self.assertAlmostEqual(charge.attrs[AttrId.kin_dmg], 110)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_attr_expl(self):
         charge = self.make_charge(AttrId.expl_dmg)
@@ -110,7 +110,7 @@ class TestMissileDmg(CustomizationTestCase):
         self.assertAlmostEqual(charge.attrs[AttrId.expl_dmg], 110)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_charge_skillrq_absent(self):
         self.mkattr(AttrId.em_dmg)
@@ -120,7 +120,7 @@ class TestMissileDmg(CustomizationTestCase):
         self.assertAlmostEqual(charge.attrs[AttrId.em_dmg], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_class_other(self):
         self.mkattr(AttrId.em_dmg)
@@ -133,7 +133,7 @@ class TestMissileDmg(CustomizationTestCase):
         self.assertAlmostEqual(item.attrs[AttrId.em_dmg], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stacking(self):
         # Multiplier shouldn't be stacking penalized against any other
@@ -203,4 +203,4 @@ class TestMissileDmg(CustomizationTestCase):
         self.assertAlmostEqual(charge.attrs[AttrId.em_dmg], 3520)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

@@ -50,7 +50,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_multiple(self):
         # Check that error works for multiple items
@@ -75,7 +75,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(error2.total, 1)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_item_not_loaded(self):
         self.fit.character = Character(self.mktype(
@@ -90,7 +90,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_char_absent(self):
         # When stats module does not specify total slot quantity, make sure it's
@@ -106,7 +106,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_char_attr_absent(self):
         self.fit.character = Character(self.mktype().id)
@@ -120,7 +120,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_char_not_loaded(self):
         self.fit.character = Character(self.allocate_type_id())
@@ -134,7 +134,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_equal(self):
         self.fit.character = Character(self.mktype(
@@ -154,7 +154,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_greater(self):
         self.fit.character = Character(self.mktype(
@@ -174,7 +174,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_state(self):
         self.fit.character = Character(self.mktype(
@@ -187,7 +187,7 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_class_other(self):
         self.fit.character = Character(self.mktype(
@@ -200,4 +200,4 @@ class TestLaunchedDrone(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

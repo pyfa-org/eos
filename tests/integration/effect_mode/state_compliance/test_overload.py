@@ -44,7 +44,7 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_started_on_state_switch(self):
         effect = self.mkeffect(
@@ -64,7 +64,7 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_started_on_mode_switch(self):
         effect = self.mkeffect(
@@ -84,7 +84,7 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stopped_insufficient_state_on_add(self):
         effect = self.mkeffect(
@@ -102,7 +102,7 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stopped_insufficient_state_on_state_switch(self):
         effect = self.mkeffect(
@@ -122,7 +122,7 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_stopped_insufficient_state_on_mode_switch(self):
         effect = self.mkeffect(
@@ -142,4 +142,4 @@ class TestStateComplianceOverload(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

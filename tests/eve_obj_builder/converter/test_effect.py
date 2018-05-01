@@ -27,7 +27,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestConversionEffect(EveObjBuilderTestCase):
     """Data should be saved into appropriate fields of an effect."""
 
-    logger_name = 'eos.eve_obj_builder.converter'
+    def get_log(self, name='eos.eve_obj_builder.converter'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     @patch('eos.eve_obj_builder.converter.ModBuilder')
     def test_fields(self, mod_builder):
@@ -61,4 +62,4 @@ class TestConversionEffect(EveObjBuilderTestCase):
         self.assertEqual(effect.fitting_usage_chance_attr_id, 96)
         self.assertEqual(effect.build_status, 29)
         self.assertIn(mod, effect.modifiers)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)

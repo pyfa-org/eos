@@ -56,7 +56,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_domain_character(self):
         item = Implant(self.mktype(
@@ -68,7 +68,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_domain_ship(self):
         item = Rig(self.mktype(
@@ -80,7 +80,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_other(self):
         # Here we check that self-reference modifies only carrier of effect, and
@@ -98,4 +98,4 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

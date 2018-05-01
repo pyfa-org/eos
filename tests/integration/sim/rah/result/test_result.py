@@ -56,7 +56,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=8)
     def test_double_run(self):
@@ -83,7 +83,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.522, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=82)
     def test_double_run_unsynced(self):
@@ -110,7 +110,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.509, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=75)
     def test_no_loop_ignore_initial_adaptation(self):
@@ -143,7 +143,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.508, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=5)
     def test_no_loop_half_history(self):
@@ -172,7 +172,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.52, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=3)
     def test_order_multi(self):
@@ -198,7 +198,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.594, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_therm_kin_exp(self):
@@ -229,7 +229,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.543, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_kin_exp(self):
@@ -260,7 +260,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.523, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_exp(self):
@@ -291,7 +291,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.523, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     @patch('eos.sim.reactive_armor_hardener.MAX_SIMULATION_TICKS', new=7)
     def test_order_em_therm_kin(self):
@@ -322,7 +322,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.675, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ship_absent(self):
         # Setup
@@ -337,7 +337,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ship_not_loaded(self):
         # Setup
@@ -353,7 +353,7 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(rah.attrs[self.armor_expl.id], 0.85)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_unexpected_exception(self):
         # Setup
@@ -373,9 +373,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.5525)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.6375)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.765)
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.sim.reactive_armor_hardener')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(
@@ -417,9 +416,8 @@ class TestRahSimResult(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_therm.id], 0.5525)
         self.assertAlmostEqual(ship.attrs[self.armor_kin.id], 0.6375)
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.765)
-        log = self.get_log()
-        self.assertEqual(len(log), 1)
-        log_record = log[0]
+        self.assert_log_entries(1)
+        log_record = self.log[0]
         self.assertEqual(log_record.name, 'eos.sim.reactive_armor_hardener')
         self.assertEqual(log_record.levelno, logging.WARNING)
         self.assertEqual(

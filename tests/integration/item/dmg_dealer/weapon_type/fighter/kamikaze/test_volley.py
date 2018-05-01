@@ -77,7 +77,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 1200000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_em_absent(self):
         fit = Fit()
@@ -96,7 +96,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_therm_absent(self):
         fit = Fit()
@@ -115,7 +115,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_kin_absent(self):
         fit = Fit()
@@ -134,7 +134,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_attr_expl_absent(self):
         fit = Fit()
@@ -153,7 +153,7 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 900000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_item_squad_size_absent(self):
         fit = Fit()
@@ -175,4 +175,4 @@ class TestFighterSquadKamikazeDps(ItemMixinTestCase):
         self.assertAlmostEqual(volley.total, 200000)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

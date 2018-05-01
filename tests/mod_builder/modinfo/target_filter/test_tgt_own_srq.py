@@ -40,14 +40,14 @@ class TestBuilderModinfoTgtOwnSrq(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.get_log()), 1)
+        self.assert_log_entries(1)
 
     def test_domain_item(self):
         effect_row = {'modifierInfo': self._make_yaml('itemID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.get_log()), 1)
+        self.assert_log_entries(1)
 
     def test_domain_char(self):
         effect_row = {'modifierInfo': self._make_yaml('charID')}
@@ -61,25 +61,25 @@ class TestBuilderModinfoTgtOwnSrq(ModBuilderTestCase):
         self.assertEqual(modifier.tgt_attr_id, 22)
         self.assertEqual(modifier.operator, ModOperator.post_percent)
         self.assertEqual(modifier.src_attr_id, 11)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_domain_ship(self):
         effect_row = {'modifierInfo': self._make_yaml('shipID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.get_log()), 1)
+        self.assert_log_entries(1)
 
     def test_domain_tgt(self):
         effect_row = {'modifierInfo': self._make_yaml('targetID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.get_log()), 1)
+        self.assert_log_entries(1)
 
     def test_domain_other(self):
         effect_row = {'modifierInfo': self._make_yaml('otherID')}
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.error)
         self.assertEqual(len(modifiers), 0)
-        self.assertEqual(len(self.get_log()), 1)
+        self.assert_log_entries(1)

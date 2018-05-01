@@ -43,7 +43,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(error, ((50, None, 3),))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_multiple(self):
         # Check that multiple errors are shown as iterable
@@ -61,7 +61,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(error, ((50, 2, 5), (48, None, 1)))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_partial(self):
         # Make sure satisfied skill requirements are not shown up in error
@@ -79,7 +79,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(error, ((50, None, 5),))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_replacement(self):
         # Check that failed attempt to replace skill doesn't affect restriction
@@ -98,7 +98,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(error, ((50, 1, 3),))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_skill_not_loaded(self):
         item = ModuleHigh(self.mktype(attrs={
@@ -113,7 +113,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertCountEqual(error, ((50, None, 3),))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_satisfied(self):
         # Check that error isn't raised when all skill requirements are met
@@ -128,7 +128,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_exception_rig(self):
         # Check that skillreqs on rigs are not checked
@@ -142,7 +142,7 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         item = ModuleHigh(self.allocate_type_id())
@@ -153,4 +153,4 @@ class TestSkillRequirement(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

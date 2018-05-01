@@ -27,7 +27,8 @@ from tests.eve_obj_builder.testcase import EveObjBuilderTestCase
 class TestConversionExpression(EveObjBuilderTestCase):
     """Check form of expression rows passed to modifier builder."""
 
-    logger_name = 'eos.eve_obj_builder.converter'
+    def get_log(self, name='eos.eve_obj_builder.converter'):
+        return EveObjBuilderTestCase.get_log(self, name=name)
 
     @patch('eos.eve_obj_builder.converter.ModBuilder')
     def test_fields(self, mod_builder):
@@ -64,4 +65,4 @@ class TestConversionExpression(EveObjBuilderTestCase):
             'expressionGroupID': 567, 'expressionAttributeID': 102,
             'table_pos': 1, 'randoom': True}
         self.assertIn(expected, expressions)
-        self.assertEqual(len(self.get_log(name=self.logger_name)), 0)
+        self.assert_log_entries(0)

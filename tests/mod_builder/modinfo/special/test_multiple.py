@@ -38,4 +38,4 @@ class TestBuilderModinfoMultiple(ModBuilderTestCase):
         modifiers, status = self.run_builder(effect_row)
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 2)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

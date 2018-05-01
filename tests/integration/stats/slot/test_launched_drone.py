@@ -55,7 +55,7 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.total, 6)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_char_absent(self):
         self.fit.character = None
@@ -63,7 +63,7 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_char_attr_absent(self):
         self.fit.character = Character(self.mktype().id)
@@ -71,7 +71,7 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_output_char_not_loaded(self):
         self.fit.character = Character(self.allocate_type_id())
@@ -79,7 +79,7 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_multiple(self):
         self.fit.drones.add(Drone(self.mktype().id, state=State.online))
@@ -88,7 +88,7 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.used, 2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_state(self):
         self.fit.drones.add(Drone(self.mktype().id, state=State.offline))
@@ -96,7 +96,7 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_class_other(self):
         self.fit.modules.mid.append(
@@ -105,14 +105,14 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_absent(self):
         # Verification
         self.assertEqual(self.fit.stats.launched_drones.used, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_use_item_not_loaded(self):
         self.fit.drones.add(Drone(self.allocate_type_id(), state=State.online))
@@ -120,4 +120,4 @@ class TestLaunchedDrone(StatsTestCase):
         self.assertEqual(self.fit.stats.launched_drones.used, 1)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

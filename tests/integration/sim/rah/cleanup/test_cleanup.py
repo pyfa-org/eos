@@ -58,7 +58,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rah_removed(self):
         # Setup
@@ -86,7 +86,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rah_state_switch_up(self):
         # Setup
@@ -118,7 +118,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rah_state_switch_down(self):
         # Setup
@@ -150,7 +150,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_ship_resonance(self):
         # Setup
@@ -196,7 +196,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.63)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rah_resonance(self):
         # Setup
@@ -242,7 +242,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5085)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_rah_shift(self):
         # Setup
@@ -288,7 +288,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.603)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_cycle_time(self):
         # Setup
@@ -329,7 +329,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.509, places=3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_dmg_profile_default_change(self):
         # Setup
@@ -361,7 +361,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_dmg_profile_rah_change(self):
         # Setup
@@ -394,7 +394,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_dmg_profile_default_to_rah(self):
         # Setup
@@ -426,7 +426,7 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.9)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_dmg_profile_rah_to_default(self):
         # Setup
@@ -459,4 +459,4 @@ class TestRahSimCleanup(RahSimTestCase):
         self.assertAlmostEqual(ship.attrs[self.armor_expl.id], 0.5895)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

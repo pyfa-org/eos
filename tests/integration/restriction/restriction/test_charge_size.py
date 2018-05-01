@@ -51,7 +51,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertEqual(error2.allowed_size, 3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_charge_attr_greater(self):
         charge = Charge(self.mktype(attrs={AttrId.charge_size: 2}).id)
@@ -72,7 +72,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertEqual(error2.allowed_size, 1)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_charge_attr_absent(self):
         charge = Charge(self.mktype().id)
@@ -93,7 +93,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertEqual(error2.allowed_size, 3)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_charge_attr_equal(self):
         charge = Charge(self.mktype(attrs={AttrId.charge_size: 2}).id)
@@ -112,7 +112,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_container_no_attr(self):
         charge = Charge(self.mktype(attrs={AttrId.charge_size: 2}).id)
@@ -129,7 +129,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_container_not_loaded(self):
         charge = Charge(self.mktype(attrs={AttrId.charge_size: 2}).id)
@@ -146,7 +146,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_charge_not_loaded(self):
         charge = Charge(self.allocate_type_id())
@@ -165,7 +165,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_autocharge(self):
         # Make sure autocharge size is ignored
@@ -193,7 +193,7 @@ class TestChargeSize(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_autocharge_not_loaded(self):
         container_effect = self.mkeffect(
@@ -219,4 +219,4 @@ class TestChargeSize(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

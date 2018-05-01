@@ -43,7 +43,7 @@ class TestDefaultMode(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 12)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_offline_chance_based(self):
         # Chance-based offline effects should be stopped in full compliance mode
@@ -66,4 +66,4 @@ class TestDefaultMode(EffectModeTestCase):
         self.assertAlmostEqual(item.attrs[self.tgt_attr.id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)

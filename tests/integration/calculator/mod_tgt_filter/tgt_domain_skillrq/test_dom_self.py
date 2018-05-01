@@ -70,7 +70,7 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_character(self):
         influence_src = Character(self.influence_src_type.id)
@@ -85,7 +85,7 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_unpositioned_error(self):
         influence_src = Rig(self.influence_src_type.id)
@@ -95,9 +95,8 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
         # corresponding error
         self.fit.rigs.add(influence_src)
         # Verification
-        log = self.get_log()
-        self.assertEqual(len(log), 2)
-        for log_record in log:
+        self.assert_log_entries(2)
+        for log_record in self.log:
             self.assertEqual(log_record.name, 'eos.calculator.affection')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(

@@ -54,7 +54,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_multiple(self):
         # Check that error works for multiple items
@@ -79,7 +79,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(error2.total, 1)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_absent(self):
         # When stats module does not specify total slot quantity, make sure it's
@@ -94,7 +94,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_attr_absent(self):
         self.fit.ship = Ship(self.mktype().id)
@@ -108,7 +108,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_fail_ship_not_loaded(self):
         self.fit.ship = Ship(self.allocate_type_id())
@@ -122,7 +122,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertEqual(error.total, 0)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_equal(self):
         self.fit.ship = Ship(self.mktype(
@@ -142,7 +142,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_greater(self):
         self.fit.ship = Ship(self.mktype(
@@ -162,7 +162,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertIsNone(error2)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_effect_disabled(self):
         self.fit.ship = Ship(self.mktype(
@@ -176,7 +176,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_effect_absent(self):
         self.fit.ship = Ship(self.mktype(
@@ -189,7 +189,7 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
 
     def test_pass_item_not_loaded(self):
         self.fit.ship = Ship(self.mktype(
@@ -202,4 +202,4 @@ class TestLauncherSlot(RestrictionTestCase):
         self.assertIsNone(error)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assertEqual(len(self.get_log()), 0)
+        self.assert_log_entries(0)
