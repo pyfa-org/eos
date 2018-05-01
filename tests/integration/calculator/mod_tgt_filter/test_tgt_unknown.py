@@ -56,7 +56,7 @@ class TestTgtFilterUnknown(CalculatorTestCase):
         log = self.get_log()
         self.assertEqual(len(log), 2)
         for log_record in log:
-            self.assertEqual(log_record.name, 'eos.calculator.register')
+            self.assertEqual(log_record.name, 'eos.calculator.affection')
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,

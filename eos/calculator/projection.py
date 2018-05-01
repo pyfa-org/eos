@@ -19,10 +19,25 @@
 # ==============================================================================
 
 
-from collections import namedtuple
+from eos.util.keyed_storage import KeyedStorage
 
 
-# Affector is calculator-specific entity. Each affector must have 2 components -
-# modifier (which describes whom and how to modify), and carrier item (item
-# which carries modifier and serves as part of context for its application)
-Affector = namedtuple('Affector', ('modifier', 'carrier_item'))
+class ProjectionRegister:
+    """Keeps track of various projection-related connections."""
+
+    def __init__(self):
+
+        # Format: {projectors}
+        self.__projectors = set()
+
+        # Solar system items affected by projector
+        # Format: {projector: {target items}}
+        self.__projector_targets = KeyedStorage()
+
+        # Projectors affecting solar system item
+        # Format: {target item: {projectors}}
+        self.__target_projectors = KeyedStorage()
+
+        # Projectors residing on solar system item
+        # Format: {carrier item: {projectors}}
+        self.__carrier_projectors = KeyedStorage()

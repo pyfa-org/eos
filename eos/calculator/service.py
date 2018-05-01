@@ -30,8 +30,9 @@ from eos.pubsub.message import ItemLoaded
 from eos.pubsub.message import ItemUnloaded
 from eos.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_storage import KeyedStorage
-from .affector import Affector
-from .register import AffectionRegister
+from .affection import AffectionRegister
+from .misc import Affector
+from .projection import ProjectionRegister
 
 
 class CalculationService(BaseSubscriber):
@@ -44,6 +45,7 @@ class CalculationService(BaseSubscriber):
 
     def __init__(self):
         self.__affections = AffectionRegister()
+        self.__projections = ProjectionRegister()
         # Container with affectors which will receive messages
         # Format: {message type: set(affectors)}
         self.__subscribed_affectors = KeyedStorage()
@@ -63,10 +65,9 @@ class CalculationService(BaseSubscriber):
         # Use list because we can have multiple tuples with the same values
         # as valid configuration
         modifications = []
-        for affector in self.__affections.get_affectors(
+        for carrier_item, modifier in self.__affections.get_affectors(
             tgt_item._fit, tgt_item
         ):
-            modifier, carrier_item = affector
             if modifier.tgt_attr_id == tgt_attr_id:
                 try:
                     mod_op, mod_value = modifier.get_modification(carrier_item)
@@ -94,7 +95,8 @@ class CalculationService(BaseSubscriber):
         fit = msg.fit
         affectors = self.__generate_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
-            self.__subscribe_affector(fit, affector)
+            if isinstance(affector.modifier, BasePythonModifier):
+                self.__subscribe_python_affector(fit, affector)
             self.__affections.register_affector(fit, affector)
             for tgt_item in self.__affections.get_affectees(fit, affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
@@ -106,7 +108,8 @@ class CalculationService(BaseSubscriber):
             for tgt_item in self.__affections.get_affectees(fit, affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
             self.__affections.unregister_affector(fit, affector)
-            self.__unsubscribe_affector(fit, affector)
+            if isinstance(affector.modifier, BasePythonModifier):
+                self.__unsubscribe_python_affector(fit, affector)
 
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attr_dependents(self, msg):
@@ -197,15 +200,13 @@ class CalculationService(BaseSubscriber):
             for modifier in effect.modifiers:
                 if modifier.tgt_domain not in self._supported_domains:
                     continue
-                affector = Affector(modifier, item)
+                affector = Affector(item, modifier)
                 affectors.add(affector)
         return affectors
 
     # Python affector subscription/unsubscription
-    def __subscribe_affector(self, fit, affector):
+    def __subscribe_python_affector(self, fit, affector):
         """Subscribe python affector to message types it wants."""
-        if not isinstance(affector.modifier, BasePythonModifier):
-            return
         to_subscribe = set()
         for msg_type in affector.modifier.revise_msg_types:
             # Subscribe service to new message type only if there's no such
@@ -220,10 +221,8 @@ class CalculationService(BaseSubscriber):
         if to_subscribe:
             fit._subscribe(self, to_subscribe)
 
-    def __unsubscribe_affector(self, fit, affector):
+    def __unsubscribe_python_affector(self, fit, affector):
         """Unsubscribe python affector."""
-        if not isinstance(affector.modifier, BasePythonModifier):
-            return
         to_ubsubscribe = set()
         for msg_type in affector.modifier.revise_msg_types:
             # Make sure affector will not receive messages anymore
