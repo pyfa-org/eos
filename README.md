@@ -3,7 +3,6 @@
 # Eos
 
 Currently you can use engine following way:
--------------------------------------------------------------------------------
 
     from eos import *
     from eos.item_filter import *
@@ -71,8 +70,6 @@ Currently you can use engine following way:
     fit.boosters.add(Booster(28674))  # Synth drop
 
     fit.validate()
-
--------------------------------------------------------------------------------
 
 Fit validation method currently raises exception if any fit check fails, its argument contains dictionary which explains what is wrong. If we make additional drone active, following data will be returned:
 
