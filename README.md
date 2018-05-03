@@ -94,6 +94,7 @@ Stats of fit can be fetched using 'stats' access point. For example, few regular
     823.0
 
 And few more advanced (total uniform EHP of fit, and shield EHP vs EM damage):
+
     >>> from eos.stats_container import DmgProfile
 
     >>> fit.stats.get_ehp(DmgProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
@@ -114,12 +115,14 @@ Specific damage type is accessible too (in this case, hail deals some kinetic da
     136.64914857525073
 
 Get effective DPS against passed resistance profile:
+
     >>> from eos.stats_container import ResistProfile
 
     >>> fit.stats.get_dps(tgt_resists=ResistProfile(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
     1060.4052373697928
 
 Get dps using built-in filters:
+
     >>> from eos.item_filter import turret_filter, missile_filter, drone_filter, sentry_drone_filter
 
     >>> fit.stats.get_dps(turret_filter).total
