@@ -46,39 +46,58 @@ class ProjectionRegister:
         self.__target_projectors = KeyedStorage()
 
     def get_projector_tgts(self, projector):
+        """Get solar system items which are under effect of passed projector."""
         return self.__projector_targets.get(projector, ())
 
     def get_tgt_projectors(self, tgt_item):
+        """Get projectors influencing passed solar system item."""
         return self.__target_projectors.get(tgt_item, ())
 
     def get_carrier_projectors(self, carrier_item):
+        """Get projectors which are exerted by passed carrier's items."""
         return self.__carrier_projectors.get(carrier_item, ())
 
     def get_projectors(self):
+        """Get all known projectors."""
         return self.__projectors
 
     def register_projector(self, projector):
         self.__projectors.add(projector)
+        carrier_item = projector.carrier_item._solsys_carrier
+        if carrier_item is not None:
+            self.__carrier_projectors.add_data_entry(carrier_item, projector)
+        else:
+            self.__carrierless_projectors.add(projector)
 
     def unregister_projector(self, projector):
         self.__projectors.discard(projector)
+        carrier_item = projector.carrier_item._solsys_carrier
+        if carrier_item is not None:
+            self.__carrier_projectors.rm_data_entry(carrier_item, projector)
+        else:
+            self.__carrierless_projectors.discard(projector)
 
     def apply_projector(self, projector, tgt_items):
         self.__projector_targets.add_data_set(projector, tgt_items)
         for tgt_item in tgt_items:
             self.__target_projectors.add_data_entry(tgt_item, projector)
-        solsys_carrier_item = projector.carrier_item._solsys_carrier
-        self.__carrier_projectors.add_data_entry(solsys_carrier_item, projector)
 
     def unapply_projector(self, projector, tgt_items):
         self.__projector_targets.rm_data_set(projector, tgt_items)
         for tgt_item in tgt_items:
             self.__target_projectors.rm_data_entry(tgt_item, projector)
-        solsys_carrier_item = projector.carrier_item._solsys_carrier
-        self.__carrier_projectors.rm_data_entry(solsys_carrier_item, projector)
 
-    def register_solsys_item(self, solsys_item):
-        pass
+    def register_carrier(self, carrier_item):
+        projectors = set()
+        for projector in self.__carrierless_projectors:
+            if projector.item._solsys_carrier is carrier_item:
+                projectors.add(projector)
+        if projectors:
+            self.__carrierless_projectors.difference_update(projectors)
+            self.__carrier_projectors.add_data_set(carrier_item, projectors)
 
-    def unregister_solsys_item(self, solsys_item):
-        pass
+    def unregister_carrier(self, carrier_item):
+        projectors = self.__carrier_projectors.get(carrier_item, ())
+        if projectors:
+            self.__carrierless_projectors.update(projectors)
+            self.__carrier_projectors.rm_data_set(carrier_item, projectors)
