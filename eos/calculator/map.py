@@ -259,50 +259,50 @@ class MutableAttrMap:
         for mod_data in item._fit.solar_system._calculator.get_modifications(
             item, attr_id
         ):
-            operator, mod_value, carrier_item = mod_data
+            mod_operator, mod_value, mod_item = mod_data
             # Normalize operations to just three types: assignments, additions,
             # multiplications
             try:
-                normalization_func = NORMALIZATION_MAP[operator]
+                normalization_func = NORMALIZATION_MAP[mod_operator]
             # Log error on any unknown operator types
             except KeyError:
                 msg = (
                     'malformed modifier on item type {}: unknown operator {}'
-                ).format(carrier_item._type_id, operator)
+                ).format(mod_item._type_id, mod_operator)
                 logger.warning(msg)
                 continue
             mod_value = normalization_func(mod_value)
             # Decide if modification should be stacking penalized or not
             penalize = (
                 not attr.stackable and
-                carrier_item._type.category_id not in
+                mod_item._type.category_id not in
                 PENALTY_IMMUNE_CATEGORY_IDS and
-                operator in PENALIZABLE_OPERATORS)
+                mod_operator in PENALIZABLE_OPERATORS)
             if penalize:
-                mod_values = penalized_mods.setdefault(operator, [])
+                mod_values = penalized_mods.setdefault(mod_operator, [])
             else:
-                mod_values = normal_mods.setdefault(operator, [])
+                mod_values = normal_mods.setdefault(mod_operator, [])
             mod_values.append(mod_value)
         # When data gathering is complete, process penalized modifications. They
         # are penalized on per-operator basis
-        for operator, mod_values in penalized_mods.items():
+        for mod_operator, mod_values in penalized_mods.items():
             penalized_value = self.__penalize_values(mod_values)
-            normal_mods.setdefault(operator, []).append(penalized_value)
+            normal_mods.setdefault(mod_operator, []).append(penalized_value)
         # Calculate value of non-penalized modifications, according to operator
         # order
-        for operator in sorted(normal_mods):
-            mod_values = normal_mods[operator]
+        for mod_operator in sorted(normal_mods):
+            mod_values = normal_mods[mod_operator]
             # Pick best modification for assignments, based on high_is_good
             # value
-            if operator in ASSIGNMENT_OPERATORS:
+            if mod_operator in ASSIGNMENT_OPERATORS:
                 if attr.high_is_good:
                     value = max(mod_values)
                 else:
                     value = min(mod_values)
-            elif operator in ADDITION_OPERATORS:
+            elif mod_operator in ADDITION_OPERATORS:
                 for mod_val in mod_values:
                     value += mod_val
-            elif operator in MULTIPLICATION_OPERATORS:
+            elif mod_operator in MULTIPLICATION_OPERATORS:
                 for mod_val in mod_values:
                     value *= mod_val
         # If attribute has upper cap, do not let its value to grow above it

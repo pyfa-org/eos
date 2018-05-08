@@ -59,23 +59,22 @@ class CalculationService(BaseSubscriber):
                 attribute with this ID will be returned.
 
         Returns:
-            Set with tuples in (operator, modification value, carrier item)
-            format.
+            Set with tuples in (operator, value, item) format.
         """
         # Use list because we can have multiple tuples with the same values
         # as valid configuration
         modifications = []
-        for carrier_item, modifier in self.__affections.get_affectors(
+        for mod_item, modifier in self.__affections.get_affectors(
             tgt_item._fit, tgt_item
         ):
             if modifier.tgt_attr_id == tgt_attr_id:
                 try:
-                    mod_op, mod_value = modifier.get_modification(carrier_item)
+                    mod_op, mod_value = modifier.get_modification(mod_item)
                 # Do nothing here - errors should be logged in modification
                 # getter or even earlier
                 except ModificationCalculationError:
                     continue
-                modifications.append((mod_op, mod_value, carrier_item))
+                modifications.append((mod_op, mod_value, mod_item))
         return modifications
 
     def _handle_fit_added(self, fit):
@@ -155,9 +154,7 @@ class CalculationService(BaseSubscriber):
         # Otherwise, ask affector if target value should change, and remove it
         # if it should
         for affector in self.__subscribed_affectors[msg_type]:
-            if not affector.modifier.revise_modification(
-                msg, affector.carrier_item
-            ):
+            if not affector.modifier.revise_modification(msg, affector.item):
                 continue
             for tgt_item in self.__affections.get_affectees(msg.fit, affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]

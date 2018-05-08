@@ -83,7 +83,7 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.assert_log_entries(0)
 
     def test_other(self):
-        # Here we check that self-reference modifies only carrier of effect, and
+        # Here we check that self-reference modifies only effect item, and
         # nothing else is affected. We position item as character and check
         # another item which has character modifier domain to ensure that items
         # 'belonging' to self are not affected too

@@ -101,7 +101,7 @@ class ModDomain(IntEnum):
 
     Used during attribute calculation.
     """
-    self = 1  # Self, i.e. carrier of modification source
+    self = 1  # Self, i.e. item modification source belongs to
     character = 2
     ship = 3
     target = 4

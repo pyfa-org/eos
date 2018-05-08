@@ -59,7 +59,7 @@ class AffectionRegister:
 
         # Affectors which target 'other' location are always stored here,
         # regardless if they actually affect something or not
-        # Format: {carrier item: {affectors}}
+        # Format: {affector item: {affectors}}
         self.__affector_item_other = KeyedStorage()
 
         # Affectors which should affect only one item (ship, character or self),
@@ -93,7 +93,7 @@ class AffectionRegister:
     # Helpers for affectee getter - they find map and get data from it according
     # to passed affector
     def __get_affectees_item_self(self, _, affector):
-        return affector.carrier_item,
+        return affector.item,
 
     def __get_affectees_item_character(self, affector_fit, _):
         character = affector_fit.character
@@ -111,7 +111,7 @@ class AffectionRegister:
 
     def __get_affectees_item_other(self, _, affector):
         return [
-            i for i in affector.carrier_item._others
+            i for i in affector.item._others
             if i._is_loaded]
 
     __affectees_getters_item = {
@@ -143,14 +143,14 @@ class AffectionRegister:
         domain = self.__contextize_tgt_filter_domain(affector_fit, affector)
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._type_id
+            skill_type_id = affector.item._type_id
         key = (affector_fit, domain, skill_type_id)
         return self.__affectee_domain_skillrq.get(key, ())
 
     def __get_affectees_owner_skillrq(self, affector_fit, affector):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._type_id
+            skill_type_id = affector.item._type_id
         key = (affector_fit, skill_type_id)
         return self.__affectee_owner_skillrq.get(key, ())
 
@@ -254,11 +254,9 @@ class AffectionRegister:
                 affectee_item, awaitable_to_activate)
         # Other
         other_to_activate = set()
-        for carrier_item, affectors in self.__affector_item_other.items():
-            carrier_others = carrier_item._others
-            for affector in affectors:
-                if affectee_item in carrier_others:
-                    other_to_activate.add(affector)
+        for affector_item, affectors in self.__affector_item_other.items():
+            if affectee_item in affector_item._others:
+                other_to_activate.update(affectors)
         # Just add affectors to active storage, 'other' affectors should never
         # be removed from 'other'-specific storage
         if other_to_activate:
@@ -342,7 +340,7 @@ class AffectionRegister:
     # Helpers for affector registering/unregistering, they find affector maps
     # and keys to them
     def __get_affector_storages_item_self(self, _, affector):
-        return (affector.carrier_item, self.__affector_item_active),
+        return (affector.item, self.__affector_item_active),
 
     def __get_affector_storages_item_character(self, affector_fit, _):
         character = affector_fit.character
@@ -361,10 +359,10 @@ class AffectionRegister:
     def __get_affector_storages_item_other(self, _, affector):
         # Affectors with 'other' modifiers are always stored in their special
         # place
-        storages = [(affector.carrier_item, self.__affector_item_other)]
+        storages = [(affector.item, self.__affector_item_other)]
         # And all those which have valid target are also stored in storage for
         # active direct affectors
-        for other_item in affector.carrier_item._others:
+        for other_item in affector.item._others:
             if not other_item._is_loaded:
                 continue
             storages.append((other_item, self.__affector_item_active))
@@ -402,7 +400,7 @@ class AffectionRegister:
         domain = self.__contextize_tgt_filter_domain(affector_fit, affector)
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._type_id
+            skill_type_id = affector.item._type_id
         key = (affector_fit, domain, skill_type_id)
         storage = self.__affector_domain_skillrq
         return (key, storage),
@@ -410,7 +408,7 @@ class AffectionRegister:
     def __get_affector_storages_owner_skillrq(self, affector_fit, affector):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.carrier_item._type_id
+            skill_type_id = affector.item._type_id
         key = (affector_fit, skill_type_id)
         storage = self.__affector_owner_skillrq
         return (key, storage),
@@ -451,12 +449,12 @@ class AffectionRegister:
             UnexpectedDomainError: If affector's modifier target domain is not
                 supported.
         """
-        carrier_item = affector.carrier_item
+        item = affector.item
         domain = affector.modifier.tgt_domain
         if domain == ModDomain.self:
-            if carrier_item is affector_fit.ship:
+            if item is affector_fit.ship:
                 return ModDomain.ship
-            elif carrier_item is affector_fit.character:
+            elif item is affector_fit.character:
                 return ModDomain.character
             else:
                 raise UnexpectedDomainError(domain)
@@ -482,12 +480,12 @@ class AffectionRegister:
             msg = (
                 'malformed modifier on item type {}: '
                 'unsupported target domain {}'
-            ).format(affector.carrier_item._type_id, error.args[0])
+            ).format(affector.item._type_id, error.args[0])
             logger.warning(msg)
         elif isinstance(error, UnknownTgtFilterError):
             msg = (
                 'malformed modifier on item type {}: invalid target filter {}'
-            ).format(affector.carrier_item._type_id, error.args[0])
+            ).format(affector.item._type_id, error.args[0])
             logger.warning(msg)
         else:
             raise error

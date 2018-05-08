@@ -32,8 +32,8 @@ from .cycle import CycleInfo, CycleSequence
 class Effect:
     """Represents single eve effect.
 
-    Effects are the building blocks which describe what its carrier does with
-    other items.
+    Effects are the building blocks which describe what items do with other
+    items.
 
     Attributes:
         id: Identifier of the effect.
@@ -41,21 +41,21 @@ class Effect:
             effect is applied - always, when item is active, overloaded, etc.
         is_offensive: Whether effect is offensive (e.g. guns).
         is_assistance: Whether the effect is assistance (e.g. remote repairers).
-        duration_attr_id: Value of attribute with this ID on carrier item
-            defines effect cycle time.
-        discharge_attr_id: Value of attribute with this ID on carrier item
-            defines how much cap does this effect take per cycle.
-        range_attr_id: Value of attribute with this ID on carrier item defines
-            max range where effect is applied to its full potency.
-        falloff_attr_id: Value of attribute with this ID on carrier item defines
+        duration_attr_id: Value of attribute with this ID on item defines effect
+            cycle time.
+        discharge_attr_id: Value of attribute with this ID on item defines how
+            much cap does this effect take per cycle.
+        range_attr_id: Value of attribute with this ID on item defines max range
+            where effect is applied to its full potency.
+        falloff_attr_id: Value of attribute with this ID on item defines
             additional range where effect is still applied, but with diminished
             potency.
-        tracking_speed_attr_id: Value of attribute with this ID on carrier item
-            defines tracking speed which reduces effect efficiency vs targets
-            which are small and have decent angular velocity.
-        fitting_usage_chance_attr_id: Value of attribute with this ID on carrier
-            item defines chance of this effect being applied when item is added
-            to fit, e.g. booster side-effects.
+        tracking_speed_attr_id: Value of attribute with this ID on item defines
+            tracking speed which reduces effect efficiency vs targets which are
+            small and have decent angular velocity.
+        fitting_usage_chance_attr_id: Value of attribute with this ID on item
+            defines chance of this effect being applied when item is added to
+            fit, e.g. booster side-effects.
         build_status: Effect-to-modifier build status.
         modifiers: Iterable with modifiers. It's actually not effect which
             describes modifications this item does, but these child objects.
@@ -96,7 +96,7 @@ class Effect:
     def _state(self):
         """Returns 'state' of effect.
 
-        It means if carrier item takes this state or higher, effect activates.
+        It means if item takes this state or higher, effect activates.
 
         Returns:
             State in the form of ID, as defined in State enum.

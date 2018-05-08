@@ -82,6 +82,3 @@ class ProjectionRegister:
 
     def unregister_solsys_item(self, solsys_item):
         pass
-
-
-

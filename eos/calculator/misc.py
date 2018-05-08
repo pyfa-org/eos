@@ -23,7 +23,7 @@ from collections import namedtuple
 
 
 # Affector is calculator-specific entity, used in affection register
-Affector = namedtuple('Affector', ('carrier_item', 'modifier'))
+Affector = namedtuple('Affector', ('item', 'modifier'))
 
 # Projector is calculator-specific entity, used in projection register
-Projector = namedtuple('Projector', ('carrier_item', 'effect'))
+Projector = namedtuple('Projector', ('item', 'effect'))

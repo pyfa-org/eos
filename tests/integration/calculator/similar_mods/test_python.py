@@ -43,16 +43,16 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
                     tgt_filter_extra_arg=None,
                     tgt_attr_id=tgt_attr_id)
 
-            def get_modification(self, carrier_item):
-                value = carrier_item.attrs[src_attr_id]
+            def get_modification(self, mod_item):
+                value = mod_item.attrs[src_attr_id]
                 return ModOperator.post_percent, value
 
             @property
             def revise_msg_types(self):
                 return {AttrValueChanged}
 
-            def revise_modification(self, msg, carrier_item):
-                if msg.item is carrier_item and msg.attr_id == src_attr_id:
+            def revise_modification(self, msg, mod_item):
+                if msg.item is mod_item and msg.attr_id == src_attr_id:
                     return True
                 return False
 
