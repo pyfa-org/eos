@@ -49,6 +49,10 @@ class Drone(
     _modifier_domain = None
     _owner_modifiable = True
 
+    @property
+    def _solsys_carrier(self):
+        return self
+
     # Auxiliary methods
     def __repr__(self):
         spec = [['type_id', '_type_id'], 'state']

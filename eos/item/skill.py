@@ -58,6 +58,7 @@ class Skill(ImmutableStateMixin):
     # Attribute calculation-related properties
     _modifier_domain = ModDomain.character
     _owner_modifiable = False
+    _solsys_carrier = None
 
     # Auxiliary methods
     def __repr__(self):

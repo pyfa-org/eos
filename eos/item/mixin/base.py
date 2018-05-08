@@ -136,6 +136,11 @@ class BaseItemMixin(metaclass=ABCMeta):
         ...
 
     @property
+    @abstractmethod
+    def _solsys_carrier(self):
+        ...
+
+    @property
     def _others(self):
         other_items = set()
         container = self._container

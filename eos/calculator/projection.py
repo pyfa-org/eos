@@ -45,6 +45,7 @@ class ProjectionRegister:
         # Format: {target item: {projectors}}
         self.__target_projectors = KeyedStorage()
 
+    # Query methods
     def get_projector_tgts(self, projector):
         """Get solar system items which are under effect of passed projector."""
         return self.__projector_targets.get(projector, ())
@@ -61,9 +62,10 @@ class ProjectionRegister:
         """Get all known projectors."""
         return self.__projectors
 
+    # Maintenance methods
     def register_projector(self, projector):
         self.__projectors.add(projector)
-        carrier_item = projector.carrier_item._solsys_carrier
+        carrier_item = projector.item._solsys_carrier
         if carrier_item is not None:
             self.__carrier_projectors.add_data_entry(carrier_item, projector)
         else:
@@ -71,7 +73,7 @@ class ProjectionRegister:
 
     def unregister_projector(self, projector):
         self.__projectors.discard(projector)
-        carrier_item = projector.carrier_item._solsys_carrier
+        carrier_item = projector.item._solsys_carrier
         if carrier_item is not None:
             self.__carrier_projectors.rm_data_entry(carrier_item, projector)
         else:

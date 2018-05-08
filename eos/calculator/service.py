@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import ModDomain
+from eos.const.eve import EffectCategoryId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj.modifier import ModificationCalculationError
@@ -32,6 +33,7 @@ from eos.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_storage import KeyedStorage
 from .affection import AffectionRegister
 from .misc import Affector
+from .misc import Projector
 from .projection import ProjectionRegister
 
 
@@ -99,6 +101,9 @@ class CalculationService(BaseSubscriber):
             self.__affections.register_affector(fit, affector)
             for tgt_item in self.__affections.get_affectees(fit, affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
+        projectors = self.__generate_projectors(msg.item, msg.effect_ids)
+        for projector in projectors:
+            self.__projections.register_projector(projector)
 
     def _handle_effects_stopped(self, msg):
         fit = msg.fit
@@ -109,6 +114,9 @@ class CalculationService(BaseSubscriber):
             self.__affections.unregister_affector(fit, affector)
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__unsubscribe_python_affector(fit, affector)
+        projectors = self.__generate_projectors(msg.item, msg.effect_ids)
+        for projector in projectors:
+            self.__projections.unregister_projector(projector)
 
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attr_dependents(self, msg):
@@ -127,7 +135,8 @@ class CalculationService(BaseSubscriber):
         # Remove values of target attributes which are using changing attribute
         # as modification source
         for affector in self.__generate_affectors(
-                item, item._running_effect_ids):
+            item, item._running_effect_ids
+        ):
             modifier = affector.modifier
             # Only dogma modifiers have source attribute specified, python
             # modifiers are processed separately
@@ -177,19 +186,9 @@ class CalculationService(BaseSubscriber):
     _supported_domains = set(
         domain for domain in ModDomain if domain != ModDomain.target)
 
-    # Affector generation and manipulation
+    # Affector-related auxiliary methods
     def __generate_affectors(self, item, effect_ids):
-        """Get all affectors spawned by the item.
-
-        Args:
-            item: Item, for which affectors are generated.
-            effect_ids: Iterable with effect IDs which should serve as filter
-                for affectors. If affector's modifier is not part of effect from
-                this iterable, it's filtered out.
-
-        Return value:
-            Set with Affector objects.
-        """
+        """Get all affectors spawned by the item."""
         affectors = set()
         for effect_id, effect in item._type_effects.items():
             if effect_id not in effect_ids:
@@ -201,7 +200,6 @@ class CalculationService(BaseSubscriber):
                 affectors.add(affector)
         return affectors
 
-    # Python affector subscription/unsubscription
     def __subscribe_python_affector(self, fit, affector):
         """Subscribe python affector to message types it wants."""
         to_subscribe = set()
@@ -233,3 +231,16 @@ class CalculationService(BaseSubscriber):
                 to_ubsubscribe.add(msg_type)
         if to_ubsubscribe:
             fit._unsubscribe(self, to_ubsubscribe)
+
+    # Projector-related auxiliary methods
+    def __generate_projectors(self, item, effect_ids):
+        """Get all projectors spawned by the item."""
+        projectors = set()
+        for effect_id, effect in item._type_effects.items():
+            if effect_id not in effect_ids:
+                continue
+            if effect.category_id != EffectCategoryId.target:
+                continue
+            projector = Projector(item, effect)
+            projectors.add(projector)
+        return projectors

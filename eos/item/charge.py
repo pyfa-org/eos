@@ -31,6 +31,7 @@ class BaseCharge(ContainerStateMixin):
     # Attribute calculation-related properties
     _modifier_domain = None
     _owner_modifiable = True
+    _solsys_carrier = None
 
     # Auxiliary methods
     def __repr__(self):

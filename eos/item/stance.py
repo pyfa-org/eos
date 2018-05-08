@@ -42,6 +42,10 @@ class Stance(ImmutableStateMixin):
     _modifier_domain = ModDomain.ship
     _owner_modifiable = False
 
+    @property
+    def _solsys_carrier(self):
+        return self._fit.ship
+
     # Auxiliary methods
     def __repr__(self):
         spec = [['type_id', '_type_id']]
