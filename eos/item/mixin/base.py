@@ -56,18 +56,15 @@ class BaseItemMixin(metaclass=ABCMeta):
         self._type_id = type_id
         # Which item type this item based on
         self._type = None
+        self._container = None
         # Container for effects IDs which are currently running
         self._running_effect_ids = set()
-        # Effect run modes, if they are any different from default
-        # Format: {effect ID: effect run mode}
-        self.__effect_mode_overrides = None
         # Special dictionary subclass that holds modified attributes and data
         # related to their calculation
         self.attrs = MutableAttrMap(self)
-        # Charges which are 'auto-loaded' into item by effects
-        # Format: {effect ID: autocharge type ID}
+        self.__effect_mode_overrides = None
+        self.__effect_tgts = None
         self.__autocharges = None
-        self._container = None
         super().__init__(**kwargs)
 
     def _child_item_iter(self, skip_autoitems=False, **kwargs):
@@ -215,6 +212,25 @@ class BaseItemMixin(metaclass=ABCMeta):
             if msgs:
                 fit._publish_bulk(msgs)
 
+    # Target methods
+    @property
+    def _effect_tgts(self):
+        # Format: {effect ID: target item}
+        return self.__effect_tgts or {}
+
+    def _set_tgt(self, effect_id, tgt_item):
+        if self.__effect_tgts is None:
+            self.__effect_tgts = {}
+        self.__effect_tgts[effect_id] = tgt_item
+
+    def _del_tgt(self, effect_id):
+        effect_tgts = self.__effect_tgts or {}
+        if effect_id not in effect_tgts:
+            return
+        del effect_tgts[effect_id]
+        if not effect_tgts:
+            self.__effect_tgts = None
+
     # Autocharge methods
     @property
     def autocharges(self):
@@ -222,7 +238,7 @@ class BaseItemMixin(metaclass=ABCMeta):
 
         These charges will always be on item as long as item type defines them.
         """
-        # Format {effect ID: charge}
+        # Format {effect ID: charge item}
         return self.__autocharges or {}
 
     def _add_autocharge(self, effect_id, autocharge_type_id):
