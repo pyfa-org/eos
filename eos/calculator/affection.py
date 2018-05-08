@@ -41,7 +41,6 @@ class AffectionRegister:
     """
 
     def __init__(self):
-
         # Items belonging to certain domain
         # Format: {(fit, domain): {affectee items}}
         self.__affectee_domain = KeyedStorage()
