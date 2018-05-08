@@ -35,8 +35,9 @@ class Module(MutableStateMixin, EffectStatsMixin):
     def __init__(self, type_id, state=State.offline, charge=None):
         super().__init__(type_id=type_id, state=state)
         self.charge = charge
+        self.__target = None
 
-    # Charge-specific properties
+    # Charge-specific methods
     charge = ItemDescriptor('_charge', Charge)
 
     def _child_item_iter(self, **kwargs):
@@ -97,6 +98,15 @@ class Module(MutableStateMixin, EffectStatsMixin):
             return time_ms / 1000
         except TypeError:
             return time_ms
+
+    # Target-specific methods
+    @property
+    def target(self):
+        return self.__target
+
+    @target.setter
+    def target(self, new_tgt):
+        self.__target = new_tgt
 
     # Item-specific properties
     @property

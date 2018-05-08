@@ -39,20 +39,20 @@ class ProjectionRegister:
 
         # Solar system items affected by projector
         # Format: {projector: {target items}}
-        self.__projector_targets = KeyedStorage()
+        self.__projector_tgts = KeyedStorage()
 
         # Projectors affecting solar system item
         # Format: {target item: {projectors}}
-        self.__target_projectors = KeyedStorage()
+        self.__tgt_projectors = KeyedStorage()
 
     # Query methods
     def get_projector_tgts(self, projector):
         """Get solar system items which are under effect of passed projector."""
-        return self.__projector_targets.get(projector, ())
+        return self.__projector_tgts.get(projector, ())
 
     def get_tgt_projectors(self, tgt_item):
         """Get projectors influencing passed solar system item."""
-        return self.__target_projectors.get(tgt_item, ())
+        return self.__tgt_projectors.get(tgt_item, ())
 
     def get_carrier_projectors(self, carrier_item):
         """Get projectors which are exerted by passed carrier's items."""
@@ -80,14 +80,14 @@ class ProjectionRegister:
             self.__carrierless_projectors.discard(projector)
 
     def apply_projector(self, projector, tgt_items):
-        self.__projector_targets.add_data_set(projector, tgt_items)
+        self.__projector_tgts.add_data_set(projector, tgt_items)
         for tgt_item in tgt_items:
-            self.__target_projectors.add_data_entry(tgt_item, projector)
+            self.__tgt_projectors.add_data_entry(tgt_item, projector)
 
     def unapply_projector(self, projector, tgt_items):
-        self.__projector_targets.rm_data_set(projector, tgt_items)
+        self.__projector_tgts.rm_data_set(projector, tgt_items)
         for tgt_item in tgt_items:
-            self.__target_projectors.rm_data_entry(tgt_item, projector)
+            self.__tgt_projectors.rm_data_entry(tgt_item, projector)
 
     def register_solsys_item(self, solsys_item):
         projectors = set()
