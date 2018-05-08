@@ -89,17 +89,17 @@ class ProjectionRegister:
         for tgt_item in tgt_items:
             self.__target_projectors.rm_data_entry(tgt_item, projector)
 
-    def register_carrier(self, carrier_item):
+    def register_solsys_item(self, solsys_item):
         projectors = set()
         for projector in self.__carrierless_projectors:
-            if projector.item._solsys_carrier is carrier_item:
+            if projector.item._solsys_carrier is solsys_item:
                 projectors.add(projector)
         if projectors:
             self.__carrierless_projectors.difference_update(projectors)
-            self.__carrier_projectors.add_data_set(carrier_item, projectors)
+            self.__carrier_projectors.add_data_set(solsys_item, projectors)
 
-    def unregister_carrier(self, carrier_item):
-        projectors = self.__carrier_projectors.get(carrier_item, ())
+    def unregister_solsys_item(self, solsys_item):
+        projectors = self.__carrier_projectors.get(solsys_item, ())
         if projectors:
             self.__carrierless_projectors.update(projectors)
-            self.__carrier_projectors.rm_data_set(carrier_item, projectors)
+            self.__carrier_projectors.rm_data_set(solsys_item, projectors)

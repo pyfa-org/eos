@@ -24,6 +24,7 @@ from eos.const.eve import EffectCategoryId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj.modifier import ModificationCalculationError
+from eos.item.mixin.solar_system import SolarSystemItemMixin
 from eos.pubsub.message import AttrValueChanged
 from eos.pubsub.message import EffectsStarted
 from eos.pubsub.message import EffectsStopped
@@ -87,10 +88,16 @@ class CalculationService(BaseSubscriber):
 
     # Handle item changes which are significant for calculator
     def _handle_item_loaded(self, msg):
-        self.__affections.register_affectee(msg.fit, msg.item)
+        item = msg.item
+        self.__affections.register_affectee(msg.fit, item)
+        if isinstance(item, SolarSystemItemMixin):
+            self.__projections.register_solsys_item(item)
 
     def _handle_item_unloaded(self, msg):
-        self.__affections.unregister_affectee(msg.fit, msg.item)
+        item = msg.item
+        self.__affections.unregister_affectee(msg.fit, item)
+        if isinstance(item, SolarSystemItemMixin):
+            self.__projections.unregister_solsys_item(item)
 
     def _handle_effects_started(self, msg):
         fit = msg.fit
