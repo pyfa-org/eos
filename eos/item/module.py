@@ -28,9 +28,10 @@ from eos.util.float import float_to_int
 from eos.util.repr import make_repr_str
 from .mixin.effect_stats import EffectStatsMixin
 from .mixin.state import MutableStateMixin
+from .mixin.tgtable import SingleTgtMixin
 
 
-class Module(MutableStateMixin, EffectStatsMixin):
+class Module(MutableStateMixin, SingleTgtMixin, EffectStatsMixin):
 
     def __init__(self, type_id, state=State.offline, charge=None):
         super().__init__(type_id=type_id, state=state)
@@ -98,15 +99,6 @@ class Module(MutableStateMixin, EffectStatsMixin):
             return time_ms / 1000
         except TypeError:
             return time_ms
-
-    # Target-specific methods
-    @property
-    def target(self):
-        return self.__target
-
-    @target.setter
-    def target(self, new_tgt):
-        self.__target = new_tgt
 
     # Item-specific properties
     @property

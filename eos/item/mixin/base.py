@@ -212,25 +212,6 @@ class BaseItemMixin(metaclass=ABCMeta):
             if msgs:
                 fit._publish_bulk(msgs)
 
-    # Target methods
-    @property
-    def _effect_tgts(self):
-        # Format: {effect ID: target item}
-        return self.__effect_tgts or {}
-
-    def _set_tgt(self, effect_id, tgt_item):
-        if self.__effect_tgts is None:
-            self.__effect_tgts = {}
-        self.__effect_tgts[effect_id] = tgt_item
-
-    def _del_tgt(self, effect_id):
-        effect_tgts = self.__effect_tgts or {}
-        if effect_id not in effect_tgts:
-            return
-        del effect_tgts[effect_id]
-        if not effect_tgts:
-            self.__effect_tgts = None
-
     # Autocharge methods
     @property
     def autocharges(self):
