@@ -98,25 +98,25 @@ class EffectsStopped:
 
 class EffectApplied:
 
-    def __init__(self, item, effect_id, targets):
+    def __init__(self, item, effect_id, tgt_items):
         self.fit = None
         self.item = item
         self.effect_id = effect_id
-        self.targets = targets
+        self.tgt_items = tgt_items
 
     def __repr__(self):
-        spec = ['fit', 'item', 'effect_id', 'targets']
+        spec = ['fit', 'item', 'effect_id', 'tgt_items']
         return make_repr_str(self, spec)
 
 
 class EffectUnapplied:
 
-    def __init__(self, item, effect_id, targets):
+    def __init__(self, item, effect_id, tgt_items):
         self.fit = None
         self.item = item
         self.effect_id = effect_id
-        self.targets = targets
+        self.tgt_items = tgt_items
 
     def __repr__(self):
-        spec = ['fit', 'item', 'effect_id', 'targets']
+        spec = ['fit', 'item', 'effect_id', 'tgt_items']
         return make_repr_str(self, spec)

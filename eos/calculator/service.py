@@ -26,6 +26,8 @@ from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj.modifier import ModificationCalculationError
 from eos.item.mixin.solar_system import SolarSystemItemMixin
 from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import EffectApplied
+from eos.pubsub.message import EffectUnapplied
 from eos.pubsub.message import EffectsStarted
 from eos.pubsub.message import EffectsStopped
 from eos.pubsub.message import ItemLoaded
@@ -125,6 +127,24 @@ class CalculationService(BaseSubscriber):
         for projector in projectors:
             self.__projections.unregister_projector(projector)
 
+    def _handle_effect_applied(self, msg):
+        item = msg.item
+        effect = item._type_effects[msg.effect_id]
+        for modifier in effect.modifiers:
+            affector = Affector(item, modifier)
+            for tgt_item in msg.tgt_items:
+                self.__affections.register_affector(tgt_item._fit, affector)
+                del tgt_item.attrs[affector.modifier.tgt_attr_id]
+
+    def _handle_effect_unapplied(self, msg):
+        item = msg.item
+        effect = item._type_effects[msg.effect_id]
+        for modifier in effect.modifiers:
+            affector = Affector(item, modifier)
+            for tgt_item in msg.tgt_items:
+                del tgt_item.attrs[affector.modifier.tgt_attr_id]
+                self.__affections.register_affector(tgt_item._fit, affector)
+
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attr_dependents(self, msg):
         """Remove calculated attribute values which rely on passed attribute.
@@ -181,6 +201,8 @@ class CalculationService(BaseSubscriber):
         ItemUnloaded: _handle_item_unloaded,
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped,
+        EffectApplied: _handle_effect_applied,
+        EffectUnapplied: _handle_effect_unapplied,
         AttrValueChanged: _revise_regular_attr_dependents}
 
     def _notify(self, msg):

@@ -21,7 +21,9 @@
 
 from .dmg_dealer import load_dmg_dealers
 from .effect import Effect
+from .ewar import load_ewar
 from .factory import EffectFactory
 
 
 load_dmg_dealers()
+load_ewar()

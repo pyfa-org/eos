@@ -246,6 +246,7 @@ class EffectId(IntEnum):
     module_bonus_microwarpdrive = 6730
     online = 16
     projectile_fired = 34
+    remote_webifier_falloff = 6426
     rig_slot = 2663
     subsystem = 3772
     super_weapon_amarr = 4489

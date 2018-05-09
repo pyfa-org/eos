@@ -19,19 +19,8 @@
 # ==============================================================================
 
 
-from .attr import AttrValueChanged
-from .attr import AttrValueChangedMasked
-from .fit import DefaultIncomingDmgChanged
-from .fit import RahIncomingDmgChanged
-from .item import ItemAdded
-from .item import ItemRemoved
-from .item import StatesActivated
-from .item import StatesDeactivated
-from .item_loaded import EffectApplied
-from .item_loaded import EffectUnapplied
-from .item_loaded import EffectsStarted
-from .item_loaded import EffectsStopped
-from .item_loaded import ItemLoaded
-from .item_loaded import ItemUnloaded
-from .item_loaded import StatesActivatedLoaded
-from .item_loaded import StatesDeactivatedLoaded
+from eos.util.dynamic_load import load_submodules
+
+
+def load_ewar():
+    load_submodules(__path__, __name__)

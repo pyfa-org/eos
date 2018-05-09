@@ -58,15 +58,17 @@ class SingleTgtMixin(BaseItemMixin, BaseTgtMixin):
                 effect = item_effects[effect_id]
                 if effect.category_id == EffectCategoryId.target:
                     tgtable_effects.add(effect_id)
-            msgs = []
-            for effect_id in tgtable_effects:
-                msgs.append(EffectUnapplied(self, effect_id, (old_tgt,)))
-            fit._publish_bulk(msgs)
+            if old_tgt is not None:
+                msgs = []
+                for effect_id in tgtable_effects:
+                    msgs.append(EffectUnapplied(self, effect_id, (old_tgt,)))
+                fit._publish_bulk(msgs)
             self.__target = new_tgt
-            msgs = []
-            for effect_id in tgtable_effects:
-                msgs.append(EffectApplied(self, effect_id, (new_tgt,)))
-            fit._publish_bulk(msgs)
+            if new_tgt is not None:
+                msgs = []
+                for effect_id in tgtable_effects:
+                    msgs.append(EffectApplied(self, effect_id, (new_tgt,)))
+                fit._publish_bulk(msgs)
         else:
             self.__target = new_tgt
 

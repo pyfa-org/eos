@@ -134,14 +134,14 @@ class MsgHelper:
             tgt_getter = getattr(item, '_get_effects_targets', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
-                for effect_id, effect_tgts in effects_tgts.items():
-                    msgs.append(EffectApplied(item, effect_id, effect_tgts))
+                for effect_id, tgt_items in effects_tgts.items():
+                    msgs.append(EffectApplied(item, effect_id, tgt_items))
         if stop_ids:
             tgt_getter = getattr(item, '_get_effects_targets', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
-                for effect_id, effect_tgts in effects_tgts.items():
-                    msgs.append(EffectUnapplied(item, effect_id, effect_tgts))
+                for effect_id, tgt_items in effects_tgts.items():
+                    msgs.append(EffectUnapplied(item, effect_id, tgt_items))
             msgs.append(EffectsStopped(item, stop_ids))
             item._running_effect_ids.difference_update(stop_ids)
         return msgs

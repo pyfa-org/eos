@@ -22,8 +22,8 @@
 from copy import copy
 
 from eos.const.eve import AttrId
-from eos.item import Skill
 from eos.eve_obj.modifier import DogmaModifier
+from eos.item import Skill
 from eos.source import Source
 from eos.source import SourceManager
 from tests.testcase import EosTestCase

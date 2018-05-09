@@ -19,19 +19,28 @@
 # ==============================================================================
 
 
-from .attr import AttrValueChanged
-from .attr import AttrValueChangedMasked
-from .fit import DefaultIncomingDmgChanged
-from .fit import RahIncomingDmgChanged
-from .item import ItemAdded
-from .item import ItemRemoved
-from .item import StatesActivated
-from .item import StatesDeactivated
-from .item_loaded import EffectApplied
-from .item_loaded import EffectUnapplied
-from .item_loaded import EffectsStarted
-from .item_loaded import EffectsStopped
-from .item_loaded import ItemLoaded
-from .item_loaded import ItemUnloaded
-from .item_loaded import StatesActivatedLoaded
-from .item_loaded import StatesDeactivatedLoaded
+from eos.const.eos import ModDomain
+from eos.const.eos import ModOperator
+from eos.const.eos import ModTgtFilter
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.eve_obj.effect import Effect
+from eos.eve_obj.effect import EffectFactory
+from eos.eve_obj.modifier import DogmaModifier
+
+
+class RemoteWebifierFalloff(Effect):
+
+    def __init__(self, *args, **kwargs):
+        Effect.__init__(self, *args, **kwargs)
+        modifier = DogmaModifier(
+            tgt_filter=ModTgtFilter.item,
+            tgt_domain=ModDomain.ship,
+            tgt_attr_id=AttrId.max_velocity,
+            operator=ModOperator.post_percent,
+            src_attr_id=AttrId.speed_factor)
+        self.modifiers = (*self.modifiers, modifier)
+
+
+EffectFactory.reg_cust_class_by_id(
+    RemoteWebifierFalloff, EffectId.remote_webifier_falloff)
