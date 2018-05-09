@@ -55,7 +55,7 @@ class SingleTgtMixin(BaseItemMixin, BaseTgtMixin):
             for effect_id in effect_ids:
                 effect = item_effects[effect_id]
                 if effect.category_id == EffectCategoryId.target:
-                    effect_targets[effect_id] = tgt
+                    effect_targets[effect_id] = {tgt}
         return effect_targets
 
 
