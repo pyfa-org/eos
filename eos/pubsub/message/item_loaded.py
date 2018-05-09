@@ -96,7 +96,7 @@ class EffectsStopped:
         return make_repr_str(self, spec)
 
 
-class EffectsApplied:
+class EffectApplied:
 
     def __init__(self, item, effect_id, targets):
         self.fit = None
@@ -109,7 +109,7 @@ class EffectsApplied:
         return make_repr_str(self, spec)
 
 
-class EffectsUnapplied:
+class EffectUnapplied:
 
     def __init__(self, item, effect_id, targets):
         self.fit = None

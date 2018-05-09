@@ -25,8 +25,8 @@ from .item import ItemAdded
 from .item import ItemRemoved
 from .item import StatesActivated
 from .item import StatesDeactivated
-from .item_loaded import EffectsApplied
-from .item_loaded import EffectsUnapplied
+from .item_loaded import EffectApplied
+from .item_loaded import EffectUnapplied
 from .item_loaded import EffectsStarted
 from .item_loaded import EffectsStopped
 from .item_loaded import ItemLoaded
@@ -135,13 +135,13 @@ class MsgHelper:
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
                 for effect_id, effect_tgts in effects_tgts.items():
-                    msgs.append(EffectsApplied(item, effect_id, effect_tgts))
+                    msgs.append(EffectApplied(item, effect_id, effect_tgts))
         if stop_ids:
             tgt_getter = getattr(item, '_get_effects_targets', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
                 for effect_id, effect_tgts in effects_tgts.items():
-                    msgs.append(EffectsUnapplied(item, effect_id, effect_tgts))
+                    msgs.append(EffectUnapplied(item, effect_id, effect_tgts))
             msgs.append(EffectsStopped(item, stop_ids))
             item._running_effect_ids.difference_update(stop_ids)
         return msgs

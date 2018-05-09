@@ -23,6 +23,8 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 from eos.const.eve import EffectCategoryId
+from eos.pubsub.message import EffectApplied
+from eos.pubsub.message import EffectUnapplied
 from .base import BaseItemMixin
 
 
@@ -45,7 +47,28 @@ class SingleTgtMixin(BaseItemMixin, BaseTgtMixin):
 
     @target.setter
     def target(self, new_tgt):
-        self.__target = new_tgt
+        old_tgt = self.__target
+        if old_tgt is new_tgt:
+            return
+        fit = self._fit
+        if fit is not None:
+            tgtable_effects = set()
+            item_effects = self._type_effects
+            for effect_id in self._running_effect_ids:
+                effect = item_effects[effect_id]
+                if effect.category_id == EffectCategoryId.target:
+                    tgtable_effects.add(effect_id)
+            msgs = []
+            for effect_id in tgtable_effects:
+                msgs.append(EffectUnapplied(self, effect_id, (old_tgt,)))
+            fit._publish_bulk(msgs)
+            self.__target = new_tgt
+            msgs = []
+            for effect_id in tgtable_effects:
+                msgs.append(EffectApplied(self, effect_id, (new_tgt,)))
+            fit._publish_bulk(msgs)
+        else:
+            self.__target = new_tgt
 
     def _get_effects_targets(self, effect_ids):
         effect_targets = {}
@@ -55,7 +78,7 @@ class SingleTgtMixin(BaseItemMixin, BaseTgtMixin):
             for effect_id in effect_ids:
                 effect = item_effects[effect_id]
                 if effect.category_id == EffectCategoryId.target:
-                    effect_targets[effect_id] = {tgt}
+                    effect_targets[effect_id] = tgt,
         return effect_targets
 
 
