@@ -105,7 +105,7 @@ class CalculationService(BaseSubscriber):
         for affector in affectors:
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__subscribe_python_affector(fit, affector)
-            self.__affections.register_affector(fit, affector)
+            self.__affections.register_affector((fit,), affector)
             for tgt_item in self.__affections.get_affectees((fit,), affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
         projectors = self.__generate_projectors(msg.item, msg.effect_ids)
@@ -118,7 +118,7 @@ class CalculationService(BaseSubscriber):
         for affector in affectors:
             for tgt_item in self.__affections.get_affectees((fit,), affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
-            self.__affections.unregister_affector(fit, affector)
+            self.__affections.unregister_affector((fit,), affector)
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__unsubscribe_python_affector(fit, affector)
         projectors = self.__generate_projectors(msg.item, msg.effect_ids)
@@ -131,7 +131,8 @@ class CalculationService(BaseSubscriber):
         for modifier in effect.modifiers:
             affector = Affector(item, modifier)
             for tgt_item in msg.tgt_items:
-                self.__affections.register_affector(tgt_item._fit, affector)
+                self.__affections.register_affector(
+                    (tgt_item._fit,), affector)
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     def _handle_effect_unapplied(self, msg):
@@ -141,7 +142,8 @@ class CalculationService(BaseSubscriber):
             affector = Affector(item, modifier)
             for tgt_item in msg.tgt_items:
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
-                self.__affections.register_affector(tgt_item._fit, affector)
+                self.__affections.unregister_affector(
+                    (tgt_item._fit,), affector)
 
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attr_dependents(self, msg):
