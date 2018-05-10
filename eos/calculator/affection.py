@@ -133,12 +133,13 @@ class AffectionRegister:
         return affectors
 
     # Maintenance methods
-    def register_affectee(self, affectee_fit, affectee_item):
+    def register_affectee(self, affectee_item):
         """Add passed affectee item to register.
 
         We track affectees to efficiently update attributes when set of items
         influencing them changes.
         """
+        affectee_fit = affectee_item._fit
         for key, affectee_map in self.__get_affectee_storages(
             affectee_fit, affectee_item
         ):
@@ -148,8 +149,9 @@ class AffectionRegister:
         # in this method we activate such affectors
         self.__activate_special_affectors(affectee_fit, affectee_item)
 
-    def unregister_affectee(self, affectee_fit, affectee_item):
+    def unregister_affectee(self, affectee_item):
         """Remove passed affectee item from register."""
+        affectee_fit = affectee_item._fit
         for key, affectee_map in self.__get_affectee_storages(
             affectee_fit, affectee_item
         ):

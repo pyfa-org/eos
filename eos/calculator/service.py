@@ -89,13 +89,13 @@ class CalculationService(BaseSubscriber):
     # Handle item changes which are significant for calculator
     def _handle_item_loaded(self, msg):
         item = msg.item
-        self.__affections.register_affectee(msg.fit, item)
+        self.__affections.register_affectee(item)
         if isinstance(item, SolarSystemItemMixin):
             self.__projections.register_solsys_item(item)
 
     def _handle_item_unloaded(self, msg):
         item = msg.item
-        self.__affections.unregister_affectee(msg.fit, item)
+        self.__affections.unregister_affectee(item)
         if isinstance(item, SolarSystemItemMixin):
             self.__projections.unregister_solsys_item(item)
 
