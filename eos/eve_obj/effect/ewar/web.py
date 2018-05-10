@@ -35,7 +35,7 @@ class RemoteWebifierFalloff(Effect):
         Effect.__init__(self, *args, **kwargs)
         modifier = DogmaModifier(
             tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
+            tgt_domain=ModDomain.target,
             tgt_attr_id=AttrId.max_velocity,
             operator=ModOperator.post_percent,
             src_attr_id=AttrId.speed_factor)

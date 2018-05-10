@@ -101,7 +101,7 @@ class CalculationService(BaseSubscriber):
 
     def _handle_effects_started(self, msg):
         fit = msg.fit
-        affectors = self.__generate_affectors(msg.item, msg.effect_ids)
+        affectors = self.__generate_local_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__subscribe_python_affector(fit, affector)
@@ -114,7 +114,7 @@ class CalculationService(BaseSubscriber):
 
     def _handle_effects_stopped(self, msg):
         fit = msg.fit
-        affectors = self.__generate_affectors(msg.item, msg.effect_ids)
+        affectors = self.__generate_local_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
             for tgt_item in self.__affections.get_affectees((fit,), affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
@@ -159,7 +159,7 @@ class CalculationService(BaseSubscriber):
             del item.attrs[capped_attr_id]
         # Remove values of target attributes which are using changing attribute
         # as modification source
-        for affector in self.__generate_affectors(
+        for affector in self.__generate_local_affectors(
             item, item._running_effect_ids
         ):
             modifier = affector.modifier
@@ -218,8 +218,8 @@ class CalculationService(BaseSubscriber):
         domain for domain in ModDomain if domain != ModDomain.target)
 
     # Affector-related auxiliary methods
-    def __generate_affectors(self, item, effect_ids):
-        """Get all affectors spawned by the item."""
+    def __generate_local_affectors(self, item, effect_ids):
+        """Get all affectors spawned by the item, which affect."""
         affectors = set()
         for effect_id, effect in item._type_effects.items():
             if effect_id not in effect_ids:
