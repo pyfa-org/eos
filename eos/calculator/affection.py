@@ -91,7 +91,7 @@ class AffectionRegister:
         self.__affector_owner_skillrq = KeyedStorage()
 
     # Query methods
-    def get_affectees(self, affector_fit, affector):
+    def get_affectees(self, affectee_fits, affector):
         """Get iterable with items influenced by passed affector."""
         try:
             mod_tgt_filter = affector.modifier.tgt_filter
@@ -100,13 +100,14 @@ class AffectionRegister:
             except KeyError as e:
                 raise UnknownTgtFilterError(mod_tgt_filter) from e
             else:
-                return getter(self, affector_fit, affector)
+                return getter(self, affectee_fits, affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
             return ()
 
-    def get_affectors(self, affectee_fit, affectee_item):
+    def get_affectors(self, affectee_item):
         """Get all affectors, which influence passed item."""
+        affectee_fit = affectee_item._fit
         affectors = set()
         # Item
         affectors.update(self.__affector_item_active.get(
@@ -188,19 +189,21 @@ class AffectionRegister:
     def __get_affectees_item_self(self, _, affector):
         return affector.item,
 
-    def __get_affectees_item_character(self, affector_fit, _):
-        character = affector_fit.character
-        if character is not None and character._is_loaded:
-            return character,
-        else:
-            return ()
+    def __get_affectees_item_character(self, affectee_fits, _):
+        affectee_items = set()
+        for affectee_fit in affectee_fits:
+            character = affectee_fit.character
+            if character is not None and character._is_loaded:
+                affectee_items.add(character)
+        return affectee_items
 
-    def __get_affectees_item_ship(self, affector_fit, _):
-        ship = affector_fit.ship
-        if ship is not None and ship._is_loaded:
-            return ship,
-        else:
-            return ()
+    def __get_affectees_item_ship(self, affectee_fits, _):
+        affectee_items = set()
+        for affectee_fit in affectee_fits:
+            ship = affectee_fit.ship
+            if ship is not None and ship._is_loaded:
+                affectee_items.add(ship)
+        return affectee_items
 
     def __get_affectees_item_other(self, _, affector):
         return [i for i in affector.item._others if i._is_loaded]
@@ -211,39 +214,51 @@ class AffectionRegister:
         ModDomain.ship: __get_affectees_item_ship,
         ModDomain.other: __get_affectees_item_other}
 
-    def __get_affectees_item(self, affector_fit, affector):
+    def __get_affectees_item(self, affectee_fits, affector):
         try:
             getter = self.__affectees_getters_item[affector.modifier.tgt_domain]
         except KeyError as e:
             raise UnexpectedDomainError(affector.modifier.tgt_domain) from e
         else:
-            return getter(self, affector_fit, affector)
+            return getter(self, affectee_fits, affector)
 
-    def __get_affectees_domain(self, affector_fit, affector):
-        domain = self.__contextize_tgt_filter_domain(affector_fit, affector)
-        key = (affector_fit, domain)
-        return self.__affectee_domain.get(key, ())
+    def __get_affectees_domain(self, affectee_fits, affector):
+        domain = self.__contextize_tgt_filter_domain(affector)
+        affectee_items = set()
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, domain)
+            affectee_items.update(self.__affectee_domain.get(key, ()))
+        return affectee_items
 
-    def __get_affectees_domain_group(self, affector_fit, affector):
-        domain = self.__contextize_tgt_filter_domain(affector_fit, affector)
+    def __get_affectees_domain_group(self, affectee_fits, affector):
+        domain = self.__contextize_tgt_filter_domain(affector)
         group_id = affector.modifier.tgt_filter_extra_arg
-        key = (affector_fit, domain, group_id)
-        return self.__affectee_domain_group.get(key, ())
+        affectee_items = set()
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, domain, group_id)
+            affectee_items.update(self.__affectee_domain_group.get(key, ()))
+        return affectee_items
 
-    def __get_affectees_domain_skillrq(self, affector_fit, affector):
-        domain = self.__contextize_tgt_filter_domain(affector_fit, affector)
+    def __get_affectees_domain_skillrq(self, affectee_fits, affector):
+        domain = self.__contextize_tgt_filter_domain(affector)
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
-        key = (affector_fit, domain, skill_type_id)
-        return self.__affectee_domain_skillrq.get(key, ())
+        affectee_items = set()
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, domain, skill_type_id)
+            affectee_items.update(self.__affectee_domain_skillrq.get(key, ()))
+        return affectee_items
 
-    def __get_affectees_owner_skillrq(self, affector_fit, affector):
+    def __get_affectees_owner_skillrq(self, affectee_fits, affector):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
-        key = (affector_fit, skill_type_id)
-        return self.__affectee_owner_skillrq.get(key, ())
+        affectee_items = set()
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, skill_type_id)
+            affectee_items.update(self.__affectee_owner_skillrq.get(key, ()))
+        return affectee_items
 
     __affectees_getters = {
         ModTgtFilter.item: __get_affectees_item,
@@ -381,20 +396,20 @@ class AffectionRegister:
             return getter(self, affectee_fit, affector)
 
     def __get_affector_storages_domain(self, affectee_fit, affector):
-        domain = self.__contextize_tgt_filter_domain(affectee_fit, affector)
+        domain = self.__contextize_tgt_filter_domain(affector)
         key = (affectee_fit, domain)
         storage = self.__affector_domain
         return (key, storage),
 
     def __get_affector_storages_domain_group(self, affectee_fit, affector):
-        domain = self.__contextize_tgt_filter_domain(affectee_fit, affector)
+        domain = self.__contextize_tgt_filter_domain(affector)
         group_id = affector.modifier.tgt_filter_extra_arg
         key = (affectee_fit, domain, group_id)
         storage = self.__affector_domain_group
         return (key, storage),
 
     def __get_affector_storages_domain_skillrq(self, affectee_fit, affector):
-        domain = self.__contextize_tgt_filter_domain(affectee_fit, affector)
+        domain = self.__contextize_tgt_filter_domain(affector)
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
@@ -435,7 +450,7 @@ class AffectionRegister:
             return getter(self, affectee_fit, affector)
 
     # Shared helpers
-    def __contextize_tgt_filter_domain(self, affector_fit, affector):
+    def __contextize_tgt_filter_domain(self, affector):
         """Convert relative domain into absolute.
 
         Applicable only to en-masse modifications. That is, when modification
@@ -447,11 +462,12 @@ class AffectionRegister:
                 supported.
         """
         item = affector.item
+        item_fit = item._fit
         domain = affector.modifier.tgt_domain
         if domain == ModDomain.self:
-            if item is affector_fit.ship:
+            if item is item_fit.ship:
                 return ModDomain.ship
-            elif item is affector_fit.character:
+            elif item is item_fit.character:
                 return ModDomain.character
             else:
                 raise UnexpectedDomainError(domain)
