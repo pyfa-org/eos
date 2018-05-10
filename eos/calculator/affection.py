@@ -90,8 +90,101 @@ class AffectionRegister:
         # Format: {(affectee fit, skill type ID): {affectors}}
         self.__affector_owner_skillrq = KeyedStorage()
 
-    # Helpers for affectee getter - they find map and get data from it according
-    # to passed affector
+    # Query methods
+    def get_affectees(self, affector_fit, affector):
+        """Get iterable with items influenced by passed affector."""
+        try:
+            mod_tgt_filter = affector.modifier.tgt_filter
+            try:
+                getter = self.__affectees_getters[mod_tgt_filter]
+            except KeyError as e:
+                raise UnknownTgtFilterError(mod_tgt_filter) from e
+            else:
+                return getter(self, affector_fit, affector)
+        except Exception as e:
+            self.__handle_affector_errors(e, affector)
+            return ()
+
+    def get_affectors(self, affectee_fit, affectee_item):
+        """Get all affectors, which influence passed item."""
+        affectors = set()
+        # Item
+        affectors.update(self.__affector_item_active.get(
+            affectee_item, ()))
+        domain = affectee_item._modifier_domain
+        if domain is not None:
+            # Domain
+            affectors.update(self.__affector_domain.get(
+                (affectee_fit, domain), ()))
+            # Domain and group
+            group_id = affectee_item._type.group_id
+            affectors.update(self.__affector_domain_group.get(
+                (affectee_fit, domain, group_id), ()))
+            for skill_type_id in affectee_item._type.required_skills:
+                # Domain and skill requirement
+                affectors.update(self.__affector_domain_skillrq.get(
+                    (affectee_fit, domain, skill_type_id), ()))
+        if affectee_item._owner_modifiable is True:
+            for skill_type_id in affectee_item._type.required_skills:
+                # Owner-modifiable and skill requirement
+                affectors.update(self.__affector_owner_skillrq.get(
+                    (affectee_fit, skill_type_id), ()))
+        return affectors
+
+    # Maintenance methods
+    def register_affectee(self, affectee_fit, affectee_item):
+        """Add passed affectee item to register.
+
+        We track affectees to efficiently update attributes when set of items
+        influencing them changes.
+        """
+        for key, affectee_map in self.__get_affectee_storages(
+            affectee_fit, affectee_item
+        ):
+            affectee_map.add_data_entry(key, affectee_item)
+        # Process special affectors separately. E.g., when item like ship is
+        # added, there might already be affectors which should affect it, and
+        # in this method we activate such affectors
+        self.__activate_special_affectors(affectee_fit, affectee_item)
+
+    def unregister_affectee(self, affectee_fit, affectee_item):
+        """Remove passed affectee item from register."""
+        for key, affectee_map in self.__get_affectee_storages(
+            affectee_fit, affectee_item
+        ):
+            affectee_map.rm_data_entry(key, affectee_item)
+        # Deactivate all special affectors for item being unregistered
+        self.__deactivate_special_affectors(affectee_fit, affectee_item)
+
+    def register_affector(self, affectee_fit, affector):
+        """Make register aware of the affector.
+
+        It makes it possible for the affector to modify other items.
+        """
+        try:
+            affector_storages = self.__get_affector_storages(
+                affectee_fit, affector)
+        except Exception as e:
+            self.__handle_affector_errors(e, affector)
+        else:
+            for key, affector_map in affector_storages:
+                affector_map.add_data_entry(key, affector)
+
+    def unregister_affector(self, affectee_fit, affector):
+        """Remove the affector from register.
+
+        It makes it impossible for the affector to modify any other items.
+        """
+        try:
+            affector_storages = self.__get_affector_storages(
+                affectee_fit, affector)
+        except Exception as e:
+            self.__handle_affector_errors(e, affector)
+        else:
+            for key, affector_map in affector_storages:
+                affector_map.rm_data_entry(key, affector)
+
+    # Helpers for affectee getter
     def __get_affectees_item_self(self, _, affector):
         return affector.item,
 
@@ -110,9 +203,7 @@ class AffectionRegister:
             return ()
 
     def __get_affectees_item_other(self, _, affector):
-        return [
-            i for i in affector.item._others
-            if i._is_loaded]
+        return [i for i in affector.item._others if i._is_loaded]
 
     __affectees_getters_item = {
         ModDomain.self: __get_affectees_item_self,
@@ -161,45 +252,7 @@ class AffectionRegister:
         ModTgtFilter.domain_skillrq: __get_affectees_domain_skillrq,
         ModTgtFilter.owner_skillrq: __get_affectees_owner_skillrq}
 
-    # Affectee processing
-    def get_affectees(self, affector_fit, affector):
-        """Get iterable with items influenced by passed affector."""
-        try:
-            mod_tgt_filter = affector.modifier.tgt_filter
-            try:
-                getter = self.__affectees_getters[mod_tgt_filter]
-            except KeyError as e:
-                raise UnknownTgtFilterError(mod_tgt_filter) from e
-            else:
-                return getter(self, affector_fit, affector)
-        except Exception as e:
-            self.__handle_affector_errors(e, affector)
-            return ()
-
-    def register_affectee(self, affectee_fit, affectee_item):
-        """Add passed affectee item to register.
-
-        We track affectees to efficiently update attributes when set of items
-        influencing them changes.
-        """
-        for key, affectee_map in self.__get_affectee_storages(
-            affectee_fit, affectee_item
-        ):
-            affectee_map.add_data_entry(key, affectee_item)
-        # Process special affectors separately. E.g., when item like ship is
-        # added, there might already be affectors which should affect it, and
-        # in this method we activate such affectors
-        self.__activate_special_affectors(affectee_fit, affectee_item)
-
-    def unregister_affectee(self, affectee_fit, affectee_item):
-        """Remove passed affectee item from register."""
-        for key, affectee_map in self.__get_affectee_storages(
-            affectee_fit, affectee_item
-        ):
-            affectee_map.rm_data_entry(key, affectee_item)
-        # Deactivate all special affectors for item being unregistered
-        self.__deactivate_special_affectors(affectee_fit, affectee_item)
-
+    # Helpers for affectee registering/unregistering
     def __get_affectee_storages(self, affectee_fit, affectee_item):
         """Return all places where passed affectee should be stored.
 
@@ -282,63 +335,7 @@ class AffectionRegister:
             self.__affector_item_awaitable.add_data_set(
                 affectee_fit, awaitable_to_deactivate)
 
-    # Affector processing
-    def get_affectors(self, affectee_fit, affectee_item):
-        """Get all affectors, which influence passed item."""
-        affectors = set()
-        # Item
-        affectors.update(self.__affector_item_active.get(
-            affectee_item, ()))
-        domain = affectee_item._modifier_domain
-        if domain is not None:
-            # Domain
-            affectors.update(self.__affector_domain.get(
-                (affectee_fit, domain), ()))
-            # Domain and group
-            group_id = affectee_item._type.group_id
-            affectors.update(self.__affector_domain_group.get(
-                (affectee_fit, domain, group_id), ()))
-            for skill_type_id in affectee_item._type.required_skills:
-                # Domain and skill requirement
-                affectors.update(self.__affector_domain_skillrq.get(
-                    (affectee_fit, domain, skill_type_id), ()))
-        if affectee_item._owner_modifiable is True:
-            for skill_type_id in affectee_item._type.required_skills:
-                # Owner-modifiable and skill requirement
-                affectors.update(self.__affector_owner_skillrq.get(
-                    (affectee_fit, skill_type_id), ()))
-        return affectors
-
-    def register_affector(self, affectee_fit, affector):
-        """Make register aware of the affector.
-
-        It makes it possible for the affector to modify other items.
-        """
-        try:
-            affector_storages = self.__get_affector_storages(
-                affectee_fit, affector)
-        except Exception as e:
-            self.__handle_affector_errors(e, affector)
-        else:
-            for key, affector_map in affector_storages:
-                affector_map.add_data_entry(key, affector)
-
-    def unregister_affector(self, affectee_fit, affector):
-        """Remove the affector from register.
-
-        It makes it impossible for the affector to modify any other items.
-        """
-        try:
-            affector_storages = self.__get_affector_storages(
-                affectee_fit, affector)
-        except Exception as e:
-            self.__handle_affector_errors(e, affector)
-        else:
-            for key, affector_map in affector_storages:
-                affector_map.rm_data_entry(key, affector)
-
-    # Helpers for affector registering/unregistering, they find affector maps
-    # and keys to them
+    # Helpers for affector registering/unregistering
     def __get_affector_storages_item_self(self, _, affector):
         return (affector.item, self.__affector_item_active),
 
