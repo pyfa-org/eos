@@ -159,33 +159,37 @@ class AffectionRegister:
         # Deactivate all special affectors for item being unregistered
         self.__deactivate_special_affectors(affectee_fit, affectee_item)
 
-    def register_affector(self, affectee_fits, affector):
+    def register_local_affector(self, affector):
         """Make register aware of the affector.
 
         It makes it possible for the affector to modify other items.
         """
         try:
-            affector_storages = self.__get_affector_storages(
-                affectee_fits, affector)
+            affector_storages = self.__get_local_affector_storages(affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
         else:
             for key, affector_map in affector_storages:
                 affector_map.add_data_entry(key, affector)
 
-    def unregister_affector(self, affectee_fits, affector):
+    def unregister_local_affector(self, affector):
         """Remove the affector from register.
 
         It makes it impossible for the affector to modify any other items.
         """
         try:
-            affector_storages = self.__get_affector_storages(
-                affectee_fits, affector)
+            affector_storages = self.__get_local_affector_storages(affector)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
         else:
             for key, affector_map in affector_storages:
                 affector_map.rm_data_entry(key, affector)
+
+    def register_projected_affector(self, affector, target_items):
+        pass
+
+    def unregister_projected_affector(self, affector, target_items):
+        pass
 
     # Helpers for affectee getter
     def __get_affectees_item_self(self, _, affector):
@@ -448,8 +452,8 @@ class AffectionRegister:
         ModTgtFilter.domain_skillrq: __get_affector_storages_domain_skillrq,
         ModTgtFilter.owner_skillrq: __get_affector_storages_owner_skillrq}
 
-    def __get_affector_storages(self, affectee_fits, affector):
-        """Get places where passed affector should be stored.
+    def __get_local_affector_storages(self, affector):
+        """Get places where passed local affector should be stored.
 
         Raises:
             UnexpectedDomainError: If affector's modifier target domain is not
@@ -463,6 +467,7 @@ class AffectionRegister:
         except KeyError as e:
             raise UnknownTgtFilterError(affector.modifier.tgt_filter) from e
         else:
+            affectee_fits = affector.item._fit,
             return getter(self, affectee_fits, affector)
 
     # Shared helpers
