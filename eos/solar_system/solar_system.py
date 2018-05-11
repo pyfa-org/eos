@@ -21,7 +21,7 @@
 
 from math import sqrt
 
-from eos.calculator import CalculationService
+from eos.calculator.service import CalculationService
 from eos.const.eve import AttrId
 from eos.source import Source
 from eos.source import SourceManager

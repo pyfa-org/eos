@@ -19,9 +19,10 @@
 # ==============================================================================
 
 
+from eos import Character
 from eos import Drone
 from eos import Implant
-from eos import Rig
+from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
@@ -30,7 +31,7 @@ from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 
-class TestTgtOwnerSkillrqDomainSelf(CalculatorTestCase):
+class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
 
     def setUp(self):
         CalculatorTestCase.setUp(self)
@@ -46,52 +47,53 @@ class TestTgtOwnerSkillrqDomainSelf(CalculatorTestCase):
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        self.influence_src = Implant(self.mktype(
+        self.influence_src_type = self.mktype(
             attrs={src_attr.id: 20},
-            effects=[effect]).id)
+            effects=[effect])
 
-    def test_owner_modifiable(self):
+    def test_character(self):
+        influence_src = Character(self.influence_src_type.id)
         influence_tgt = Drone(self.mktype(attrs={
             self.tgt_attr.id: 100,
             AttrId.required_skill_1: 56,
             AttrId.required_skill_1_level: 1}).id)
         self.fit.drones.add(influence_tgt)
         # Action
-        self.fit.implants.add(self.influence_src)
+        self.fit.character = influence_src
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
-        # Action
-        self.fit.implants.remove(self.influence_src)
-        # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)
 
     def test_not_owner_modifiable(self):
-        influence_tgt = Rig(self.mktype(attrs={
+        influence_src = Character(self.influence_src_type.id)
+        influence_tgt = Implant(self.mktype(attrs={
             self.tgt_attr.id: 100,
             AttrId.required_skill_1: 56,
             AttrId.required_skill_1_level: 1}).id)
-        self.fit.rigs.add(influence_tgt)
+        self.fit.implants.add(influence_tgt)
         # Action
-        self.fit.implants.add(self.influence_src)
+        self.fit.character = influence_src
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)
 
-    def test_other_skill(self):
+    def test_domain_other(self):
+        # In ideal case this combination should not work because it is illegal
+        # in eve, but I do not want extra logic in contextization function
+        influence_src = Ship(self.influence_src_type.id)
         influence_tgt = Drone(self.mktype(attrs={
             self.tgt_attr.id: 100,
-            AttrId.required_skill_1: 87,
+            AttrId.required_skill_1: 56,
             AttrId.required_skill_1_level: 1}).id)
         self.fit.drones.add(influence_tgt)
         # Action
-        self.fit.implants.add(self.influence_src)
+        self.fit.ship = influence_src
         # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
+        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)

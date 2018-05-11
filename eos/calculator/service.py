@@ -130,9 +130,9 @@ class CalculationService(BaseSubscriber):
         effect = item._type_effects[msg.effect_id]
         for modifier in effect.modifiers:
             affector = Affector(item, modifier)
+            self.__affections.register_projected_affector(
+                affector, msg.tgt_items)
             for tgt_item in msg.tgt_items:
-                self.__affections.register_projected_affector(
-                    (tgt_item._fit,), affector)
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     def _handle_effect_unapplied(self, msg):
@@ -142,8 +142,8 @@ class CalculationService(BaseSubscriber):
             affector = Affector(item, modifier)
             for tgt_item in msg.tgt_items:
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
-                self.__affections.unregister_projected_affector(
-                    (tgt_item._fit,), affector)
+            self.__affections.unregister_projected_affector(
+                affector, msg.tgt_items)
 
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attr_dependents(self, msg):

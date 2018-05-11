@@ -24,7 +24,7 @@ from abc import abstractmethod
 from collections import namedtuple
 
 from eos.cache_handler import TypeFetchError
-from eos.calculator import MutableAttrMap
+from eos.calculator.map import MutableAttrMap
 from eos.const.eos import EffectMode
 from eos.item_container import ItemDict
 from eos.pubsub.message.helper import MsgHelper

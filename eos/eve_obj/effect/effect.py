@@ -21,6 +21,7 @@
 
 import math
 
+from eos.const.eos import ModDomain
 from eos.const.eos import State
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
@@ -82,6 +83,20 @@ class Effect:
         self.fitting_usage_chance_attr_id = fitting_usage_chance_attr_id
         self.build_status = build_status
         self.modifiers = modifiers
+
+    @cached_property
+    def _has_local_modifiers(self):
+        for modifier in self.modifiers:
+            if modifier.tgt_domain != ModDomain.target:
+                return True
+        return False
+
+    @cached_property
+    def _has_projected_modifiers(self):
+        for modifier in self.modifiers:
+            if modifier.tgt_domain == ModDomain.target:
+                return True
+        return False
 
     # Format: {effect category ID: state ID}
     __effect_state_map = {

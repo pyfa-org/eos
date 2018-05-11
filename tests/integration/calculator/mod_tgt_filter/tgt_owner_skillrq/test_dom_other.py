@@ -19,78 +19,47 @@
 # ==============================================================================
 
 
-from eos import Drone
-from eos import Implant
+import logging
+
 from eos import Rig
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
-from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 
 class TestTgtOwnerSkillrqDomainOther(CalculatorTestCase):
 
-    def setUp(self):
-        CalculatorTestCase.setUp(self)
-        self.tgt_attr = self.mkattr()
+    def test_error(self):
+        tgt_attr = self.mkattr()
         src_attr = self.mkattr()
         modifier = self.mkmod(
             tgt_filter=ModTgtFilter.owner_skillrq,
             tgt_domain=ModDomain.other,
             tgt_filter_extra_arg=56,
-            tgt_attr_id=self.tgt_attr.id,
+            tgt_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
             src_attr_id=src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
-        self.influence_src = Implant(self.mktype(
-            attrs={src_attr.id: 20}, effects=[effect]).id)
-
-    def test_owner_modifiable(self):
-        influence_tgt = Drone(self.mktype(attrs={
-            self.tgt_attr.id: 100,
-            AttrId.required_skill_1: 56,
-            AttrId.required_skill_1_level: 1}).id)
-        self.fit.drones.add(influence_tgt)
+        influence_src_type = self.mktype(
+            attrs={src_attr.id: 20},
+            effects=[effect])
+        influence_src = Rig(influence_src_type.id)
         # Action
-        self.fit.implants.add(self.influence_src)
+        # Charge's container or module's charge can't be 'owner' of other items,
+        # thus such modification type is unsupported
+        self.fit.rigs.add(influence_src)
         # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 120)
-        # Action
-        self.fit.implants.remove(self.influence_src)
-        # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
+        self.assert_log_entries(1)
+        log_record = self.log[0]
+        self.assertEqual(log_record.name, 'eos.calculator.affection')
+        self.assertEqual(log_record.levelno, logging.WARNING)
+        self.assertEqual(
+            log_record.msg,
+            'malformed modifier on item type {}: unsupported target '
+            'domain {}'.format(influence_src_type.id, ModDomain.other))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assert_log_entries(0)
-
-    def test_not_owner_modifiable(self):
-        influence_tgt = Rig(self.mktype(attrs={
-            self.tgt_attr.id: 100,
-            AttrId.required_skill_1: 56,
-            AttrId.required_skill_1_level: 1}).id)
-        self.fit.rigs.add(influence_tgt)
-        # Action
-        self.fit.implants.add(self.influence_src)
-        # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
-        # Cleanup
-        self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assert_log_entries(0)
-
-    def test_skill_other(self):
-        influence_tgt = Drone(self.mktype(attrs={
-            self.tgt_attr.id: 100,
-            AttrId.required_skill_1: 87,
-            AttrId.required_skill_1_level: 1}).id)
-        self.fit.drones.add(influence_tgt)
-        # Action
-        self.fit.implants.add(self.influence_src)
-        # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[self.tgt_attr.id], 100)
-        # Cleanup
-        self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assert_log_entries(0)
