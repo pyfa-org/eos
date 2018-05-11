@@ -28,10 +28,10 @@ from eos.util.float import float_to_int
 from eos.util.repr import make_repr_str
 from .mixin.effect_stats import EffectStatsMixin
 from .mixin.state import MutableStateMixin
-from .mixin.tgtable import SingleTgtMixin
+from .mixin.targetable import SingleTargetableMixin
 
 
-class Module(MutableStateMixin, SingleTgtMixin, EffectStatsMixin):
+class Module(MutableStateMixin, SingleTargetableMixin, EffectStatsMixin):
 
     def __init__(self, type_id, state=State.offline, charge=None):
         super().__init__(type_id=type_id, state=state)

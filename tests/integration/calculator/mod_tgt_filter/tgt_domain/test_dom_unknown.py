@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+import logging
+
 from eos import Implant
 from eos import Rig
 from eos.const.eos import ModDomain
@@ -48,9 +50,10 @@ class TestTgtDomainDomainUnknown(CalculatorTestCase):
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
-        influence_src = Implant(self.mktype(
+        influence_src_type = self.mktype(
             attrs={src_attr.id: 20},
-            effects=[effect]).id)
+            effects=[effect])
+        influence_src = Implant(influence_src_type.id)
         influence_tgt = Rig(self.mktype(attrs={tgt_attr.id: 100}).id)
         self.fit.rigs.add(influence_tgt)
         # Action
@@ -59,6 +62,13 @@ class TestTgtDomainDomainUnknown(CalculatorTestCase):
         # Invalid domain in modifier should not prevent proper processing of
         # other modifiers
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr.id], 120)
+        self.assert_log_entries(2)
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.calculator.affection')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(
+                log_record.msg,
+                'malformed modifier on item type {}: '
+                'unsupported target domain 1972'.format(influence_src_type.id))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assert_log_entries(0)

@@ -168,9 +168,10 @@ class AffectionRegister:
         self.__deactivate_special_affectors(affectee_fit, affectee_item)
 
     def register_local_affector(self, affector):
-        """Make register aware of the affector.
+        """Make the register aware of the local affector.
 
-        It makes it possible for the affector to modify other items.
+        It makes it possible for the affector to modify other items within its
+        fit.
         """
         try:
             affector_storages = self.__get_local_affector_storages(affector)
@@ -181,7 +182,7 @@ class AffectionRegister:
                 affector_map.add_data_entry(key, affector)
 
     def unregister_local_affector(self, affector):
-        """Remove the affector from register.
+        """Remove local affector from the register.
 
         It makes it impossible for the affector to modify any other items.
         """
@@ -194,6 +195,10 @@ class AffectionRegister:
                 affector_map.rm_data_entry(key, affector)
 
     def register_projected_affector(self, affector, tgt_items):
+        """Make register aware that projected affector affects items.
+
+        Should be called every time affector is applied onto any object.
+        """
         try:
             affector_storages = self.__get_projected_affector_storages(
                 affector, tgt_items)
@@ -204,6 +209,10 @@ class AffectionRegister:
                 affector_map.add_data_entry(key, affector)
 
     def unregister_projected_affector(self, affector, tgt_items):
+        """Remove effect of affector from items.
+
+        Should be called every time affector stops affecting any object.
+        """
         try:
             affector_storages = self.__get_projected_affector_storages(
                 affector, tgt_items)

@@ -19,7 +19,6 @@
 # ==============================================================================
 
 
-from eos.const.eos import ModDomain
 from eos.const.eve import EffectCategoryId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import DogmaModifier
@@ -128,7 +127,7 @@ class CalculationService(BaseSubscriber):
     def _handle_effect_applied(self, msg):
         item = msg.item
         effect = item._type_effects[msg.effect_id]
-        for modifier in effect.modifiers:
+        for modifier in effect.projected_modifiers:
             affector = Affector(item, modifier)
             self.__affections.register_projected_affector(
                 affector, msg.tgt_items)
@@ -138,7 +137,7 @@ class CalculationService(BaseSubscriber):
     def _handle_effect_unapplied(self, msg):
         item = msg.item
         effect = item._type_effects[msg.effect_id]
-        for modifier in effect.modifiers:
+        for modifier in effect.projected_modifiers:
             affector = Affector(item, modifier)
             for tgt_item in msg.tgt_items:
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
@@ -215,20 +214,14 @@ class CalculationService(BaseSubscriber):
         # any message may result in deleting dependent attributes
         self._revise_python_attr_dependents(msg)
 
-    # Do not process here just target domain
-    _supported_domains = set(
-        domain for domain in ModDomain if domain != ModDomain.target)
-
     # Affector-related auxiliary methods
     def __generate_local_affectors(self, item, effect_ids):
         """Get all affectors spawned by the item, which affect."""
         affectors = set()
-        for effect_id, effect in item._type_effects.items():
-            if effect_id not in effect_ids:
-                continue
-            for modifier in effect.modifiers:
-                if modifier.tgt_domain not in self._supported_domains:
-                    continue
+        item_effects = item._type_effects
+        for effect_id in effect_ids:
+            effect = item_effects[effect_id]
+            for modifier in effect.local_modifiers:
                 affector = Affector(item, modifier)
                 affectors.add(affector)
         return affectors

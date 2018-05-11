@@ -84,19 +84,25 @@ class Effect:
         self.build_status = build_status
         self.modifiers = modifiers
 
-    @cached_property
-    def _has_local_modifiers(self):
-        for modifier in self.modifiers:
-            if modifier.tgt_domain != ModDomain.target:
-                return True
-        return False
+    @property
+    def is_projectable(self):
+        return self.category_id == EffectCategoryId.target
 
     @cached_property
-    def _has_projected_modifiers(self):
+    def local_modifiers(self):
+        modifiers = []
+        for modifier in self.modifiers:
+            if modifier.tgt_domain != ModDomain.target:
+                modifiers.append(modifier)
+        return tuple(modifiers)
+
+    @cached_property
+    def projected_modifiers(self):
+        modifiers = []
         for modifier in self.modifiers:
             if modifier.tgt_domain == ModDomain.target:
-                return True
-        return False
+                modifiers.append(modifier)
+        return tuple(modifiers)
 
     # Format: {effect category ID: state ID}
     __effect_state_map = {

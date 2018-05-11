@@ -28,14 +28,14 @@ from eos.pubsub.message import EffectUnapplied
 from .base import BaseItemMixin
 
 
-class BaseTgtMixin(metaclass=ABCMeta):
+class BaseTargetableMixin(metaclass=ABCMeta):
 
     @abstractmethod
-    def _get_effects_targets(self, effect_ids):
+    def _get_effects_tgts(self, effect_ids):
         ...
 
 
-class SingleTgtMixin(BaseItemMixin, BaseTgtMixin):
+class SingleTargetableMixin(BaseItemMixin, BaseTargetableMixin):
 
     def __init__(self, **kwargs):
         self.__target = None
@@ -52,37 +52,37 @@ class SingleTgtMixin(BaseItemMixin, BaseTgtMixin):
             return
         fit = self._fit
         if fit is not None:
-            tgtable_effects = set()
+            projectable_effects = set()
             item_effects = self._type_effects
             for effect_id in self._running_effect_ids:
                 effect = item_effects[effect_id]
-                if effect.category_id == EffectCategoryId.target:
-                    tgtable_effects.add(effect_id)
+                if effect.is_projectable:
+                    projectable_effects.add(effect_id)
             if old_tgt is not None:
                 msgs = []
-                for effect_id in tgtable_effects:
+                for effect_id in projectable_effects:
                     msgs.append(EffectUnapplied(self, effect_id, (old_tgt,)))
                 fit._publish_bulk(msgs)
             self.__target = new_tgt
             if new_tgt is not None:
                 msgs = []
-                for effect_id in tgtable_effects:
+                for effect_id in projectable_effects:
                     msgs.append(EffectApplied(self, effect_id, (new_tgt,)))
                 fit._publish_bulk(msgs)
         else:
             self.__target = new_tgt
 
-    def _get_effects_targets(self, effect_ids):
-        effect_targets = {}
+    def _get_effects_tgts(self, effect_ids):
+        effect_tgts = {}
         tgt = self.__target
         if tgt is not None:
             item_effects = self._type_effects
             for effect_id in effect_ids:
                 effect = item_effects[effect_id]
                 if effect.category_id == EffectCategoryId.target:
-                    effect_targets[effect_id] = tgt,
-        return effect_targets
+                    effect_tgts[effect_id] = tgt,
+        return effect_tgts
 
 
-class MultiTgtMixin(BaseTgtMixin):
+class MultiTargetableMixin(BaseTargetableMixin):
     ...

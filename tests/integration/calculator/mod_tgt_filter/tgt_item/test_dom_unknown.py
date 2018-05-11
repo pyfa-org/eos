@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+import logging
+
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
@@ -47,13 +49,21 @@ class TestTgtItemDomainUnknown(CalculatorTestCase):
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=(invalid_modifier, valid_modifier))
-        item = Ship(self.mktype(
+        item_type = self.mktype(
             attrs={src_attr.id: 20, tgt_attr.id: 100},
-            effects=[effect]).id)
+            effects=[effect])
+        item = Ship(item_type.id)
         # Action
         self.fit.ship = item
         # Verification
         self.assertAlmostEqual(item.attrs[tgt_attr.id], 120)
+        self.assert_log_entries(2)
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.calculator.affection')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(
+                log_record.msg,
+                'malformed modifier on item type {}: '
+                'unsupported target domain 1972'.format(item_type.id))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assert_log_entries(0)
