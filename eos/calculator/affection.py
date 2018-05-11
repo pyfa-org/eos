@@ -433,10 +433,8 @@ class AffectionRegister:
                 raise UnknownTgtFilterError(tgt_filter) from e
             affectee_fits = set()
             for tgt_item in tgt_items:
-                item_fit = tgt_item._fit
-                if tgt_item is item_fit.ship:
-                    affectee_fits.add(item_fit)
-            affectee_fits = affector.item._fit,
+                if isinstance(tgt_item, Ship):
+                    affectee_fits.add(tgt_item._fit)
             return getter(self, affector, ModDomain.ship, affectee_fits)
 
     def __get_affector_storages_domain(self, _, domain, fits):
