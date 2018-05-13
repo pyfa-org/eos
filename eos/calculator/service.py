@@ -105,7 +105,7 @@ class CalculationService(BaseSubscriber):
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__subscribe_python_affector(fit, affector)
             self.__affections.register_local_affector(affector)
-            for tgt_item in self.__affections.get_affectees((fit,), affector):
+            for tgt_item in self.__affections.get_local_affectees(affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
         projectors = self.__generate_projectors(msg.item, msg.effect_ids)
         for projector in projectors:
@@ -115,7 +115,7 @@ class CalculationService(BaseSubscriber):
         fit = msg.fit
         affectors = self.__generate_local_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
-            for tgt_item in self.__affections.get_affectees((fit,), affector):
+            for tgt_item in self.__affections.get_local_affectees(affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
             self.__affections.unregister_local_affector(affector)
             if isinstance(affector.modifier, BasePythonModifier):
@@ -131,7 +131,7 @@ class CalculationService(BaseSubscriber):
             affector = Affector(item, modifier)
             self.__affections.register_projected_affector(
                 affector, msg.tgt_items)
-            for tgt_item in msg.tgt_items:
+            for tgt_item in self.__affections.get_local_affectees((), affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     def _handle_effect_unapplied(self, msg):
@@ -139,7 +139,7 @@ class CalculationService(BaseSubscriber):
         effect = item._type_effects[msg.effect_id]
         for modifier in effect.projected_modifiers:
             affector = Affector(item, modifier)
-            for tgt_item in msg.tgt_items:
+            for tgt_item in self.__affections.get_local_affectees((), affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
             self.__affections.unregister_projected_affector(
                 affector, msg.tgt_items)
@@ -171,9 +171,7 @@ class CalculationService(BaseSubscriber):
                 modifier.src_attr_id != attr_id
             ):
                 continue
-            for tgt_item in self.__affections.get_affectees(
-                (msg.fit,), affector
-            ):
+            for tgt_item in self.__affections.get_local_affectees(affector):
                 del tgt_item.attrs[modifier.tgt_attr_id]
 
     def _revise_python_attr_dependents(self, msg):
@@ -193,9 +191,7 @@ class CalculationService(BaseSubscriber):
         for affector in self.__subscribed_affectors[msg_type]:
             if not affector.modifier.revise_modification(msg, affector.item):
                 continue
-            for tgt_item in self.__affections.get_affectees(
-                (msg.fit,), affector
-            ):
+            for tgt_item in self.__affections.get_local_affectees(affector):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     # Message routing

@@ -97,7 +97,22 @@ class AffectionRegister:
         self.__affector_owner_skillrq = KeyedStorage()
 
     # Query methods
-    def get_affectees(self, affectee_fits, affector):
+    def get_local_affectees(self, affector):
+        """Get iterable with items influenced by passed affector."""
+        affectee_fits = affector.item._fit,
+        try:
+            mod_tgt_filter = affector.modifier.tgt_filter
+            try:
+                getter = self.__affectees_getters[mod_tgt_filter]
+            except KeyError as e:
+                raise UnknownTgtFilterError(mod_tgt_filter) from e
+            else:
+                return getter(self, affectee_fits, affector)
+        except Exception as e:
+            self.__handle_affector_errors(e, affector)
+            return ()
+
+    def get_projected_affectees(self, affectee_fits, affector):
         """Get iterable with items influenced by passed affector."""
         try:
             mod_tgt_filter = affector.modifier.tgt_filter
