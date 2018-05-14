@@ -127,10 +127,11 @@ class CalculationService(BaseSubscriber):
             self.__projections.unregister_projector(projector)
 
     def _handle_effect_applied(self, msg):
-        item = msg.item
-        effect = item._type_effects[msg.effect_id]
-        for projected_modifier in effect.projected_modifiers:
-            projected_affector = AffectorSpec(item, effect, projected_modifier)
+        for projector in self.__generate_projectors(msg.item, (msg.effect_id,)):
+            self.__projections.apply_projector(projector, msg.tgt_items)
+        for projected_affector in self.__generate_projected_affectors(
+            msg.item, (msg.effect_id,)
+        ):
             self.__affections.register_projected_affector(
                 projected_affector, msg.tgt_items)
             for affectee_item in self.__affections.get_projected_affectees(
@@ -139,10 +140,11 @@ class CalculationService(BaseSubscriber):
                 del affectee_item.attrs[projected_affector.modifier.tgt_attr_id]
 
     def _handle_effect_unapplied(self, msg):
-        item = msg.item
-        effect = item._type_effects[msg.effect_id]
-        for projected_modifier in effect.projected_modifiers:
-            projected_affector = AffectorSpec(item, effect, projected_modifier)
+        for projector in self.__generate_projectors(msg.item, (msg.effect_id,)):
+            self.__projections.unapply_projector(projector, msg.tgt_items)
+        for projected_affector in self.__generate_projected_affectors(
+            msg.item, (msg.effect_id,)
+        ):
             for affectee_item in self.__affections.get_projected_affectees(
                 projected_affector, msg.tgt_items
             ):
@@ -179,6 +181,30 @@ class CalculationService(BaseSubscriber):
                 continue
             for tgt_item in self.__affections.get_local_affectees(affector):
                 del tgt_item.attrs[modifier.tgt_attr_id]
+        for projector in self.__generate_projectors(
+            item, item._running_effect_ids
+        ):
+            tgt_items = self.__projections.get_projector_tgts(projector)
+            # When projector doesn't target any items, then we do not need to
+            # clean anything
+            if not tgt_items:
+                continue
+            for affector in self.__generate_projected_affectors(
+                item, (projector.effect.id,)
+            ):
+                modifier = affector.modifier
+                # Only dogma modifiers have source attribute specified, python
+                # modifiers are processed separately
+                if (
+                    not isinstance(modifier, DogmaModifier) or
+                    modifier.src_attr_id != attr_id
+                ):
+                    continue
+                for tgt_item in self.__affections.get_projected_affectees(
+                    affector, tgt_items
+                ):
+                    del tgt_item.attrs[modifier.tgt_attr_id]
+
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.
@@ -218,12 +244,23 @@ class CalculationService(BaseSubscriber):
 
     # Affector-related auxiliary methods
     def __generate_local_affectors(self, item, effect_ids):
-        """Get all affectors spawned by the item, which affect."""
+        """Get local affector specifications for passed item and effects."""
         affectors = set()
         item_effects = item._type_effects
         for effect_id in effect_ids:
             effect = item_effects[effect_id]
             for modifier in effect.local_modifiers:
+                affector = AffectorSpec(item, effect, modifier)
+                affectors.add(affector)
+        return affectors
+
+    def __generate_projected_affectors(self, item, effect_ids):
+        """Get projected affector specifications for passed item and effects."""
+        affectors = set()
+        item_effects = item._type_effects
+        for effect_id in effect_ids:
+            effect = item_effects[effect_id]
+            for modifier in effect.projected_modifiers:
                 affector = AffectorSpec(item, effect, modifier)
                 affectors.add(affector)
         return affectors
