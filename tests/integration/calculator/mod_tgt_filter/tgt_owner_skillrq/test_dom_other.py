@@ -53,13 +53,13 @@ class TestTgtOwnerSkillrqDomainOther(CalculatorTestCase):
         # thus such modification type is unsupported
         self.fit.rigs.add(influence_src)
         # Verification
-        self.assert_log_entries(1)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.calculator.affection')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(
-            log_record.msg,
-            'malformed modifier on item type {}: unsupported target '
-            'domain {}'.format(influence_src_type.id, ModDomain.other))
+        self.assert_log_entries(2)
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.calculator.affection')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(
+                log_record.msg,
+                'malformed modifier on item type {}: unsupported target '
+                'domain {}'.format(influence_src_type.id, ModDomain.other))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)

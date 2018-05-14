@@ -127,22 +127,26 @@ class CalculationService(BaseSubscriber):
     def _handle_effect_applied(self, msg):
         item = msg.item
         effect = item._type_effects[msg.effect_id]
-        for modifier in effect.projected_modifiers:
-            affector = Affector(item, modifier)
+        for projected_modifier in effect.projected_modifiers:
+            projected_affector = Affector(item, projected_modifier)
             self.__affections.register_projected_affector(
-                affector, msg.tgt_items)
-            for tgt_item in self.__affections.get_local_affectees((), affector):
-                del tgt_item.attrs[affector.modifier.tgt_attr_id]
+                projected_affector, msg.tgt_items)
+            for affectee_item in self.__affections.get_projected_affectees(
+                projected_affector, msg.tgt_items
+            ):
+                del affectee_item.attrs[projected_affector.modifier.tgt_attr_id]
 
     def _handle_effect_unapplied(self, msg):
         item = msg.item
         effect = item._type_effects[msg.effect_id]
-        for modifier in effect.projected_modifiers:
-            affector = Affector(item, modifier)
-            for tgt_item in self.__affections.get_local_affectees((), affector):
-                del tgt_item.attrs[affector.modifier.tgt_attr_id]
+        for projected_modifier in effect.projected_modifiers:
+            projected_affector = Affector(item, projected_modifier)
+            for affectee_item in self.__affections.get_projected_affectees(
+                projected_affector, msg.tgt_items
+            ):
+                del affectee_item.attrs[projected_affector.modifier.tgt_attr_id]
             self.__affections.unregister_projected_affector(
-                affector, msg.tgt_items)
+                projected_affector, msg.tgt_items)
 
     # Methods to clear calculated child nodes when parent nodes change
     def _revise_regular_attr_dependents(self, msg):

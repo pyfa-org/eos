@@ -98,33 +98,43 @@ class AffectionRegister:
 
     # Query methods
     def get_local_affectees(self, affector):
-        """Get iterable with items influenced by passed affector."""
-        affectee_fits = affector.item._fit,
+        """Get iterable with items influenced by passed local affector."""
         try:
-            mod_tgt_filter = affector.modifier.tgt_filter
-            try:
-                getter = self.__affectees_getters[mod_tgt_filter]
-            except KeyError as e:
-                raise UnknownTgtFilterError(mod_tgt_filter) from e
+            tgt_filter = affector.modifier.tgt_filter
+            if tgt_filter == ModTgtFilter.item:
+                domain = affector.modifier.tgt_domain
+                try:
+                    getter = self.__local_affectees_getters_item[domain]
+                except KeyError as e:
+                    raise UnexpectedDomainError(domain) from e
+                else:
+                    return getter(self, affector)
             else:
-                return getter(self, affectee_fits, affector)
+                try:
+                    getter = self.__affectees_getters[tgt_filter]
+                except KeyError as e:
+                    raise UnknownTgtFilterError(tgt_filter) from e
+                domain = self.__contextize_local_affector_domain(affector)
+                affectee_fits = affector.item._fit,
+                return getter(self, affector, domain, affectee_fits)
         except Exception as e:
             self.__handle_affector_errors(e, affector)
             return ()
 
-    def get_projected_affectees(self, affectee_fits, affector):
-        """Get iterable with items influenced by passed affector."""
-        try:
-            mod_tgt_filter = affector.modifier.tgt_filter
+    def get_projected_affectees(self, affector, tgt_items):
+        """Get iterable with items influenced by passed projected affector."""
+        tgt_filter = affector.modifier.tgt_filter
+        if tgt_filter == ModTgtFilter.item:
+            affectees = {i for i in tgt_items if i in self.__affectees}
+            return affectees
+        else:
             try:
-                getter = self.__affectees_getters[mod_tgt_filter]
+                getter = self.__affectees_getters[tgt_filter]
             except KeyError as e:
-                raise UnknownTgtFilterError(mod_tgt_filter) from e
-            else:
-                return getter(self, affectee_fits, affector)
-        except Exception as e:
-            self.__handle_affector_errors(e, affector)
-            return ()
+                raise UnknownTgtFilterError(tgt_filter) from e
+            affectee_fits = {i._fit for i in tgt_items if isinstance(i, Ship)}
+            affectees = getter(self, affector, ModDomain.ship, affectee_fits)
+            return affectees
 
     def get_affectors(self, affectee_item):
         """Get all affectors, which influence passed item."""
@@ -238,82 +248,70 @@ class AffectionRegister:
                 affector_map.rm_data_entry(key, affector)
 
     # Helpers for affectee getter
-    def __get_affectees_item_self(self, _, affector):
+    def __get_affectees_item_self(self, affector):
         return affector.item,
 
-    def __get_affectees_item_character(self, affectee_fits, _):
-        affectee_items = []
-        for affectee_fit in affectee_fits:
-            character = affectee_fit.character
-            if character in self.__affectees:
-                affectee_items.append(character)
-        return affectee_items
+    def __get_affectees_item_character(self, affector):
+        affectee_fit = affector.item._fit
+        character = affectee_fit.character
+        if character in self.__affectees:
+            return character,
+        else:
+            return ()
 
-    def __get_affectees_item_ship(self, affectee_fits, _):
-        affectee_items = []
-        for affectee_fit in affectee_fits:
-            ship = affectee_fit.ship
-            if ship in self.__affectees:
-                affectee_items.append(ship)
-        return affectee_items
+    def __get_affectees_item_ship(self, affector):
+        affectee_fit = affector.item._fit
+        ship = affectee_fit.ship
+        if ship in self.__affectees:
+            return ship,
+        else:
+            return ()
 
-    def __get_affectees_item_other(self, _, affector):
+    def __get_affectees_item_other(self, affector):
         return [i for i in affector.item._others if i in self.__affectees]
 
-    __affectees_getters_item = {
+    __local_affectees_getters_item = {
         ModDomain.self: __get_affectees_item_self,
         ModDomain.character: __get_affectees_item_character,
         ModDomain.ship: __get_affectees_item_ship,
         ModDomain.other: __get_affectees_item_other}
 
-    def __get_affectees_item(self, affectee_fits, affector):
-        try:
-            getter = self.__affectees_getters_item[affector.modifier.tgt_domain]
-        except KeyError as e:
-            raise UnexpectedDomainError(affector.modifier.tgt_domain) from e
-        else:
-            return getter(self, affectee_fits, affector)
-
-    def __get_affectees_domain(self, affectee_fits, affector):
-        domain = self.__contextize_local_affector_domain(affector)
+    def __get_affectees_domain(self, affector, domain, fits):
         affectee_items = set()
-        for affectee_fit in affectee_fits:
+        for affectee_fit in fits:
             key = (affectee_fit, domain)
             affectee_items.update(self.__affectee_domain.get(key, ()))
         return affectee_items
 
-    def __get_affectees_domain_group(self, affectee_fits, affector):
-        domain = self.__contextize_local_affector_domain(affector)
+    def __get_affectees_domain_group(self, affector, domain, fits):
         group_id = affector.modifier.tgt_filter_extra_arg
         affectee_items = set()
-        for affectee_fit in affectee_fits:
+        for affectee_fit in fits:
             key = (affectee_fit, domain, group_id)
             affectee_items.update(self.__affectee_domain_group.get(key, ()))
         return affectee_items
 
-    def __get_affectees_domain_skillrq(self, affectee_fits, affector):
-        domain = self.__contextize_local_affector_domain(affector)
+    def __get_affectees_domain_skillrq(self, affector, domain, fits):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
         affectee_items = set()
-        for affectee_fit in affectee_fits:
+        for affectee_fit in fits:
             key = (affectee_fit, domain, skill_type_id)
             affectee_items.update(self.__affectee_domain_skillrq.get(key, ()))
         return affectee_items
 
-    def __get_affectees_owner_skillrq(self, affectee_fits, affector):
+    def __get_affectees_owner_skillrq(self, affector, _, fits):
         skill_type_id = affector.modifier.tgt_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
         affectee_items = set()
-        for affectee_fit in affectee_fits:
+        for affectee_fit in fits:
             key = (affectee_fit, skill_type_id)
             affectee_items.update(self.__affectee_owner_skillrq.get(key, ()))
         return affectee_items
 
     __affectees_getters = {
-        ModTgtFilter.item: __get_affectees_item,
         ModTgtFilter.domain: __get_affectees_domain,
         ModTgtFilter.domain_group: __get_affectees_domain_group,
         ModTgtFilter.domain_skillrq: __get_affectees_domain_skillrq,
@@ -446,10 +444,7 @@ class AffectionRegister:
                 getter = self.__affector_storages_getters[tgt_filter]
             except KeyError as e:
                 raise UnknownTgtFilterError(tgt_filter) from e
-            affectee_fits = set()
-            for tgt_item in tgt_items:
-                if isinstance(tgt_item, Ship):
-                    affectee_fits.add(tgt_item._fit)
+            affectee_fits = {i._fit for i in tgt_items if isinstance(i, Ship)}
             return getter(self, affector, ModDomain.ship, affectee_fits)
 
     def __get_affector_storages_domain(self, _, domain, fits):

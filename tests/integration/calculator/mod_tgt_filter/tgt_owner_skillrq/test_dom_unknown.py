@@ -58,13 +58,13 @@ class TestTgtOwnerSkillrqDomainTgt(CalculatorTestCase):
         self.fit.implants.add(influence_src)
         # Verification
         self.assertAlmostEqual(influence_tgt.attrs[tgt_attr.id], 100)
-        self.assert_log_entries(1)
-        log_record = self.log[0]
-        self.assertEqual(log_record.name, 'eos.calculator.affection')
-        self.assertEqual(log_record.levelno, logging.WARNING)
-        self.assertEqual(
-            log_record.msg,
-            'malformed modifier on item type {}: '
-            'unsupported target domain 1972'.format(influence_src_type.id))
+        self.assert_log_entries(2)
+        for log_record in self.log:
+            self.assertEqual(log_record.name, 'eos.calculator.affection')
+            self.assertEqual(log_record.levelno, logging.WARNING)
+            self.assertEqual(
+                log_record.msg,
+                'malformed modifier on item type {}: '
+                'unsupported target domain 1972'.format(influence_src_type.id))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
