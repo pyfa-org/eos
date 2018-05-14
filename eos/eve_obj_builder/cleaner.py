@@ -171,7 +171,8 @@ class Cleaner:
                 'dischargeAttributeID': ('dgmattribs', 'attributeID'),
                 'rangeAttributeID': ('dgmattribs', 'attributeID'),
                 'falloffAttributeID': ('dgmattribs', 'attributeID'),
-                'fittingUsageChanceAttributeID': ('dgmattribs', 'attributeID')},
+                'fittingUsageChanceAttributeID': ('dgmattribs', 'attributeID'),
+                'resistanceID': ('dgmattribs', 'attributeID')},
             'dgmexpressions': {
                 'arg1': ('dgmexpressions', 'expressionID'),
                 'arg2': ('dgmexpressions', 'expressionID'),

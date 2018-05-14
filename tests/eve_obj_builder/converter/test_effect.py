@@ -41,7 +41,7 @@ class TestConversionEffect(EveObjBuilderTestCase):
             'durationAttributeID': 781, 'randomField': 666,
             'dischargeAttributeID': 72, 'isAssistance': False,
             'effectCategory': 111, 'trackingSpeedAttributeID': 6,
-            'modifierInfo': None})
+            'modifierInfo': None, 'resistanceID': 38})
         mod = self.mod(
             tgt_filter=3, tgt_domain=4, tgt_filter_extra_arg=5, tgt_attr_id=6,
             operator=7, src_attr_id=8)
@@ -60,6 +60,7 @@ class TestConversionEffect(EveObjBuilderTestCase):
         self.assertEqual(effect.falloff_attr_id, 3)
         self.assertEqual(effect.tracking_speed_attr_id, 6)
         self.assertEqual(effect.fitting_usage_chance_attr_id, 96)
+        self.assertEqual(effect.resistance_attr_id, 38)
         self.assertEqual(effect.build_status, 29)
         self.assertIn(mod, effect.modifiers)
         self.assert_log_entries(0)
