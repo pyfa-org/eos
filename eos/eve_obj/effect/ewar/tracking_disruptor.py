@@ -24,24 +24,42 @@ from eos.const.eos import ModOperator
 from eos.const.eos import ModTgtFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
+from eos.const.eve import TypeId
 from eos.eve_obj.effect import Effect
 from eos.eve_obj.effect import EffectFactory
 from eos.eve_obj.modifier import DogmaModifier
 
 
-class RemoteWebifierFalloff(Effect):
+class ShipModuleTrackingDisruptor(Effect):
 
     def __init__(self, *args, **kwargs):
         Effect.__init__(self, *args, **kwargs)
-        modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.item,
+        max_range_modifier = DogmaModifier(
+            tgt_filter=ModTgtFilter.domain_skillrq,
             tgt_domain=ModDomain.target,
-            tgt_attr_id=AttrId.max_velocity,
+            tgt_filter_extra_arg=TypeId.gunnery,
+            tgt_attr_id=AttrId.max_range,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.speed_factor)
-        self.modifiers = (*self.modifiers, modifier)
+            src_attr_id=AttrId.max_range_bonus)
+        falloff_modifier = DogmaModifier(
+            tgt_filter=ModTgtFilter.domain_skillrq,
+            tgt_domain=ModDomain.target,
+            tgt_filter_extra_arg=TypeId.gunnery,
+            tgt_attr_id=AttrId.falloff,
+            operator=ModOperator.post_percent,
+            src_attr_id=AttrId.falloff_bonus)
+        tracking_speed_modifier = DogmaModifier(
+            tgt_filter=ModTgtFilter.domain_skillrq,
+            tgt_domain=ModDomain.target,
+            tgt_filter_extra_arg=TypeId.gunnery,
+            tgt_attr_id=AttrId.tracking_speed,
+            operator=ModOperator.post_percent,
+            src_attr_id=AttrId.tracking_speed_bonus)
+        self.modifiers = (
+            *self.modifiers, max_range_modifier,
+            falloff_modifier, tracking_speed_modifier)
 
 
 EffectFactory.reg_cust_class_by_id(
-    RemoteWebifierFalloff,
-    EffectId.remote_webifier_falloff)
+    ShipModuleTrackingDisruptor,
+    EffectId.ship_module_tracking_disruptor)

@@ -48,24 +48,27 @@ class AffectionRegister:
         self.__affectees = set()
 
         # Items belonging to certain domain
-        # Format: {(affectee fit, domain): {affectee items}}
+        # Format: {(affectee fit, affectee domain): {affectee items}}
         self.__affectee_domain = KeyedStorage()
 
         # Items belonging to certain domain and group
-        # Format: {(affectee fit, domain, group ID): {affectee items}}
+        # Format: {(affectee fit, affectee domain, affectee group ID): {affectee
+        # items}}
         self.__affectee_domain_group = KeyedStorage()
 
         # Items belonging to certain domain and having certain skill requirement
-        # Format: {(affectee fit, domain, skill type ID): {affectee items}}
+        # Format: {(affectee fit, affectee domain, affectee skill requirement
+        # type ID): {affectee items}}
         self.__affectee_domain_skillrq = KeyedStorage()
 
         # Owner-modifiable items which have certain skill requirement
-        # Format: {(affectee fit, skill type ID): {affectee items}}
+        # Format: {(affectee fit, affectee skill requirement type ID): {affectee
+        # items}}
         self.__affectee_owner_skillrq = KeyedStorage()
 
         # Affectors which target 'other' location are always stored here,
         # regardless if they actually affect something or not
-        # Format: {affector item: {affectors}}
+        # Format: {affector item: {affector s}}
         self.__affector_item_other = KeyedStorage()
 
         # Affectors which should affect only one item (ship, character or self),

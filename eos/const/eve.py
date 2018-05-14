@@ -169,19 +169,32 @@ class AttrId(IntEnum):
     fighter_ability_kamikaze_dmg_expl = 2328
     # Misc
     agility = 70
+    aoe_cloud_size = 654
+    aoe_cloud_size_bonus = 848
+    aoe_velocity = 653
+    aoe_velocity_bonus = 847
     capacity = 38
     dmg_mult = 64
+    explosion_delay = 281
+    explosion_delay_bonus = 596
+    falloff = 158
+    falloff_bonus = 349
     is_capital_size = 1785
     mass = 4
     mass_addition = 796
+    max_range = 54
+    max_range_bonus = 351
     max_velocity = 37
     missile_dmg_mult = 212
+    missile_velocity_bonus = 547
     module_reactivation_delay = 669
     radius = 162
     signature_radius = 552
     signature_radius_bonus = 554
     speed_boost_factor = 567
     speed_factor = 20
+    tracking_speed = 160
+    tracking_speed_bonus = 767
     volume = 161
 
 
@@ -189,6 +202,7 @@ class AttrId(IntEnum):
 class TypeId(IntEnum):
     character_static = 1381
     missile_launcher_operation = 3319  # Skill
+    gunnery = 3300  # Skill
     nanite_repair_paste = 28668
     sentry_drone_interfacing = 23594  # Skill
 
@@ -248,6 +262,8 @@ class EffectId(IntEnum):
     projectile_fired = 34
     remote_webifier_falloff = 6426
     rig_slot = 2663
+    ship_module_guidance_disruptor = 6423
+    ship_module_tracking_disruptor = 6424
     subsystem = 3772
     super_weapon_amarr = 4489
     super_weapon_caldari = 4490
