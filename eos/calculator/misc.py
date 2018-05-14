@@ -22,8 +22,9 @@
 from collections import namedtuple
 
 
-# Affector is calculator-specific entity, used in affection register
-Affector = namedtuple('Affector', ('item', 'modifier'))
+# Affector specification is calculator-specific entity, used in affection
+# register
+AffectorSpec = namedtuple('AffectorSpec', ('item', 'effect', 'modifier'))
 
 # Projector is calculator-specific entity, used in projection register
 Projector = namedtuple('Projector', ('item', 'effect'))

@@ -34,7 +34,7 @@ from eos.pubsub.message import ItemUnloaded
 from eos.pubsub.subscriber import BaseSubscriber
 from eos.util.keyed_storage import KeyedStorage
 from .affection import AffectionRegister
-from .misc import Affector
+from .misc import AffectorSpec
 from .misc import Projector
 from .projection import ProjectionRegister
 
@@ -68,7 +68,9 @@ class CalculationService(BaseSubscriber):
         # Use list because we can have multiple tuples with the same values
         # as valid configuration
         modifications = []
-        for mod_item, modifier in self.__affections.get_affectors(tgt_item):
+        for affector_spec in self.__affections.get_affectors(tgt_item):
+            modifier = affector_spec.modifier
+            mod_item = affector_spec.item
             if modifier.tgt_attr_id == tgt_attr_id:
                 try:
                     mod_op, mod_value = modifier.get_modification(mod_item)
@@ -128,7 +130,7 @@ class CalculationService(BaseSubscriber):
         item = msg.item
         effect = item._type_effects[msg.effect_id]
         for projected_modifier in effect.projected_modifiers:
-            projected_affector = Affector(item, projected_modifier)
+            projected_affector = AffectorSpec(item, effect, projected_modifier)
             self.__affections.register_projected_affector(
                 projected_affector, msg.tgt_items)
             for affectee_item in self.__affections.get_projected_affectees(
@@ -140,7 +142,7 @@ class CalculationService(BaseSubscriber):
         item = msg.item
         effect = item._type_effects[msg.effect_id]
         for projected_modifier in effect.projected_modifiers:
-            projected_affector = Affector(item, projected_modifier)
+            projected_affector = AffectorSpec(item, effect, projected_modifier)
             for affectee_item in self.__affections.get_projected_affectees(
                 projected_affector, msg.tgt_items
             ):
@@ -222,7 +224,7 @@ class CalculationService(BaseSubscriber):
         for effect_id in effect_ids:
             effect = item_effects[effect_id]
             for modifier in effect.local_modifiers:
-                affector = Affector(item, modifier)
+                affector = AffectorSpec(item, effect, modifier)
                 affectors.add(affector)
         return affectors
 
