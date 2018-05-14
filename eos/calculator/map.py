@@ -64,14 +64,14 @@ PENALIZABLE_OPERATORS = (
 # Map which helps to normalize modifications
 NORMALIZATION_MAP = {
     ModOperator.pre_assign: lambda value: value,
-    ModOperator.pre_mul: lambda value: value,
-    ModOperator.pre_div: lambda value: 1 / value,
+    ModOperator.pre_mul: lambda value: value - 1,
+    ModOperator.pre_div: lambda value: 1 / value - 1,
     ModOperator.mod_add: lambda value: value,
     ModOperator.mod_sub: lambda value: -value,
-    ModOperator.post_mul: lambda value: value,
-    ModOperator.post_mul_immune: lambda value: value,
-    ModOperator.post_div: lambda value: 1 / value,
-    ModOperator.post_percent: lambda value: value / 100 + 1,
+    ModOperator.post_mul: lambda value: value - 1,
+    ModOperator.post_mul_immune: lambda value: value - 1,
+    ModOperator.post_div: lambda value: 1 / value - 1,
+    ModOperator.post_percent: lambda value: value / 100,
     ModOperator.post_assign: lambda value: value}
 
 # List operator types, according to their already normalized values
@@ -259,7 +259,7 @@ class MutableAttrMap:
         for mod_data in item._fit.solar_system._calculator.get_modifications(
             item, attr_id
         ):
-            mod_operator, mod_value, mod_item = mod_data
+            mod_operator, mod_value, resist_value, mod_item = mod_data
             # Normalize operations to just three types: assignments, additions,
             # multiplications
             try:
@@ -271,7 +271,9 @@ class MutableAttrMap:
                 ).format(mod_item._type_id, mod_operator)
                 logger.warning(msg)
                 continue
-            mod_value = normalization_func(mod_value)
+            # Resistance attribute actually defines resonance, where 1 means 0%
+            # resistance and 0 means 100% resistance
+            mod_value = normalization_func(mod_value) * resist_value
             # Decide if modification should be stacking penalized or not
             penalize = (
                 not attr.stackable and
@@ -304,7 +306,7 @@ class MutableAttrMap:
                     value += mod_val
             elif mod_operator in MULTIPLICATION_OPERATORS:
                 for mod_val in mod_values:
-                    value *= mod_val
+                    value *= 1 + mod_val
         # If attribute has upper cap, do not let its value to grow above it
         if attr.max_attr_id is not None:
             try:
@@ -324,24 +326,22 @@ class MutableAttrMap:
         return value
 
     def __penalize_values(self, mod_values):
-        """Calculate aggregated multiplier from list of multipliers.
+        """Calculate aggregated reduced multiplier.
 
         Assuming all multipliers received should be stacking penalized, and that
-        they are normalized to multiplier form, calculate final multiplier.
+        they are normalized to reduced multiplier form, calculate final
+        reduced multiplier.
 
         Args:
-            mod_values: Iterable with multipliers.
+            mod_values: Iterable with reduced multipliers.
 
         Returns:
-            Final aggregated multiplier.
+            Final aggregated reduced multiplier.
         """
         # Gather positive multipliers into one chain, negative into another
         chain_positive = []
         chain_negative = []
         for mod_value in mod_values:
-            # Transform value into form of multiplier - 1 for ease of stacking
-            # chain calculation
-            mod_value -= 1
             if mod_value >= 0:
                 chain_positive.append(mod_value)
             else:
@@ -361,7 +361,7 @@ class MutableAttrMap:
                 # Apply stacking penalty based on modification position
                 chain_value *= 1 + mod_value * PENALTY_BASE ** (pos ** 2)
             value *= chain_value
-        return value
+        return value - 1
 
     # Override-related methods
     def _set_override_callback(self, attr_id, callback):

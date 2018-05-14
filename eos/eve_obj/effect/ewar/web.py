@@ -31,8 +31,8 @@ from eos.eve_obj.modifier import DogmaModifier
 
 class RemoteWebifierFalloff(Effect):
 
-    def __init__(self, *args, **kwargs):
-        Effect.__init__(self, *args, **kwargs)
+    def __init__(self, *args, resist_attr_id=None, **kwargs):
+        Effect.__init__(self, *args, resist_attr_id=AttrId.stasis_webifier_resistance, **kwargs)
         modifier = DogmaModifier(
             tgt_filter=ModTgtFilter.item,
             tgt_domain=ModDomain.target,

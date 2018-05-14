@@ -57,6 +57,8 @@ class Effect:
         fitting_usage_chance_attr_id: Value of attribute with this ID on item
             defines chance of this effect being applied when item is added to
             fit, e.g. booster side-effects.
+        resist_attr_id: Value of attribute with this ID on affectee item defines
+            how it can resist this effect.
         build_status: Effect-to-modifier build status.
         modifiers: Iterable with modifiers. It's actually not effect which
             describes modifications this item does, but these child objects.
@@ -69,7 +71,7 @@ class Effect:
             is_assistance=False, duration_attr_id=None,
             discharge_attr_id=None, range_attr_id=None,
             falloff_attr_id=None, tracking_speed_attr_id=None,
-            fitting_usage_chance_attr_id=None, resistance_attr_id=None,
+            fitting_usage_chance_attr_id=None, resist_attr_id=None,
             build_status=None, modifiers=()):
         self.id = effect_id
         self.category_id = category_id
@@ -81,7 +83,7 @@ class Effect:
         self.falloff_attr_id = falloff_attr_id
         self.tracking_speed_attr_id = tracking_speed_attr_id
         self.fitting_usage_chance_attr_id = fitting_usage_chance_attr_id
-        self.resistance_attr_id = resistance_attr_id
+        self.resist_attr_id = resist_attr_id
         self.build_status = build_status
         self.modifiers = modifiers
 

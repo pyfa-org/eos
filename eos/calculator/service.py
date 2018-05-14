@@ -54,32 +54,43 @@ class CalculationService(BaseSubscriber):
         # Format: {message type: set(affectors)}
         self.__subscribed_affectors = KeyedStorage()
 
-    def get_modifications(self, tgt_item, tgt_attr_id):
+    def get_modifications(self, affectee_item, attr_id):
         """Get modifications of target attribute on target item.
 
         Args:
-            tgt_item: Item, for which we're getting modifications.
-            tgt_attr_id: Target attribute ID; only modifications which influence
+            affectee_item: Item, for which we're getting modifications.
+            attr_id: Target attribute ID; only modifications which influence
                 attribute with this ID will be returned.
 
         Returns:
-            Set with tuples in (operator, value, item) format.
+            Set with tuples in (modification operator, modification value,
+            resistance value, affector item) format.
         """
         # Use list because we can have multiple tuples with the same values
         # as valid configuration
-        modifications = []
-        for affector_spec in self.__affections.get_affectors(tgt_item):
-            modifier = affector_spec.modifier
-            mod_item = affector_spec.item
-            if modifier.tgt_attr_id == tgt_attr_id:
+        mods = []
+        for affector_spec in self.__affections.get_affectors(affectee_item):
+            affector_modifier = affector_spec.modifier
+            affector_item = affector_spec.item
+            if affector_modifier.tgt_attr_id != attr_id:
+                continue
+            try:
+                mod_op, mod_value = affector_modifier.get_modification(
+                    affector_item)
+            # Do nothing here - errors should be logged in modification
+            # getter or even earlier
+            except ModificationCalculationError:
+                continue
+            resist_attr_id = affector_spec.effect.resist_attr_id
+            if resist_attr_id is not None:
                 try:
-                    mod_op, mod_value = modifier.get_modification(mod_item)
-                # Do nothing here - errors should be logged in modification
-                # getter or even earlier
-                except ModificationCalculationError:
-                    continue
-                modifications.append((mod_op, mod_value, mod_item))
-        return modifications
+                    resist_value = affectee_item.attrs[resist_attr_id]
+                except KeyError:
+                    resist_value = 1
+            else:
+                resist_value = 1
+            mods.append((mod_op, mod_value, resist_value, affector_item))
+        return mods
 
     def _handle_fit_added(self, fit):
         fit._subscribe(self, self._handler_map.keys())
@@ -204,7 +215,6 @@ class CalculationService(BaseSubscriber):
                     affector, tgt_items
                 ):
                     del tgt_item.attrs[modifier.tgt_attr_id]
-
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.

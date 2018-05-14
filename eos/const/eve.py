@@ -193,6 +193,7 @@ class AttrId(IntEnum):
     signature_radius_bonus = 554
     speed_boost_factor = 567
     speed_factor = 20
+    stasis_webifier_resistance = 2115
     tracking_speed = 160
     tracking_speed_bonus = 767
     volume = 161

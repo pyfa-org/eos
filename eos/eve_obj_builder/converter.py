@@ -96,7 +96,7 @@ class Converter:
                 tracking_speed_attr_id=row.get('trackingSpeedAttributeID'),
                 fitting_usage_chance_attr_id=(
                     row.get('fittingUsageChanceAttributeID')),
-                resistance_attr_id=row.get('resistanceID'),
+                resist_attr_id=row.get('resistanceID'),
                 build_status=build_status,
                 modifiers=tuple(modifiers)))
 

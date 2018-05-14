@@ -60,7 +60,7 @@ class TestConversionEffect(EveObjBuilderTestCase):
         self.assertEqual(effect.falloff_attr_id, 3)
         self.assertEqual(effect.tracking_speed_attr_id, 6)
         self.assertEqual(effect.fitting_usage_chance_attr_id, 96)
-        self.assertEqual(effect.resistance_attr_id, 38)
+        self.assertEqual(effect.resist_attr_id, 38)
         self.assertEqual(effect.build_status, 29)
         self.assertIn(mod, effect.modifiers)
         self.assert_log_entries(0)

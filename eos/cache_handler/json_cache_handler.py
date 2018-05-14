@@ -220,7 +220,7 @@ class JsonCacheHandler(BaseCacheHandler):
             effect.falloff_attr_id,
             effect.tracking_speed_attr_id,
             effect.fitting_usage_chance_attr_id,
-            effect.resistance_attr_id,
+            effect.resist_attr_id,
             effect.build_status,
             tuple(
                 self.__modifier_compress(m)
@@ -240,7 +240,7 @@ class JsonCacheHandler(BaseCacheHandler):
             falloff_attr_id=effect_data[7],
             tracking_speed_attr_id=effect_data[8],
             fitting_usage_chance_attr_id=effect_data[9],
-            resistance_attr_id=effect_data[10],
+            resist_attr_id=effect_data[10],
             build_status=effect_data[11],
             modifiers=tuple(
                 self.__modifier_decompress(md)
