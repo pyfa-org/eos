@@ -35,11 +35,10 @@ logger = getLogger(__name__)
 
 
 class AffectionRegister:
-    """Keeps track of connections between affectors and affectees.
+    """Keeps track of connections between affector specs and affectee items.
 
-    Deals only with affectors which have dogma modifiers. Having information
-    about connections is hard requirement for efficient partial attribute
-    recalculation.
+    Having information about such connections is a hard requirement for
+    efficient partial attribute recalculation.
     """
 
     def __init__(self):
@@ -47,81 +46,88 @@ class AffectionRegister:
         # Format: {affectee items}
         self.__affectees = set()
 
-        # Items belonging to certain domain
+        # Items belonging to certain fit and domain
         # Format: {(affectee fit, affectee domain): {affectee items}}
-        self.__affectee_domain = KeyedStorage()
+        self.__affectees_domain = KeyedStorage()
 
-        # Items belonging to certain domain and group
+        # Items belonging to certain fit, domain and group
         # Format: {(affectee fit, affectee domain, affectee group ID): {affectee
         # items}}
-        self.__affectee_domain_group = KeyedStorage()
+        self.__affectees_domain_group = KeyedStorage()
 
-        # Items belonging to certain domain and having certain skill requirement
+        # Items belonging to certain fit and domain, and having certain skill
+        # requirement
         # Format: {(affectee fit, affectee domain, affectee skill requirement
         # type ID): {affectee items}}
-        self.__affectee_domain_skillrq = KeyedStorage()
+        self.__affectees_domain_skillrq = KeyedStorage()
 
-        # Owner-modifiable items which have certain skill requirement
+        # Owner-modifiable items which belong to certain fit and have certain
+        # skill requirement
         # Format: {(affectee fit, affectee skill requirement type ID): {affectee
         # items}}
-        self.__affectee_owner_skillrq = KeyedStorage()
+        self.__affectees_owner_skillrq = KeyedStorage()
 
-        # Affectors which target 'other' location are always stored here,
-        # regardless if they actually affect something or not
-        # Format: {affector item: {affector s}}
-        self.__affector_item_other = KeyedStorage()
+        # Affector specs with modifiers which target 'other' location are always
+        # stored here, regardless if they actually affect something or not
+        # Format: {affector item: {affector specs}}
+        self.__affectors_item_other = KeyedStorage()
 
-        # Affectors which should affect only one item (ship, character or self),
-        # when this item is not registered as affectee
-        # Format: {affectee fit: {affectors}}
-        self.__affector_item_awaitable = KeyedStorage()
+        # Affector specs which should affect only one item (ship, character or
+        # self), when this item is not registered as affectee
+        # Format: {affectee fit: {affector specs}}
+        self.__affectors_item_awaiting = KeyedStorage()
 
-        # All active affectors which target specific item (via ship, character,
-        # other reference or self) are kept here
-        # Format: {affectee item: {affectors}}
-        self.__affector_item_active = KeyedStorage()
+        # All active affector specs which target one specific item (via ship,
+        # character, other reference or self) are kept here
+        # Format: {affectee item: {affector specs}}
+        self.__affectors_item_active = KeyedStorage()
 
-        # Affectors influencing all items belonging to certain domain
-        # Format: {(affectee fit, domain): {affectors}}
-        self.__affector_domain = KeyedStorage()
+        # Affector specs influencing all items belonging to certain fit and
+        # domain
+        # Format: {(affectee fit, affectee domain): {affector specs}}
+        self.__affectors_domain = KeyedStorage()
 
-        # Affectors influencing items belonging to certain domain and group
-        # Format: {(affectee fit, domain, group ID): {affectors}}
-        self.__affector_domain_group = KeyedStorage()
+        # Affector specs influencing items belonging to certain fit, domain and
+        # group
+        # Format: {(affectee fit, affectee domain, affectee group ID): {affector
+        # specs}}
+        self.__affectors_domain_group = KeyedStorage()
 
-        # Affectors influencing items belonging to certain domain and having
-        # certain skill requirement
-        # Format: {(affectee fit, domain, skill type ID): {affectors}}
-        self.__affector_domain_skillrq = KeyedStorage()
+        # Affector specs influencing items belonging to certain fit and domain,
+        # and having certain skill requirement
+        # Format: {(affectee fit, affectee domain, affectee skill requirement
+        # type ID): {affector specs}}
+        self.__affectors_domain_skillrq = KeyedStorage()
 
-        # Affectors influencing owner-modifiable items which have certain skill
-        # requirement
-        # Format: {(affectee fit, skill type ID): {affectors}}
-        self.__affector_owner_skillrq = KeyedStorage()
+        # Affector specs influencing owner-modifiable items belonging to certain
+        # fit and having certain skill requirement
+        # Format: {(affectee fit, affectee skill requirement type ID): {affector
+        # specs}}
+        self.__affectors_owner_skillrq = KeyedStorage()
 
     # Query methods
-    def get_local_affectees(self, affector):
+    def get_local_affectee_items(self, affector_spec):
         """Get iterable with items influenced by passed local affector."""
         try:
-            tgt_filter = affector.modifier.tgt_filter
+            tgt_filter = affector_spec.modifier.tgt_filter
             if tgt_filter == ModTgtFilter.item:
-                domain = affector.modifier.tgt_domain
+                domain = affector_spec.modifier.tgt_domain
                 try:
                     getter = self.__local_affectees_getters_item[domain]
                 except KeyError as e:
                     raise UnexpectedDomainError(domain) from e
                 else:
-                    return getter(self, affector)
+                    return getter(self, affector_spec)
             else:
                 try:
                     getter = self.__affectees_getters[tgt_filter]
                 except KeyError as e:
                     raise UnknownTgtFilterError(tgt_filter) from e
-                domain = self.__contextize_local_affector_domain(affector)
-                affectee_fits = affector.item._fit,
-                return getter(self, affector, domain, affectee_fits)
+                domain = self.__contextize_local_affector_domain(affector_spec)
+                affectee_fits = affector_spec.item._fit,
+                return getter(self, affector_spec, domain, affectee_fits)
         except Exception as e:
-            self.__handle_affector_errors(e, affector)
+            self.__handle_affector_errors(e, affector_spec)
             return ()
 
     def get_projected_affectees(self, affector, tgt_items):
@@ -144,25 +150,25 @@ class AffectionRegister:
         affectee_fit = affectee_item._fit
         affectors = set()
         # Item
-        affectors.update(self.__affector_item_active.get(
+        affectors.update(self.__affectors_item_active.get(
             affectee_item, ()))
         domain = affectee_item._modifier_domain
         if domain is not None:
             # Domain
-            affectors.update(self.__affector_domain.get(
+            affectors.update(self.__affectors_domain.get(
                 (affectee_fit, domain), ()))
             # Domain and group
             group_id = affectee_item._type.group_id
-            affectors.update(self.__affector_domain_group.get(
+            affectors.update(self.__affectors_domain_group.get(
                 (affectee_fit, domain, group_id), ()))
             for skill_type_id in affectee_item._type.required_skills:
                 # Domain and skill requirement
-                affectors.update(self.__affector_domain_skillrq.get(
+                affectors.update(self.__affectors_domain_skillrq.get(
                     (affectee_fit, domain, skill_type_id), ()))
         if affectee_item._owner_modifiable is True:
             for skill_type_id in affectee_item._type.required_skills:
                 # Owner-modifiable and skill requirement
-                affectors.update(self.__affector_owner_skillrq.get(
+                affectors.update(self.__affectors_owner_skillrq.get(
                     (affectee_fit, skill_type_id), ()))
         return affectors
 
@@ -283,7 +289,7 @@ class AffectionRegister:
         affectee_items = set()
         for affectee_fit in fits:
             key = (affectee_fit, domain)
-            affectee_items.update(self.__affectee_domain.get(key, ()))
+            affectee_items.update(self.__affectees_domain.get(key, ()))
         return affectee_items
 
     def __get_affectees_domain_group(self, affector, domain, fits):
@@ -291,7 +297,7 @@ class AffectionRegister:
         affectee_items = set()
         for affectee_fit in fits:
             key = (affectee_fit, domain, group_id)
-            affectee_items.update(self.__affectee_domain_group.get(key, ()))
+            affectee_items.update(self.__affectees_domain_group.get(key, ()))
         return affectee_items
 
     def __get_affectees_domain_skillrq(self, affector, domain, fits):
@@ -301,7 +307,7 @@ class AffectionRegister:
         affectee_items = set()
         for affectee_fit in fits:
             key = (affectee_fit, domain, skill_type_id)
-            affectee_items.update(self.__affectee_domain_skillrq.get(key, ()))
+            affectee_items.update(self.__affectees_domain_skillrq.get(key, ()))
         return affectee_items
 
     def __get_affectees_owner_skillrq(self, affector, _, fits):
@@ -311,7 +317,7 @@ class AffectionRegister:
         affectee_items = set()
         for affectee_fit in fits:
             key = (affectee_fit, skill_type_id)
-            affectee_items.update(self.__affectee_owner_skillrq.get(key, ()))
+            affectee_items.update(self.__affectees_owner_skillrq.get(key, ()))
         return affectee_items
 
     __affectees_getters = {
@@ -334,30 +340,30 @@ class AffectionRegister:
             # Domain
             affectee_storages.append((
                 (affectee_fit, domain),
-                self.__affectee_domain))
+                self.__affectees_domain))
             group_id = affectee_item._type.group_id
             # Domain and group
             if group_id is not None:
                 affectee_storages.append((
                     (affectee_fit, domain, group_id),
-                    self.__affectee_domain_group))
+                    self.__affectees_domain_group))
             # Domain and skill requirement
             for skill_type_id in affectee_item._type.required_skills:
                 affectee_storages.append((
                     (affectee_fit, domain, skill_type_id),
-                    self.__affectee_domain_skillrq))
+                    self.__affectees_domain_skillrq))
         # Owner-modifiable and skill requirement
         if affectee_item._owner_modifiable is True:
             for skill_type_id in affectee_item._type.required_skills:
                 affectee_storages.append((
                     (affectee_fit, skill_type_id),
-                    self.__affectee_owner_skillrq))
+                    self.__affectees_owner_skillrq))
         return affectee_storages
 
     def __activate_special_affectors(self, affectee_fit, affectee_item):
         """Activate special affectors which should affect passed item."""
         awaitable_to_activate = set()
-        for affector in self.__affector_item_awaitable.get(affectee_fit, ()):
+        for affector in self.__affectors_item_awaiting.get(affectee_fit, ()):
             domain = affector.modifier.tgt_domain
             # Ship
             if domain == ModDomain.ship and isinstance(affectee_item, Ship):
@@ -373,38 +379,38 @@ class AffectionRegister:
                 awaitable_to_activate.add(affector)
         # Move awaitable affectors from awaitable storage to active storage
         if awaitable_to_activate:
-            self.__affector_item_awaitable.rm_data_set(
+            self.__affectors_item_awaiting.rm_data_set(
                 affectee_fit, awaitable_to_activate)
-            self.__affector_item_active.add_data_set(
+            self.__affectors_item_active.add_data_set(
                 affectee_item, awaitable_to_activate)
         # Other
         other_to_activate = set()
-        for affector_item, affectors in self.__affector_item_other.items():
+        for affector_item, affectors in self.__affectors_item_other.items():
             if affectee_item in affector_item._others:
                 other_to_activate.update(affectors)
         # Just add affectors to active storage, 'other' affectors should never
         # be removed from 'other'-specific storage
         if other_to_activate:
-            self.__affector_item_active.add_data_set(
+            self.__affectors_item_active.add_data_set(
                 affectee_item, other_to_activate)
 
     def __deactivate_special_affectors(self, affectee_fit, affectee_item):
         """Deactivate special affectors which affect passed item."""
-        if affectee_item not in self.__affector_item_active:
+        if affectee_item not in self.__affectors_item_active:
             return
         awaitable_to_deactivate = set()
-        for affector in self.__affector_item_active.get(affectee_item, ()):
+        for affector in self.__affectors_item_active.get(affectee_item, ()):
             if affector.modifier.tgt_domain in (
                 ModDomain.ship, ModDomain.character, ModDomain.self
             ):
                 awaitable_to_deactivate.add(affector)
         # Remove all affectors influencing this item directly, including 'other'
         # affectors
-        del self.__affector_item_active[affectee_item]
+        del self.__affectors_item_active[affectee_item]
         # And make sure awaitable affectors are moved to appropriate container
         # for future use
         if awaitable_to_deactivate:
-            self.__affector_item_awaitable.add_data_set(
+            self.__affectors_item_awaiting.add_data_set(
                 affectee_fit, awaitable_to_deactivate)
 
     # Helpers for affector registering/unregistering
@@ -440,7 +446,7 @@ class AffectionRegister:
             storages = []
             for tgt_item in tgt_items:
                 if tgt_item in self.__affectees:
-                    storages.append((tgt_item, self.__affector_item_active))
+                    storages.append((tgt_item, self.__affectors_item_active))
             return storages
         else:
             try:
@@ -454,7 +460,7 @@ class AffectionRegister:
         storages = []
         for affectee_fit in fits:
             key = (affectee_fit, domain)
-            storages.append((key, self.__affector_domain))
+            storages.append((key, self.__affectors_domain))
         return storages
 
     def __get_affector_storages_domain_group(self, affector, domain, fits):
@@ -462,7 +468,7 @@ class AffectionRegister:
         storages = []
         for affectee_fit in fits:
             key = (affectee_fit, domain, group_id)
-            storages.append((key, self.__affector_domain_group))
+            storages.append((key, self.__affectors_domain_group))
         return storages
 
     def __get_affector_storages_domain_skillrq(self, affector, domain, fits):
@@ -472,7 +478,7 @@ class AffectionRegister:
         storages = []
         for affectee_fit in fits:
             key = (affectee_fit, domain, skill_type_id)
-            storages.append((key, self.__affector_domain_skillrq))
+            storages.append((key, self.__affectors_domain_skillrq))
         return storages
 
     def __get_affector_storages_owner_skillrq(self, affector, _, fits):
@@ -482,7 +488,7 @@ class AffectionRegister:
         storages = []
         for affectee_fit in fits:
             key = (affectee_fit, skill_type_id)
-            storages.append((key, self.__affector_owner_skillrq))
+            storages.append((key, self.__affectors_owner_skillrq))
         return storages
 
     __affector_storages_getters = {
@@ -493,36 +499,36 @@ class AffectionRegister:
 
     def __get_local_affector_storages_item_self(self, affector):
         if affector.item in self.__affectees:
-            return [(affector.item, self.__affector_item_active)]
+            return [(affector.item, self.__affectors_item_active)]
         else:
             affectee_fit = affector.item._fit
-            return (affectee_fit, self.__affector_item_awaitable),
+            return (affectee_fit, self.__affectors_item_awaiting),
 
     def __get_local_affector_storages_item_character(self, affector):
         affectee_fit = affector.item._fit
         character = affectee_fit.character
         if character in self.__affectees:
-            return (character, self.__affector_item_active),
+            return (character, self.__affectors_item_active),
         else:
-            return (affectee_fit, self.__affector_item_awaitable),
+            return (affectee_fit, self.__affectors_item_awaiting),
 
     def __get_local_affector_storages_item_ship(self, affector):
         affectee_fit = affector.item._fit
         ship = affectee_fit.ship
         if ship in self.__affectees:
-            return (ship, self.__affector_item_active),
+            return (ship, self.__affectors_item_active),
         else:
-            return (affectee_fit, self.__affector_item_awaitable),
+            return (affectee_fit, self.__affectors_item_awaiting),
 
     def __get_local_affector_storages_item_other(self, affector):
         # Affectors with 'other' modifiers are always stored in their special
         # place
-        storages = [(affector.item, self.__affector_item_other)]
+        storages = [(affector.item, self.__affectors_item_other)]
         # And all those which have valid target are also stored in storage for
         # active direct affectors
         for other_item in affector.item._others:
             if other_item in self.__affectees:
-                storages.append((other_item, self.__affector_item_active))
+                storages.append((other_item, self.__affectors_item_active))
         return storages
 
     __local_affector_storages_getters_item = {

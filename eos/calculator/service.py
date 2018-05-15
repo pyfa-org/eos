@@ -118,7 +118,9 @@ class CalculationService(BaseSubscriber):
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__subscribe_python_affector(fit, affector)
             self.__affections.register_local_affector(affector)
-            for tgt_item in self.__affections.get_local_affectees(affector):
+            for tgt_item in self.__affections.get_local_affectee_items(
+                affector
+            ):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
         projectors = self.__generate_projectors(msg.item, msg.effect_ids)
         for projector in projectors:
@@ -128,7 +130,9 @@ class CalculationService(BaseSubscriber):
         fit = msg.fit
         affectors = self.__generate_local_affectors(msg.item, msg.effect_ids)
         for affector in affectors:
-            for tgt_item in self.__affections.get_local_affectees(affector):
+            for tgt_item in self.__affections.get_local_affectee_items(
+                affector
+            ):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
             self.__affections.unregister_local_affector(affector)
             if isinstance(affector.modifier, BasePythonModifier):
@@ -190,7 +194,9 @@ class CalculationService(BaseSubscriber):
                 modifier.src_attr_id != attr_id
             ):
                 continue
-            for tgt_item in self.__affections.get_local_affectees(affector):
+            for tgt_item in self.__affections.get_local_affectee_items(
+                affector
+            ):
                 del tgt_item.attrs[modifier.tgt_attr_id]
         for projector in self.__generate_projectors(
             item, item._running_effect_ids
@@ -233,7 +239,9 @@ class CalculationService(BaseSubscriber):
         for affector in self.__subscribed_affectors[msg_type]:
             if not affector.modifier.revise_modification(msg, affector.item):
                 continue
-            for tgt_item in self.__affections.get_local_affectees(affector):
+            for tgt_item in self.__affections.get_local_affectee_items(
+                affector
+            ):
                 del tgt_item.attrs[affector.modifier.tgt_attr_id]
 
     # Message routing
