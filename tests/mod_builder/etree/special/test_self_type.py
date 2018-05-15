@@ -65,7 +65,7 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter_extra_arg, EosTypeId.current_self)
+        self.assertEqual(modifier.affectee_filter_extra_arg, EosTypeId.current_self)
         self.assert_log_entries(0)
 
     def test_mod_owner_skillrq(self):
@@ -74,5 +74,5 @@ class TestBuilderEtreeSelfType(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter_extra_arg, EosTypeId.current_self)
+        self.assertEqual(modifier.affectee_filter_extra_arg, EosTypeId.current_self)
         self.assert_log_entries(0)

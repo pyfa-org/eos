@@ -24,7 +24,7 @@ from eos import Ship
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.sim.rah.testcase import RahSimTestCase
 
@@ -41,29 +41,29 @@ class TestRahStacking(RahSimTestCase):
         self.fit.modules.low.equip(rah)
         resmod_src_attr = self.mkattr()
         resmod_mod_em = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=self.armor_em.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=self.armor_em.id,
             operator=ModOperator.pre_mul,
-            src_attr_id=resmod_src_attr.id)
+            affector_attr_id=resmod_src_attr.id)
         resmod_mod_therm = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=self.armor_therm.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=self.armor_therm.id,
             operator=ModOperator.pre_mul,
-            src_attr_id=resmod_src_attr.id)
+            affector_attr_id=resmod_src_attr.id)
         resmod_mod_kin = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=self.armor_kin.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=self.armor_kin.id,
             operator=ModOperator.pre_mul,
-            src_attr_id=resmod_src_attr.id)
+            affector_attr_id=resmod_src_attr.id)
         resmod_mod_expl = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=self.armor_expl.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=self.armor_expl.id,
             operator=ModOperator.pre_mul,
-            src_attr_id=resmod_src_attr.id)
+            affector_attr_id=resmod_src_attr.id)
         resmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[

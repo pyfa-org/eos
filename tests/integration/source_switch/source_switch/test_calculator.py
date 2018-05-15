@@ -25,7 +25,7 @@ from eos import Ship
 from eos import SolarSystem
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.source_switch.testcase import SourceSwitchTestCase
 
@@ -38,18 +38,18 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         # its internal attribute storage should be cleared. If it wasn't
         # cleared, we wouldn't be able to get refreshed value of attribute
         # Setup
-        src_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=src_attr_id)
-        self.mkattr(src='src2', attr_id=src_attr_id)
-        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=tgt_attr_id)
-        self.mkattr(src='src2', attr_id=tgt_attr_id)
+        affector_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=affector_attr_id)
+        self.mkattr(src='src2', attr_id=affector_attr_id)
+        affectee_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=affectee_attr_id)
+        self.mkattr(src='src2', attr_id=affectee_attr_id)
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr_id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=affectee_attr_id,
             operator=ModOperator.post_percent,
-            src_attr_id=src_attr_id)
+            affector_attr_id=affector_attr_id)
         effect_id = self.allocate_effect_id('src1', 'src2')
         effect_src1 = self.mkeffect(
             src='src1',
@@ -65,28 +65,28 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         ship1 = Ship(self.mktype(
             src='src1',
             type_id=ship_type_id,
-            attrs={src_attr_id: 10},
+            attrs={affector_attr_id: 10},
             effects=[effect_src1]).id)
         ship2 = Ship(self.mktype(
             src='src2',
             type_id=ship_type_id,
-            attrs={src_attr_id: 20},
+            attrs={affector_attr_id: 20},
             effects=[effect_src2]).id)
         item_type_id = self.allocate_type_id('src1', 'src2')
-        self.mktype(src='src1', type_id=item_type_id, attrs={tgt_attr_id: 50})
-        self.mktype(src='src2', type_id=item_type_id, attrs={tgt_attr_id: 50})
+        self.mktype(src='src1', type_id=item_type_id, attrs={affectee_attr_id: 50})
+        self.mktype(src='src2', type_id=item_type_id, attrs={affectee_attr_id: 50})
         item = Rig(item_type_id)
         fit1 = Fit(SolarSystem('src1'))
         fit1.ship = ship1
         fit2 = Fit(SolarSystem('src2'))
         fit2.ship = ship2
         fit1.rigs.add(item)
-        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 55)
+        self.assertAlmostEqual(item.attrs.get(affectee_attr_id), 55)
         # Action
         fit1.rigs.remove(item)
         fit2.rigs.add(item)
         # Verification
-        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 60)
+        self.assertAlmostEqual(item.attrs.get(affectee_attr_id), 60)
         # Cleanup
         self.assert_solsys_buffers_empty(fit1.solar_system)
         self.assert_solsys_buffers_empty(fit2.solar_system)
@@ -96,21 +96,21 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         # Here we check if attributes are updated if fit gets new source
         # instance
         # Setup
-        src_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=src_attr_id)
-        self.mkattr(src='src2', attr_id=src_attr_id)
-        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
+        affector_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=affector_attr_id)
+        self.mkattr(src='src2', attr_id=affector_attr_id)
+        affectee_attr_id = self.allocate_attr_id('src1', 'src2')
         max_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=tgt_attr_id, max_attr_id=max_attr_id)
-        self.mkattr(src='src2', attr_id=tgt_attr_id, max_attr_id=max_attr_id)
+        self.mkattr(src='src1', attr_id=affectee_attr_id, max_attr_id=max_attr_id)
+        self.mkattr(src='src2', attr_id=affectee_attr_id, max_attr_id=max_attr_id)
         self.mkattr(src='src1', attr_id=max_attr_id, default_value=54.5)
         self.mkattr(src='src2', attr_id=max_attr_id, default_value=88)
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr_id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=affectee_attr_id,
             operator=ModOperator.post_percent,
-            src_attr_id=src_attr_id)
+            affector_attr_id=affector_attr_id)
         effect_id = self.allocate_effect_id('src1', 'src2')
         effect_src1 = self.mkeffect(
             src='src1',
@@ -126,28 +126,28 @@ class TestSourceSwitchCalculator(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=ship_type_id,
-            attrs={src_attr_id: 10},
+            attrs={affector_attr_id: 10},
             effects=[effect_src1])
         self.mktype(
             src='src2',
             type_id=ship_type_id,
-            attrs={src_attr_id: 20},
+            attrs={affector_attr_id: 20},
             effects=[effect_src2])
         item_type_id = self.allocate_type_id('src1', 'src2')
-        self.mktype(src='src1', type_id=item_type_id, attrs={tgt_attr_id: 50})
-        self.mktype(src='src2', type_id=item_type_id, attrs={tgt_attr_id: 75})
+        self.mktype(src='src1', type_id=item_type_id, attrs={affectee_attr_id: 50})
+        self.mktype(src='src2', type_id=item_type_id, attrs={affectee_attr_id: 75})
         fit = Fit()
         ship = Ship(ship_type_id)
         item = Rig(item_type_id)
         fit.ship = ship
         fit.rigs.add(item)
         # 50 * 1.1, but capped at 54.5
-        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 54.5)
+        self.assertAlmostEqual(item.attrs.get(affectee_attr_id), 54.5)
         # Action
         fit.solar_system.source = 'src2'
         # Verification
         # 75 * 1.2, but capped at 88
-        self.assertAlmostEqual(item.attrs.get(tgt_attr_id), 88)
+        self.assertAlmostEqual(item.attrs.get(affectee_attr_id), 88)
         # Cleanup
         self.assert_solsys_buffers_empty(fit.solar_system)
         self.assert_log_entries(0)

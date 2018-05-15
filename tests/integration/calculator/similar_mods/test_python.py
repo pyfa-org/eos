@@ -22,7 +22,7 @@
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.pubsub.message import AttrValueChanged
@@ -31,28 +31,28 @@ from tests.integration.calculator.testcase import CalculatorTestCase
 
 class TestSimilarModifiersDogma(CalculatorTestCase):
 
-    def make_modifier(self, src_attr_id, tgt_attr_id):
+    def make_modifier(self, affector_attr_id, affectee_attr_id):
 
         class TestPythonModifier(BasePythonModifier):
 
             def __init__(self):
                 BasePythonModifier.__init__(
                     self,
-                    tgt_filter=ModTgtFilter.item,
-                    tgt_domain=ModDomain.self,
-                    tgt_filter_extra_arg=None,
-                    tgt_attr_id=tgt_attr_id)
+                    affectee_filter=ModAffecteeFilter.item,
+                    affectee_domain=ModDomain.self,
+                    affectee_filter_extra_arg=None,
+                    affectee_attr_id=affectee_attr_id)
 
-            def get_modification(self, mod_item):
-                value = mod_item.attrs[src_attr_id]
+            def get_modification(self, affector_item):
+                value = affector_item.attrs[affector_attr_id]
                 return ModOperator.post_percent, value
 
             @property
             def revise_msg_types(self):
                 return {AttrValueChanged}
 
-            def revise_modification(self, msg, mod_item):
-                if msg.item is mod_item and msg.attr_id == src_attr_id:
+            def revise_modification(self, msg, affector_item):
+                if msg.item is affector_item and msg.attr_id == affector_attr_id:
                     return True
                 return False
 

@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.const.eve import TypeId
@@ -35,33 +35,33 @@ class ShipModuleGundanceDisruptor(Effect):
     def __init__(self, *args, **kwargs):
         Effect.__init__(self, *args, **kwargs)
         aoe_cloud_size_modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.target,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.aoe_cloud_size,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.target,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.aoe_cloud_size,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.aoe_cloud_size_bonus)
+            affector_attr_id=AttrId.aoe_cloud_size_bonus)
         aoe_velocity_modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.target,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.aoe_velocity,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.target,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.aoe_velocity,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.aoe_velocity_bonus)
+            affector_attr_id=AttrId.aoe_velocity_bonus)
         max_velocity_modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.target,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.max_velocity,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.target,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.max_velocity,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.missile_velocity_bonus)
+            affector_attr_id=AttrId.missile_velocity_bonus)
         explosion_delay_modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.target,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.explosion_delay,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.target,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.explosion_delay,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.explosion_delay_bonus)
+            affector_attr_id=AttrId.explosion_delay_bonus)
         self.modifiers = (
             *self.modifiers, aoe_cloud_size_modifier,
             aoe_velocity_modifier, max_velocity_modifier,

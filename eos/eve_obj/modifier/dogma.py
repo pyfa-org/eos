@@ -37,18 +37,27 @@ class DogmaModifier(BaseModifier):
     """
 
     def __init__(
-            self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
-            tgt_attr_id=None, operator=None, src_attr_id=None):
+        self,
+        affectee_filter=None,
+        affectee_domain=None,
+        affectee_filter_extra_arg=None,
+        affectee_attr_id=None,
+        operator=None,
+        affector_attr_id=None
+    ):
         BaseModifier.__init__(
-            self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
-            tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr_id=tgt_attr_id)
+            self,
+            affectee_filter=affectee_filter,
+            affectee_domain=affectee_domain,
+            affectee_filter_extra_arg=affectee_filter_extra_arg,
+            affectee_attr_id=affectee_attr_id)
         # Dogma modifier-specific attributes
         self.operator = operator
-        self.src_attr_id = src_attr_id
+        self.affector_attr_id = affector_attr_id
 
-    def get_modification(self, mod_item):
+    def get_modification(self, affector_item):
         try:
-            value = mod_item.attrs[self.src_attr_id]
+            value = affector_item.attrs[self.affector_attr_id]
         # In case attribute value cannot be fetched, just raise error,
         # all error logging is handled in attribute container
         except KeyError as e:
@@ -62,11 +71,11 @@ class DogmaModifier(BaseModifier):
         return all((
             self._validate_base(),
             self.operator in ModOperator.__members__.values(),
-            isinstance(self.src_attr_id, Integral)))
+            isinstance(self.affector_attr_id, Integral)))
 
     # Auxiliary methods
     def __repr__(self):
         spec = [
-            'tgt_filter', 'tgt_domain', 'tgt_filter_extra_arg',
-            'tgt_attr_id', 'operator', 'src_attr_id']
+            'affectee_filter', 'affectee_domain', 'affectee_filter_extra_arg',
+            'affectee_attr_id', 'operator', 'affector_attr_id']
         return make_repr_str(self, spec)

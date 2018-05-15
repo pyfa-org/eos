@@ -23,7 +23,7 @@ from eos.const.eos import EffectBuildStatus
 from eos.const.eos import EosEffectId
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import TypeId
@@ -40,12 +40,12 @@ def make_missile_dmg_effect():
         AttrId.expl_dmg
     ):
         modifiers.append(DogmaModifier(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=dmg_attr_id,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.character,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=dmg_attr_id,
             operator=ModOperator.post_mul_immune,
-            src_attr_id=AttrId.missile_dmg_mult))
+            affector_attr_id=AttrId.missile_dmg_mult))
     missile_dmg_effect = EffectFactory.make(
         effect_id=EosEffectId.char_missile_dmg,
         category_id=EffectCategoryId.passive,

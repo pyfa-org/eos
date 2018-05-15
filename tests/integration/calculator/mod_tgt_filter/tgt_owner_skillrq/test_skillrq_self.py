@@ -24,7 +24,7 @@ from eos import Implant
 from eos.const.eos import EosTypeId
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
@@ -37,12 +37,12 @@ class TestTgtOwnerSkillrqSkillrqSelf(CalculatorTestCase):
         self.tgt_attr = self.mkattr()
         src_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.character,
-            tgt_filter_extra_arg=EosTypeId.current_self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.character,
+            affectee_filter_extra_arg=EosTypeId.current_self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])

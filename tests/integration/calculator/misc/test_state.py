@@ -24,7 +24,7 @@ from eos import ModuleHigh
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
 from tests.integration.calculator.testcase import CalculatorTestCase
@@ -41,35 +41,35 @@ class TestStateSwitching(CalculatorTestCase):
         src_attr4 = self.mkattr()
         src_attr5 = self.mkattr()
         modifier_off = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr1.id)
+            affector_attr_id=src_attr1.id)
         modifier_on = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr2.id)
+            affector_attr_id=src_attr2.id)
         modifier_act = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr3.id)
+            affector_attr_id=src_attr3.id)
         modifier_over = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr4.id)
+            affector_attr_id=src_attr4.id)
         modifier_disabled = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr3.id)
+            affector_attr_id=src_attr3.id)
         effect_cat_offline = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_off])

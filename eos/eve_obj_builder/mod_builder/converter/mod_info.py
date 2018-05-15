@@ -22,7 +22,7 @@ import yaml
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj_builder.mod_builder.exception import YamlParsingError
 
@@ -85,50 +85,50 @@ class ModInfoconverter:
     @classmethod
     def _handle_item_mod(cls, mod_info):
         return DogmaModifier(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=cls._get_domain(mod_info),
-            tgt_attr_id=int(mod_info['modifiedAttributeID']),
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=cls._get_domain(mod_info),
+            affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr_id=int(mod_info['modifyingAttributeID']))
+            affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_mod(cls, mod_info):
         return DogmaModifier(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=cls._get_domain(mod_info),
-            tgt_attr_id=int(mod_info['modifiedAttributeID']),
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=cls._get_domain(mod_info),
+            affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr_id=int(mod_info['modifyingAttributeID']))
+            affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_group_mod(cls, mod_info):
         return DogmaModifier(
-            tgt_filter=ModTgtFilter.domain_group,
-            tgt_domain=cls._get_domain(mod_info),
-            tgt_filter_extra_arg=int(mod_info['groupID']),
-            tgt_attr_id=int(mod_info['modifiedAttributeID']),
+            affectee_filter=ModAffecteeFilter.domain_group,
+            affectee_domain=cls._get_domain(mod_info),
+            affectee_filter_extra_arg=int(mod_info['groupID']),
+            affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr_id=int(mod_info['modifyingAttributeID']))
+            affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_domain_skillrq_mod(cls, mod_info):
         return DogmaModifier(
-            tgt_filter=ModTgtFilter.domain_skillrq,
-            tgt_domain=cls._get_domain(mod_info),
-            tgt_filter_extra_arg=int(mod_info['skillTypeID']),
-            tgt_attr_id=int(mod_info['modifiedAttributeID']),
+            affectee_filter=ModAffecteeFilter.domain_skillrq,
+            affectee_domain=cls._get_domain(mod_info),
+            affectee_filter_extra_arg=int(mod_info['skillTypeID']),
+            affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr_id=int(mod_info['modifyingAttributeID']))
+            affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
     def _handle_owner_skillrq_mod(cls, mod_info):
         return DogmaModifier(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=cls._get_domain(mod_info),
-            tgt_filter_extra_arg=int(mod_info['skillTypeID']),
-            tgt_attr_id=int(mod_info['modifiedAttributeID']),
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=cls._get_domain(mod_info),
+            affectee_filter_extra_arg=int(mod_info['skillTypeID']),
+            affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
-            src_attr_id=int(mod_info['modifyingAttributeID']))
+            affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @staticmethod
     def _get_domain(mod_info):

@@ -25,7 +25,7 @@ from eos import Rig
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -101,11 +101,11 @@ class TestCalibration(RestrictionTestCase):
             attrs={AttrId.upgrade_capacity: 50}).id)
         src_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=AttrId.upgrade_cost,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=AttrId.upgrade_cost,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         mod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])

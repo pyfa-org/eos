@@ -34,11 +34,18 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
     """
 
     def __init__(
-            self, tgt_filter=None, tgt_domain=None, tgt_filter_extra_arg=None,
-            tgt_attr_id=None):
+        self,
+        affectee_filter=None,
+        affectee_domain=None,
+        affectee_filter_extra_arg=None,
+        affectee_attr_id=None
+    ):
         BaseModifier.__init__(
-            self, tgt_filter=tgt_filter, tgt_domain=tgt_domain,
-            tgt_filter_extra_arg=tgt_filter_extra_arg, tgt_attr_id=tgt_attr_id)
+            self,
+            affectee_filter=affectee_filter,
+            affectee_domain=affectee_domain,
+            affectee_filter_extra_arg=affectee_filter_extra_arg,
+            affectee_attr_id=affectee_attr_id)
 
     @property
     @abstractmethod
@@ -52,7 +59,7 @@ class BasePythonModifier(BaseModifier, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def revise_modification(self, msg, mod_item):
+    def revise_modification(self, msg, affector_item):
         """Decide if modification value may change.
 
         Rely on provided event and context for it, decide if modification

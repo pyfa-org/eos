@@ -25,7 +25,7 @@ from eos import Ship
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -43,11 +43,11 @@ class TestAutocharge(CalculatorTestCase):
 
     def mkmod_filter_item(self, domain):
         return self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=domain,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=domain,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
-            src_attr_id=self.src_attr.id)
+            affector_attr_id=self.src_attr.id)
 
     def test_influence_self(self):
         # Autocharge should be able to influence itself

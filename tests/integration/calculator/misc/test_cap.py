@@ -23,7 +23,7 @@ from eos import Implant
 from eos import Rig
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
@@ -39,11 +39,11 @@ class TestCap(CalculatorTestCase):
         # Just to make sure cap is applied to final value, not base, make some
         # basic modification modifier
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.capped_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.capped_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=self.src_attr.id)
+            affector_attr_id=self.src_attr.id)
         self.effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
 
@@ -78,11 +78,11 @@ class TestCap(CalculatorTestCase):
         # Make sure that item's own specified attribute value is taken as cap,
         # and it's taken with all modifications applied onto it
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.capping_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.capping_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=self.src_attr.id)
+            affector_attr_id=self.src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         item = Implant(self.mktype(
@@ -110,11 +110,11 @@ class TestCap(CalculatorTestCase):
         self.assertAlmostEqual(item.attrs[self.capped_attr.id], 2)
         # Add something which changes capping attribute
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=self.capping_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=self.capping_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=self.src_attr.id)
+            affector_attr_id=self.src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier])
         cap_updater = Implant(self.mktype(

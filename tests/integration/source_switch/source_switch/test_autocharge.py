@@ -24,7 +24,7 @@ from eos import Ship
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -45,24 +45,24 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
             effect_id=EffectId.target_attack,
             category_id=EffectCategoryId.target)
 
-    def mkmod_filter_item(self, src_attr_id, tgt_attr_id):
+    def mkmod_filter_item(self, affector_attr_id, affectee_attr_id):
         return self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr_id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=affectee_attr_id,
             operator=ModOperator.post_percent,
-            src_attr_id=src_attr_id)
+            affector_attr_id=affector_attr_id)
 
     def test_autocharge_to_none_effect_absent(self):
         # Attribute setup
-        src_attr_id = self.allocate_attr_id('src1', 'src2')
-        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=src_attr_id)
-        self.mkattr(src='src2', attr_id=src_attr_id)
-        self.mkattr(src='src1', attr_id=tgt_attr_id)
-        self.mkattr(src='src2', attr_id=tgt_attr_id)
+        affector_attr_id = self.allocate_attr_id('src1', 'src2')
+        affectee_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=affector_attr_id)
+        self.mkattr(src='src2', attr_id=affector_attr_id)
+        self.mkattr(src='src1', attr_id=affectee_attr_id)
+        self.mkattr(src='src2', attr_id=affectee_attr_id)
         # Autocharge setup
-        autocharge_modifier = self.mkmod_filter_item(src_attr_id, tgt_attr_id)
+        autocharge_modifier = self.mkmod_filter_item(affector_attr_id, affectee_attr_id)
         autocharge_effect_id = self.allocate_effect_id('src1', 'src2')
         autocharge_effect_src1 = self.mkeffect(
             src='src1',
@@ -78,12 +78,12 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=autocharge_type_id,
-            attrs={src_attr_id: 50},
+            attrs={affector_attr_id: 50},
             effects=[autocharge_effect_src1])
         self.mktype(
             src='src2',
             type_id=autocharge_type_id,
-            attrs={src_attr_id: 50},
+            attrs={affector_attr_id: 50},
             effects=[autocharge_effect_src2])
         # Container setup
         container_effect_src1 = self.mkeffect_container_autocharge('src1')
@@ -105,34 +105,34 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 10})
+            attrs={affectee_attr_id: 10})
         self.mktype(
             src='src2',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 10})
+            attrs={affectee_attr_id: 10})
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
         self.fit.modules.high.append(container)
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 15)
         # Action
         self.fit.solar_system.source = 'src2'
         # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 10)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 10)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)
 
     def test_none_effect_absent_to_autocharge(self):
         # Attribute setup
-        src_attr_id = self.allocate_attr_id('src1', 'src2')
-        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=src_attr_id)
-        self.mkattr(src='src2', attr_id=src_attr_id)
-        self.mkattr(src='src1', attr_id=tgt_attr_id)
-        self.mkattr(src='src2', attr_id=tgt_attr_id)
+        affector_attr_id = self.allocate_attr_id('src1', 'src2')
+        affectee_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=affector_attr_id)
+        self.mkattr(src='src2', attr_id=affector_attr_id)
+        self.mkattr(src='src1', attr_id=affectee_attr_id)
+        self.mkattr(src='src2', attr_id=affectee_attr_id)
         # Autocharge setup
-        autocharge_modifier = self.mkmod_filter_item(src_attr_id, tgt_attr_id)
+        autocharge_modifier = self.mkmod_filter_item(affector_attr_id, affectee_attr_id)
         autocharge_effect_id = self.allocate_effect_id('src1', 'src2')
         autocharge_effect_src1 = self.mkeffect(
             src='src1',
@@ -148,12 +148,12 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=autocharge_type_id,
-            attrs={src_attr_id: 50},
+            attrs={affector_attr_id: 50},
             effects=[autocharge_effect_src1])
         self.mktype(
             src='src2',
             type_id=autocharge_type_id,
-            attrs={src_attr_id: 50},
+            attrs={affector_attr_id: 50},
             effects=[autocharge_effect_src2])
         # Container setup
         # Just create it to 2nd source, we're not going to use it
@@ -175,34 +175,34 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 10})
+            attrs={affectee_attr_id: 10})
         self.mktype(
             src='src2',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 10})
+            attrs={affectee_attr_id: 10})
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
         self.fit.modules.high.append(container)
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 10)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 10)
         # Action
         self.fit.solar_system.source = 'src2'
         # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 15)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)
 
     def test_autocharge_to_autocharge_changed_attrs(self):
         # Attribute setup
-        src_attr_id = self.allocate_attr_id('src1', 'src2')
-        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=src_attr_id)
-        self.mkattr(src='src2', attr_id=src_attr_id)
-        self.mkattr(src='src1', attr_id=tgt_attr_id)
-        self.mkattr(src='src2', attr_id=tgt_attr_id)
+        affector_attr_id = self.allocate_attr_id('src1', 'src2')
+        affectee_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=affector_attr_id)
+        self.mkattr(src='src2', attr_id=affector_attr_id)
+        self.mkattr(src='src1', attr_id=affectee_attr_id)
+        self.mkattr(src='src2', attr_id=affectee_attr_id)
         # Autocharge setup
-        autocharge_modifier = self.mkmod_filter_item(src_attr_id, tgt_attr_id)
+        autocharge_modifier = self.mkmod_filter_item(affector_attr_id, affectee_attr_id)
         autocharge_effect_id = self.allocate_effect_id('src1', 'src2')
         autocharge_effect_src1 = self.mkeffect(
             src='src1',
@@ -218,12 +218,12 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=autocharge_type_id,
-            attrs={src_attr_id: 50},
+            attrs={affector_attr_id: 50},
             effects=[autocharge_effect_src1])
         self.mktype(
             src='src2',
             type_id=autocharge_type_id,
-            attrs={src_attr_id: 5},
+            attrs={affector_attr_id: 5},
             effects=[autocharge_effect_src2])
         # Container setup
         container_effect_src1 = self.mkeffect_container_autocharge('src1')
@@ -245,34 +245,34 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 10})
+            attrs={affectee_attr_id: 10})
         self.mktype(
             src='src2',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 200})
+            attrs={affectee_attr_id: 200})
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
         self.fit.modules.high.append(container)
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 15)
         # Action
         self.fit.solar_system.source = 'src2'
         # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 210)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 210)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)
 
     def test_autocharge_to_autocharge_changed_type(self):
         # Attribute setup
-        src_attr_id = self.allocate_attr_id('src1', 'src2')
-        tgt_attr_id = self.allocate_attr_id('src1', 'src2')
-        self.mkattr(src='src1', attr_id=src_attr_id)
-        self.mkattr(src='src2', attr_id=src_attr_id)
-        self.mkattr(src='src1', attr_id=tgt_attr_id)
-        self.mkattr(src='src2', attr_id=tgt_attr_id)
+        affector_attr_id = self.allocate_attr_id('src1', 'src2')
+        affectee_attr_id = self.allocate_attr_id('src1', 'src2')
+        self.mkattr(src='src1', attr_id=affector_attr_id)
+        self.mkattr(src='src2', attr_id=affector_attr_id)
+        self.mkattr(src='src1', attr_id=affectee_attr_id)
+        self.mkattr(src='src2', attr_id=affectee_attr_id)
         # Autocharge setup
-        autocharge_modifier = self.mkmod_filter_item(src_attr_id, tgt_attr_id)
+        autocharge_modifier = self.mkmod_filter_item(affector_attr_id, affectee_attr_id)
         autocharge_effect_id = self.allocate_effect_id('src1', 'src2')
         autocharge_effect_src1 = self.mkeffect(
             src='src1',
@@ -288,23 +288,23 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=autocharge_type1_id,
-            attrs={src_attr_id: 50},
+            attrs={affector_attr_id: 50},
             effects=[autocharge_effect_src1])
         self.mktype(
             src='src2',
             type_id=autocharge_type1_id,
-            attrs={src_attr_id: 100},
+            attrs={affector_attr_id: 100},
             effects=[autocharge_effect_src2])
         autocharge_type2_id = self.allocate_type_id('src1', 'src2')
         self.mktype(
             src='src1',
             type_id=autocharge_type2_id,
-            attrs={src_attr_id: 50},
+            attrs={affector_attr_id: 50},
             effects=[autocharge_effect_src1])
         self.mktype(
             src='src2',
             type_id=autocharge_type2_id,
-            attrs={src_attr_id: 100},
+            attrs={affector_attr_id: 100},
             effects=[autocharge_effect_src2])
         # Container setup
         container_effect_src1 = self.mkeffect_container_autocharge('src1')
@@ -326,20 +326,20 @@ class TestSourceSwitchAutocharge(SourceSwitchTestCase):
         self.mktype(
             src='src1',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 10})
+            attrs={affectee_attr_id: 10})
         self.mktype(
             src='src2',
             type_id=influence_tgt_type_id,
-            attrs={tgt_attr_id: 10})
+            attrs={affectee_attr_id: 10})
         influence_tgt = Ship(influence_tgt_type_id)
         # Fit setup
         self.fit.ship = influence_tgt
         self.fit.modules.high.append(container)
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 15)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 15)
         # Action
         self.fit.solar_system.source = 'src2'
         # Verification
-        self.assertAlmostEqual(influence_tgt.attrs[tgt_attr_id], 20)
+        self.assertAlmostEqual(influence_tgt.attrs[affectee_attr_id], 20)
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)

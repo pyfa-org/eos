@@ -24,7 +24,7 @@ from eos import ModuleHigh
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.effect_mode.testcase import EffectModeTestCase
 
@@ -45,44 +45,44 @@ class TestModeSetting(EffectModeTestCase):
         src_attr_fullcomp = self.mkattr()
         tgt_attr_fullcomp = self.mkattr()
         modifier_fullcomp = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr_fullcomp.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr_fullcomp.id,
             operator=ModOperator.mod_add,
-            src_attr_id=src_attr_fullcomp.id)
+            affector_attr_id=src_attr_fullcomp.id)
         effect_fullcomp = self.mkeffect(
             category_id=EffectCategoryId.active,
             modifiers=[modifier_fullcomp])
         src_attr_statecomp = self.mkattr()
         tgt_attr_statecomp = self.mkattr()
         modifier_statecomp = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr_statecomp.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr_statecomp.id,
             operator=ModOperator.mod_add,
-            src_attr_id=src_attr_statecomp.id)
+            affector_attr_id=src_attr_statecomp.id)
         effect_statecomp = self.mkeffect(
             category_id=EffectCategoryId.active,
             modifiers=[modifier_statecomp])
         src_attr_forcerun = self.mkattr()
         tgt_attr_forcerun = self.mkattr()
         modifier_forcerun = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr_forcerun.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr_forcerun.id,
             operator=ModOperator.mod_add,
-            src_attr_id=src_attr_forcerun.id)
+            affector_attr_id=src_attr_forcerun.id)
         effect_forcerun = self.mkeffect(
             category_id=EffectCategoryId.overload,
             modifiers=[modifier_forcerun])
         src_attr_forcestop = self.mkattr()
         tgt_attr_forcestop = self.mkattr()
         modifier_forcestop = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr_forcestop.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr_forcestop.id,
             operator=ModOperator.mod_add,
-            src_attr_id=src_attr_forcestop.id)
+            affector_attr_id=src_attr_forcestop.id)
         effect_forcestop = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_forcestop])

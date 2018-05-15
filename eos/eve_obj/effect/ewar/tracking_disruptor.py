@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.const.eve import TypeId
@@ -35,26 +35,26 @@ class ShipModuleTrackingDisruptor(Effect):
     def __init__(self, *args, **kwargs):
         Effect.__init__(self, *args, **kwargs)
         max_range_modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.domain_skillrq,
-            tgt_domain=ModDomain.target,
-            tgt_filter_extra_arg=TypeId.gunnery,
-            tgt_attr_id=AttrId.max_range,
+            affectee_filter=ModAffecteeFilter.domain_skillrq,
+            affectee_domain=ModDomain.target,
+            affectee_filter_extra_arg=TypeId.gunnery,
+            affectee_attr_id=AttrId.max_range,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.max_range_bonus)
+            affector_attr_id=AttrId.max_range_bonus)
         falloff_modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.domain_skillrq,
-            tgt_domain=ModDomain.target,
-            tgt_filter_extra_arg=TypeId.gunnery,
-            tgt_attr_id=AttrId.falloff,
+            affectee_filter=ModAffecteeFilter.domain_skillrq,
+            affectee_domain=ModDomain.target,
+            affectee_filter_extra_arg=TypeId.gunnery,
+            affectee_attr_id=AttrId.falloff,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.falloff_bonus)
+            affector_attr_id=AttrId.falloff_bonus)
         tracking_speed_modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.domain_skillrq,
-            tgt_domain=ModDomain.target,
-            tgt_filter_extra_arg=TypeId.gunnery,
-            tgt_attr_id=AttrId.tracking_speed,
+            affectee_filter=ModAffecteeFilter.domain_skillrq,
+            affectee_domain=ModDomain.target,
+            affectee_filter_extra_arg=TypeId.gunnery,
+            affectee_attr_id=AttrId.tracking_speed,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.tracking_speed_bonus)
+            affector_attr_id=AttrId.tracking_speed_bonus)
         self.modifiers = (
             *self.modifiers, max_range_modifier,
             falloff_modifier, tracking_speed_modifier)

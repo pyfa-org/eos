@@ -83,7 +83,7 @@ class EffectBuildStatus(IntEnum):
 
 
 @unique
-class ModTgtFilter(IntEnum):
+class ModAffecteeFilter(IntEnum):
     """Contains possible modifier target filter types.
 
     Used during attribute calculation.

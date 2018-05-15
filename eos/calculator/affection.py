@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import EosTypeId
 from eos.const.eos import ModDomain
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.item import Character
 from eos.item import Ship
 from eos.util.keyed_storage import KeyedStorage
@@ -109,9 +109,9 @@ class AffectionRegister:
     def get_local_affectee_items(self, affector_spec):
         """Get iterable with items influenced by passed local affector."""
         try:
-            tgt_filter = affector_spec.modifier.tgt_filter
-            if tgt_filter == ModTgtFilter.item:
-                domain = affector_spec.modifier.tgt_domain
+            affectee_filter = affector_spec.modifier.affectee_filter
+            if affectee_filter == ModAffecteeFilter.item:
+                domain = affector_spec.modifier.affectee_domain
                 try:
                     getter = self.__local_affectees_getters_item[domain]
                 except KeyError as e:
@@ -120,9 +120,9 @@ class AffectionRegister:
                     return getter(self, affector_spec)
             else:
                 try:
-                    getter = self.__affectees_getters[tgt_filter]
+                    getter = self.__affectees_getters[affectee_filter]
                 except KeyError as e:
-                    raise UnknownTgtFilterError(tgt_filter) from e
+                    raise UnknownTgtFilterError(affectee_filter) from e
                 domain = self.__contextize_local_affector_domain(affector_spec)
                 affectee_fits = affector_spec.item._fit,
                 return getter(self, affector_spec, domain, affectee_fits)
@@ -132,15 +132,15 @@ class AffectionRegister:
 
     def get_projected_affectees(self, affector, tgt_items):
         """Get iterable with items influenced by passed projected affector."""
-        tgt_filter = affector.modifier.tgt_filter
-        if tgt_filter == ModTgtFilter.item:
+        affectee_filter = affector.modifier.affectee_filter
+        if affectee_filter == ModAffecteeFilter.item:
             affectees = {i for i in tgt_items if i in self.__affectees}
             return affectees
         else:
             try:
-                getter = self.__affectees_getters[tgt_filter]
+                getter = self.__affectees_getters[affectee_filter]
             except KeyError as e:
-                raise UnknownTgtFilterError(tgt_filter) from e
+                raise UnknownTgtFilterError(affectee_filter) from e
             affectee_fits = {i._fit for i in tgt_items if isinstance(i, Ship)}
             affectees = getter(self, affector, ModDomain.ship, affectee_fits)
             return affectees
@@ -293,7 +293,7 @@ class AffectionRegister:
         return affectee_items
 
     def __get_affectees_domain_group(self, affector, domain, fits):
-        group_id = affector.modifier.tgt_filter_extra_arg
+        group_id = affector.modifier.affectee_filter_extra_arg
         affectee_items = set()
         for affectee_fit in fits:
             key = (affectee_fit, domain, group_id)
@@ -301,7 +301,7 @@ class AffectionRegister:
         return affectee_items
 
     def __get_affectees_domain_skillrq(self, affector, domain, fits):
-        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        skill_type_id = affector.modifier.affectee_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
         affectee_items = set()
@@ -311,7 +311,7 @@ class AffectionRegister:
         return affectee_items
 
     def __get_affectees_owner_skillrq(self, affector, _, fits):
-        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        skill_type_id = affector.modifier.affectee_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
         affectee_items = set()
@@ -321,10 +321,10 @@ class AffectionRegister:
         return affectee_items
 
     __affectees_getters = {
-        ModTgtFilter.domain: __get_affectees_domain,
-        ModTgtFilter.domain_group: __get_affectees_domain_group,
-        ModTgtFilter.domain_skillrq: __get_affectees_domain_skillrq,
-        ModTgtFilter.owner_skillrq: __get_affectees_owner_skillrq}
+        ModAffecteeFilter.domain: __get_affectees_domain,
+        ModAffecteeFilter.domain_group: __get_affectees_domain_group,
+        ModAffecteeFilter.domain_skillrq: __get_affectees_domain_skillrq,
+        ModAffecteeFilter.owner_skillrq: __get_affectees_owner_skillrq}
 
     # Helpers for affectee registering/unregistering
     def __get_affectee_storages(self, affectee_fit, affectee_item):
@@ -364,7 +364,7 @@ class AffectionRegister:
         """Activate special affectors which should affect passed item."""
         awaitable_to_activate = set()
         for affector in self.__affectors_item_awaiting.get(affectee_fit, ()):
-            domain = affector.modifier.tgt_domain
+            domain = affector.modifier.affectee_domain
             # Ship
             if domain == ModDomain.ship and isinstance(affectee_item, Ship):
                 awaitable_to_activate.add(affector)
@@ -400,7 +400,7 @@ class AffectionRegister:
             return
         awaitable_to_deactivate = set()
         for affector in self.__affectors_item_active.get(affectee_item, ()):
-            if affector.modifier.tgt_domain in (
+            if affector.modifier.affectee_domain in (
                 ModDomain.ship, ModDomain.character, ModDomain.self
             ):
                 awaitable_to_deactivate.add(affector)
@@ -423,9 +423,9 @@ class AffectionRegister:
             UnknownTgtFilterError: If affector's modifier filter type is not
                 supported.
         """
-        tgt_filter = affector.modifier.tgt_filter
-        if tgt_filter == ModTgtFilter.item:
-            domain = affector.modifier.tgt_domain
+        affectee_filter = affector.modifier.affectee_filter
+        if affectee_filter == ModAffecteeFilter.item:
+            domain = affector.modifier.affectee_domain
             try:
                 getter = self.__local_affector_storages_getters_item[domain]
             except KeyError as e:
@@ -433,16 +433,16 @@ class AffectionRegister:
             return getter(self, affector)
         else:
             try:
-                getter = self.__affector_storages_getters[tgt_filter]
+                getter = self.__affector_storages_getters[affectee_filter]
             except KeyError as e:
-                raise UnknownTgtFilterError(tgt_filter) from e
+                raise UnknownTgtFilterError(affectee_filter) from e
             domain = self.__contextize_local_affector_domain(affector)
             affectee_fits = affector.item._fit,
             return getter(self, affector, domain, affectee_fits)
 
     def __get_projected_affector_storages(self, affector, tgt_items):
-        tgt_filter = affector.modifier.tgt_filter
-        if tgt_filter == ModTgtFilter.item:
+        affectee_filter = affector.modifier.affectee_filter
+        if affectee_filter == ModAffecteeFilter.item:
             storages = []
             for tgt_item in tgt_items:
                 if tgt_item in self.__affectees:
@@ -450,9 +450,9 @@ class AffectionRegister:
             return storages
         else:
             try:
-                getter = self.__affector_storages_getters[tgt_filter]
+                getter = self.__affector_storages_getters[affectee_filter]
             except KeyError as e:
-                raise UnknownTgtFilterError(tgt_filter) from e
+                raise UnknownTgtFilterError(affectee_filter) from e
             affectee_fits = {i._fit for i in tgt_items if isinstance(i, Ship)}
             return getter(self, affector, ModDomain.ship, affectee_fits)
 
@@ -464,7 +464,7 @@ class AffectionRegister:
         return storages
 
     def __get_affector_storages_domain_group(self, affector, domain, fits):
-        group_id = affector.modifier.tgt_filter_extra_arg
+        group_id = affector.modifier.affectee_filter_extra_arg
         storages = []
         for affectee_fit in fits:
             key = (affectee_fit, domain, group_id)
@@ -472,7 +472,7 @@ class AffectionRegister:
         return storages
 
     def __get_affector_storages_domain_skillrq(self, affector, domain, fits):
-        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        skill_type_id = affector.modifier.affectee_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
         storages = []
@@ -482,7 +482,7 @@ class AffectionRegister:
         return storages
 
     def __get_affector_storages_owner_skillrq(self, affector, _, fits):
-        skill_type_id = affector.modifier.tgt_filter_extra_arg
+        skill_type_id = affector.modifier.affectee_filter_extra_arg
         if skill_type_id == EosTypeId.current_self:
             skill_type_id = affector.item._type_id
         storages = []
@@ -492,10 +492,10 @@ class AffectionRegister:
         return storages
 
     __affector_storages_getters = {
-        ModTgtFilter.domain: __get_affector_storages_domain,
-        ModTgtFilter.domain_group: __get_affector_storages_domain_group,
-        ModTgtFilter.domain_skillrq: __get_affector_storages_domain_skillrq,
-        ModTgtFilter.owner_skillrq: __get_affector_storages_owner_skillrq}
+        ModAffecteeFilter.domain: __get_affector_storages_domain,
+        ModAffecteeFilter.domain_group: __get_affector_storages_domain_group,
+        ModAffecteeFilter.domain_skillrq: __get_affector_storages_domain_skillrq,
+        ModAffecteeFilter.owner_skillrq: __get_affector_storages_owner_skillrq}
 
     def __get_local_affector_storages_item_self(self, affector):
         if affector.item in self.__affectees:
@@ -550,7 +550,7 @@ class AffectionRegister:
                 supported.
         """
         item = affector.item
-        domain = affector.modifier.tgt_domain
+        domain = affector.modifier.affectee_domain
         if domain == ModDomain.self:
             if isinstance(item, Ship):
                 return ModDomain.ship

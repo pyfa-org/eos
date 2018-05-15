@@ -29,7 +29,7 @@ from eos import Skill
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.sim.rah.testcase import RahSimTestCase
 
@@ -387,11 +387,11 @@ class TestRahSimResult(RahSimTestCase):
         # Setup
         skill_attr = self.mkattr(high_is_good=False, stackable=False)
         skill_modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=self.armor_em.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=self.armor_em.id,
             operator=ModOperator.post_mul,
-            src_attr_id=skill_attr.id)
+            affector_attr_id=skill_attr.id)
         skill_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[skill_modifier])

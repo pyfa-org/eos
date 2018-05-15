@@ -27,7 +27,7 @@ from eos import Ship
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -257,11 +257,11 @@ class TestPropulsionModules(CustomizationTestCase):
     def test_velocity_modifier_recalc_ship_attr_mass_changed(self):
         massmod_src_attr = self.mkattr()
         massmod_mod = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.mass,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.mass,
             operator=ModOperator.mod_add,
-            src_attr_id=massmod_src_attr.id)
+            affector_attr_id=massmod_src_attr.id)
         massmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[massmod_mod])
@@ -286,11 +286,11 @@ class TestPropulsionModules(CustomizationTestCase):
     def test_velocity_modifier_recalc_propmod_attr_speed_boost_changed(self):
         boostmod_src_attr = self.mkattr()
         boostmod_mod = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.speed_factor,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.speed_factor,
             operator=ModOperator.post_percent,
-            src_attr_id=boostmod_src_attr.id)
+            affector_attr_id=boostmod_src_attr.id)
         boostmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[boostmod_mod])
@@ -316,11 +316,11 @@ class TestPropulsionModules(CustomizationTestCase):
     def test_velocity_modifier_recalc_propmod_attr_thrust_changed(self):
         thrustmod_src_attr = self.mkattr()
         thrustmod_mod = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.speed_boost_factor,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.speed_boost_factor,
             operator=ModOperator.mod_add,
-            src_attr_id=thrustmod_src_attr.id)
+            affector_attr_id=thrustmod_src_attr.id)
         thrustmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[thrustmod_mod])
@@ -351,11 +351,11 @@ class TestPropulsionModules(CustomizationTestCase):
         self.fit.modules.mid.append(mwd)
         sigmod_src_attr = self.mkattr()
         sigmod_mod = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.max_velocity,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.max_velocity,
             operator=ModOperator.post_mul,
-            src_attr_id=sigmod_src_attr.id)
+            affector_attr_id=sigmod_src_attr.id)
         sigmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[sigmod_mod])
@@ -380,11 +380,11 @@ class TestPropulsionModules(CustomizationTestCase):
         self.fit.modules.mid.append(mwd)
         sigmod_src_attr = self.mkattr()
         sigmod_mod = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.signature_radius,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.signature_radius,
             operator=ModOperator.post_percent,
-            src_attr_id=sigmod_src_attr.id)
+            affector_attr_id=sigmod_src_attr.id)
         sigmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[sigmod_mod])

@@ -250,23 +250,23 @@ class JsonCacheHandler(BaseCacheHandler):
     def __modifier_compress(self, modifier):
         """Compress dogma modifier into python primitives."""
         modifier_data = (
-            modifier.tgt_filter,
-            modifier.tgt_domain,
-            modifier.tgt_filter_extra_arg,
-            modifier.tgt_attr_id,
+            modifier.affectee_filter,
+            modifier.affectee_domain,
+            modifier.affectee_filter_extra_arg,
+            modifier.affectee_attr_id,
             modifier.operator,
-            modifier.src_attr_id)
+            modifier.affector_attr_id)
         return modifier_data
 
     def __modifier_decompress(self, modifier_data):
         """Reconstruct dogma modifier from python primitives."""
         modifier = DogmaModifier(
-            tgt_filter=modifier_data[0],
-            tgt_domain=modifier_data[1],
-            tgt_filter_extra_arg=modifier_data[2],
-            tgt_attr_id=modifier_data[3],
+            affectee_filter=modifier_data[0],
+            affectee_domain=modifier_data[1],
+            affectee_filter_extra_arg=modifier_data[2],
+            affectee_attr_id=modifier_data[3],
             operator=modifier_data[4],
-            src_attr_id=modifier_data[5])
+            affector_attr_id=modifier_data[5])
         return modifier
 
     # Auxiliary methods

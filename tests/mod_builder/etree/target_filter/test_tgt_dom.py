@@ -22,7 +22,7 @@
 from eos.const.eos import EffectBuildStatus
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import OperandId
 from tests.mod_builder.testcase import ModBuilderTestCase
 
@@ -60,12 +60,12 @@ class TestBuilderEtreeTgtDom(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain)
-        self.assertEqual(modifier.tgt_domain, ModDomain.self)
-        self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr_id, 1211)
+        self.assertEqual(modifier.affectee_filter, ModAffecteeFilter.domain)
+        self.assertEqual(modifier.affectee_domain, ModDomain.self)
+        self.assertIsNone(modifier.affectee_filter_extra_arg)
+        self.assertEqual(modifier.affectee_attr_id, 1211)
         self.assertEqual(modifier.operator, ModOperator.post_percent)
-        self.assertEqual(modifier.src_attr_id, 1503)
+        self.assertEqual(modifier.affector_attr_id, 1503)
         self.assert_log_entries(0)
 
     def test_domain_char(self):
@@ -74,12 +74,12 @@ class TestBuilderEtreeTgtDom(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain)
-        self.assertEqual(modifier.tgt_domain, ModDomain.character)
-        self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr_id, 1211)
+        self.assertEqual(modifier.affectee_filter, ModAffecteeFilter.domain)
+        self.assertEqual(modifier.affectee_domain, ModDomain.character)
+        self.assertIsNone(modifier.affectee_filter_extra_arg)
+        self.assertEqual(modifier.affectee_attr_id, 1211)
         self.assertEqual(modifier.operator, ModOperator.post_percent)
-        self.assertEqual(modifier.src_attr_id, 1503)
+        self.assertEqual(modifier.affector_attr_id, 1503)
         self.assert_log_entries(0)
 
     def test_domain_ship(self):
@@ -88,12 +88,12 @@ class TestBuilderEtreeTgtDom(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain)
-        self.assertEqual(modifier.tgt_domain, ModDomain.ship)
-        self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr_id, 1211)
+        self.assertEqual(modifier.affectee_filter, ModAffecteeFilter.domain)
+        self.assertEqual(modifier.affectee_domain, ModDomain.ship)
+        self.assertIsNone(modifier.affectee_filter_extra_arg)
+        self.assertEqual(modifier.affectee_attr_id, 1211)
         self.assertEqual(modifier.operator, ModOperator.post_percent)
-        self.assertEqual(modifier.src_attr_id, 1503)
+        self.assertEqual(modifier.affector_attr_id, 1503)
         self.assert_log_entries(0)
 
     def test_domain_tgt(self):
@@ -102,12 +102,12 @@ class TestBuilderEtreeTgtDom(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModTgtFilter.domain)
-        self.assertEqual(modifier.tgt_domain, ModDomain.target)
-        self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr_id, 1211)
+        self.assertEqual(modifier.affectee_filter, ModAffecteeFilter.domain)
+        self.assertEqual(modifier.affectee_domain, ModDomain.target)
+        self.assertIsNone(modifier.affectee_filter_extra_arg)
+        self.assertEqual(modifier.affectee_attr_id, 1211)
         self.assertEqual(modifier.operator, ModOperator.post_percent)
-        self.assertEqual(modifier.src_attr_id, 1503)
+        self.assertEqual(modifier.affector_attr_id, 1503)
         self.assert_log_entries(0)
 
     def test_domain_other(self):

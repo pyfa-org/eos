@@ -25,7 +25,7 @@ from eos import Rig
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
@@ -37,11 +37,11 @@ class TestTgtItemDomainSelf(CalculatorTestCase):
         self.tgt_attr = self.mkattr()
         self.src_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_percent,
-            src_attr_id=self.src_attr.id)
+            affector_attr_id=self.src_attr.id)
         self.effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])

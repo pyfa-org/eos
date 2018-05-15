@@ -21,26 +21,26 @@
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.eve_obj.modifier import DogmaModifier
 
 
 def make_mass_modifier():
     mass_modifier = DogmaModifier(
-        tgt_filter=ModTgtFilter.item,
-        tgt_domain=ModDomain.ship,
-        tgt_attr_id=AttrId.mass,
+        affectee_filter=ModAffecteeFilter.item,
+        affectee_domain=ModDomain.ship,
+        affectee_attr_id=AttrId.mass,
         operator=ModOperator.mod_add,
-        src_attr_id=AttrId.mass_addition)
+        affector_attr_id=AttrId.mass_addition)
     return mass_modifier
 
 
 def make_signature_modifier():
     signature_modifier = DogmaModifier(
-        tgt_filter=ModTgtFilter.item,
-        tgt_domain=ModDomain.ship,
-        tgt_attr_id=AttrId.signature_radius,
+        affectee_filter=ModAffecteeFilter.item,
+        affectee_domain=ModDomain.ship,
+        affectee_attr_id=AttrId.signature_radius,
         operator=ModOperator.post_percent,
-        src_attr_id=AttrId.signature_radius_bonus)
+        affector_attr_id=AttrId.signature_radius_bonus)
     return signature_modifier

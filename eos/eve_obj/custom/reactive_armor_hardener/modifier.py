@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.eve_obj.modifier import DogmaModifier
 
@@ -29,11 +29,11 @@ from eos.eve_obj.modifier import DogmaModifier
 def make_rah_modifiers():
     rah_modifiers = tuple(
         DogmaModifier(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=attr_id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=attr_id,
             operator=ModOperator.pre_mul,
-            src_attr_id=attr_id)
+            affector_attr_id=attr_id)
         for attr_id in (
             AttrId.armor_em_dmg_resonance,
             AttrId.armor_therm_dmg_resonance,

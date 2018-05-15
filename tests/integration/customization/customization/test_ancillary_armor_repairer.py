@@ -24,7 +24,7 @@ from eos import ModuleLow
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -179,11 +179,11 @@ class TestPropulsionModules(CustomizationTestCase):
     def test_rep_amount_recalc_aar_attr_mult_changed(self):
         multmod_src_attr = self.mkattr()
         multmod_mod = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.charged_armor_dmg_mult,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.charged_armor_dmg_mult,
             operator=ModOperator.post_percent,
-            src_attr_id=multmod_src_attr.id)
+            affector_attr_id=multmod_src_attr.id)
         multmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[multmod_mod])
@@ -264,35 +264,35 @@ class TestPropulsionModules(CustomizationTestCase):
         multmod_src_attr_div = self.mkattr()
         multmod_src_attr_perc = self.mkattr()
         multmod_mod_premul = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.armor_dmg_amount,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.armor_dmg_amount,
             operator=ModOperator.pre_mul,
-            src_attr_id=multmod_src_attr_mul.id)
+            affector_attr_id=multmod_src_attr_mul.id)
         multmod_mod_prediv = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.armor_dmg_amount,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.armor_dmg_amount,
             operator=ModOperator.pre_div,
-            src_attr_id=multmod_src_attr_div.id)
+            affector_attr_id=multmod_src_attr_div.id)
         multmod_mod_postmul = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.armor_dmg_amount,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.armor_dmg_amount,
             operator=ModOperator.post_mul,
-            src_attr_id=multmod_src_attr_mul.id)
+            affector_attr_id=multmod_src_attr_mul.id)
         multmod_mod_postdiv = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.armor_dmg_amount,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.armor_dmg_amount,
             operator=ModOperator.post_div,
-            src_attr_id=multmod_src_attr_div.id)
+            affector_attr_id=multmod_src_attr_div.id)
         multmod_mod_postperc = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=AttrId.armor_dmg_amount,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=AttrId.armor_dmg_amount,
             operator=ModOperator.post_percent,
-            src_attr_id=multmod_src_attr_perc.id)
+            affector_attr_id=multmod_src_attr_perc.id)
         multmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[

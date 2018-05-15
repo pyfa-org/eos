@@ -27,7 +27,7 @@ from eos import Rig
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
@@ -49,11 +49,11 @@ class TestMissileDmg(CustomizationTestCase):
         # Create Ballistic Control System item
         bcs_src_attr = self.mkattr()
         bcs_mod = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.character,
-            tgt_attr_id=AttrId.missile_dmg_mult,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.character,
+            affectee_attr_id=AttrId.missile_dmg_mult,
             operator=ModOperator.post_percent,
-            src_attr_id=bcs_src_attr.id)
+            affector_attr_id=bcs_src_attr.id)
         bcs_effect = self.mkeffect(
             category_id=EffectCategoryId.online,
             modifiers=[bcs_mod])
@@ -148,40 +148,40 @@ class TestMissileDmg(CustomizationTestCase):
         dmgmod_src_attr_div = self.mkattr()
         dmgmod_src_attr_perc = self.mkattr()
         dmgmod_mod_premul = self.mkmod(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.em_dmg,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.character,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.em_dmg,
             operator=ModOperator.pre_mul,
-            src_attr_id=dmgmod_src_attr_mul.id)
+            affector_attr_id=dmgmod_src_attr_mul.id)
         dmgmod_mod_prediv = self.mkmod(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.em_dmg,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.character,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.em_dmg,
             operator=ModOperator.pre_div,
-            src_attr_id=dmgmod_src_attr_div.id)
+            affector_attr_id=dmgmod_src_attr_div.id)
         dmgmod_mod_postmul = self.mkmod(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.em_dmg,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.character,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.em_dmg,
             operator=ModOperator.post_mul,
-            src_attr_id=dmgmod_src_attr_mul.id)
+            affector_attr_id=dmgmod_src_attr_mul.id)
         dmgmod_mod_postdiv = self.mkmod(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.em_dmg,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.character,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.em_dmg,
             operator=ModOperator.post_div,
-            src_attr_id=dmgmod_src_attr_div.id)
+            affector_attr_id=dmgmod_src_attr_div.id)
         dmgmod_mod_postperc = self.mkmod(
-            tgt_filter=ModTgtFilter.owner_skillrq,
-            tgt_domain=ModDomain.character,
-            tgt_filter_extra_arg=TypeId.missile_launcher_operation,
-            tgt_attr_id=AttrId.em_dmg,
+            affectee_filter=ModAffecteeFilter.owner_skillrq,
+            affectee_domain=ModDomain.character,
+            affectee_filter_extra_arg=TypeId.missile_launcher_operation,
+            affectee_attr_id=AttrId.em_dmg,
             operator=ModOperator.post_percent,
-            src_attr_id=dmgmod_src_attr_perc.id)
+            affector_attr_id=dmgmod_src_attr_perc.id)
         dmgmod_effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[

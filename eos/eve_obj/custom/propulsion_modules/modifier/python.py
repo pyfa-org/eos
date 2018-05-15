@@ -23,7 +23,7 @@ from logging import getLogger
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import ModificationCalculationError
@@ -37,17 +37,17 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModTgtFilter.item, tgt_domain=ModDomain.ship,
-            tgt_filter_extra_arg=None, tgt_attr_id=AttrId.max_velocity)
+            self, affectee_filter=ModAffecteeFilter.item, affectee_domain=ModDomain.ship,
+            affectee_filter_extra_arg=None, affectee_attr_id=AttrId.max_velocity)
 
-    def get_modification(self, mod_item):
-        ship = mod_item._fit.ship
+    def get_modification(self, affector_item):
+        ship = affector_item._fit.ship
         # If attribute values of any necessary items are not available, do not
         # calculate anything
         try:
             mass = ship.attrs[AttrId.mass]
-            speed_boost = mod_item.attrs[AttrId.speed_factor]
-            thrust = mod_item.attrs[AttrId.speed_boost_factor]
+            speed_boost = affector_item.attrs[AttrId.speed_factor]
+            thrust = affector_item.attrs[AttrId.speed_boost_factor]
         except (AttributeError, KeyError) as e:
             raise ModificationCalculationError from e
         try:
@@ -83,6 +83,6 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
     def revise_msg_types(self):
         return set(self.__revision_map)
 
-    def revise_modification(self, msg, mod_item):
+    def revise_modification(self, msg, affector_item):
         revision_func = self.__revision_map[type(msg)]
-        return revision_func(self, msg, mod_item)
+        return revision_func(self, msg, affector_item)

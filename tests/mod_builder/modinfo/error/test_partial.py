@@ -24,7 +24,7 @@ import logging
 from eos.const.eos import EffectBuildStatus
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from tests.mod_builder.testcase import ModBuilderTestCase
 
 
@@ -158,12 +158,12 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModTgtFilter.item)
-        self.assertEqual(modifier.tgt_domain, ModDomain.character)
-        self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr_id, 33)
+        self.assertEqual(modifier.affectee_filter, ModAffecteeFilter.item)
+        self.assertEqual(modifier.affectee_domain, ModDomain.character)
+        self.assertIsNone(modifier.affectee_filter_extra_arg)
+        self.assertEqual(modifier.affectee_attr_id, 33)
         self.assertEqual(modifier.operator, ModOperator.post_assign)
-        self.assertEqual(modifier.src_attr_id, 44)
+        self.assertEqual(modifier.affector_attr_id, 44)
         # Unknown function error, tested separately
         self.assert_log_entries(1)
 
@@ -181,11 +181,11 @@ class TestBuilderModinfoErrorsPartial(ModBuilderTestCase):
         self.assertEqual(status, EffectBuildStatus.success_partial)
         self.assertEqual(len(modifiers), 1)
         modifier = modifiers[0]
-        self.assertEqual(modifier.tgt_filter, ModTgtFilter.item)
-        self.assertEqual(modifier.tgt_domain, ModDomain.ship)
-        self.assertIsNone(modifier.tgt_filter_extra_arg)
-        self.assertEqual(modifier.tgt_attr_id, 22)
+        self.assertEqual(modifier.affectee_filter, ModAffecteeFilter.item)
+        self.assertEqual(modifier.affectee_domain, ModDomain.ship)
+        self.assertIsNone(modifier.affectee_filter_extra_arg)
+        self.assertEqual(modifier.affectee_attr_id, 22)
         self.assertEqual(modifier.operator, ModOperator.post_percent)
-        self.assertEqual(modifier.src_attr_id, 11)
+        self.assertEqual(modifier.affector_attr_id, 11)
         # Unknown function error, tested separately
         self.assert_log_entries(1)

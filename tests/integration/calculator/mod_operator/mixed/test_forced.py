@@ -23,7 +23,7 @@ from eos import Implant
 from eos import Rig
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
@@ -35,11 +35,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
         tgt_attr = self.mkattr()
         src_attr = self.mkattr()
         modifier_pre_ass = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.pre_assign,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_pre_ass = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_pre_ass])
@@ -48,11 +48,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_pre_ass]).id)
         self.fit.implants.add(influence_src_pre_ass)
         modifier_pre_mul = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.pre_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_pre_mul = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_pre_mul])
@@ -61,11 +61,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_pre_mul]).id)
         self.fit.implants.add(influence_src_pre_mul)
         modifier_pre_div = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.pre_div,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_pre_div = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_pre_div])
@@ -74,11 +74,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_pre_div]).id)
         self.fit.implants.add(influence_src_pre_div)
         modifier_mod_add = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.mod_add,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_mod_add = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_mod_add])
@@ -87,11 +87,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_mod_add]).id)
         self.fit.implants.add(influence_src_mod_add)
         modifier_mod_sub = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.mod_sub,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_mod_sub = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_mod_sub])
@@ -100,11 +100,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_mod_sub]).id)
         self.fit.implants.add(influence_src_mod_sub)
         modifier_post_mul = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_post_mul = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_post_mul])
@@ -113,11 +113,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_post_mul]).id)
         self.fit.implants.add(influence_src_post_mul)
         modifier_post_div = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_div,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_post_div = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_post_div])
@@ -126,11 +126,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_post_div]).id)
         self.fit.implants.add(influence_src_post_div)
         modifier_post_perc = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_post_perc = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_post_perc])
@@ -139,11 +139,11 @@ class TestOperatorForcedValue(CalculatorTestCase):
             effects=[effect_post_perc]).id)
         self.fit.implants.add(influence_src_post_perc)
         modifier_post_ass = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_assign,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect_post_ass = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier_post_ass])

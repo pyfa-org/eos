@@ -22,7 +22,7 @@
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
@@ -31,11 +31,11 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
 
     def make_modifier(self, src_attr, tgt_attr):
         return self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
 
     def test_same_item(self):
         # Real scenario - capital ships boost their agility via proxy attrs

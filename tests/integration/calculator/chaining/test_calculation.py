@@ -24,7 +24,7 @@ from eos import Rig
 from eos import Ship
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
@@ -38,27 +38,27 @@ class TestCalculationChain(CalculatorTestCase):
         attr3 = self.mkattr()
         attr4 = self.mkattr()
         modifier1 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=attr2.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=attr2.id,
             operator=ModOperator.post_mul,
-            src_attr_id=attr1.id)
+            affector_attr_id=attr1.id)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier1])
         modifier2 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=attr3.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=attr3.id,
             operator=ModOperator.post_percent,
-            src_attr_id=attr2.id)
+            affector_attr_id=attr2.id)
         effect2 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier2])
         modifier3 = self.mkmod(
-            tgt_filter=ModTgtFilter.domain,
-            tgt_domain=ModDomain.ship,
-            tgt_attr_id=attr4.id,
+            affectee_filter=ModAffecteeFilter.domain,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=attr4.id,
             operator=ModOperator.post_percent,
-            src_attr_id=attr3.id)
+            affector_attr_id=attr3.id)
         effect3 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier3])
         implant = Implant(self.mktype(

@@ -72,7 +72,7 @@ class CalculationService(BaseSubscriber):
         for affector_spec in self.__affections.get_affectors(affectee_item):
             affector_modifier = affector_spec.modifier
             affector_item = affector_spec.item
-            if affector_modifier.tgt_attr_id != attr_id:
+            if affector_modifier.affectee_attr_id != attr_id:
                 continue
             try:
                 mod_op, mod_value = affector_modifier.get_modification(
@@ -121,7 +121,7 @@ class CalculationService(BaseSubscriber):
             for tgt_item in self.__affections.get_local_affectee_items(
                 affector
             ):
-                del tgt_item.attrs[affector.modifier.tgt_attr_id]
+                del tgt_item.attrs[affector.modifier.affectee_attr_id]
         projectors = self.__generate_projectors(msg.item, msg.effect_ids)
         for projector in projectors:
             self.__projections.register_projector(projector)
@@ -133,7 +133,7 @@ class CalculationService(BaseSubscriber):
             for tgt_item in self.__affections.get_local_affectee_items(
                 affector
             ):
-                del tgt_item.attrs[affector.modifier.tgt_attr_id]
+                del tgt_item.attrs[affector.modifier.affectee_attr_id]
             self.__affections.unregister_local_affector(affector)
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__unsubscribe_python_affector(fit, affector)
@@ -152,7 +152,7 @@ class CalculationService(BaseSubscriber):
             for affectee_item in self.__affections.get_projected_affectees(
                 projected_affector, msg.tgt_items
             ):
-                del affectee_item.attrs[projected_affector.modifier.tgt_attr_id]
+                del affectee_item.attrs[projected_affector.modifier.affectee_attr_id]
 
     def _handle_effect_unapplied(self, msg):
         for projector in self.__generate_projectors(msg.item, (msg.effect_id,)):
@@ -163,7 +163,7 @@ class CalculationService(BaseSubscriber):
             for affectee_item in self.__affections.get_projected_affectees(
                 projected_affector, msg.tgt_items
             ):
-                del affectee_item.attrs[projected_affector.modifier.tgt_attr_id]
+                del affectee_item.attrs[projected_affector.modifier.affectee_attr_id]
             self.__affections.unregister_projected_affector(
                 projected_affector, msg.tgt_items)
 
@@ -191,13 +191,13 @@ class CalculationService(BaseSubscriber):
             # modifiers are processed separately
             if (
                 not isinstance(modifier, DogmaModifier) or
-                modifier.src_attr_id != attr_id
+                modifier.affector_attr_id != attr_id
             ):
                 continue
             for tgt_item in self.__affections.get_local_affectee_items(
                 affector
             ):
-                del tgt_item.attrs[modifier.tgt_attr_id]
+                del tgt_item.attrs[modifier.affectee_attr_id]
         for projector in self.__generate_projectors(
             item, item._running_effect_ids
         ):
@@ -214,13 +214,13 @@ class CalculationService(BaseSubscriber):
                 # modifiers are processed separately
                 if (
                     not isinstance(modifier, DogmaModifier) or
-                    modifier.src_attr_id != attr_id
+                    modifier.affector_attr_id != attr_id
                 ):
                     continue
                 for tgt_item in self.__affections.get_projected_affectees(
                     affector, tgt_items
                 ):
-                    del tgt_item.attrs[modifier.tgt_attr_id]
+                    del tgt_item.attrs[modifier.affectee_attr_id]
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.
@@ -242,7 +242,7 @@ class CalculationService(BaseSubscriber):
             for tgt_item in self.__affections.get_local_affectee_items(
                 affector
             ):
-                del tgt_item.attrs[affector.modifier.tgt_attr_id]
+                del tgt_item.attrs[affector.modifier.affectee_attr_id]
 
     # Message routing
     _handler_map = {

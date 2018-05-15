@@ -24,7 +24,7 @@ from eos import Ship
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
 from eos.eve_obj.modifier import BasePythonModifier
@@ -46,15 +46,15 @@ class TestModifierPython(CalculatorTestCase):
             def __init__(self):
                 BasePythonModifier.__init__(
                     self,
-                    tgt_filter=ModTgtFilter.item,
-                    tgt_domain=ModDomain.self,
-                    tgt_filter_extra_arg=None,
-                    tgt_attr_id=attr1.id)
+                    affectee_filter=ModAffecteeFilter.item,
+                    affectee_domain=ModDomain.self,
+                    affectee_filter_extra_arg=None,
+                    affectee_attr_id=attr1.id)
 
-            def get_modification(self, mod_item):
-                ship = mod_item._fit.ship
+            def get_modification(self, affector_item):
+                ship = affector_item._fit.ship
                 try:
-                    mult1 = mod_item.attrs[attr2.id]
+                    mult1 = affector_item.attrs[attr2.id]
                     mult2 = ship.attrs[attr3.id]
                 except (AttributeError, KeyError) as e:
                     raise ModificationCalculationError from e
@@ -64,9 +64,9 @@ class TestModifierPython(CalculatorTestCase):
             def revise_msg_types(self):
                 return {AttrValueChanged}
 
-            def revise_modification(self, msg, mod_item):
-                ship = mod_item._fit.ship
-                if msg.item is mod_item and msg.attr_id == attr2.id:
+            def revise_modification(self, msg, affector_item):
+                ship = affector_item._fit.ship
+                if msg.item is affector_item and msg.attr_id == attr2.id:
                     return True
                 if msg.item is ship and msg.attr_id == attr3.id:
                     return True
@@ -117,11 +117,11 @@ class TestModifierPython(CalculatorTestCase):
         # is updated
         attr4 = self.mkattr()
         dogma_modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.attr2.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.attr2.id,
             operator=ModOperator.post_mul,
-            src_attr_id=attr4.id)
+            affector_attr_id=attr4.id)
         dogma_effect = self.mkeffect(
             category_id=EffectCategoryId.active, modifiers=[dogma_modifier])
         item = ModuleHigh(self.mktype(
@@ -144,19 +144,19 @@ class TestModifierPython(CalculatorTestCase):
         # Make sure that when python modifier unsubscribes from message type
         # needed by calculator, calculator still receives that message type
         dogma_modifier1 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.attr1.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.attr1.id,
             operator=ModOperator.post_mul,
-            src_attr_id=self.attr2.id)
+            affector_attr_id=self.attr2.id)
         dogma_effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[dogma_modifier1])
         dogma_modifier2 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.attr2.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.attr2.id,
             operator=ModOperator.post_mul,
-            src_attr_id=self.attr3.id)
+            affector_attr_id=self.attr3.id)
         dogma_effect2 = self.mkeffect(
             category_id=EffectCategoryId.online, modifiers=[dogma_modifier2])
         python_item = ModuleHigh(self.mktype(

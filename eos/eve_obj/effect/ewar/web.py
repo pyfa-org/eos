@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.eve_obj.effect import Effect
@@ -36,11 +36,11 @@ class RemoteWebifierFalloff(Effect):
             self, *args, resist_attr_id=AttrId.stasis_webifier_resistance,
             **kwargs)
         modifier = DogmaModifier(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.target,
-            tgt_attr_id=AttrId.max_velocity,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.target,
+            affectee_attr_id=AttrId.max_velocity,
             operator=ModOperator.post_percent,
-            src_attr_id=AttrId.speed_factor)
+            affector_attr_id=AttrId.speed_factor)
         self.modifiers = (*self.modifiers, modifier)
 
 

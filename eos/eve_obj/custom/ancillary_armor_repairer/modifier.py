@@ -21,7 +21,7 @@
 
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import TypeId
 from eos.eve_obj.modifier import BasePythonModifier
@@ -35,16 +35,16 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, tgt_filter=ModTgtFilter.item, tgt_domain=ModDomain.self,
-            tgt_filter_extra_arg=None, tgt_attr_id=AttrId.armor_dmg_amount)
+            self, affectee_filter=ModAffecteeFilter.item, affectee_domain=ModDomain.self,
+            affectee_filter_extra_arg=None, affectee_attr_id=AttrId.armor_dmg_amount)
 
-    def get_modification(self, mod_item):
+    def get_modification(self, affector_item):
         # If modifier item has charge and it's paste, use on-item rep amount
         # multiplier, otherwise do nothing (multiply by 1).
-        charge = getattr(mod_item, 'charge', None)
+        charge = getattr(affector_item, 'charge', None)
         if charge is not None and charge._type_id == TypeId.nanite_repair_paste:
             try:
-                value = mod_item.attrs[AttrId.charged_armor_dmg_mult]
+                value = affector_item.attrs[AttrId.charged_armor_dmg_mult]
             except (AttributeError, KeyError) as e:
                 raise ModificationCalculationError from e
         else:
@@ -80,6 +80,6 @@ class AncillaryRepAmountModifier(BasePythonModifier):
     def revise_msg_types(self):
         return set(self.__revision_map.keys())
 
-    def revise_modification(self, msg, mod_item):
+    def revise_modification(self, msg, affector_item):
         revision_func = self.__revision_map[type(msg)]
-        return revision_func(self, msg, mod_item)
+        return revision_func(self, msg, affector_item)

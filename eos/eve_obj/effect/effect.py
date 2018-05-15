@@ -95,7 +95,7 @@ class Effect:
     def local_modifiers(self):
         modifiers = []
         for modifier in self.modifiers:
-            if modifier.tgt_domain != ModDomain.target:
+            if modifier.affectee_domain != ModDomain.target:
                 modifiers.append(modifier)
         return tuple(modifiers)
 
@@ -103,7 +103,7 @@ class Effect:
     def projected_modifiers(self):
         modifiers = []
         for modifier in self.modifiers:
-            if modifier.tgt_domain == ModDomain.target:
+            if modifier.affectee_domain == ModDomain.target:
                 modifiers.append(modifier)
         return tuple(modifiers)
 

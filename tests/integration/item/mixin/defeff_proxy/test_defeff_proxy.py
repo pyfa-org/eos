@@ -23,7 +23,7 @@ from eos import Fit
 from eos import ModuleHigh
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.item.testcase import ItemMixinTestCase
 
@@ -34,11 +34,11 @@ class TestItemMixinDefEffProxy(ItemMixinTestCase):
         attr = self.mkattr()
         src_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         mod_effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])

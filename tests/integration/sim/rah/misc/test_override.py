@@ -25,7 +25,7 @@ from eos import Skill
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.sim.rah.testcase import RahSimTestCase
 
@@ -37,11 +37,11 @@ class TestRahSimAttrOverride(RahSimTestCase):
         skill_attr = self.mkattr(high_is_good=False, stackable=False)
         skill_modifiers = tuple(
             self.mkmod(
-                tgt_filter=ModTgtFilter.domain,
-                tgt_domain=ModDomain.ship,
-                tgt_attr_id=attr,
+                affectee_filter=ModAffecteeFilter.domain,
+                affectee_domain=ModDomain.ship,
+                affectee_attr_id=attr,
                 operator=ModOperator.post_mul,
-                src_attr_id=skill_attr.id)
+                affector_attr_id=skill_attr.id)
             for attr in (
                 self.armor_em.id, self.armor_therm.id,
                 self.armor_kin.id, self.armor_expl.id))

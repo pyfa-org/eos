@@ -24,7 +24,7 @@ from eos import Fit
 from eos import NoSuchSideEffectError
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.item.testcase import ItemMixinTestCase
 
@@ -37,11 +37,11 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         chance_attr2 = self.mkattr()
         src_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=chance_attr2.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=chance_attr2.id,
             operator=ModOperator.post_percent,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr1.id)
@@ -92,11 +92,11 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         src_attr = self.mkattr()
         tgt_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr.id,
@@ -124,11 +124,11 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         src_attr = self.mkattr()
         tgt_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])
@@ -166,11 +166,11 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         src_attr = self.mkattr()
         tgt_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             fitting_usage_chance_attr_id=chance_attr.id,
@@ -199,11 +199,11 @@ class TestItemBoosterSideEffect(ItemMixinTestCase):
         src_attr = self.mkattr()
         tgt_attr = self.mkattr()
         modifier = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr.id)
+            affector_attr_id=src_attr.id)
         effect = self.mkeffect(
             category_id=EffectCategoryId.passive,
             modifiers=[modifier])

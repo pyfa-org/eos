@@ -24,7 +24,7 @@ from abc import abstractmethod
 from numbers import Integral
 
 from eos.const.eos import ModDomain
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 
 
 class BaseModifier(metaclass=ABCMeta):
@@ -35,18 +35,19 @@ class BaseModifier(metaclass=ABCMeta):
     """
 
     def __init__(
-            self, tgt_filter, tgt_domain, tgt_filter_extra_arg, tgt_attr_id):
-        self.tgt_filter = tgt_filter
-        self.tgt_domain = tgt_domain
-        self.tgt_filter_extra_arg = tgt_filter_extra_arg
-        self.tgt_attr_id = tgt_attr_id
+            self, affectee_filter, affectee_domain,
+            affectee_filter_extra_arg, affectee_attr_id):
+        self.affectee_filter = affectee_filter
+        self.affectee_domain = affectee_domain
+        self.affectee_filter_extra_arg = affectee_filter_extra_arg
+        self.affectee_attr_id = affectee_attr_id
 
     @abstractmethod
-    def get_modification(self, mod_item):
+    def get_modification(self, affector_item):
         """Get modification parameters.
 
         Args:
-            mod_item: Item which carries the modifier.
+            affector_item: Item which carries the modifier.
 
         Returns:
             Tuple (operator, modification value) which is intermediate result of
@@ -58,64 +59,62 @@ class BaseModifier(metaclass=ABCMeta):
 
     # Validation-related methods
     def _validate_base(self):
-        tgt_validators = {
-            ModTgtFilter.item:
-                self.__validate_tgt_filter_item,
-            ModTgtFilter.domain:
-                self.__validate_tgt_filter_domain,
-            ModTgtFilter.domain_group:
-                self.__validate_tgt_filter_domain_group,
-            ModTgtFilter.domain_skillrq:
-                self.__validate_tgt_filter_domain_skillrq,
-            ModTgtFilter.owner_skillrq:
-                self.__validate_tgt_filter_owner_skillrq}
+        validators = {
+            ModAffecteeFilter.item:
+                self.__validate_affectee_filter_item,
+            ModAffecteeFilter.domain:
+                self.__validate_affectee_filter_domain,
+            ModAffecteeFilter.domain_group:
+                self.__validate_affectee_filter_domain_group,
+            ModAffecteeFilter.domain_skillrq:
+                self.__validate_affectee_filter_domain_skillrq,
+            ModAffecteeFilter.owner_skillrq:
+                self.__validate_affectee_filter_owner_skillrq}
         try:
-            tgt_validator = tgt_validators[self.tgt_filter]
+            validator = validators[self.affectee_filter]
         except KeyError:
             return False
         else:
-            return all((
-                self.__validate_tgt_common(),
-                tgt_validator()))
+            return all((self.__validate_common(), validator()))
 
-    def __validate_tgt_common(self):
+    def __validate_common(self):
         return all((
-            self.tgt_filter in ModTgtFilter.__members__.values(),
-            self.tgt_domain in ModDomain.__members__.values(),
-            isinstance(self.tgt_attr_id, Integral)))
+            self.affectee_filter in ModAffecteeFilter.__members__.values(),
+            self.affectee_domain in ModDomain.__members__.values(),
+            isinstance(self.affectee_attr_id, Integral)))
 
-    def __validate_tgt_filter_item(self):
+    def __validate_affectee_filter_item(self):
         return all((
-            self.tgt_domain in (
+            self.affectee_domain in (
                 ModDomain.self, ModDomain.character, ModDomain.ship,
                 ModDomain.target, ModDomain.other),
-            self.tgt_filter_extra_arg is None))
+            self.affectee_filter_extra_arg is None))
 
-    def __validate_tgt_filter_domain(self):
+    def __validate_affectee_filter_domain(self):
         return all((
-            self.tgt_domain in (
+            self.affectee_domain in (
                 ModDomain.self, ModDomain.character,
                 ModDomain.ship, ModDomain.target),
-            self.tgt_filter_extra_arg is None))
+            self.affectee_filter_extra_arg is None))
 
-    def __validate_tgt_filter_domain_group(self):
+    def __validate_affectee_filter_domain_group(self):
         return all((
-            self.tgt_domain in (
+            self.affectee_domain in (
                 ModDomain.self, ModDomain.character,
                 ModDomain.ship, ModDomain.target),
             # References group via ID
-            isinstance(self.tgt_filter_extra_arg, Integral)))
+            isinstance(self.affectee_filter_extra_arg, Integral)))
 
-    def __validate_tgt_filter_domain_skillrq(self):
+    def __validate_affectee_filter_domain_skillrq(self):
         return all((
-            self.tgt_domain in (
+            self.affectee_domain in (
                 ModDomain.self, ModDomain.character,
                 ModDomain.ship, ModDomain.target),
             # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, Integral)))
+            isinstance(self.affectee_filter_extra_arg, Integral)))
 
-    def __validate_tgt_filter_owner_skillrq(self):
+    def __validate_affectee_filter_owner_skillrq(self):
         return all((
-            self.tgt_domain == ModDomain.character,
+            self.affectee_domain == ModDomain.character,
             # References skill via ID
-            isinstance(self.tgt_filter_extra_arg, Integral)))
+            isinstance(self.affectee_filter_extra_arg, Integral)))

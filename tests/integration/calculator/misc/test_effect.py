@@ -24,7 +24,7 @@ from eos import ModuleHigh
 from eos import State
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModTgtFilter
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 
@@ -39,23 +39,23 @@ class TestEffectToggling(CalculatorTestCase):
         src_attr2 = self.mkattr()
         src_attr3 = self.mkattr()
         modifier1 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr1.id)
+            affector_attr_id=src_attr1.id)
         modifier2 = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr2.id)
+            affector_attr_id=src_attr2.id)
         modifier_active = self.mkmod(
-            tgt_filter=ModTgtFilter.item,
-            tgt_domain=ModDomain.self,
-            tgt_attr_id=self.tgt_attr.id,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_attr_id=self.tgt_attr.id,
             operator=ModOperator.post_mul,
-            src_attr_id=src_attr3.id)
+            affector_attr_id=src_attr3.id)
         self.effect1 = self.mkeffect(
             category_id=EffectCategoryId.passive, modifiers=[modifier1])
         self.effect2 = self.mkeffect(
