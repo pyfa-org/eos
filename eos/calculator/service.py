@@ -85,9 +85,10 @@ class CalculationService(BaseSubscriber):
                 continue
             # Get resistance value
             resist_attr_id = affector_spec.effect.resist_attr_id
-            if resist_attr_id:
+            carrier_item = affectee_item._solsys_carrier
+            if resist_attr_id and carrier_item is not None:
                 try:
-                    resist_value = affectee_item.attrs[resist_attr_id]
+                    resist_value = carrier_item.attrs[resist_attr_id]
                 except KeyError:
                     resist_value = 1
             else:

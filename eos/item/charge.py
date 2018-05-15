@@ -20,6 +20,7 @@
 
 
 from eos.util.repr import make_repr_str
+from .mixin.base import BaseItemMixin
 from .mixin.state import ContainerStateMixin
 
 
@@ -31,7 +32,14 @@ class BaseCharge(ContainerStateMixin):
     # Attribute calculation-related properties
     _modifier_domain = None
     _owner_modifiable = True
-    _solsys_carrier = None
+
+    @property
+    def _solsys_carrier(self):
+        container = self._container
+        if isinstance(container, BaseItemMixin):
+            return container._solsys_carrier
+        else:
+            return None
 
     # Auxiliary methods
     def __repr__(self):
