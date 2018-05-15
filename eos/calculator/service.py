@@ -85,7 +85,7 @@ class CalculationService(BaseSubscriber):
                 continue
             # Get resistance value
             resist_attr_id = affector_spec.effect.resist_attr_id
-            if resist_attr_id is not None:
+            if resist_attr_id:
                 try:
                     resist_value = affectee_item.attrs[resist_attr_id]
                 except KeyError:
@@ -192,12 +192,12 @@ class CalculationService(BaseSubscriber):
         """
         item = msg.item
         attr_id = msg.attr_id
-        affections = self.__affections
         # Remove values of affectee attributes capped by the changing attribute
         for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
             del item.attrs[capped_attr_id]
         # Force attribute recalculation when local affector spec modification
         # changes
+        affections = self.__affections
         for affector_spec in self.__generate_local_affector_specs(
             item, item._running_effect_ids
         ):
@@ -216,10 +216,11 @@ class CalculationService(BaseSubscriber):
                 del affectee_item.attrs[affector_modifier.affectee_attr_id]
         # Force attribute recalculation when projected affector spec
         # modification changes
+        projections = self.__projections
         for projector in self.__generate_projectors(
             item, item._running_effect_ids
         ):
-            tgt_items = self.__projections.get_projector_tgts(projector)
+            tgt_items = projections.get_projector_tgts(projector)
             # When projector doesn't target any items, then we do not need to
             # clean anything
             if not tgt_items:
@@ -239,6 +240,21 @@ class CalculationService(BaseSubscriber):
                     affector_spec, tgt_items
                 ):
                     del affectee_item.attrs[affector_modifier.affectee_attr_id]
+        # Force attribute recalculation if changed attribute defines resistance
+        # to some effect
+        for projector in projections.get_tgt_projectors(item):
+            effect = projector.effect
+            if attr_id != effect.resist_attr_id:
+                continue
+            tgt_items = projections.get_projector_tgts(projector)
+            for affector_spec in self.__generate_projected_affectors(
+                projector.item, (effect.id,)
+            ):
+                for affectee_item in affections.get_projected_affectee_items(
+                    affector_spec, tgt_items
+                ):
+                    del affectee_item.attrs[
+                        affector_spec.modifier.affectee_attr_id]
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.
