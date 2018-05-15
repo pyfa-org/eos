@@ -57,11 +57,14 @@ class TestEffectToggling(CalculatorTestCase):
             operator=ModOperator.post_mul,
             affector_attr_id=src_attr3.id)
         self.effect1 = self.mkeffect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier1])
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier1])
         self.effect2 = self.mkeffect(
-            category_id=EffectCategoryId.passive, modifiers=[modifier2])
+            category_id=EffectCategoryId.passive,
+            modifiers=[modifier2])
         self.effect_active = self.mkeffect(
-            category_id=EffectCategoryId.active, modifiers=[modifier_active])
+            category_id=EffectCategoryId.active,
+            modifiers=[modifier_active])
         self.item = ModuleHigh(self.mktype(
             attrs={
                 self.tgt_attr.id: 100, src_attr1.id: 1.1,

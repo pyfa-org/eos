@@ -31,7 +31,7 @@ from tests.integration.calculator.testcase import CalculatorTestCase
 
 class TestSimilarModifiersDogma(CalculatorTestCase):
 
-    def make_modifier(self, affector_attr_id, affectee_attr_id):
+    def make_modifier(self, src_attr_id, tgt_attr_id):
 
         class TestPythonModifier(BasePythonModifier):
 
@@ -41,10 +41,10 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
                     affectee_filter=ModAffecteeFilter.item,
                     affectee_domain=ModDomain.self,
                     affectee_filter_extra_arg=None,
-                    affectee_attr_id=affectee_attr_id)
+                    affectee_attr_id=tgt_attr_id)
 
             def get_modification(self, affector_item):
-                value = affector_item.attrs[affector_attr_id]
+                value = affector_item.attrs[src_attr_id]
                 return ModOperator.post_percent, value
 
             @property
@@ -52,7 +52,7 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
                 return {AttrValueChanged}
 
             def revise_modification(self, msg, affector_item):
-                if msg.item is affector_item and msg.attr_id == affector_attr_id:
+                if msg.item is affector_item and msg.attr_id == src_attr_id:
                     return True
                 return False
 

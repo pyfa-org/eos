@@ -30,13 +30,13 @@ from tests.integration.calculator.testcase import CalculatorTestCase
 
 class TestTgtItemSpecialOther(CalculatorTestCase):
 
-    def make_modifier(self, affector_attr_id, affectee_attr_id):
+    def make_modifier(self, src_attr_id, tgt_attr_id):
         return self.mkmod(
             affectee_filter=ModAffecteeFilter.item,
             affectee_domain=ModDomain.other,
-            affectee_attr_id=affectee_attr_id,
+            affectee_attr_id=tgt_attr_id,
             operator=ModOperator.post_percent,
-            affector_attr_id=affector_attr_id)
+            affector_attr_id=src_attr_id)
 
     def test_other_container(self):
         tgt_attr = self.mkattr()
