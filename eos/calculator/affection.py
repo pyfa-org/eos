@@ -28,7 +28,7 @@ from eos.item import Character
 from eos.item import Ship
 from eos.util.keyed_storage import KeyedStorage
 from .exception import UnexpectedDomainError
-from .exception import UnknownTgtFilterError
+from .exception import UnknownAffecteeFilterError
 
 
 logger = getLogger(__name__)
@@ -67,7 +67,7 @@ class AffectionRegister:
         # items}}
         self.__affectees_owner_skillrq = KeyedStorage()
 
-        # Affector specs with modifiers which target 'other' location are always
+        # Affector specs with modifiers which affect 'other' location are always
         # stored here, regardless if they actually affect something or not
         # Format: {affector item: {affector specs}}
         self.__affectors_item_other = KeyedStorage()
@@ -77,7 +77,7 @@ class AffectionRegister:
         # Format: {affectee fit: {affector specs}}
         self.__affectors_item_awaiting = KeyedStorage()
 
-        # All active affector specs which target one specific item (via ship,
+        # All active affector specs which affect one specific item (via ship,
         # character, other reference or self) are kept here
         # Format: {affectee item: {affector specs}}
         self.__affectors_item_active = KeyedStorage()
@@ -107,217 +107,235 @@ class AffectionRegister:
 
     # Query methods
     def get_local_affectee_items(self, affector_spec):
-        """Get iterable with items influenced by passed local affector."""
+        """Get iterable with items influenced by passed local affector spec."""
         try:
             affectee_filter = affector_spec.modifier.affectee_filter
+            # Direct item modification needs to use local-specific getters
             if affectee_filter == ModAffecteeFilter.item:
-                domain = affector_spec.modifier.affectee_domain
+                affectee_domain = affector_spec.modifier.affectee_domain
                 try:
-                    getter = self.__local_affectees_getters_item[domain]
+                    getter = self.__local_affectees_getters[affectee_domain]
                 except KeyError as e:
-                    raise UnexpectedDomainError(domain) from e
-                else:
-                    return getter(self, affector_spec)
+                    raise UnexpectedDomainError(affectee_domain) from e
+                return getter(self, affector_spec)
+            # En-masse filtered modification can use shared affectee item
+            # getters
             else:
                 try:
                     getter = self.__affectees_getters[affectee_filter]
                 except KeyError as e:
-                    raise UnknownTgtFilterError(affectee_filter) from e
-                domain = self.__contextize_local_affector_domain(affector_spec)
+                    raise UnknownAffecteeFilterError(affectee_filter) from e
+                affectee_domain = self.__resolve_local_domain(affector_spec)
                 affectee_fits = affector_spec.item._fit,
-                return getter(self, affector_spec, domain, affectee_fits)
+                return getter(
+                    self, affector_spec, affectee_domain, affectee_fits)
         except Exception as e:
-            self.__handle_affector_errors(e, affector_spec)
+            self.__handle_affector_spec_errors(e, affector_spec)
             return ()
 
-    def get_projected_affectees(self, affector, tgt_items):
-        """Get iterable with items influenced by passed projected affector."""
-        affectee_filter = affector.modifier.affectee_filter
+    def get_projected_affectee_items(self, affector_spec, tgt_items):
+        """Get iterable with items influenced by projected affector spec."""
+        affectee_filter = affector_spec.modifier.affectee_filter
+        # Return targeted items when modification affects just them directly
         if affectee_filter == ModAffecteeFilter.item:
-            affectees = {i for i in tgt_items if i in self.__affectees}
-            return affectees
+            return {i for i in tgt_items if i in self.__affectees}
+        # En-masse modifications of items located on targeted items use shared
+        # affectee item getters
         else:
             try:
                 getter = self.__affectees_getters[affectee_filter]
             except KeyError as e:
-                raise UnknownTgtFilterError(affectee_filter) from e
+                raise UnknownAffecteeFilterError(affectee_filter) from e
             affectee_fits = {i._fit for i in tgt_items if isinstance(i, Ship)}
-            affectees = getter(self, affector, ModDomain.ship, affectee_fits)
-            return affectees
+            return getter(self, affector_spec, ModDomain.ship, affectee_fits)
 
-    def get_affectors(self, affectee_item):
-        """Get all affectors, which influence passed item."""
+    def get_affector_specs(self, affectee_item):
+        """Get all affector specs, which influence passed item."""
         affectee_fit = affectee_item._fit
-        affectors = set()
+        affector_specs = set()
         # Item
-        affectors.update(self.__affectors_item_active.get(
-            affectee_item, ()))
-        domain = affectee_item._modifier_domain
-        if domain is not None:
+        affector_storage = self.__affectors_item_active
+        key = affectee_item
+        affector_specs.update(affector_storage.get(key, ()))
+        affectee_domain = affectee_item._modifier_domain
+        if affectee_domain is not None:
             # Domain
-            affectors.update(self.__affectors_domain.get(
-                (affectee_fit, domain), ()))
+            affector_storage = self.__affectors_domain
+            key = (affectee_fit, affectee_domain)
+            affector_specs.update(affector_storage.get(key, ()))
             # Domain and group
-            group_id = affectee_item._type.group_id
-            affectors.update(self.__affectors_domain_group.get(
-                (affectee_fit, domain, group_id), ()))
-            for skill_type_id in affectee_item._type.required_skills:
-                # Domain and skill requirement
-                affectors.update(self.__affectors_domain_skillrq.get(
-                    (affectee_fit, domain, skill_type_id), ()))
-        if affectee_item._owner_modifiable is True:
-            for skill_type_id in affectee_item._type.required_skills:
-                # Owner-modifiable and skill requirement
-                affectors.update(self.__affectors_owner_skillrq.get(
-                    (affectee_fit, skill_type_id), ()))
-        return affectors
+            affector_storage = self.__affectors_domain_group
+            key = (affectee_fit, affectee_domain, affectee_item._type.group_id)
+            affector_specs.update(affector_storage.get(key, ()))
+            # Domain and skill requirement
+            affector_storage = self.__affectors_domain_skillrq
+            for affectee_srq_type_id in affectee_item._type.required_skills:
+                key = (affectee_fit, affectee_domain, affectee_srq_type_id)
+                affector_specs.update(affector_storage.get(key, ()))
+        # Owner-modifiable and skill requirement
+        if affectee_item._owner_modifiable:
+            affector_storage = self.__affectors_owner_skillrq
+            for affectee_srq_type_id in affectee_item._type.required_skills:
+                key = (affectee_fit, affectee_srq_type_id)
+                affector_specs.update(affector_storage.get(key, ()))
+        return affector_specs
 
     # Maintenance methods
-    def register_affectee(self, affectee_item):
-        """Add passed affectee item to register.
+    def register_affectee_item(self, affectee_item):
+        """Add passed affectee item to the register.
 
-        We track affectees to efficiently update attributes when set of items
-        influencing them changes.
+        We track affectee items to efficiently update attributes when set of
+        items influencing them changes.
         """
         self.__affectees.add(affectee_item)
         affectee_fit = affectee_item._fit
-        for key, affectee_map in self.__get_affectee_storages(
+        for key, storage in self.__get_affectee_storages(
             affectee_fit, affectee_item
         ):
-            affectee_map.add_data_entry(key, affectee_item)
-        # Process special affectors separately. E.g., when item like ship is
-        # added, there might already be affectors which should affect it, and
-        # in this method we activate such affectors
-        self.__activate_special_affectors(affectee_fit, affectee_item)
+            storage.add_data_entry(key, affectee_item)
+        # Process special affector specs separately. E.g., when item like ship
+        # is added, there might already be affector specs which should affect
+        # it, and in this method we activate such affector specs
+        self.__activate_special_affector_specs(affectee_fit, affectee_item)
 
-    def unregister_affectee(self, affectee_item):
-        """Remove passed affectee item from register."""
+    def unregister_affectee_item(self, affectee_item):
+        """Remove passed affectee item from the register."""
         self.__affectees.remove(affectee_item)
         affectee_fit = affectee_item._fit
-        for key, affectee_map in self.__get_affectee_storages(
+        for key, storage in self.__get_affectee_storages(
             affectee_fit, affectee_item
         ):
-            affectee_map.rm_data_entry(key, affectee_item)
-        # Deactivate all special affectors for item being unregistered
-        self.__deactivate_special_affectors(affectee_fit, affectee_item)
+            storage.rm_data_entry(key, affectee_item)
+        # Deactivate all special affector specs for item being unregistered
+        self.__deactivate_special_affector_specs(affectee_fit, affectee_item)
 
-    def register_local_affector(self, affector):
-        """Make the register aware of the local affector.
+    def register_local_affector_spec(self, affector_spec):
+        """Make the register aware of the local affector spec.
 
-        It makes it possible for the affector to modify other items within its
-        fit.
+        It makes it possible for the affector spec to modify other items within
+        its fit.
         """
         try:
-            affector_storages = self.__get_local_affector_storages(affector)
+            storages = self.__get_local_affector_storages(affector_spec)
         except Exception as e:
-            self.__handle_affector_errors(e, affector)
+            self.__handle_affector_spec_errors(e, affector_spec)
         else:
-            for key, affector_map in affector_storages:
-                affector_map.add_data_entry(key, affector)
+            for key, storage in storages:
+                storage.add_data_entry(key, affector_spec)
 
-    def unregister_local_affector(self, affector):
-        """Remove local affector from the register.
+    def unregister_local_affector_spec(self, affector_spec):
+        """Remove local affector spec from the register.
 
-        It makes it impossible for the affector to modify any other items.
+        It makes it impossible for the affector spec to modify any items.
         """
         try:
-            affector_storages = self.__get_local_affector_storages(affector)
+            storages = self.__get_local_affector_storages(affector_spec)
         except Exception as e:
-            self.__handle_affector_errors(e, affector)
+            self.__handle_affector_spec_errors(e, affector_spec)
         else:
-            for key, affector_map in affector_storages:
-                affector_map.rm_data_entry(key, affector)
+            for key, storage in storages:
+                storage.rm_data_entry(key, affector_spec)
 
-    def register_projected_affector(self, affector, tgt_items):
-        """Make register aware that projected affector affects items.
+    def register_projected_affector_spec(self, affector_spec, tgt_items):
+        """Make register aware that projected affector spec affects items.
 
-        Should be called every time affector is applied onto any object.
+        Should be called every time projected effect with modifiers is applied
+        onto any items.
         """
         try:
-            affector_storages = self.__get_projected_affector_storages(
-                affector, tgt_items)
+            storages = self.__get_projected_affector_storages(
+                affector_spec, tgt_items)
         except Exception as e:
-            self.__handle_affector_errors(e, affector)
+            self.__handle_affector_spec_errors(e, affector_spec)
         else:
-            for key, affector_map in affector_storages:
-                affector_map.add_data_entry(key, affector)
+            for key, storage in storages:
+                storage.add_data_entry(key, affector_spec)
 
-    def unregister_projected_affector(self, affector, tgt_items):
-        """Remove effect of affector from items.
+    def unregister_projected_affector(self, affector_spec, tgt_items):
+        """Remove effect of affector spec from items.
 
-        Should be called every time affector stops affecting any object.
+        Should be called every time projected effect with modifiers stops
+        affecting any object.
         """
         try:
-            affector_storages = self.__get_projected_affector_storages(
-                affector, tgt_items)
+            storages = self.__get_projected_affector_storages(
+                affector_spec, tgt_items)
         except Exception as e:
-            self.__handle_affector_errors(e, affector)
+            self.__handle_affector_spec_errors(e, affector_spec)
         else:
-            for key, affector_map in affector_storages:
-                affector_map.rm_data_entry(key, affector)
+            for key, storage in storages:
+                storage.rm_data_entry(key, affector_spec)
 
     # Helpers for affectee getter
-    def __get_affectees_item_self(self, affector):
-        return affector.item,
+    def __get_local_affectees_self(self, affector_spec):
+        return affector_spec.item,
 
-    def __get_affectees_item_character(self, affector):
-        affectee_fit = affector.item._fit
-        character = affectee_fit.character
-        if character in self.__affectees:
-            return character,
+    def __get_local_affectees_character(self, affector_spec):
+        affectee_fit = affector_spec.item._fit
+        affectee_character = affectee_fit.character
+        if affectee_character in self.__affectees:
+            return affectee_character,
         else:
             return ()
 
-    def __get_affectees_item_ship(self, affector):
-        affectee_fit = affector.item._fit
-        ship = affectee_fit.ship
-        if ship in self.__affectees:
-            return ship,
+    def __get_local_affectees_ship(self, affector_spec):
+        affectee_fit = affector_spec.item._fit
+        affectee_ship = affectee_fit.ship
+        if affectee_ship in self.__affectees:
+            return affectee_ship,
         else:
             return ()
 
-    def __get_affectees_item_other(self, affector):
-        return [i for i in affector.item._others if i in self.__affectees]
+    def __get_local_affectees_other(self, affector_spec):
+        return [i for i in affector_spec.item._others if i in self.__affectees]
 
-    __local_affectees_getters_item = {
-        ModDomain.self: __get_affectees_item_self,
-        ModDomain.character: __get_affectees_item_character,
-        ModDomain.ship: __get_affectees_item_ship,
-        ModDomain.other: __get_affectees_item_other}
+    __local_affectees_getters = {
+        ModDomain.self: __get_local_affectees_self,
+        ModDomain.character: __get_local_affectees_character,
+        ModDomain.ship: __get_local_affectees_ship,
+        ModDomain.other: __get_local_affectees_other}
 
-    def __get_affectees_domain(self, affector, domain, fits):
+    def __get_affectees_domain(self, _, affectee_domain, affectee_fits):
         affectee_items = set()
-        for affectee_fit in fits:
-            key = (affectee_fit, domain)
-            affectee_items.update(self.__affectees_domain.get(key, ()))
+        storage = self.__affectees_domain
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_domain)
+            affectee_items.update(storage.get(key, ()))
         return affectee_items
 
-    def __get_affectees_domain_group(self, affector, domain, fits):
-        group_id = affector.modifier.affectee_filter_extra_arg
+    def __get_affectees_domain_group(
+        self, affector_spec, affectee_domain, affectee_fits
+    ):
+        affectee_group_id = affector_spec.modifier.affectee_filter_extra_arg
         affectee_items = set()
-        for affectee_fit in fits:
-            key = (affectee_fit, domain, group_id)
-            affectee_items.update(self.__affectees_domain_group.get(key, ()))
+        storage = self.__affectees_domain_group
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_domain, affectee_group_id)
+            affectee_items.update(storage.get(key, ()))
         return affectee_items
 
-    def __get_affectees_domain_skillrq(self, affector, domain, fits):
-        skill_type_id = affector.modifier.affectee_filter_extra_arg
-        if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.item._type_id
+    def __get_affectees_domain_skillrq(
+        self, affector_spec, affectee_domain, affectee_fits
+    ):
+        affectee_srq_type_id = affector_spec.modifier.affectee_filter_extra_arg
+        if affectee_srq_type_id == EosTypeId.current_self:
+            affectee_srq_type_id = affector_spec.item._type_id
         affectee_items = set()
-        for affectee_fit in fits:
-            key = (affectee_fit, domain, skill_type_id)
-            affectee_items.update(self.__affectees_domain_skillrq.get(key, ()))
+        storage = self.__affectees_domain_skillrq
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_domain, affectee_srq_type_id)
+            affectee_items.update(storage.get(key, ()))
         return affectee_items
 
-    def __get_affectees_owner_skillrq(self, affector, _, fits):
-        skill_type_id = affector.modifier.affectee_filter_extra_arg
-        if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.item._type_id
+    def __get_affectees_owner_skillrq(self, affector_spec, _, affectee_fits):
+        affectee_srq_type_id = affector_spec.modifier.affectee_filter_extra_arg
+        if affectee_srq_type_id == EosTypeId.current_self:
+            affectee_srq_type_id = affector_spec.item._type_id
         affectee_items = set()
-        for affectee_fit in fits:
-            key = (affectee_fit, skill_type_id)
-            affectee_items.update(self.__affectees_owner_skillrq.get(key, ()))
+        storage = self.__affectees_owner_skillrq
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_srq_type_id)
+            affectee_items.update(storage.get(key, ()))
         return affectee_items
 
     __affectees_getters = {
@@ -328,264 +346,310 @@ class AffectionRegister:
 
     # Helpers for affectee registering/unregistering
     def __get_affectee_storages(self, affectee_fit, affectee_item):
-        """Return all places where passed affectee should be stored.
+        """Return all places where passed affectee item should be stored.
 
         Returns:
             Iterable with multiple elements, where each element is tuple in
             (key, affectee map) format.
         """
-        affectee_storages = []
-        domain = affectee_item._modifier_domain
-        if domain is not None:
+        storages = []
+        affectee_domain = affectee_item._modifier_domain
+        if affectee_domain is not None:
             # Domain
-            affectee_storages.append((
-                (affectee_fit, domain),
-                self.__affectees_domain))
-            group_id = affectee_item._type.group_id
+            key = (affectee_fit, affectee_domain)
+            storage = self.__affectees_domain
+            storages.append((key, storage))
             # Domain and group
-            if group_id is not None:
-                affectee_storages.append((
-                    (affectee_fit, domain, group_id),
-                    self.__affectees_domain_group))
+            affectee_group_id = affectee_item._type.group_id
+            if affectee_group_id is not None:
+                key = (affectee_fit, affectee_domain, affectee_group_id)
+                storage = self.__affectees_domain_group
+                storages.append((key, storage))
             # Domain and skill requirement
-            for skill_type_id in affectee_item._type.required_skills:
-                affectee_storages.append((
-                    (affectee_fit, domain, skill_type_id),
-                    self.__affectees_domain_skillrq))
+            storage = self.__affectees_domain_skillrq
+            for affectee_srq_type_id in affectee_item._type.required_skills:
+                key = (affectee_fit, affectee_domain, affectee_srq_type_id)
+                storages.append((key, storage))
         # Owner-modifiable and skill requirement
-        if affectee_item._owner_modifiable is True:
-            for skill_type_id in affectee_item._type.required_skills:
-                affectee_storages.append((
-                    (affectee_fit, skill_type_id),
-                    self.__affectees_owner_skillrq))
-        return affectee_storages
+        if affectee_item._owner_modifiable:
+            storage = self.__affectees_owner_skillrq
+            for affectee_srq_type_id in affectee_item._type.required_skills:
+                key = (affectee_fit, affectee_srq_type_id)
+                storages.append((key, storage))
+        return storages
 
-    def __activate_special_affectors(self, affectee_fit, affectee_item):
-        """Activate special affectors which should affect passed item."""
-        awaitable_to_activate = set()
-        for affector in self.__affectors_item_awaiting.get(affectee_fit, ()):
-            domain = affector.modifier.affectee_domain
+    def __activate_special_affector_specs(self, affectee_fit, affectee_item):
+        """Activate special affector specs which should affect passed item."""
+        awaiting_to_activate = set()
+        for affector_spec in self.__affectors_item_awaiting.get(
+            affectee_fit, ()
+        ):
+            affectee_domain = affector_spec.modifier.affectee_domain
             # Ship
-            if domain == ModDomain.ship and isinstance(affectee_item, Ship):
-                awaitable_to_activate.add(affector)
+            if (
+                affectee_domain == ModDomain.ship and
+                isinstance(affectee_item, Ship)
+            ):
+                awaiting_to_activate.add(affector_spec)
             # Character
             elif (
-                domain == ModDomain.character and
+                affectee_domain == ModDomain.character and
                 isinstance(affectee_item, Character)
             ):
-                awaitable_to_activate.add(affector)
+                awaiting_to_activate.add(affector_spec)
             # Self
-            elif domain == ModDomain.self and affectee_item is affector.item:
-                awaitable_to_activate.add(affector)
-        # Move awaitable affectors from awaitable storage to active storage
-        if awaitable_to_activate:
+            elif (
+                affectee_domain == ModDomain.self and
+                affectee_item is affector_spec.item
+            ):
+                awaiting_to_activate.add(affector_spec)
+        # Move awaiting affector specs from awaiting storage to active storage
+        if awaiting_to_activate:
             self.__affectors_item_awaiting.rm_data_set(
-                affectee_fit, awaitable_to_activate)
+                affectee_fit, awaiting_to_activate)
             self.__affectors_item_active.add_data_set(
-                affectee_item, awaitable_to_activate)
+                affectee_item, awaiting_to_activate)
         # Other
         other_to_activate = set()
-        for affector_item, affectors in self.__affectors_item_other.items():
+        for affector_item, affector_specs in (
+            self.__affectors_item_other.items()
+        ):
             if affectee_item in affector_item._others:
-                other_to_activate.update(affectors)
-        # Just add affectors to active storage, 'other' affectors should never
-        # be removed from 'other'-specific storage
+                other_to_activate.update(affector_specs)
+        # Just add affector specs to active storage, 'other' affector specs
+        # should never be removed from 'other'-specific storage
         if other_to_activate:
             self.__affectors_item_active.add_data_set(
                 affectee_item, other_to_activate)
 
-    def __deactivate_special_affectors(self, affectee_fit, affectee_item):
-        """Deactivate special affectors which affect passed item."""
+    def __deactivate_special_affector_specs(self, affectee_fit, affectee_item):
+        """Deactivate special affector specs which affect passed item."""
         if affectee_item not in self.__affectors_item_active:
             return
         awaitable_to_deactivate = set()
-        for affector in self.__affectors_item_active.get(affectee_item, ()):
-            if affector.modifier.affectee_domain in (
+        for affector_spec in (
+            self.__affectors_item_active.get(affectee_item, ())
+        ):
+            if affector_spec.modifier.affectee_domain in (
                 ModDomain.ship, ModDomain.character, ModDomain.self
             ):
-                awaitable_to_deactivate.add(affector)
-        # Remove all affectors influencing this item directly, including 'other'
-        # affectors
+                awaitable_to_deactivate.add(affector_spec)
+        # Remove all affector specs influencing this item directly, including
+        # 'other' affectors
         del self.__affectors_item_active[affectee_item]
-        # And make sure awaitable affectors are moved to appropriate container
-        # for future use
+        # And make sure awaitable affectors become awaiting - moved to
+        # appropriate container for future use
         if awaitable_to_deactivate:
             self.__affectors_item_awaiting.add_data_set(
                 affectee_fit, awaitable_to_deactivate)
 
-    # Helpers for affector registering/unregistering
-    def __get_local_affector_storages(self, affector):
-        """Get places where passed local affector should be stored.
+    # Helpers for affector spec registering/unregistering
+    def __get_local_affector_storages(self, affector_spec):
+        """Get places where passed local affector spec should be stored.
 
         Raises:
-            UnexpectedDomainError: If affector's modifier target domain is not
-                supported for context of passed affector.
-            UnknownTgtFilterError: If affector's modifier filter type is not
+            UnexpectedDomainError: If modifier affectee domain is not supported
+                for context of passed affector spec.
+            UnknownAffecteeFilterError: If modifier affectee filter type is not
                 supported.
         """
-        affectee_filter = affector.modifier.affectee_filter
+        affectee_filter = affector_spec.modifier.affectee_filter
         if affectee_filter == ModAffecteeFilter.item:
-            domain = affector.modifier.affectee_domain
+            affectee_domain = affector_spec.modifier.affectee_domain
             try:
-                getter = self.__local_affector_storages_getters_item[domain]
+                getter = self.__local_affector_storages_getters[affectee_domain]
             except KeyError as e:
-                raise UnexpectedDomainError(domain) from e
-            return getter(self, affector)
+                raise UnexpectedDomainError(affectee_domain) from e
+            return getter(self, affector_spec)
         else:
             try:
                 getter = self.__affector_storages_getters[affectee_filter]
             except KeyError as e:
-                raise UnknownTgtFilterError(affectee_filter) from e
-            domain = self.__contextize_local_affector_domain(affector)
-            affectee_fits = affector.item._fit,
-            return getter(self, affector, domain, affectee_fits)
+                raise UnknownAffecteeFilterError(affectee_filter) from e
+            affectee_domain = self.__resolve_local_domain(affector_spec)
+            affectee_fits = affector_spec.item._fit,
+            return getter(self, affector_spec, affectee_domain, affectee_fits)
 
-    def __get_projected_affector_storages(self, affector, tgt_items):
-        affectee_filter = affector.modifier.affectee_filter
+    def __get_projected_affector_storages(self, affector_spec, tgt_items):
+        """Get places where passed projected affector spec should be stored.
+
+        Raises:
+            UnknownAffecteeFilterError: If modifier affectee filter type is not
+                supported.
+        """
+        affectee_filter = affector_spec.modifier.affectee_filter
+        # Modifier affects just targeted items directly
         if affectee_filter == ModAffecteeFilter.item:
             storages = []
+            storage = self.__affectors_item_active
             for tgt_item in tgt_items:
                 if tgt_item in self.__affectees:
-                    storages.append((tgt_item, self.__affectors_item_active))
+                    key = tgt_item
+                    storages.append((key, storage))
             return storages
+        # Modifier affects multiple items via affectee filter
         else:
             try:
                 getter = self.__affector_storages_getters[affectee_filter]
             except KeyError as e:
-                raise UnknownTgtFilterError(affectee_filter) from e
+                raise UnknownAffecteeFilterError(affectee_filter) from e
+            affectee_domain = ModDomain.ship
             affectee_fits = {i._fit for i in tgt_items if isinstance(i, Ship)}
-            return getter(self, affector, ModDomain.ship, affectee_fits)
+            return getter(self, affector_spec, affectee_domain, affectee_fits)
 
-    def __get_affector_storages_domain(self, _, domain, fits):
-        storages = []
-        for affectee_fit in fits:
-            key = (affectee_fit, domain)
-            storages.append((key, self.__affectors_domain))
+    def __get_local_affector_storages_self(self, affector_spec):
+        affectee_item = affector_spec.item
+        if affectee_item in self.__affectees:
+            key = affectee_item
+            storage = self.__affectors_item_active
+        else:
+            key = affectee_item._fit
+            storage = self.__affectors_item_awaiting
+        return (key, storage),
+
+    def __get_local_affector_storages_character(self, affector_spec):
+        affectee_fit = affector_spec.item._fit
+        affectee_character = affectee_fit.character
+        if affectee_character in self.__affectees:
+            key = affectee_character
+            storage = self.__affectors_item_active
+        else:
+            key = affectee_fit
+            storage = self.__affectors_item_awaiting
+        return (key, storage),
+
+    def __get_local_affector_storages_ship(self, affector_spec):
+        affectee_fit = affector_spec.item._fit
+        affectee_ship = affectee_fit.ship
+        if affectee_ship in self.__affectees:
+            key = affectee_ship
+            storage = self.__affectors_item_active
+        else:
+            key = affectee_fit
+            storage = self.__affectors_item_awaiting
+        return (key, storage),
+
+    def __get_local_affector_storages_other(self, affector_spec):
+        # Affectors with 'other' modifiers are always stored in their special
+        # place
+        storages = [(affector_spec.item, self.__affectors_item_other)]
+        # And all those which have valid affectee item are also stored in
+        # storage for active direct affectors
+        storage = self.__affectors_item_active
+        for other_item in affector_spec.item._others:
+            if other_item in self.__affectees:
+                key = other_item
+                storages.append((key, storage))
         return storages
 
-    def __get_affector_storages_domain_group(self, affector, domain, fits):
-        group_id = affector.modifier.affectee_filter_extra_arg
+    __local_affector_storages_getters = {
+        ModDomain.self: __get_local_affector_storages_self,
+        ModDomain.character: __get_local_affector_storages_character,
+        ModDomain.ship: __get_local_affector_storages_ship,
+        ModDomain.other: __get_local_affector_storages_other}
+
+    def __get_affector_storages_domain(self, _, affectee_domain, affectee_fits):
         storages = []
-        for affectee_fit in fits:
-            key = (affectee_fit, domain, group_id)
-            storages.append((key, self.__affectors_domain_group))
+        storage = self.__affectors_domain
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_domain)
+            storages.append((key, storage))
         return storages
 
-    def __get_affector_storages_domain_skillrq(self, affector, domain, fits):
-        skill_type_id = affector.modifier.affectee_filter_extra_arg
-        if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.item._type_id
+    def __get_affector_storages_domain_group(
+        self, affector_spec, affectee_domain, affectee_fits
+    ):
+        affectee_group_id = affector_spec.modifier.affectee_filter_extra_arg
         storages = []
-        for affectee_fit in fits:
-            key = (affectee_fit, domain, skill_type_id)
-            storages.append((key, self.__affectors_domain_skillrq))
+        storage = self.__affectors_domain_group
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_domain, affectee_group_id)
+            storages.append((key, storage))
         return storages
 
-    def __get_affector_storages_owner_skillrq(self, affector, _, fits):
-        skill_type_id = affector.modifier.affectee_filter_extra_arg
-        if skill_type_id == EosTypeId.current_self:
-            skill_type_id = affector.item._type_id
+    def __get_affector_storages_domain_skillrq(
+        self, affector_spec, affectee_domain, affectee_fits
+    ):
+        affectee_srq_type_id = affector_spec.modifier.affectee_filter_extra_arg
+        if affectee_srq_type_id == EosTypeId.current_self:
+            affectee_srq_type_id = affector_spec.item._type_id
         storages = []
-        for affectee_fit in fits:
-            key = (affectee_fit, skill_type_id)
-            storages.append((key, self.__affectors_owner_skillrq))
+        storage = self.__affectors_domain_skillrq
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_domain, affectee_srq_type_id)
+            storages.append((key, storage))
+        return storages
+
+    def __get_affector_storages_owner_skillrq(
+        self, affector_spec, _, affectee_fits
+    ):
+        affectee_srq_type_id = affector_spec.modifier.affectee_filter_extra_arg
+        if affectee_srq_type_id == EosTypeId.current_self:
+            affectee_srq_type_id = affector_spec.item._type_id
+        storages = []
+        storage = self.__affectors_owner_skillrq
+        for affectee_fit in affectee_fits:
+            key = (affectee_fit, affectee_srq_type_id)
+            storages.append((key, storage))
         return storages
 
     __affector_storages_getters = {
-        ModAffecteeFilter.domain: __get_affector_storages_domain,
-        ModAffecteeFilter.domain_group: __get_affector_storages_domain_group,
-        ModAffecteeFilter.domain_skillrq: __get_affector_storages_domain_skillrq,
-        ModAffecteeFilter.owner_skillrq: __get_affector_storages_owner_skillrq}
-
-    def __get_local_affector_storages_item_self(self, affector):
-        if affector.item in self.__affectees:
-            return [(affector.item, self.__affectors_item_active)]
-        else:
-            affectee_fit = affector.item._fit
-            return (affectee_fit, self.__affectors_item_awaiting),
-
-    def __get_local_affector_storages_item_character(self, affector):
-        affectee_fit = affector.item._fit
-        character = affectee_fit.character
-        if character in self.__affectees:
-            return (character, self.__affectors_item_active),
-        else:
-            return (affectee_fit, self.__affectors_item_awaiting),
-
-    def __get_local_affector_storages_item_ship(self, affector):
-        affectee_fit = affector.item._fit
-        ship = affectee_fit.ship
-        if ship in self.__affectees:
-            return (ship, self.__affectors_item_active),
-        else:
-            return (affectee_fit, self.__affectors_item_awaiting),
-
-    def __get_local_affector_storages_item_other(self, affector):
-        # Affectors with 'other' modifiers are always stored in their special
-        # place
-        storages = [(affector.item, self.__affectors_item_other)]
-        # And all those which have valid target are also stored in storage for
-        # active direct affectors
-        for other_item in affector.item._others:
-            if other_item in self.__affectees:
-                storages.append((other_item, self.__affectors_item_active))
-        return storages
-
-    __local_affector_storages_getters_item = {
-        ModDomain.self: __get_local_affector_storages_item_self,
-        ModDomain.character: __get_local_affector_storages_item_character,
-        ModDomain.ship: __get_local_affector_storages_item_ship,
-        ModDomain.other: __get_local_affector_storages_item_other}
+        ModAffecteeFilter.domain:
+            __get_affector_storages_domain,
+        ModAffecteeFilter.domain_group:
+            __get_affector_storages_domain_group,
+        ModAffecteeFilter.domain_skillrq:
+            __get_affector_storages_domain_skillrq,
+        ModAffecteeFilter.owner_skillrq:
+            __get_affector_storages_owner_skillrq}
 
     # Shared helpers
-    def __contextize_local_affector_domain(self, affector):
-        """Convert relative domain into absolute for local affector.
+    def __resolve_local_domain(self, affector_spec):
+        """Convert relative domain into absolute for local affector spec.
 
-        Applicable only to en-masse modifications. That is, when modification
-        affects multiple items in target domain. If modification targets single
-        item, it should not be handled via this method.
+        Applicable only to en-masse modifications - that is, when modification
+        affects multiple items in affectee domain.
 
         Raises:
-            UnexpectedDomainError: If affector's modifier target domain is not
-                supported.
+            UnexpectedDomainError: If modifier affectee domain is not supported.
         """
-        item = affector.item
-        domain = affector.modifier.affectee_domain
-        if domain == ModDomain.self:
-            if isinstance(item, Ship):
+        affector_item = affector_spec.item
+        affectee_domain = affector_spec.modifier.affectee_domain
+        if affectee_domain == ModDomain.self:
+            if isinstance(affector_item, Ship):
                 return ModDomain.ship
-            elif isinstance(item, Character):
+            elif isinstance(affector_item, Character):
                 return ModDomain.character
             else:
-                raise UnexpectedDomainError(domain)
+                raise UnexpectedDomainError(affectee_domain)
         # Just return untouched domain for all other valid cases. Valid cases
         # include 'globally' visible (within the fit scope) domains only. I.e.
-        # if item on fit refers this target domain, it should always refer the
-        # same target item regardless of source item.
-        elif domain in (ModDomain.character, ModDomain.ship):
-            return domain
+        # if item on fit refers this affectee domain, it should always refer the
+        # same affectee item regardless of position of source item.
+        elif affectee_domain in (ModDomain.character, ModDomain.ship):
+            return affectee_domain
         # Raise error if domain is invalid
         else:
-            raise UnexpectedDomainError(domain)
+            raise UnexpectedDomainError(affectee_domain)
 
-    def __handle_affector_errors(self, error, affector):
-        """Handles affector-related exceptions.
+    def __handle_affector_spec_errors(self, error, affector_spec):
+        """Handles exceptions related to affector spec.
 
-        Multiple register methods which get data based on passed affector raise
-        similar exceptions. To handle them in consistent fashion, it is done
-        from centralized place - this method. If error cannot be handled by the
-        method, it is re-raised.
+        Multiple register methods which get data based on passed affector spec
+        raise similar exceptions. To handle them in consistent fashion, it is
+        done from this method. If error cannot be handled by the method, it is
+        re-raised.
         """
         if isinstance(error, UnexpectedDomainError):
             msg = (
                 'malformed modifier on item type {}: '
-                'unsupported target domain {}'
-            ).format(affector.item._type_id, error.args[0])
+                'unsupported affectee domain {}'
+            ).format(affector_spec.item._type_id, error.args[0])
             logger.warning(msg)
-        elif isinstance(error, UnknownTgtFilterError):
+        elif isinstance(error, UnknownAffecteeFilterError):
             msg = (
-                'malformed modifier on item type {}: invalid target filter {}'
-            ).format(affector.item._type_id, error.args[0])
+                'malformed modifier on item type {}: invalid affectee filter {}'
+            ).format(affector_spec.item._type_id, error.args[0])
             logger.warning(msg)
         else:
             raise error

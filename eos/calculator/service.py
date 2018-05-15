@@ -69,7 +69,7 @@ class CalculationService(BaseSubscriber):
         # Use list because we can have multiple tuples with the same values
         # as valid configuration
         mods = []
-        for affector_spec in self.__affections.get_affectors(affectee_item):
+        for affector_spec in self.__affections.get_affector_specs(affectee_item):
             affector_modifier = affector_spec.modifier
             affector_item = affector_spec.item
             if affector_modifier.affectee_attr_id != attr_id:
@@ -101,13 +101,13 @@ class CalculationService(BaseSubscriber):
     # Handle item changes which are significant for calculator
     def _handle_item_loaded(self, msg):
         item = msg.item
-        self.__affections.register_affectee(item)
+        self.__affections.register_affectee_item(item)
         if isinstance(item, SolarSystemItemMixin):
             self.__projections.register_solsys_item(item)
 
     def _handle_item_unloaded(self, msg):
         item = msg.item
-        self.__affections.unregister_affectee(item)
+        self.__affections.unregister_affectee_item(item)
         if isinstance(item, SolarSystemItemMixin):
             self.__projections.unregister_solsys_item(item)
 
@@ -117,7 +117,7 @@ class CalculationService(BaseSubscriber):
         for affector in affectors:
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__subscribe_python_affector(fit, affector)
-            self.__affections.register_local_affector(affector)
+            self.__affections.register_local_affector_spec(affector)
             for tgt_item in self.__affections.get_local_affectee_items(
                 affector
             ):
@@ -134,7 +134,7 @@ class CalculationService(BaseSubscriber):
                 affector
             ):
                 del tgt_item.attrs[affector.modifier.affectee_attr_id]
-            self.__affections.unregister_local_affector(affector)
+            self.__affections.unregister_local_affector_spec(affector)
             if isinstance(affector.modifier, BasePythonModifier):
                 self.__unsubscribe_python_affector(fit, affector)
         projectors = self.__generate_projectors(msg.item, msg.effect_ids)
@@ -147,9 +147,9 @@ class CalculationService(BaseSubscriber):
         for projected_affector in self.__generate_projected_affectors(
             msg.item, (msg.effect_id,)
         ):
-            self.__affections.register_projected_affector(
+            self.__affections.register_projected_affector_spec(
                 projected_affector, msg.tgt_items)
-            for affectee_item in self.__affections.get_projected_affectees(
+            for affectee_item in self.__affections.get_projected_affectee_items(
                 projected_affector, msg.tgt_items
             ):
                 del affectee_item.attrs[projected_affector.modifier.affectee_attr_id]
@@ -160,7 +160,7 @@ class CalculationService(BaseSubscriber):
         for projected_affector in self.__generate_projected_affectors(
             msg.item, (msg.effect_id,)
         ):
-            for affectee_item in self.__affections.get_projected_affectees(
+            for affectee_item in self.__affections.get_projected_affectee_items(
                 projected_affector, msg.tgt_items
             ):
                 del affectee_item.attrs[projected_affector.modifier.affectee_attr_id]
@@ -217,7 +217,7 @@ class CalculationService(BaseSubscriber):
                     modifier.affector_attr_id != attr_id
                 ):
                     continue
-                for tgt_item in self.__affections.get_projected_affectees(
+                for tgt_item in self.__affections.get_projected_affectee_items(
                     affector, tgt_items
                 ):
                     del tgt_item.attrs[modifier.affectee_attr_id]

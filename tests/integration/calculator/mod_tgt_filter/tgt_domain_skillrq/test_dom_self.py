@@ -101,7 +101,8 @@ class TestTgtDomainSkillrqDomainSelf(CalculatorTestCase):
             self.assertEqual(log_record.levelno, logging.WARNING)
             self.assertEqual(
                 log_record.msg,
-                'malformed modifier on item type {}: unsupported target '
-                'domain 1'.format(self.influence_src_type.id))
+                'malformed modifier on item type {}: '
+                'unsupported affectee domain 1'.format(
+                    self.influence_src_type.id))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)

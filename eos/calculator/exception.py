@@ -31,14 +31,14 @@ class AttrCalculatorError(EosError):
 class UnexpectedDomainError(AttrCalculatorError):
     """Raised when modifier domain has unexpected value.
 
-    Raised when modifier being processed cannot have this domain (which domains
-    are supported depends on modifier target filter and its context).
+    Raised when affector spec being processed cannot have this domain (which
+    domains are supported depends on modifier target filter and its context).
     """
     ...
 
 
-class UnknownTgtFilterError(AttrCalculatorError):
-    """Raised when modifier has unknown target filter type."""
+class UnknownAffecteeFilterError(AttrCalculatorError):
+    """Raised when affector spec has unknown affectee filter type."""
     ...
 
 

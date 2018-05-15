@@ -60,7 +60,7 @@ class TestTgtFilterUnknown(CalculatorTestCase):
             self.assertEqual(
                 log_record.msg,
                 'malformed modifier on item type {}: '
-                'invalid target filter 26500'.format(item_type.id))
+                'invalid affectee filter 26500'.format(item_type.id))
         # Cleanup
         self.assert_solsys_buffers_empty(self.fit.solar_system)
 
