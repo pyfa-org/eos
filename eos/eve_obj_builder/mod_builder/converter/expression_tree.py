@@ -131,7 +131,8 @@ class ExpressionTreeConverter:
         self._mods.append(DogmaModifier(
             affectee_filter=ModAffecteeFilter.domain_skillrq,
             affectee_domain=self._get_domain(exp_row.arg1.arg2.arg1.arg1),
-            affectee_filter_extra_arg=self._get_type_id(exp_row.arg1.arg2.arg1.arg2),
+            affectee_filter_extra_arg=self._get_type_id(
+                exp_row.arg1.arg2.arg1.arg2),
             affectee_attr_id=self._get_attr_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
             affector_attr_id=self._get_attr_id(exp_row.arg2)))
@@ -140,7 +141,8 @@ class ExpressionTreeConverter:
         self._mods.append(DogmaModifier(
             affectee_filter=ModAffecteeFilter.owner_skillrq,
             affectee_domain=self._get_domain(exp_row.arg1.arg2.arg1.arg1),
-            affectee_filter_extra_arg=self._get_type_id(exp_row.arg1.arg2.arg1.arg2),
+            affectee_filter_extra_arg=self._get_type_id(
+                exp_row.arg1.arg2.arg1.arg2),
             affectee_attr_id=self._get_attr_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
             affector_attr_id=self._get_attr_id(exp_row.arg2)))

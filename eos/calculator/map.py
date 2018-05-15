@@ -259,16 +259,16 @@ class MutableAttrMap:
         for mod_data in item._fit.solar_system._calculator.get_modifications(
             item, attr_id
         ):
-            mod_operator, mod_value, resist_value, mod_item = mod_data
+            mod_operator, mod_value, resist_value, affector_item = mod_data
             # Normalize operations to just three types: assignments, additions,
-            # multiplications
+            # reduced multiplications
             try:
                 normalization_func = NORMALIZATION_MAP[mod_operator]
             # Log error on any unknown operator types
             except KeyError:
                 msg = (
                     'malformed modifier on item type {}: unknown operator {}'
-                ).format(mod_item._type_id, mod_operator)
+                ).format(affector_item._type_id, mod_operator)
                 logger.warning(msg)
                 continue
             # Resistance attribute actually defines resonance, where 1 means 0%
@@ -277,7 +277,7 @@ class MutableAttrMap:
             # Decide if modification should be stacking penalized or not
             penalize = (
                 not attr.stackable and
-                mod_item._type.category_id not in
+                affector_item._type.category_id not in
                 PENALTY_IMMUNE_CATEGORY_IDS and
                 mod_operator in PENALIZABLE_OPERATORS)
             if penalize:

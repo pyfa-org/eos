@@ -35,8 +35,11 @@ class AncillaryRepAmountModifier(BasePythonModifier):
 
     def __init__(self):
         BasePythonModifier.__init__(
-            self, affectee_filter=ModAffecteeFilter.item, affectee_domain=ModDomain.self,
-            affectee_filter_extra_arg=None, affectee_attr_id=AttrId.armor_dmg_amount)
+            self,
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.self,
+            affectee_filter_extra_arg=None,
+            affectee_attr_id=AttrId.armor_dmg_amount)
 
     def get_modification(self, affector_item):
         # If modifier item has charge and it's paste, use on-item rep amount
