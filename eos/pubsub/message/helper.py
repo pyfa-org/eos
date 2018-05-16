@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+from copy import copy
+
 from eos.const.eos import State
 from eos.effect_status import EffectStatusResolver
 from .item import ItemAdded
@@ -80,9 +82,16 @@ class MsgHelper:
         # Effects
         running_effect_ids = item._running_effect_ids
         if running_effect_ids:
-            # Copy set to make sure messages keep full data despite it being
-            # cleared on the next line
-            msgs.append(EffectsStopped(item, set(running_effect_ids)))
+            # Unapply effects before stopping them
+            tgt_getter = getattr(item, '_get_effects_targets', None)
+            if tgt_getter:
+                effects_tgts = tgt_getter(running_effect_ids)
+                for effect_id, tgt_items in effects_tgts.items():
+                    msgs.append(EffectUnapplied(item, effect_id, tgt_items))
+            # Stop effects
+            # Copy running effect IDs container, because we clear it on the next
+            # line but it will be processed by message subscribers much later
+            msgs.append(EffectsStopped(item, copy(running_effect_ids)))
             running_effect_ids.clear()
         # States
         states = {s for s in State if s <= item.state}
@@ -130,18 +139,22 @@ class MsgHelper:
         msgs = []
         if start_ids:
             item._running_effect_ids.update(start_ids)
+            # Start effects
             msgs.append(EffectsStarted(item, start_ids))
+            # Apply effects to targets
             tgt_getter = getattr(item, '_get_effects_targets', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
                 for effect_id, tgt_items in effects_tgts.items():
                     msgs.append(EffectApplied(item, effect_id, tgt_items))
         if stop_ids:
+            # Unapply effects from targets
             tgt_getter = getattr(item, '_get_effects_targets', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
                 for effect_id, tgt_items in effects_tgts.items():
                     msgs.append(EffectUnapplied(item, effect_id, tgt_items))
+            # Stop effects
             msgs.append(EffectsStopped(item, stop_ids))
             item._running_effect_ids.difference_update(stop_ids)
         return msgs
