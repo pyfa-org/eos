@@ -39,4 +39,5 @@ def add_rah_modifiers(effect):
 
 
 EffectFactory.reg_cust_instance_by_id(
-    add_rah_modifiers, EffectId.adaptive_armor_hardener)
+    add_rah_modifiers,
+    EffectId.adaptive_armor_hardener)

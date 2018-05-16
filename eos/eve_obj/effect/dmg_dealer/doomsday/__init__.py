@@ -25,10 +25,14 @@ from .direct_dmg import DoomsdayDirect
 
 
 EffectFactory.reg_cust_class_by_id(
-    DoomsdayDirect, EffectId.super_weapon_amarr)
+    DoomsdayDirect,
+    EffectId.super_weapon_amarr)
 EffectFactory.reg_cust_class_by_id(
-    DoomsdayDirect, EffectId.super_weapon_caldari)
+    DoomsdayDirect,
+    EffectId.super_weapon_caldari)
 EffectFactory.reg_cust_class_by_id(
-    DoomsdayDirect, EffectId.super_weapon_gallente)
+    DoomsdayDirect,
+    EffectId.super_weapon_gallente)
 EffectFactory.reg_cust_class_by_id(
-    DoomsdayDirect, EffectId.super_weapon_minmatar)
+    DoomsdayDirect,
+    EffectId.super_weapon_minmatar)

@@ -58,4 +58,6 @@ class UseMissiles(DmgDealerEffect):
         raise NotImplementedError
 
 
-EffectFactory.reg_cust_class_by_id(UseMissiles, EffectId.use_missiles)
+EffectFactory.reg_cust_class_by_id(
+    UseMissiles,
+    EffectId.use_missiles)
