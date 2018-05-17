@@ -52,7 +52,11 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
                 return {AttrsValueChanged}
 
             def revise_modification(self, msg, affector_item):
-                if msg.item is affector_item and src_attr_id in msg.attr_ids:
+                attr_changes = msg.attr_changes
+                if (
+                    affector_item in attr_changes and
+                    src_attr_id in attr_changes[affector_item]
+                ):
                     return True
                 return False
 

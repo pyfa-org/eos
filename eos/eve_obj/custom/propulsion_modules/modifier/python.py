@@ -71,11 +71,11 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
         modification value can be changed as well.
         """
         ship = affector_item._fit.ship
-        if msg.item is ship and AttrId.mass in msg.attr_ids:
+        if ship in msg.attr_changes and AttrId.mass in msg.attr_changes[ship]:
             return True
         if (
-            msg.item is affector_item and
-            msg.attr_ids.intersection(
+            affector_item in msg.attr_changes and
+                msg.attr_changes[affector_item].intersection(
                 (AttrId.speed_factor, AttrId.speed_boost_factor))
         ):
             return True

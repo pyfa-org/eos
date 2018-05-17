@@ -65,10 +65,14 @@ class TestModifierPython(CalculatorTestCase):
                 return {AttrsValueChanged}
 
             def revise_modification(self, msg, affector_item):
-                ship = affector_item._fit.ship
-                if msg.item is affector_item and attr2.id in msg.attr_ids:
+                attr_changes = msg.attr_changes
+                if (
+                    affector_item in attr_changes and
+                    attr2.id in attr_changes[affector_item]
+                ):
                     return True
-                if msg.item is ship and attr3.id in msg.attr_ids:
+                ship = affector_item._fit.ship
+                if ship in attr_changes and attr3.id in attr_changes[ship]:
                     return True
                 return False
 

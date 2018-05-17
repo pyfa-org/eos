@@ -444,29 +444,39 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
             self.__clear_results()
 
     def _handle_attr_changed(self, msg):
-        item = msg.item
+        attr_changes = msg.attr_changes
+        ship = self.__fit.ship
         # Ship resistances
-        if item is self.__fit.ship and msg.attr_ids.intersection(res_attr_ids):
-            self.__clear_results()
-        # RAH resistance shift or cycle time
-        elif item in self.__data and (
-            AttrId.resist_shift_amount in msg.attr_ids or
-            # Cycle time change invalidates results only when there're more than
-            # 1 RAHs
-            (
-                len(self.__data) > 1 and
-                self.__get_rah_effect(item).duration_attr_id in msg.attr_ids
-            )
+        if (
+            ship in attr_changes and
+            attr_changes[ship].intersection(res_attr_ids)
         ):
             self.__clear_results()
+            return
+        # RAH resistance shift or cycle time
+        for item in set(self.__data).intersection(attr_changes):
+            changed_attr_ids = attr_changes[item]
+            if (
+                AttrId.resist_shift_amount in changed_attr_ids or (
+                    # Cycle time change invalidates results only when there're
+                    # more than 1 RAHs
+                    len(self.__data) > 1 and
+                    self.__get_rah_effect(item).duration_attr_id in
+                    changed_attr_ids)
+            ):
+                self.__clear_results()
+                return
 
     def _handle_attr_changed_masked(self, msg):
         # We've set up overrides on RAHs' resonance attributes, but when base
         # (not modified by simulator) values of these attributes change, we
         # should re-run simulator - as now we have different resonance value to
         # base sim results off
-        if msg.item in self.__data and msg.attr_ids.intersection(res_attr_ids):
-            self.__clear_results()
+        attr_changes = msg.attr_changes
+        for item in set(self.__data).intersection(attr_changes):
+            if attr_changes[item].intersection(res_attr_ids):
+                self.__clear_results()
+                return
 
     def _handle_changed_dmg_profile(self, _):
         self.__clear_results()

@@ -191,44 +191,17 @@ class CalculationService(BaseSubscriber):
         attribute map and via affector specs with dogma modifiers. Affector
         specs with python modifiers are processed separately.
         """
-        item = msg.item
-        attr_ids = msg.attr_ids
-        # Remove values of affectee attributes capped by the changing attribute
-        for attr_id in attr_ids:
-            for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
-                del item.attrs[capped_attr_id]
-        # Force attribute recalculation when local affector spec modification
-        # changes
-        affections = self.__affections
-        for affector_spec in self.__generate_local_affector_specs(
-            item, item._running_effect_ids
-        ):
-            affector_modifier = affector_spec.modifier
-            # Only dogma modifiers have source attribute specified, python
-            # modifiers are processed separately
-            if (
-                not isinstance(affector_modifier, DogmaModifier) or
-                affector_modifier.affector_attr_id not in attr_ids
-            ):
-                continue
-            # Remove values
-            for affectee_item in affections.get_local_affectee_items(
-                affector_spec
-            ):
-                del affectee_item.attrs[affector_modifier.affectee_attr_id]
-        # Force attribute recalculation when projected affector spec
-        # modification changes
-        projections = self.__projections
-        for projector in self.__generate_projectors(
-            item, item._running_effect_ids
-        ):
-            tgt_items = projections.get_projector_tgts(projector)
-            # When projector doesn't target any items, then we do not need to
-            # clean anything
-            if not tgt_items:
-                continue
-            for affector_spec in self.__generate_projected_affectors(
-                item, (projector.effect.id,)
+        for item, attr_ids in msg.attr_changes.items():
+            # Remove values of affectee attributes capped by the changing
+            # attribute
+            for attr_id in attr_ids:
+                for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
+                    del item.attrs[capped_attr_id]
+            # Force attribute recalculation when local affector spec
+            # modification changes
+            affections = self.__affections
+            for affector_spec in self.__generate_local_affector_specs(
+                item, item._running_effect_ids
             ):
                 affector_modifier = affector_spec.modifier
                 # Only dogma modifiers have source attribute specified, python
@@ -238,25 +211,55 @@ class CalculationService(BaseSubscriber):
                     affector_modifier.affector_attr_id not in attr_ids
                 ):
                     continue
-                for affectee_item in affections.get_projected_affectee_items(
-                    affector_spec, tgt_items
+                # Remove values
+                for affectee_item in affections.get_local_affectee_items(
+                    affector_spec
                 ):
                     del affectee_item.attrs[affector_modifier.affectee_attr_id]
-        # Force attribute recalculation if changed attribute defines resistance
-        # to some effect
-        for projector in projections.get_tgt_projectors(item):
-            effect = projector.effect
-            if effect.resist_attr_id not in attr_ids:
-                continue
-            tgt_items = projections.get_projector_tgts(projector)
-            for affector_spec in self.__generate_projected_affectors(
-                projector.item, (effect.id,)
+            # Force attribute recalculation when projected affector spec
+            # modification changes
+            projections = self.__projections
+            for projector in self.__generate_projectors(
+                item, item._running_effect_ids
             ):
-                for affectee_item in affections.get_projected_affectee_items(
-                    affector_spec, tgt_items
+                tgt_items = projections.get_projector_tgts(projector)
+                # When projector doesn't target any items, then we do not need
+                # to clean anything
+                if not tgt_items:
+                    continue
+                for affector_spec in self.__generate_projected_affectors(
+                    item, (projector.effect.id,)
                 ):
-                    del affectee_item.attrs[
-                        affector_spec.modifier.affectee_attr_id]
+                    affector_modifier = affector_spec.modifier
+                    # Only dogma modifiers have source attribute specified,
+                    # python modifiers are processed separately
+                    if (
+                        not isinstance(affector_modifier, DogmaModifier) or
+                        affector_modifier.affector_attr_id not in attr_ids
+                    ):
+                        continue
+                    for affectee_item in (
+                        affections.get_projected_affectee_items(
+                            affector_spec, tgt_items)
+                    ):
+                        del affectee_item.attrs[
+                            affector_modifier.affectee_attr_id]
+            # Force attribute recalculation if changed attribute defines
+            # resistance to some effect
+            for projector in projections.get_tgt_projectors(item):
+                effect = projector.effect
+                if effect.resist_attr_id not in attr_ids:
+                    continue
+                tgt_items = projections.get_projector_tgts(projector)
+                for affector_spec in self.__generate_projected_affectors(
+                    projector.item, (effect.id,)
+                ):
+                    for affectee_item in (
+                        affections.get_projected_affectee_items(
+                            affector_spec, tgt_items)
+                    ):
+                        del affectee_item.attrs[
+                            affector_spec.modifier.affectee_attr_id]
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.

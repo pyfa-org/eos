@@ -68,8 +68,8 @@ class AncillaryRepAmountModifier(BasePythonModifier):
         # If armor rep multiplier changes, then result of modification also
         # should change
         if (
-            msg.item is affector_item and
-            AttrId.charged_armor_dmg_mult in msg.attr_ids
+            affector_item in msg.attr_changes and
+            AttrId.charged_armor_dmg_mult in msg.attr_changes[affector_item]
         ):
             return True
         return False
