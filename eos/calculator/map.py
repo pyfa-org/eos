@@ -366,6 +366,10 @@ class MutableAttrMap:
         return value - 1
 
     # Override-related methods
+    @property
+    def _override_callbacks(self):
+        return self.__override_callbacks or {}
+
     def _set_override_callback(self, attr_id, callback):
         """Set override for the attribute in the form of callback."""
         if self.__override_callbacks is None:

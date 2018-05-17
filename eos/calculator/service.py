@@ -25,6 +25,7 @@ from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj.modifier import ModificationCalculationError
 from eos.item.mixin.solar_system import SolarSystemItemMixin
 from eos.pubsub.message import AttrsValueChanged
+from eos.pubsub.message import AttrsValueChangedMasked
 from eos.pubsub.message import EffectApplied
 from eos.pubsub.message import EffectUnapplied
 from eos.pubsub.message import EffectsStarted
@@ -117,6 +118,7 @@ class CalculationService(BaseSubscriber):
             self.__projections.unregister_solsys_item(item)
 
     def _handle_effects_started(self, msg):
+        attr_changes = {}
         for affector_spec in self.__generate_local_affector_specs(
             msg.item, msg.effect_ids
         ):
@@ -128,12 +130,22 @@ class CalculationService(BaseSubscriber):
             for affectee_item in self.__affections.get_local_affectee_items(
                 affector_spec
             ):
-                del affectee_item.attrs[affector_spec.modifier.affectee_attr_id]
+                attr_id = affector_spec.modifier.affectee_attr_id
+                try:
+                    del affectee_item.attrs[attr_id]
+                except KeyError:
+                    pass
+                else:
+                    attr_ids = attr_changes.setdefault(affectee_item, set())
+                    attr_ids.add(attr_id)
         # Register projectors
         for projector in self.__generate_projectors(msg.item, msg.effect_ids):
             self.__projections.register_projector(projector)
+        if attr_changes:
+            self.__publish_attr_changes(attr_changes)
 
     def _handle_effects_stopped(self, msg):
+        attr_changes = {}
         for affector_spec in self.__generate_local_affector_specs(
             msg.item, msg.effect_ids
         ):
@@ -141,7 +153,14 @@ class CalculationService(BaseSubscriber):
             for affectee_item in self.__affections.get_local_affectee_items(
                 affector_spec
             ):
-                del affectee_item.attrs[affector_spec.modifier.affectee_attr_id]
+                attr_id = affector_spec.modifier.affectee_attr_id
+                try:
+                    del affectee_item.attrs[attr_id]
+                except KeyError:
+                    pass
+                else:
+                    attr_ids = attr_changes.setdefault(affectee_item, set())
+                    attr_ids.add(attr_id)
             # Unregister the affector spec
             self.__affections.unregister_local_affector_spec(affector_spec)
             if isinstance(affector_spec.modifier, BasePythonModifier):
@@ -149,8 +168,11 @@ class CalculationService(BaseSubscriber):
         # Unregister projectors
         for projector in self.__generate_projectors(msg.item, msg.effect_ids):
             self.__projections.unregister_projector(projector)
+        if attr_changes:
+            self.__publish_attr_changes(attr_changes)
 
     def _handle_effect_applied(self, msg):
+        attr_changes = {}
         for affector_spec in self.__generate_projected_affectors(
             msg.item, (msg.effect_id,)
         ):
@@ -161,12 +183,22 @@ class CalculationService(BaseSubscriber):
             for affectee_item in self.__affections.get_projected_affectee_items(
                 affector_spec, msg.tgt_items
             ):
-                del affectee_item.attrs[affector_spec.modifier.affectee_attr_id]
+                attr_id = affector_spec.modifier.affectee_attr_id
+                try:
+                    del affectee_item.attrs[attr_id]
+                except KeyError:
+                    pass
+                else:
+                    attr_ids = attr_changes.setdefault(affectee_item, set())
+                    attr_ids.add(attr_id)
         # Apply projector
         for projector in self.__generate_projectors(msg.item, (msg.effect_id,)):
             self.__projections.apply_projector(projector, msg.tgt_items)
+        if attr_changes:
+            self.__publish_attr_changes(attr_changes)
 
     def _handle_effect_unapplied(self, msg):
+        attr_changes = {}
         for affector_spec in self.__generate_projected_affectors(
             msg.item, (msg.effect_id,)
         ):
@@ -174,13 +206,22 @@ class CalculationService(BaseSubscriber):
             for affectee_item in self.__affections.get_projected_affectee_items(
                 affector_spec, msg.tgt_items
             ):
-                del affectee_item.attrs[affector_spec.modifier.affectee_attr_id]
+                attr_id = affector_spec.modifier.affectee_attr_id
+                try:
+                    del affectee_item.attrs[attr_id]
+                except KeyError:
+                    pass
+                else:
+                    attr_ids = attr_changes.setdefault(affectee_item, set())
+                    attr_ids.add(attr_id)
             # Unregister the affector spec
             self.__affections.unregister_projected_affector(
                 affector_spec, msg.tgt_items)
         # Un-apply projector
         for projector in self.__generate_projectors(msg.item, (msg.effect_id,)):
             self.__projections.unapply_projector(projector, msg.tgt_items)
+        if attr_changes:
+            self.__publish_attr_changes(attr_changes)
 
     # Methods to clear calculated child attributes when parent attributes change
     def _revise_regular_attr_dependents(self, msg):
@@ -191,12 +232,19 @@ class CalculationService(BaseSubscriber):
         attribute map and via affector specs with dogma modifiers. Affector
         specs with python modifiers are processed separately.
         """
+        attr_changes = {}
         for item, attr_ids in msg.attr_changes.items():
             # Remove values of affectee attributes capped by the changing
             # attribute
             for attr_id in attr_ids:
                 for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
-                    del item.attrs[capped_attr_id]
+                    try:
+                        del item.attrs[capped_attr_id]
+                    except KeyError:
+                        pass
+                    else:
+                        attr_ids = attr_changes.setdefault(item, set())
+                        attr_ids.add(capped_attr_id)
             # Force attribute recalculation when local affector spec
             # modification changes
             affections = self.__affections
@@ -215,7 +263,14 @@ class CalculationService(BaseSubscriber):
                 for affectee_item in affections.get_local_affectee_items(
                     affector_spec
                 ):
-                    del affectee_item.attrs[affector_modifier.affectee_attr_id]
+                    attr_id = affector_modifier.affectee_attr_id
+                    try:
+                        del affectee_item.attrs[attr_id]
+                    except KeyError:
+                        pass
+                    else:
+                        attr_ids = attr_changes.setdefault(affectee_item, set())
+                        attr_ids.add(attr_id)
             # Force attribute recalculation when projected affector spec
             # modification changes
             projections = self.__projections
@@ -242,8 +297,15 @@ class CalculationService(BaseSubscriber):
                         affections.get_projected_affectee_items(
                             affector_spec, tgt_items)
                     ):
-                        del affectee_item.attrs[
-                            affector_modifier.affectee_attr_id]
+                        attr_id = affector_modifier.affectee_attr_id
+                        try:
+                            del affectee_item.attrs[attr_id]
+                        except KeyError:
+                            pass
+                        else:
+                            attr_ids = attr_changes.setdefault(
+                                affectee_item, set())
+                            attr_ids.add(attr_id)
             # Force attribute recalculation if changed attribute defines
             # resistance to some effect
             for projector in projections.get_tgt_projectors(item):
@@ -258,8 +320,17 @@ class CalculationService(BaseSubscriber):
                         affections.get_projected_affectee_items(
                             affector_spec, tgt_items)
                     ):
-                        del affectee_item.attrs[
-                            affector_spec.modifier.affectee_attr_id]
+                        attr_id = affector_spec.modifier.affectee_attr_id
+                        try:
+                            del affectee_item.attrs[attr_id]
+                        except KeyError:
+                            pass
+                        else:
+                            attr_ids = attr_changes.setdefault(
+                                affectee_item, set())
+                            attr_ids.add(attr_id)
+        if attr_changes:
+            self.__publish_attr_changes(attr_changes)
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.
@@ -268,6 +339,7 @@ class CalculationService(BaseSubscriber):
         based on contents of the message, they decide that calculated values
         should be removed, we remove values which depend on such modifiers.
         """
+        attr_changes = {}
         # If there's no subscribed affector specs for received message type, do
         # nothing
         msg_type = type(msg)
@@ -283,7 +355,16 @@ class CalculationService(BaseSubscriber):
             for affectee_item in self.__affections.get_local_affectee_items(
                 affector_spec
             ):
-                del affectee_item.attrs[affector_spec.modifier.affectee_attr_id]
+                attr_id = affector_spec.modifier.affectee_attr_id
+                try:
+                    del affectee_item.attrs[attr_id]
+                except KeyError:
+                    pass
+                else:
+                    attr_ids = attr_changes.setdefault(affectee_item, set())
+                    attr_ids.add(attr_id)
+        if attr_changes:
+            self.__publish_attr_changes(attr_changes)
 
     # Message routing
     _handler_map = {
@@ -301,7 +382,7 @@ class CalculationService(BaseSubscriber):
         # any message may result in deleting dependent attributes
         self._revise_python_attr_dependents(msg)
 
-    # Affector-related auxiliary methods
+    # Affector-related methods
     def __generate_local_affector_specs(self, item, effect_ids):
         """Get local affector specs for passed item and effects."""
         affector_specs = set()
@@ -356,7 +437,7 @@ class CalculationService(BaseSubscriber):
         if to_ubsubscribe:
             fit._unsubscribe(self, to_ubsubscribe)
 
-    # Projector-related auxiliary methods
+    # Projector-related methods
     def __generate_projectors(self, item, effect_ids):
         """Get projectors spawned by the item."""
         projectors = set()
@@ -373,3 +454,31 @@ class CalculationService(BaseSubscriber):
             projector = Projector(item, effect)
             projectors.add(projector)
         return projectors
+
+    # Auxiliary methods
+    def __publish_attr_changes(self, attr_changes):
+        # Format: {fit: {item: {attr_ids}}}
+        fit_changes_regular = {}
+        # Format: {fit: {item: {attr_ids}}}
+        fit_changes_masked = {}
+        for item, attr_ids in attr_changes.items():
+            item_fit = item._fit
+            item_attr_overrides = item.attrs._override_callbacks
+            item_changes_regular = attr_ids.intersection(item_attr_overrides)
+            item_changes_masked = attr_ids.difference(item_attr_overrides)
+            if item_changes_regular:
+                fit_changes_regular.setdefault(
+                    item_fit, {})[item] = item_changes_regular
+            if item_changes_masked:
+                fit_changes_masked.setdefault(
+                    item_fit, {})[item] = item_changes_masked
+        # Format: {fit, [messages]}
+        fits_msgs = {}
+        for fit, attr_changes in fit_changes_regular.items():
+            msg = AttrsValueChanged(attr_changes)
+            fits_msgs.setdefault(fit, []).append(msg)
+        for fit, attr_changes in fit_changes_masked.items():
+            msg = AttrsValueChangedMasked(attr_changes)
+            fits_msgs.setdefault(fit, []).append(msg)
+        for fit, msgs in fits_msgs.items():
+            fit._publish_bulk(msgs)
