@@ -29,7 +29,6 @@ from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
 from eos.const.eve import TypeCategoryId
 from eos.pubsub.message import AttrsValueChanged
-from eos.pubsub.message import AttrsValueChangedMasked
 from eos.util.keyed_storage import KeyedStorage
 from .exception import AttrMetadataError
 from .exception import BaseValueError
@@ -151,28 +150,19 @@ class MutableAttrMap:
         for k in self.keys():
             yield k
 
-    def __delitem__(self, attr_id):
-        # Clear the value in our calculated attributes dictionary
+    def _force_recalc(self, attr_id):
+        """
+        Force recalculation of attribute with passed ID.
+
+        Returns:
+            True if attribute was calculated, False if it wasn't.
+        """
         try:
             del self.__modified_attrs[attr_id]
-        # Do nothing if it wasn't calculated
         except KeyError:
-            return
-        # Launch message which notifies that attribute value may change
-        # (normally calculated values are removed if their dependencies change)
+            return False
         else:
-            # Special message type if modified attribute is masked by override.
-            # While exposed value cannot change in this case, underlying
-            # modified value can
-            if (
-                self.__override_callbacks is not None and
-                attr_id in self.__override_callbacks
-            ):
-                self.__publish(
-                    AttrsValueChangedMasked({self.__item: {attr_id}}))
-            else:
-                self.__publish(
-                    AttrsValueChanged({self.__item: {attr_id}}))
+            return True
 
     def get(self, attr_id, default=None):
         # Almost copy-paste of __getitem__ due to performance reasons -
@@ -204,10 +194,13 @@ class MutableAttrMap:
     def items(self):
         return set((attr_id, self.get(attr_id)) for attr_id in self.keys())
 
-    def clear(self):
-        """Reset map to its initial state"""
-        for attr_id in set(self.__modified_attrs):
-            del self[attr_id]
+    def _clear(self):
+        """
+        Reset map to its initial state.
+
+        Overrides are not removed. Messages for cleared attributes are not sent.
+        """
+        self.__modified_attrs.clear()
         self.__cap_map = None
 
     def __calculate(self, attr_id):

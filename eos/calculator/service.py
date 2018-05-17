@@ -131,11 +131,7 @@ class CalculationService(BaseSubscriber):
                 affector_spec
             ):
                 attr_id = affector_spec.modifier.affectee_attr_id
-                try:
-                    del affectee_item.attrs[attr_id]
-                except KeyError:
-                    pass
-                else:
+                if affectee_item.attrs._force_recalc(attr_id):
                     attr_ids = attr_changes.setdefault(affectee_item, set())
                     attr_ids.add(attr_id)
         # Register projectors
@@ -145,6 +141,7 @@ class CalculationService(BaseSubscriber):
             self.__publish_attr_changes(attr_changes)
 
     def _handle_effects_stopped(self, msg):
+        # Remove values of affectee attributes
         attr_changes = {}
         for affector_spec in self.__generate_local_affector_specs(
             msg.item, msg.effect_ids
@@ -154,11 +151,7 @@ class CalculationService(BaseSubscriber):
                 affector_spec
             ):
                 attr_id = affector_spec.modifier.affectee_attr_id
-                try:
-                    del affectee_item.attrs[attr_id]
-                except KeyError:
-                    pass
-                else:
+                if affectee_item.attrs._force_recalc(attr_id):
                     attr_ids = attr_changes.setdefault(affectee_item, set())
                     attr_ids.add(attr_id)
             # Unregister the affector spec
@@ -184,11 +177,7 @@ class CalculationService(BaseSubscriber):
                 affector_spec, msg.tgt_items
             ):
                 attr_id = affector_spec.modifier.affectee_attr_id
-                try:
-                    del affectee_item.attrs[attr_id]
-                except KeyError:
-                    pass
-                else:
+                if affectee_item.attrs._force_recalc(attr_id):
                     attr_ids = attr_changes.setdefault(affectee_item, set())
                     attr_ids.add(attr_id)
         # Apply projector
@@ -207,11 +196,7 @@ class CalculationService(BaseSubscriber):
                 affector_spec, msg.tgt_items
             ):
                 attr_id = affector_spec.modifier.affectee_attr_id
-                try:
-                    del affectee_item.attrs[attr_id]
-                except KeyError:
-                    pass
-                else:
+                if affectee_item.attrs._force_recalc(attr_id):
                     attr_ids = attr_changes.setdefault(affectee_item, set())
                     attr_ids.add(attr_id)
             # Unregister the affector spec
@@ -232,22 +217,18 @@ class CalculationService(BaseSubscriber):
         attribute map and via affector specs with dogma modifiers. Affector
         specs with python modifiers are processed separately.
         """
+        affections = self.__affections
+        projections = self.__projections
         attr_changes = {}
         for item, attr_ids in msg.attr_changes.items():
             # Remove values of affectee attributes capped by the changing
             # attribute
             for attr_id in attr_ids:
                 for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
-                    try:
-                        del item.attrs[capped_attr_id]
-                    except KeyError:
-                        pass
-                    else:
-                        attr_ids = attr_changes.setdefault(item, set())
-                        attr_ids.add(capped_attr_id)
+                    if item.attrs._force_recalc(capped_attr_id):
+                        attr_changes.setdefault(item, set()).add(capped_attr_id)
             # Force attribute recalculation when local affector spec
             # modification changes
-            affections = self.__affections
             for affector_spec in self.__generate_local_affector_specs(
                 item, item._running_effect_ids
             ):
@@ -264,16 +245,11 @@ class CalculationService(BaseSubscriber):
                     affector_spec
                 ):
                     attr_id = affector_modifier.affectee_attr_id
-                    try:
-                        del affectee_item.attrs[attr_id]
-                    except KeyError:
-                        pass
-                    else:
-                        attr_ids = attr_changes.setdefault(affectee_item, set())
-                        attr_ids.add(attr_id)
+                    if affectee_item.attrs._force_recalc(attr_id):
+                        attr_changes.setdefault(affectee_item, set()).add(
+                            attr_id)
             # Force attribute recalculation when projected affector spec
             # modification changes
-            projections = self.__projections
             for projector in self.__generate_projectors(
                 item, item._running_effect_ids
             ):
@@ -298,14 +274,9 @@ class CalculationService(BaseSubscriber):
                             affector_spec, tgt_items)
                     ):
                         attr_id = affector_modifier.affectee_attr_id
-                        try:
-                            del affectee_item.attrs[attr_id]
-                        except KeyError:
-                            pass
-                        else:
-                            attr_ids = attr_changes.setdefault(
-                                affectee_item, set())
-                            attr_ids.add(attr_id)
+                        if affectee_item.attrs._force_recalc(attr_id):
+                            attr_changes.setdefault(affectee_item, set()).add(
+                                attr_id)
             # Force attribute recalculation if changed attribute defines
             # resistance to some effect
             for projector in projections.get_tgt_projectors(item):
@@ -321,14 +292,9 @@ class CalculationService(BaseSubscriber):
                             affector_spec, tgt_items)
                     ):
                         attr_id = affector_spec.modifier.affectee_attr_id
-                        try:
-                            del affectee_item.attrs[attr_id]
-                        except KeyError:
-                            pass
-                        else:
-                            attr_ids = attr_changes.setdefault(
-                                affectee_item, set())
-                            attr_ids.add(attr_id)
+                        if affectee_item.attrs._force_recalc(attr_id):
+                            attr_changes.setdefault(affectee_item, set()).add(
+                                attr_id)
         if attr_changes:
             self.__publish_attr_changes(attr_changes)
 
@@ -356,11 +322,7 @@ class CalculationService(BaseSubscriber):
                 affector_spec
             ):
                 attr_id = affector_spec.modifier.affectee_attr_id
-                try:
-                    del affectee_item.attrs[attr_id]
-                except KeyError:
-                    pass
-                else:
+                if affectee_item.attrs._force_recalc(attr_id):
                     attr_ids = attr_changes.setdefault(affectee_item, set())
                     attr_ids.add(attr_id)
         if attr_changes:
@@ -464,8 +426,8 @@ class CalculationService(BaseSubscriber):
         for item, attr_ids in attr_changes.items():
             item_fit = item._fit
             item_attr_overrides = item.attrs._override_callbacks
-            item_changes_regular = attr_ids.intersection(item_attr_overrides)
-            item_changes_masked = attr_ids.difference(item_attr_overrides)
+            item_changes_regular = attr_ids.difference(item_attr_overrides)
+            item_changes_masked = attr_ids.intersection(item_attr_overrides)
             if item_changes_regular:
                 fit_changes_regular.setdefault(
                     item_fit, {})[item] = item_changes_regular

@@ -274,6 +274,6 @@ class BaseItemMixin(metaclass=ABCMeta):
         if fit is not None and self._is_loaded:
             msgs = MsgHelper.get_item_unloaded_msgs(self)
             fit._publish_bulk(msgs)
-        self.attrs.clear()
+        self.attrs._clear()
         self._clear_autocharges()
         self._type = None
