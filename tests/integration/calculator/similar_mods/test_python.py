@@ -25,7 +25,7 @@ from eos.const.eos import ModOperator
 from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from eos.eve_obj.modifier import BasePythonModifier
-from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import AttrsValueChanged
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 
@@ -49,10 +49,10 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
 
             @property
             def revise_msg_types(self):
-                return {AttrValueChanged}
+                return {AttrsValueChanged}
 
             def revise_modification(self, msg, affector_item):
-                if msg.item is affector_item and msg.attr_id == src_attr_id:
+                if msg.item is affector_item and src_attr_id in msg.attr_ids:
                     return True
                 return False
 

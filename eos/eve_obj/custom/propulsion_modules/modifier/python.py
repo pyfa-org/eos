@@ -27,7 +27,7 @@ from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import ModificationCalculationError
-from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import AttrsValueChanged
 
 
 logger = getLogger(__name__)
@@ -65,22 +65,24 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             mult = 1 + perc / 100
             return ModOperator.post_mul, mult
 
-    def __revise_on_attr_changed(self, msg, mod_item):
+    def __revise_on_attr_changed(self, msg, affector_item):
         """
         If any of the attribute values this modifier relies on is changed, then
         modification value can be changed as well.
         """
-        ship = mod_item._fit.ship
-        if msg.item is ship and msg.attr_id == AttrId.mass:
+        ship = affector_item._fit.ship
+        if msg.item is ship and AttrId.mass in msg.attr_ids:
             return True
-        if msg.item is mod_item and msg.attr_id == AttrId.speed_factor:
-            return True
-        if msg.item is mod_item and msg.attr_id == AttrId.speed_boost_factor:
+        if (
+            msg.item is affector_item and
+            msg.attr_ids.intersection(
+                (AttrId.speed_factor, AttrId.speed_boost_factor))
+        ):
             return True
         return False
 
     __revision_map = {
-        AttrValueChanged: __revise_on_attr_changed}
+        AttrsValueChanged: __revise_on_attr_changed}
 
     @property
     def revise_msg_types(self):

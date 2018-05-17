@@ -22,25 +22,27 @@
 from eos.util.repr import make_repr_str
 
 
-class AttrValueChanged:
+class AttrsValueChanged:
 
-    def __init__(self, item, attr_id):
+    def __init__(self, item, attr_ids):
         self.fit = None
         self.item = item
-        self.attr_id = attr_id
+        # Format: {attr IDs}
+        self.attr_ids = attr_ids
 
     def __repr__(self):
-        spec = ['fit', 'item', 'attr_id']
+        spec = ['fit', 'item', 'attr_ids']
         return make_repr_str(self, spec)
 
 
-class AttrValueChangedMasked:
+class AttrsValueChangedMasked:
 
-    def __init__(self, item, attr_id):
+    def __init__(self, item, attr_ids):
         self.fit = None
         self.item = item
-        self.attr_id = attr_id
+        # Format: {attr IDs}
+        self.attr_ids = attr_ids
 
     def __repr__(self):
-        spec = ['fit', 'item', 'attr_id']
+        spec = ['fit', 'item', 'attr_ids']
         return make_repr_str(self, spec)

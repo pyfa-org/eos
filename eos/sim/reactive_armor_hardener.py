@@ -25,8 +25,8 @@ from logging import getLogger
 
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
-from eos.pubsub.message import AttrValueChanged
-from eos.pubsub.message import AttrValueChangedMasked
+from eos.pubsub.message import AttrsValueChanged
+from eos.pubsub.message import AttrsValueChangedMasked
 from eos.pubsub.message import EffectsStarted
 from eos.pubsub.message import EffectsStopped
 from eos.pubsub.message import RahIncomingDmgChanged
@@ -446,16 +446,16 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     def _handle_attr_changed(self, msg):
         item = msg.item
         # Ship resistances
-        if item is self.__fit.ship and msg.attr_id in res_attr_ids:
+        if item is self.__fit.ship and msg.attr_ids.intersection(res_attr_ids):
             self.__clear_results()
         # RAH resistance shift or cycle time
         elif item in self.__data and (
-            msg.attr_id == AttrId.resist_shift_amount or
+            AttrId.resist_shift_amount in msg.attr_ids or
             # Cycle time change invalidates results only when there're more than
             # 1 RAHs
             (
                 len(self.__data) > 1 and
-                msg.attr_id == self.__get_rah_effect(item).duration_attr_id
+                self.__get_rah_effect(item).duration_attr_id in msg.attr_ids
             )
         ):
             self.__clear_results()
@@ -465,7 +465,7 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
         # (not modified by simulator) values of these attributes change, we
         # should re-run simulator - as now we have different resonance value to
         # base sim results off
-        if msg.item in self.__data and msg.attr_id in res_attr_ids:
+        if msg.item in self.__data and msg.attr_ids.intersection(res_attr_ids):
             self.__clear_results()
 
     def _handle_changed_dmg_profile(self, _):
@@ -474,8 +474,8 @@ class ReactiveArmorHardenerSimulator(BaseSubscriber):
     _handler_map = {
         EffectsStarted: _handle_effects_started,
         EffectsStopped: _handle_effects_stopped,
-        AttrValueChanged: _handle_attr_changed,
-        AttrValueChangedMasked: _handle_attr_changed_masked,
+        AttrsValueChanged: _handle_attr_changed,
+        AttrsValueChangedMasked: _handle_attr_changed_masked,
         RahIncomingDmgChanged: _handle_changed_dmg_profile}
 
     def _notify(self, msg):

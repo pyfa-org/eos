@@ -24,7 +24,7 @@ from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj.modifier import ModificationCalculationError
 from eos.item.mixin.solar_system import SolarSystemItemMixin
-from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import AttrsValueChanged
 from eos.pubsub.message import EffectApplied
 from eos.pubsub.message import EffectUnapplied
 from eos.pubsub.message import EffectsStarted
@@ -192,10 +192,11 @@ class CalculationService(BaseSubscriber):
         specs with python modifiers are processed separately.
         """
         item = msg.item
-        attr_id = msg.attr_id
+        attr_ids = msg.attr_ids
         # Remove values of affectee attributes capped by the changing attribute
-        for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
-            del item.attrs[capped_attr_id]
+        for attr_id in attr_ids:
+            for capped_attr_id in item.attrs._cap_map.get(attr_id, ()):
+                del item.attrs[capped_attr_id]
         # Force attribute recalculation when local affector spec modification
         # changes
         affections = self.__affections
@@ -207,7 +208,7 @@ class CalculationService(BaseSubscriber):
             # modifiers are processed separately
             if (
                 not isinstance(affector_modifier, DogmaModifier) or
-                affector_modifier.affector_attr_id != attr_id
+                affector_modifier.affector_attr_id not in attr_ids
             ):
                 continue
             # Remove values
@@ -234,7 +235,7 @@ class CalculationService(BaseSubscriber):
                 # modifiers are processed separately
                 if (
                     not isinstance(affector_modifier, DogmaModifier) or
-                    affector_modifier.affector_attr_id != attr_id
+                    affector_modifier.affector_attr_id not in attr_ids
                 ):
                     continue
                 for affectee_item in affections.get_projected_affectee_items(
@@ -245,7 +246,7 @@ class CalculationService(BaseSubscriber):
         # to some effect
         for projector in projections.get_tgt_projectors(item):
             effect = projector.effect
-            if attr_id != effect.resist_attr_id:
+            if effect.resist_attr_id not in attr_ids:
                 continue
             tgt_items = projections.get_projector_tgts(projector)
             for affector_spec in self.__generate_projected_affectors(
@@ -289,7 +290,7 @@ class CalculationService(BaseSubscriber):
         EffectsStopped: _handle_effects_stopped,
         EffectApplied: _handle_effect_applied,
         EffectUnapplied: _handle_effect_unapplied,
-        AttrValueChanged: _revise_regular_attr_dependents}
+        AttrsValueChanged: _revise_regular_attr_dependents}
 
     def _notify(self, msg):
         BaseSubscriber._notify(self, msg)

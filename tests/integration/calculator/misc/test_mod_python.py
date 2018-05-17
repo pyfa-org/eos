@@ -29,7 +29,7 @@ from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import ModificationCalculationError
-from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import AttrsValueChanged
 from tests.integration.calculator.testcase import CalculatorTestCase
 
 
@@ -62,13 +62,13 @@ class TestModifierPython(CalculatorTestCase):
 
             @property
             def revise_msg_types(self):
-                return {AttrValueChanged}
+                return {AttrsValueChanged}
 
             def revise_modification(self, msg, affector_item):
                 ship = affector_item._fit.ship
-                if msg.item is affector_item and msg.attr_id == attr2.id:
+                if msg.item is affector_item and attr2.id in msg.attr_ids:
                     return True
-                if msg.item is ship and msg.attr_id == attr3.id:
+                if msg.item is ship and attr3.id in msg.attr_ids:
                     return True
                 return False
 

@@ -26,7 +26,7 @@ from eos.const.eve import AttrId
 from eos.const.eve import TypeId
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import ModificationCalculationError
-from eos.pubsub.message import AttrValueChanged
+from eos.pubsub.message import AttrsValueChanged
 from eos.pubsub.message import ItemAdded
 from eos.pubsub.message import ItemRemoved
 
@@ -54,22 +54,22 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             value = 1
         return ModOperator.post_mul_immune, value
 
-    def __revise_on_item_added_removed(self, msg, mod_item):
+    def __revise_on_item_added_removed(self, msg, affector_item):
         # If added/removed item is charge of effect carrying item and charge is
         # paste, then modification value changes
         if (
-            getattr(mod_item, 'charge', None) is msg.item and
+            getattr(affector_item, 'charge', None) is msg.item and
             msg.item._type_id == TypeId.nanite_repair_paste
         ):
             return True
         return False
 
-    def __revise_on_attr_changed(self, msg, mod_item):
+    def __revise_on_attr_changed(self, msg, affector_item):
         # If armor rep multiplier changes, then result of modification also
         # should change
         if (
-            msg.item is mod_item and
-            msg.attr_id == AttrId.charged_armor_dmg_mult
+            msg.item is affector_item and
+            AttrId.charged_armor_dmg_mult in msg.attr_ids
         ):
             return True
         return False
@@ -77,7 +77,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
     __revision_map = {
         ItemAdded: __revise_on_item_added_removed,
         ItemRemoved: __revise_on_item_added_removed,
-        AttrValueChanged: __revise_on_attr_changed}
+        AttrsValueChanged: __revise_on_attr_changed}
 
     @property
     def revise_msg_types(self):

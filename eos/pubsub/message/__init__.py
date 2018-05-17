@@ -19,8 +19,8 @@
 # ==============================================================================
 
 
-from .attr import AttrValueChanged
-from .attr import AttrValueChangedMasked
+from .attr import AttrsValueChanged
+from .attr import AttrsValueChangedMasked
 from .fit import DefaultIncomingDmgChanged
 from .fit import RahIncomingDmgChanged
 from .item import ItemAdded
