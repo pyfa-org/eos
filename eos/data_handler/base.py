@@ -34,34 +34,103 @@ class BaseDataHandler(metaclass=ABCMeta):
 
     @abstractmethod
     def get_evetypes(self):
+        """
+        Fields:
+            typeID
+            groupID
+            capacity
+            mass
+            radius
+            volume
+        """
         ...
 
     @abstractmethod
     def get_evegroups(self):
+        """
+        Fields:
+            groupID
+            categoryID
+        """
         ...
 
     @abstractmethod
     def get_dgmattribs(self):
+        """
+        Fields:
+            attributeID
+            maxAttributeID
+            defaultValue
+            highIsGood
+            stackable
+        """
         ...
 
     @abstractmethod
     def get_dgmtypeattribs(self):
+        """
+        Fields:
+            typeID
+            attributeID
+            value
+        """
         ...
 
     @abstractmethod
     def get_dgmeffects(self):
+        """
+        Fields:
+            effectID
+            effectCategory
+            isOffensive
+            isAssistance
+            durationAttributeID
+            dischargeAttributeID
+            rangeAttributeID
+            falloffAttributeID
+            trackingSpeedAttributeID
+            fittingUsageChanceAttributeID
+            resistanceID
+            preExpression
+            postExpression
+            modifierInfo
+        """
         ...
 
     @abstractmethod
     def get_dgmtypeeffects(self):
+        """
+        Fields:
+            typeID
+            effectID
+            isDefault
+        """
         ...
 
     @abstractmethod
     def get_dgmexpressions(self):
+        """
+        Fields:
+            expressionID
+            operandID
+            arg1
+            arg2
+            expressionValue
+            expressionTypeID
+            expressionGroupID
+            expressionAttributeID
+        """
         ...
 
     @abstractmethod
     def get_typefighterabils(self):
+        """
+        Fields:
+            typeID
+            abilityID
+            cooldownSeconds
+            chargeCount
+        """
         ...
 
     @abstractmethod
