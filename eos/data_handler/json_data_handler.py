@@ -61,6 +61,14 @@ class JsonDataHandler(BaseDataHandler):
     def get_dgmexpressions(self):
         return self.__fetch_file('dgmexpressions')
 
+    def get_dbuffcollections(self):
+        rows = []
+        dbuffs = self.__fetch_file('dbuffcollections.json')
+        for dbuff_id, row in dbuffs.items():
+            row['dbuffID'] = dbuff_id
+            rows.append(row)
+        return rows
+
     def get_typefighterabils(self):
         rows = []
         fighter_abils = self.__fetch_file('fighterabilitiesbytype')

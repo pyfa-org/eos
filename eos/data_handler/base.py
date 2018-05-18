@@ -123,6 +123,30 @@ class BaseDataHandler(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def get_dbuffcollections(self):
+        """
+        Fields:
+            dbuffID
+            operationName
+            aggregateMode
+            itemModifiers
+                dogmaAttributeID
+            locationModifiers
+                dogmaAttributeID
+            locationGroupModifiers
+                dogmaAttributeID
+                groupID
+            locationRequiredSkillModifiers
+                dogmaAttributeID
+                skillID
+
+        Each data row can contain description of multiple modifiers. Each
+        modifier section is a list of rows, with each row containing specified
+        sub-fields.
+        """
+        ...
+
+    @abstractmethod
     def get_typefighterabils(self):
         """
         Fields:
