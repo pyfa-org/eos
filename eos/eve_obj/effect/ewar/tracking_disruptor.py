@@ -60,6 +60,6 @@ class ShipModuleTrackingDisruptor(Effect):
             falloff_modifier, tracking_speed_modifier)
 
 
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     ShipModuleTrackingDisruptor,
     EffectId.ship_module_tracking_disruptor)

@@ -51,14 +51,14 @@ class EffectFactory:
         return effect
 
     @classmethod
-    def reg_cust_class_by_id(cls, effect_class, effect_id):
+    def register_class_by_id(cls, effect_class, effect_id):
         """Register custom effect class against effect ID."""
         if effect_id in cls._class_id_map:
             raise KeyError('effect ID {} is taken'.format(effect_id))
         cls._class_id_map[effect_id] = effect_class
 
     @classmethod
-    def reg_cust_instance_by_id(cls, cust_func, effect_id):
+    def register_instance_by_id(cls, cust_func, effect_id):
         """Register effect instance customizer against effect ID."""
         cust_funcs = cls._instance_id_map.setdefault(effect_id, set())
         cust_funcs.add(cust_func)

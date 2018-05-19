@@ -44,6 +44,6 @@ class RemoteWebifierFalloff(Effect):
         self.modifiers = (*self.modifiers, modifier)
 
 
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     RemoteWebifierFalloff,
     EffectId.remote_webifier_falloff)

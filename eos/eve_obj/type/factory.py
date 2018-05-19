@@ -26,7 +26,7 @@ class TypeFactory:
     """Produces item types."""
 
     # Functions, which are applied to every item type
-    # Format: {customizing, functions}
+    # Format: {customization, functions}
     _instance_funcs = set()
 
     @classmethod
@@ -46,6 +46,6 @@ class TypeFactory:
         return item_type
 
     @classmethod
-    def reg_cust_instance(cls, cust_func):
+    def register_instance(cls, customization_func):
         """Register effect instance customizer for all item types."""
-        cls._instance_funcs.add(cust_func)
+        cls._instance_funcs.add(customization_func)

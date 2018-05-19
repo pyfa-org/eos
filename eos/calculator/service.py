@@ -19,7 +19,10 @@
 # ==============================================================================
 
 
+from eos.cache_handler import BuffTemplatesFetchError
+from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
+from eos.eve_obj.effect.warfare_buff.base import WarfareBuffEffect
 from eos.eve_obj.modifier import BasePythonModifier
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj.modifier import ModificationCalculationError
@@ -40,6 +43,13 @@ from .misc import Projector
 from .projection import ProjectionRegister
 
 
+WARFARE_BUFF_ATTRS = {
+    AttrId.warfare_buff_1_id: AttrId.warfare_buff_1_value,
+    AttrId.warfare_buff_2_id: AttrId.warfare_buff_2_value,
+    AttrId.warfare_buff_3_id: AttrId.warfare_buff_3_value,
+    AttrId.warfare_buff_4_id: AttrId.warfare_buff_4_value}
+
+
 class CalculationService(BaseSubscriber):
     """Service which supports attribute calculation.
 
@@ -48,9 +58,12 @@ class CalculationService(BaseSubscriber):
     attribute map to calculate modified attribute values.
     """
 
-    def __init__(self):
+    def __init__(self, solar_system):
+        self.__solar_system = solar_system
         self.__affections = AffectionRegister()
         self.__projections = ProjectionRegister()
+        # Format: {projector: {modifiers}}
+        self.__warfare_buffs = KeyedStorage()
         # Container with affector specs which will receive messages
         # Format: {message type: set(affector specs)}
         self.__subscribed_affectors = KeyedStorage()
@@ -118,9 +131,12 @@ class CalculationService(BaseSubscriber):
             self.__projections.unregister_solsys_item(item)
 
     def _handle_effects_started(self, msg):
+        item = msg.item
+        effect_ids = msg.effect_ids
         attr_changes = {}
+        effect_applications = []
         for affector_spec in self.__generate_local_affector_specs(
-            msg.item, msg.effect_ids
+            item, effect_ids
         ):
             # Register the affector spec
             if isinstance(affector_spec.modifier, BasePythonModifier):
@@ -135,14 +151,68 @@ class CalculationService(BaseSubscriber):
                     attr_ids = attr_changes.setdefault(affectee_item, set())
                     attr_ids.add(attr_id)
         # Register projectors
-        for projector in self.__generate_projectors(msg.item, msg.effect_ids):
+        for projector in self.__generate_projectors(item, effect_ids):
             self.__projections.register_projector(projector)
+        # Register warfare buffs
+        for effect_id in effect_ids:
+            effect = item._type_effects[effect_id]
+            if not isinstance(effect, WarfareBuffEffect):
+                continue
+            projector = Projector(item, effect)
+            for buff_id_attr_id in WARFARE_BUFF_ATTRS:
+                try:
+                    buff_id = item.attrs[buff_id_attr_id]
+                except KeyError:
+                    continue
+                getter = (
+                    self.__solar_system.source.cache_handler.get_buff_templates)
+                try:
+                    buff_templates = getter(buff_id)
+                except BuffTemplatesFetchError:
+                    continue
+                affector_attr_id = WARFARE_BUFF_ATTRS[buff_id_attr_id]
+                if not buff_templates:
+                    continue
+                for buff_template in buff_templates:
+                    modifier = DogmaModifier._make_from_buff_template(
+                        buff_template, affector_attr_id)
+                    affector_spec = AffectorSpec(item, effect, modifier)
+                    self.__warfare_buffs.add_data_entry(
+                        projector, affector_spec)
+                tgt_ships = []
+                for tgt_fit in self.__solar_system.fits:
+                    tgt_ship = tgt_fit.ship
+                    if tgt_ship is not None:
+                        tgt_ships.append(tgt_ship)
+                effect_applications.append((projector, tgt_ships))
         if attr_changes:
             self.__publish_attr_changes(attr_changes)
+        if effect_applications:
+            msgs = []
+            for projector, tgt_items in effect_applications:
+                msgs.append(EffectApplied(
+                    projector.item, projector.effect.id, tgt_items))
+                msg.fit._publish_bulk(msgs)
 
     def _handle_effects_stopped(self, msg):
         # Remove values of affectee attributes
         attr_changes = {}
+        effect_unapplications = []
+        for projector in self.__generate_projectors(msg.item, msg.effect_ids):
+            if projector not in self.__warfare_buffs:
+                continue
+            tgt_ships = []
+            for tgt_fit in self.__solar_system.fits:
+                tgt_ship = tgt_fit.ship
+                if tgt_ship is not None:
+                    tgt_ships.append(tgt_ship)
+            effect_unapplications.append((projector, tgt_ships))
+        if effect_unapplications:
+            msgs = []
+            for projector, tgt_items in effect_unapplications:
+                msgs.append(EffectUnapplied(
+                    projector.item, projector.effect.id, tgt_items))
+                msg.fit._publish_bulk(msgs)
         for affector_spec in self.__generate_local_affector_specs(
             msg.item, msg.effect_ids
         ):
@@ -362,6 +432,9 @@ class CalculationService(BaseSubscriber):
         item_effects = item._type_effects
         for effect_id in effect_ids:
             effect = item_effects[effect_id]
+            projector = Projector(item, effect)
+            if projector in self.__warfare_buffs:
+                affector_specs.update(self.__warfare_buffs[projector])
             for modifier in effect.projected_modifiers:
                 affector_spec = AffectorSpec(item, effect, modifier)
                 affector_specs.add(affector_spec)
@@ -406,15 +479,15 @@ class CalculationService(BaseSubscriber):
         item_effects = item._type_effects
         for effect_id in effect_ids:
             effect = item_effects[effect_id]
-            if effect.category_id != EffectCategoryId.target:
-                continue
-            # While projectors which carry no modifiers are technically
-            # projectors, calculator doesn't care about them, thus it makes no
-            # sense to generate and store them
-            if not effect.projected_modifiers:
-                continue
-            projector = Projector(item, effect)
-            projectors.add(projector)
+            if (
+                (
+                    effect.category_id == EffectCategoryId.target and
+                    effect.projected_modifiers
+                ) or
+                isinstance(effect, WarfareBuffEffect)
+            ):
+                projector = Projector(item, effect)
+                projectors.add(projector)
         return projectors
 
     # Auxiliary methods

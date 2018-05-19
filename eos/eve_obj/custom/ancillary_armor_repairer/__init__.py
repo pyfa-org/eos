@@ -34,4 +34,4 @@ def add_aar_paste_effect(item_type):
         item_type.effects[paste_effect.id] = paste_effect
 
 
-TypeFactory.reg_cust_instance(add_aar_paste_effect)
+TypeFactory.register_instance(add_aar_paste_effect)

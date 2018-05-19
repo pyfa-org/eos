@@ -68,6 +68,6 @@ class ShipModuleGundanceDisruptor(Effect):
             explosion_delay_modifier)
 
 
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     ShipModuleGundanceDisruptor,
     EffectId.ship_module_guidance_disruptor)

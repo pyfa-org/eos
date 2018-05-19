@@ -20,6 +20,7 @@
 
 
 from .exception import AttrFetchError
+from .exception import BuffTemplatesFetchError
 from .exception import EffectFetchError
 from .exception import TypeFetchError
 from .json_cache_handler import JsonCacheHandler

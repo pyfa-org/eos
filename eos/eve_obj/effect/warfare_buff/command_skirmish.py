@@ -19,30 +19,16 @@
 # ==============================================================================
 
 
-"""
-In CCP dogma code, 'online' effect has custom processing. Actual effect has
-'active' effect category, which lets all item types with it to be in active
-state according to eos' effect handling. We do not want any special processing,
-thus just fix it here.
-"""
-
-
-from logging import getLogger
-
-from eos.const.eve import EffectCategoryId
 from eos.const.eve import EffectId
 from eos.eve_obj.effect import EffectFactory
+from .base import WarfareBuffEffect
 
 
-logger = getLogger(__name__)
+class ModuleBonusWarfareLinkSkirmish(WarfareBuffEffect):
+
+        friendly_only = True
 
 
-def fix_online_category(effect):
-    if effect.category_id == EffectCategoryId.online:
-        msg = 'online effect category does not need to be adjusted'
-        logger.info(msg)
-    else:
-        effect.category_id = EffectCategoryId.online
-
-
-EffectFactory.register_instance_by_id(fix_online_category, EffectId.online)
+EffectFactory.register_class_by_id(
+    ModuleBonusWarfareLinkSkirmish,
+    EffectId.module_bonus_warfare_link_skirmish)

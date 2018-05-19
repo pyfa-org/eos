@@ -40,4 +40,4 @@ def add_missile_dmg_effect(item_type):
         item_type.effects[missile_dmg_effect.id] = missile_dmg_effect
 
 
-TypeFactory.reg_cust_instance(add_missile_dmg_effect)
+TypeFactory.register_instance(add_missile_dmg_effect)

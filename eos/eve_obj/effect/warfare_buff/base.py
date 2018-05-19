@@ -19,30 +19,15 @@
 # ==============================================================================
 
 
-"""
-In CCP dogma code, 'online' effect has custom processing. Actual effect has
-'active' effect category, which lets all item types with it to be in active
-state according to eos' effect handling. We do not want any special processing,
-thus just fix it here.
-"""
+from abc import ABCMeta
+from abc import abstractmethod
+
+from eos.eve_obj.effect import Effect
 
 
-from logging import getLogger
+class WarfareBuffEffect(Effect, metaclass=ABCMeta):
 
-from eos.const.eve import EffectCategoryId
-from eos.const.eve import EffectId
-from eos.eve_obj.effect import EffectFactory
-
-
-logger = getLogger(__name__)
-
-
-def fix_online_category(effect):
-    if effect.category_id == EffectCategoryId.online:
-        msg = 'online effect category does not need to be adjusted'
-        logger.info(msg)
-    else:
-        effect.category_id = EffectCategoryId.online
-
-
-EffectFactory.register_instance_by_id(fix_online_category, EffectId.online)
+    @property
+    @abstractmethod
+    def friendly_only(self):
+        ...

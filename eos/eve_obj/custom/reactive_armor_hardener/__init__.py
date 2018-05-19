@@ -38,6 +38,6 @@ def add_rah_modifiers(effect):
     effect.build_status = EffectBuildStatus.custom
 
 
-EffectFactory.reg_cust_instance_by_id(
+EffectFactory.register_instance_by_id(
     add_rah_modifiers,
     EffectId.adaptive_armor_hardener)

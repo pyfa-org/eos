@@ -52,9 +52,9 @@ def add_mwd_modifiers(effect):
     effect.build_status = EffectBuildStatus.custom
 
 
-EffectFactory.reg_cust_instance_by_id(
+EffectFactory.register_instance_by_id(
     add_ab_modifiers,
     EffectId.module_bonus_afterburner)
-EffectFactory.reg_cust_instance_by_id(
+EffectFactory.register_instance_by_id(
     add_mwd_modifiers,
     EffectId.module_bonus_microwarpdrive)

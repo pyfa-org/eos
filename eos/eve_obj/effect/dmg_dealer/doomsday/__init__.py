@@ -24,15 +24,15 @@ from eos.eve_obj.effect import EffectFactory
 from .direct_dmg import DoomsdayDirect
 
 
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     DoomsdayDirect,
     EffectId.super_weapon_amarr)
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     DoomsdayDirect,
     EffectId.super_weapon_caldari)
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     DoomsdayDirect,
     EffectId.super_weapon_gallente)
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     DoomsdayDirect,
     EffectId.super_weapon_minmatar)

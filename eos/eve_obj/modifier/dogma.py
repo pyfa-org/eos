@@ -22,6 +22,7 @@
 from numbers import Integral
 
 from eos.const.eos import ModAggregateMode
+from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
@@ -59,6 +60,18 @@ class DogmaModifier(BaseModifier):
         self.aggregate_mode = aggregate_mode
         self.aggregate_key = aggregate_key
         self.affector_attr_id = affector_attr_id
+
+    @classmethod
+    def _make_from_buff_template(cls, buff_template, affector_attr_id):
+        return cls(
+            affectee_filter=buff_template.affectee_filter,
+            affectee_filter_extra_arg=buff_template.affectee_filter_extra_arg,
+            affectee_domain=ModDomain.target,
+            affectee_attr_id=buff_template.affectee_attr_id,
+            operator=buff_template.operator,
+            aggregate_mode=buff_template.aggregate_mode,
+            aggregate_key=buff_template.buff_id,
+            affector_attr_id=affector_attr_id)
 
     def get_modification(self, affector_item):
         try:

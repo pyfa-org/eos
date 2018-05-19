@@ -39,6 +39,6 @@ class EmpWave(DmgDealerEffect):
         raise NotImplementedError
 
 
-EffectFactory.reg_cust_class_by_id(
+EffectFactory.register_class_by_id(
     EmpWave,
     EffectId.emp_wave)
