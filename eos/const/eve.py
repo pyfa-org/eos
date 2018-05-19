@@ -167,6 +167,15 @@ class AttrId(IntEnum):
     fighter_ability_kamikaze_dmg_therm = 2326
     fighter_ability_kamikaze_dmg_kin = 2327
     fighter_ability_kamikaze_dmg_expl = 2328
+    # Warfare buffs
+    warfare_buff_1_id = 2468
+    warfare_buff_1_value = 2469
+    warfare_buff_2_id = 2470
+    warfare_buff_2_value = 2471
+    warfare_buff_3_id = 2472
+    warfare_buff_3_value = 2473
+    warfare_buff_4_id = 2536
+    warfare_buff_4_value = 2537
     # Misc
     agility = 70
     aoe_cloud_size = 654

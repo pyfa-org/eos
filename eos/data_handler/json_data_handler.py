@@ -63,9 +63,9 @@ class JsonDataHandler(BaseDataHandler):
 
     def get_dbuffcollections(self):
         rows = []
-        dbuffs = self.__fetch_file('dbuffcollections.json')
-        for dbuff_id, row in dbuffs.items():
-            row['dbuffID'] = dbuff_id
+        dbuffs = self.__fetch_file('dbuffcollections')
+        for buff_id, row in dbuffs.items():
+            row['buffID'] = int(buff_id)
             rows.append(row)
         return rows
 

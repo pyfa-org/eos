@@ -28,7 +28,6 @@ from collections.abc import Iterable
 from eos.const.eve import AttrId
 from eos.const.eve import TypeCategoryId
 from eos.const.eve import TypeGroupId
-from eos.util.cached_property import cached_property
 
 
 logger = getLogger(__name__)
@@ -134,7 +133,9 @@ class Cleaner:
         tgt_data = {}
         self._get_tgts_relational(tgt_data)
         self._get_tgts_yaml(tgt_data)
-        self._get_tgts_autocharge(tgt_data)
+        self._get_tgts_attr_autocharge(tgt_data)
+        self._get_tgts_attr_buff(tgt_data)
+        self._get_tgts_buff(tgt_data)
         # Now, when we have all the target data values, we may look for rows,
         # which have matching values, and restore them
         for tgt_spec, tgt_values in tgt_data.items():
@@ -213,10 +214,11 @@ class Cleaner:
                 contents should specify target field and which values this field
                 should have.
         """
+        yaml_relations = self._yaml_modinfo_relations()
         for effect_row in self.data['dgmeffects']:
             effect_id = effect_row['effectID']
             try:
-                relations = self._yaml_modinfo_relations[effect_id]
+                relations = yaml_relations[effect_id]
             except KeyError:
                 continue
             type_ids, group_ids, attr_ids = relations
@@ -231,7 +233,6 @@ class Cleaner:
                     tgt_spec = (tgt_table_name, tgt_column_name)
                     tgt_data.setdefault(tgt_spec, set()).update(references)
 
-    @cached_property
     def _yaml_modinfo_relations(self):
         """Helper method for YAML reference getter.
 
@@ -291,8 +292,8 @@ class Cleaner:
             relations[effect_row['effectID']] = (type_ids, group_ids, attr_ids)
         return relations
 
-    def _get_tgts_autocharge(self, tgt_data):
-        """Find out which types are referred via 'ammo loaded' attribute.
+    def _get_tgts_attr_autocharge(self, tgt_data):
+        """Find out which types are referred via 'ammo loaded' attributes.
 
         Some item types specify which ammo is loaded into them, and here we
         ensure these ammo types are kept.
@@ -303,17 +304,80 @@ class Cleaner:
                 should have.
         """
         for row in self.data['dgmtypeattribs']:
-            if row.get('attributeID') not in (
+            if row['attributeID'] not in (
                 AttrId.ammo_loaded,
                 AttrId.fighter_ability_launch_bomb_type
             ):
                 continue
+            value = row.get('value')
             try:
-                ammo_type_id = int(row.get('value'))
+                ammo_type_id = int(value)
             except TypeError:
                 continue
             tgt_spec = ('evetypes', 'typeID')
             tgt_data.setdefault(tgt_spec, set()).add(ammo_type_id)
+
+    def _get_tgts_attr_buff(self, tgt_data):
+        """Find out which warfare buffs are referenced from item types we keep.
+
+        Args:
+            tgt_data: Dictionary which will be filled during the process. Its
+                contents should specify target field and which values this field
+                should have.
+        """
+        for row in self.data['dgmtypeattribs']:
+            if row['attributeID'] not in (
+                AttrId.warfare_buff_1_id,
+                AttrId.warfare_buff_2_id,
+                AttrId.warfare_buff_3_id,
+                AttrId.warfare_buff_4_id
+            ):
+                continue
+            value = row.get('value')
+            try:
+                buff_id = int(value)
+            except TypeError:
+                continue
+            tgt_spec = ('dbuffcollections', 'buffID')
+            tgt_data.setdefault(tgt_spec, set()).add(buff_id)
+
+    def _get_tgts_buff(self, tgt_data):
+        """Find out which entities are used in warfare buff data.
+
+        Args:
+            tgt_data: Dictionary which will be filled during the process. Its
+                contents should specify target field and which values this field
+                should have.
+        """
+        def add_attr(mod_row):
+            attr_id = mod_row.get('dogmaAttributeID')
+            if attr_id is not None:
+                tgt_spec = ('dgmattribs', 'attributeID')
+                tgt_data.setdefault(tgt_spec, set()).add(attr_id)
+
+        def add_group(mod_row):
+            group_id = mod_row.get('groupID')
+            if group_id is not None:
+                tgt_spec = ('evegroups', 'groupID')
+                tgt_data.setdefault(tgt_spec, set()).add(group_id)
+
+        def add_type(mod_row):
+            type_id = mod_row.get('skillID')
+            if type_id is not None:
+                tgt_spec = ('evetypes', 'typeID')
+                tgt_data.setdefault(tgt_spec, set()).add(type_id)
+
+        for row in self.data['dbuffcollections']:
+            for mod_row in row['itemModifiers']:
+                add_attr(mod_row)
+            for mod_row in row['locationModifiers']:
+                add_attr(mod_row)
+            for mod_row in row['locationGroupModifiers']:
+                add_attr(mod_row)
+                add_group(mod_row)
+            for mod_row in row['locationRequiredSkillModifiers']:
+                add_attr(mod_row)
+                add_type(mod_row)
 
     def _report_results(self):
         """Log cleanup results."""

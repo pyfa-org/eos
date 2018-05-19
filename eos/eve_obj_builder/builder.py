@@ -30,8 +30,8 @@ from .validator_preconv import ValidatorPreConv
 class EveObjBuilder:
     """Builds Eos-specific eve objects from passed data."""
 
-    @staticmethod
-    def run(data_handler):
+    @classmethod
+    def run(cls, data_handler):
         """Run eve object building process.
 
         Use data provided by passed cache handler to compose various objects
@@ -58,6 +58,7 @@ class EveObjBuilder:
             'dgmeffects': data_handler.get_dgmeffects,
             'dgmtypeeffects': data_handler.get_dgmtypeeffects,
             'dgmexpressions': data_handler.get_dgmexpressions,
+            'dbuffcollections': data_handler.get_dbuffcollections,
             'typefighterabils': data_handler.get_typefighterabils}
 
         for table_name, getter in getter_map.items():
@@ -70,7 +71,7 @@ class EveObjBuilder:
                 # data, write position to each row
                 row['table_pos'] = table_pos
                 table_pos += 1
-                table.add(frozendict(row))
+                table.add(cls._freeze_data(row))
             data[table_name] = table
 
         # Run pre-cleanup checks, as cleanup stage and further stages rely on
@@ -91,3 +92,16 @@ class EveObjBuilder:
         types, attrs, effects = Converter.run(data)
 
         return types, attrs, effects
+
+    @classmethod
+    def _freeze_data(cls, data):
+        if isinstance(data, dict):
+            return frozendict({
+                cls._freeze_data(k): cls._freeze_data(v)
+                for k, v
+                in data.items()})
+        if isinstance(data, list):
+            return tuple([cls._freeze_data(d) for d in data])
+        if isinstance(data, set):
+            return frozenset([cls._freeze_data(d) for d in data])
+        return data

@@ -126,7 +126,7 @@ class BaseDataHandler(metaclass=ABCMeta):
     def get_dbuffcollections(self):
         """
         Fields:
-            dbuffID
+            buffID
             operationName
             aggregateMode
             itemModifiers

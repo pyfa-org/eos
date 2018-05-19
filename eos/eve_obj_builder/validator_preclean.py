@@ -41,14 +41,15 @@ class ValidatorPreClean:
         """
         # Format: {table name: (primary, keys)}
         pk_spec = {
-            'dgmattribs': ('attributeID',),
-            'dgmeffects': ('effectID',),
-            'dgmexpressions': ('expressionID',),
-            'dgmtypeattribs': ('typeID', 'attributeID'),
-            'dgmtypeeffects': ('typeID', 'effectID'),
-            'evegroups': ('groupID',),
-            'evetypes': ('typeID',),
-            'typefighterabils': ('typeID', 'abilityID')}
+            'dgmattribs': ['attributeID'],
+            'dgmeffects': ['effectID'],
+            'dgmexpressions': ['expressionID'],
+            'dgmtypeattribs': ['typeID', 'attributeID'],
+            'dgmtypeeffects': ['typeID', 'effectID'],
+            'evegroups': ['groupID'],
+            'evetypes': ['typeID'],
+            'dbuffcollections': ['buffID'],
+            'typefighterabils': ['typeID', 'abilityID']}
         for table_name, pks in pk_spec.items():
             ValidatorPreClean._table_pk(pks, data[table_name], table_name)
 
