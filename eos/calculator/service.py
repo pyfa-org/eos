@@ -157,6 +157,7 @@ class CalculationService(BaseSubscriber):
             self.__projections.register_projector(projector)
         # Register warfare buffs
         effect_applications = []
+        item_fleet = msg.fit.fleet
         for effect_id in effect_ids:
             effect = item._type_effects[effect_id]
             if not isinstance(effect, WarfareBuffEffect):
@@ -184,9 +185,13 @@ class CalculationService(BaseSubscriber):
                         projector, affector_spec)
                 tgt_ships = []
                 for tgt_fit in self.__solar_system.fits:
-                    tgt_ship = tgt_fit.ship
-                    if tgt_ship is not None:
-                        tgt_ships.append(tgt_ship)
+                    if (
+                        tgt_fit is msg.fit or
+                        (item_fleet is not None and tgt_fit.fleet is item_fleet)
+                    ):
+                        tgt_ship = tgt_fit.ship
+                        if tgt_ship is not None:
+                            tgt_ships.append(tgt_ship)
                 effect_applications.append((projector, tgt_ships))
         if attr_changes:
             self.__publish_attr_changes(attr_changes)
@@ -395,6 +400,7 @@ class CalculationService(BaseSubscriber):
         for item, attr_ids in msg.attr_changes.items():
             if not attr_ids.intersection(WARFARE_BUFF_ATTRS):
                 continue
+            item_fleet = item._fit.fleet
             for effect_id in item._running_effect_ids:
                 effect = item._type_effects[effect_id]
                 if not isinstance(effect, WarfareBuffEffect):
@@ -423,9 +429,13 @@ class CalculationService(BaseSubscriber):
                             projector, affector_spec)
                     tgt_ships = []
                     for tgt_fit in self.__solar_system.fits:
-                        tgt_ship = tgt_fit.ship
-                        if tgt_ship is not None:
-                            tgt_ships.append(tgt_ship)
+                        if (
+                            tgt_fit is msg.fit or
+                            (item_fleet is not None and tgt_fit.fleet is item_fleet)
+                        ):
+                            tgt_ship = tgt_fit.ship
+                            if tgt_ship is not None:
+                                tgt_ships.append(tgt_ship)
                     effect_applications.append((projector, tgt_ships))
         if attr_changes:
             self.__publish_attr_changes(attr_changes)

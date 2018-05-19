@@ -86,6 +86,8 @@ class Fit(FitMsgBroker):
 
     def __init__(self, solar_system=DEFAULT, fleet=None):
         FitMsgBroker.__init__(self)
+        self._solar_system = None
+        self._fleet = None
         self.__incoming_dmg_default = None
         self.__incoming_dmg_rah = None
         # Character-related item containers
@@ -113,13 +115,11 @@ class Fit(FitMsgBroker):
         # to make sure it's part of it
         self.character = Character(TypeId.character_static)
         # Add fit to solar system
-        self._solar_system = None
         if solar_system is DEFAULT:
             solar_system = SolarSystem()
         if solar_system is not None:
             solar_system.fits.add(self)
         # Add fit to fleet
-        self._fleet = None
         if fleet is not None:
             fleet.fits.add(self)
 

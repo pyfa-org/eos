@@ -24,6 +24,7 @@ __all__ = [
     'EffectMode', 'Restriction', 'State',
     'JsonDataHandler', 'SQLiteDataHandler',
     'Fit',
+    'Fleet',
     'Booster', 'Character', 'Charge', 'Drone', 'EffectBeacon', 'FighterSquad',
     'Implant', 'ModuleHigh', 'ModuleMid', 'ModuleLow', 'Rig', 'Ship', 'Skill',
     'Stance', 'Subsystem',
@@ -45,6 +46,7 @@ from eos.const.eos import State
 from eos.data_handler import JsonDataHandler
 from eos.data_handler import SQLiteDataHandler
 from eos.fit import Fit
+from eos.fleet import Fleet
 from eos.item import Booster
 from eos.item import Character
 from eos.item import Charge
