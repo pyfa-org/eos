@@ -25,11 +25,11 @@ class FitSet:
     Implements set-like interface.
 
     Args:
-        solar_system: Solar system this container is attached to.
+        fleet: Fleet this container is attached to.
     """
 
-    def __init__(self, solar_system):
-        self.__solar_system = solar_system
+    def __init__(self, fleet):
+        self.__fleet = fleet
         self.__set = set()
 
     # Modifying methods
@@ -41,14 +41,12 @@ class FitSet:
 
         Raises:
             ValueError: If fit cannot be added to the container (e.g. already
-                belongs to some solar system).
+                belongs to some fleet).
         """
-        if fit._solar_system is not None:
+        if fit._fleet is not None:
             raise ValueError(fit)
         self.__set.add(fit)
-        fit._solar_system = self.__solar_system
-        self.__solar_system._calculator._handle_fit_added(fit)
-        fit._load_items()
+        fit._fleet = self.__fleet
 
     def remove(self, fit):
         """Remove fit from the container.
@@ -70,10 +68,8 @@ class FitSet:
             self.__handle_fit_removal(fit)
 
     def __handle_fit_removal(self, fit):
-        fit._unload_items()
-        self.__solar_system._calculator._handle_fit_removed(fit)
         self.__set.remove(fit)
-        fit._solar_system = None
+        fit._fleet = None
 
     # Non-modifying methods
     def __iter__(self):

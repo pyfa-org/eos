@@ -49,6 +49,7 @@ from eos.sim import ReactiveArmorHardenerSimulator
 from eos.solar_system import SolarSystem
 from eos.stats import StatService
 from eos.stats_container import DmgProfile
+from eos.util.default import DEFAULT
 from eos.util.repr import make_repr_str
 
 
@@ -61,6 +62,8 @@ class Fit(FitMsgBroker):
     Args:
         solar_system (optional): Assign instantiated fit to this solar system.
             If not specified, new solar system is created.
+        fleet (optional): Assign fit to fleet. If not specified, fit is not
+            assigned to any fleets.
 
     Attributes:
         ship: Access point for ship.
@@ -81,7 +84,7 @@ class Fit(FitMsgBroker):
             point.
     """
 
-    def __init__(self, solar_system=None):
+    def __init__(self, solar_system=DEFAULT, fleet=None):
         FitMsgBroker.__init__(self)
         self.__incoming_dmg_default = None
         self.__incoming_dmg_rah = None
@@ -110,10 +113,15 @@ class Fit(FitMsgBroker):
         # to make sure it's part of it
         self.character = Character(TypeId.character_static)
         # Add fit to solar system
-        self.solar_system = None
-        if solar_system is None:
+        self._solar_system = None
+        if solar_system is DEFAULT:
             solar_system = SolarSystem()
-        solar_system.fits.add(self)
+        if solar_system is not None:
+            solar_system.fits.add(self)
+        # Add fit to fleet
+        self._fleet = None
+        if fleet is not None:
+            fleet.fits.add(self)
 
     character = ItemDescriptor('__character', Character)
     ship = ItemDescriptor('__ship', Ship)
@@ -133,6 +141,14 @@ class Fit(FitMsgBroker):
                 restriction service docs for format of the data.
         """
         self._restriction.validate(skip_checks)
+
+    @property
+    def solar_system(self):
+        return self._solar_system
+
+    @property
+    def fleet(self):
+        return self._fleet
 
     @property
     def default_incoming_dmg(self):
