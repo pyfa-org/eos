@@ -268,6 +268,10 @@ class EffectId(IntEnum):
     module_bonus_afterburner = 6731
     module_bonus_ancillary_remote_armor_repairer = 6651
     module_bonus_microwarpdrive = 6730
+    module_bonus_warfare_link_armor = 6732
+    module_bonus_warfare_link_info = 6735
+    module_bonus_warfare_link_mining = 6736
+    module_bonus_warfare_link_shield = 6733
     module_bonus_warfare_link_skirmish = 6734
     online = 16
     projectile_fired = 34
