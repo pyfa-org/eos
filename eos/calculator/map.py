@@ -25,6 +25,7 @@ from itertools import chain
 from logging import getLogger
 
 from eos.cache_handler import AttrFetchError
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
 from eos.const.eve import TypeCategoryId
@@ -244,17 +245,21 @@ class MutableAttrMap:
                 ).format(attr_id, item._type_id)
                 logger.info(msg)
                 raise BaseValueError(attr_id)
-        # Container for non-penalized modifications
         # Format: {operator: [values]}
-        normal_mods = {}
-        # Container for penalized modifications
+        stack = {}
         # Format: {operator: [values]}
-        penalized_mods = {}
+        stack_penalized = {}
+        # Format: {(operator, aggregate key): [(value, penalize)]}
+        aggregate_min = {}
+        # Format: {(operator, aggregate key): [(value, penalize)]}
+        aggregate_max = {}
         # Now, go through all affectors affecting our item
-        for mod_data in item._fit.solar_system._calculator.get_modifications(
-            item, attr_id
+        for (
+            mod_operator, mod_value, resist_value,
+            mod_aggregate_mode, mod_aggregate_key, affector_item) in (
+                item._fit.solar_system._calculator.get_modifications(
+                    item, attr_id)
         ):
-            mod_operator, mod_value, resist_value, affector_item = mod_data
             # Normalize operations to just three types: assignments, additions,
             # reduced multiplications
             try:
@@ -275,20 +280,41 @@ class MutableAttrMap:
                 affector_item._type.category_id not in
                 PENALTY_IMMUNE_CATEGORY_IDS and
                 mod_operator in PENALIZABLE_OPERATORS)
-            if penalize:
-                mod_values = penalized_mods.setdefault(mod_operator, [])
-            else:
-                mod_values = normal_mods.setdefault(mod_operator, [])
-            mod_values.append(mod_value)
+            if mod_aggregate_mode == ModAggregateMode.stack:
+                if penalize:
+                    stack_penalized.setdefault(mod_operator, []).append(
+                        mod_value)
+                else:
+                    stack.setdefault(mod_operator, []).append(mod_value)
+            elif mod_aggregate_mode == ModAggregateMode.minimum:
+                aggregate_min.setdefault(
+                    (mod_operator, mod_aggregate_key), []).append(
+                    (mod_value, penalize))
+            elif mod_aggregate_mode == ModAggregateMode.maximum:
+                aggregate_max.setdefault(
+                    (mod_operator, mod_aggregate_key), []).append(
+                    (mod_value, penalize))
+        for container, aggregate_func, sort_func in (
+            (aggregate_min, min, lambda i: (i[0], i[1])),
+            (aggregate_max, max, lambda i: (i[0], not i[1]))
+        ):
+            for k, v in container.items():
+                mod_operator = k[0]
+                mod_value, penalize = aggregate_func(v, key=sort_func)
+                if penalize:
+                    stack_penalized.setdefault(mod_operator, []).append(
+                        mod_value)
+                else:
+                    stack.setdefault(mod_operator, []).append(mod_value)
         # When data gathering is complete, process penalized modifications. They
         # are penalized on per-operator basis
-        for mod_operator, mod_values in penalized_mods.items():
+        for mod_operator, mod_values in stack_penalized.items():
             penalized_value = self.__penalize_values(mod_values)
-            normal_mods.setdefault(mod_operator, []).append(penalized_value)
+            stack.setdefault(mod_operator, []).append(penalized_value)
         # Calculate value of non-penalized modifications, according to operator
         # order
-        for mod_operator in sorted(normal_mods):
-            mod_values = normal_mods[mod_operator]
+        for mod_operator in sorted(stack):
+            mod_values = stack[mod_operator]
             # Pick best modification for assignments, based on high_is_good
             # value
             if mod_operator in ASSIGNMENT_OPERATORS:
@@ -297,11 +323,11 @@ class MutableAttrMap:
                 else:
                     value = min(mod_values)
             elif mod_operator in ADDITION_OPERATORS:
-                for mod_val in mod_values:
-                    value += mod_val
+                for mod_value in mod_values:
+                    value += mod_value
             elif mod_operator in MULTIPLICATION_OPERATORS:
-                for mod_val in mod_values:
-                    value *= 1 + mod_val
+                for mod_value in mod_values:
+                    value *= 1 + mod_value
         # If attribute has upper cap, do not let its value to grow above it
         if attr.max_attr_id is not None:
             try:

@@ -21,6 +21,7 @@
 
 from copy import copy
 
+from eos.const.eos import ModAggregateMode
 from eos.const.eve import AttrId
 from eos.eve_obj.modifier import DogmaModifier
 from eos.item import Skill
@@ -119,7 +120,7 @@ class IntegrationTestCase(EosTestCase):
             src = SourceManager.get(src)
         return src.cache_handler.mkeffect(*args, **kwargs)
 
-    def mkmod(self, *args, **kwargs):
+    def mkmod(self, **kwargs):
         """Shortcut to instantiating dogma modifier.
 
         Args:
@@ -130,7 +131,7 @@ class IntegrationTestCase(EosTestCase):
         Returns:
             Dogma modifier.
         """
-        return DogmaModifier(*args, **kwargs)
+        return DogmaModifier(aggregate_mode=ModAggregateMode.stack, **kwargs)
 
     def allocate_type_id(self, *srcs):
         """Allocate item type ID which is not taken in specified sources.
