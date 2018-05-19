@@ -368,14 +368,14 @@ class Cleaner:
                 tgt_data.setdefault(tgt_spec, set()).add(type_id)
 
         for row in self.data['dbuffcollections']:
-            for mod_row in row['itemModifiers']:
+            for mod_row in row.get('itemModifiers', ()):
                 add_attr(mod_row)
-            for mod_row in row['locationModifiers']:
+            for mod_row in row.get('locationModifiers', ()):
                 add_attr(mod_row)
-            for mod_row in row['locationGroupModifiers']:
+            for mod_row in row.get('locationGroupModifiers', ()):
                 add_attr(mod_row)
                 add_group(mod_row)
-            for mod_row in row['locationRequiredSkillModifiers']:
+            for mod_row in row.get('locationRequiredSkillModifiers', ()):
                 add_attr(mod_row)
                 add_type(mod_row)
 

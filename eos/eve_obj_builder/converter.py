@@ -25,6 +25,7 @@ from eos.eve_obj.attribute import Attribute
 from eos.eve_obj.effect import Effect
 from eos.eve_obj.type import AbilityData
 from eos.eve_obj.type import Type
+from .buff_template_builder import WarfareBuffTemplateBuilder
 from .mod_builder import ModBuilder
 
 
@@ -38,7 +39,8 @@ class Converter:
             data: Dictionary in {table name: {table, rows}} format.
 
         Returns:
-            3 iterables, which contain types, attributes and effects.
+            4 iterables, which contain types, attributes, effects and warfare
+            buff templates.
         """
         # Before actually instantiating anything, we need to collect some data
         # in convenient form
@@ -117,4 +119,9 @@ class Converter:
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),
                 abilities_data=types_abilities_data.get(type_id, {})))
 
-        return types, attrs, effects
+        # Convert buff templates
+        buff_templates = []
+        for row in data['dbuffcollections']:
+            buff_templates.extend(WarfareBuffTemplateBuilder.build(row))
+
+        return types, attrs, effects, buff_templates

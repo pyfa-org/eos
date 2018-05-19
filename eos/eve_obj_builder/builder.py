@@ -42,7 +42,8 @@ class EveObjBuilder:
                 raw eve data.
 
         Returns:
-            3 iterables, which contain types, attributes and effects.
+            4 iterables, which contain types, attributes, effects and warfare
+            buff templates.
         """
         # Put all the data we need into single dictionary Format, as usual,
         # {table name: table}, where table is set of rows, which are
@@ -89,9 +90,9 @@ class EveObjBuilder:
         ValidatorPreConv.run(data)
 
         # Convert data into Eos-specific objects
-        types, attrs, effects = Converter.run(data)
+        types, attrs, effects, buff_templates = Converter.run(data)
 
-        return types, attrs, effects
+        return types, attrs, effects, buff_templates
 
     @classmethod
     def _freeze_data(cls, data):

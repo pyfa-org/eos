@@ -28,8 +28,8 @@ logger = getLogger(__name__)
 
 class ValidatorPreClean:
 
-    @staticmethod
-    def run(data):
+    @classmethod
+    def run(cls, data):
         """Verify data before cleanup.
 
         Cleanup process relies on data consistency. Here, we make sure that it's
@@ -51,10 +51,10 @@ class ValidatorPreClean:
             'dbuffcollections': ['buffID'],
             'typefighterabils': ['typeID', 'abilityID']}
         for table_name, pks in pk_spec.items():
-            ValidatorPreClean._table_pk(pks, data[table_name], table_name)
+            cls._table_pk(pks, data[table_name], table_name)
 
-    @staticmethod
-    def _table_pk(pks, rows, table_name):
+    @classmethod
+    def _table_pk(cls, pks, rows, table_name):
         """Check if all primary keys in table are integers.
 
         Args:
@@ -67,7 +67,7 @@ class ValidatorPreClean:
         # Storage for rows which should be removed
         invalid_rows = set()
         for row in sorted(rows, key=lambda row: row['table_pos']):
-            ValidatorPreClean._row_pk(pks, row, seen_pks, invalid_rows)
+            cls._row_pk(pks, row, seen_pks, invalid_rows)
         # If any invalid rows were detected, remove them and write corresponding
         # message to log
         if invalid_rows:

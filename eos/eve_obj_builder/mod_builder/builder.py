@@ -104,7 +104,8 @@ class ModBuilder:
             else:
                 return (), EffectBuildStatus.error
 
-    def __get_valid_mods(self, mods):
+    @staticmethod
+    def __get_valid_mods(mods):
         valid_mods = []
         valid_fails = 0
         for mod in mods:

@@ -40,3 +40,8 @@ class AttrFetchError(CacheHandlerError):
 class EffectFetchError(CacheHandlerError):
     """Raised when cache handler can't find effect with requested ID."""
     ...
+
+
+class BuffTemplatesFetchError(CacheHandlerError):
+    """Raised when cache handler can't find buff templates with requested ID."""
+    ...

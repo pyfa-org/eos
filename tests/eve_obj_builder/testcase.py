@@ -46,10 +46,14 @@ class EveObjBuilderTestCase(EosTestCase):
             attrs: Map in {attribute ID: attribute} format.
             effects: Map in {effect ID: effect} format.
         """
-        types, attrs, effects = EveObjBuilder.run(self.dh)
+        types, attrs, effects, buff_templates = EveObjBuilder.run(self.dh)
         self.types = {t.id: t for t in types}
         self.attrs = {a.id: a for a in attrs}
         self.effects = {e.id: e for e in effects}
+        self.buff_templates = {}
+        for buff_template in buff_templates:
+            self.buff_templates.setdefault(buff_template.buff_id, set()).add(
+                buff_template)
 
     def mod(self, *args, **kwargs):
         """Shortcut to instantiating dogma modifier."""

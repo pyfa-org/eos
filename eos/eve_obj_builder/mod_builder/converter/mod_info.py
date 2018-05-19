@@ -149,7 +149,7 @@ class ModInfoconverter:
 
     @staticmethod
     def _get_operator(mod_info):
-        # Format: {CCP YAML operator ID: eos operator ID}
+        # Format: {YAML operator ID: eos operator ID}
         conversion_map = {
             -1: ModOperator.pre_assign,
             0: ModOperator.pre_mul,

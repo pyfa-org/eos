@@ -32,8 +32,8 @@ logger = getLogger(__name__)
 
 class Normalizer:
 
-    @staticmethod
-    def run(data):
+    @classmethod
+    def run(cls, data):
         """Normalize passed data.
 
         Data provided by data handler has been (deliberately) denormalized by
@@ -43,8 +43,8 @@ class Normalizer:
         Args:
             data: Dictionary in {table name: {table, rows}} format.
         """
-        Normalizer._move_attrs(data)
-        Normalizer._convert_expression_symbolic_references(data)
+        cls._move_attrs(data)
+        cls._convert_expression_symbolic_references(data)
 
     @staticmethod
     def _move_attrs(data):

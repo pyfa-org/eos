@@ -43,6 +43,10 @@ class BaseCacheHandler(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def get_buff_templates(self, buff_id):
+        ...
+
+    @abstractmethod
     def get_fingerprint(self):
         ...
 
@@ -51,8 +55,9 @@ class BaseCacheHandler(metaclass=ABCMeta):
         """Update cache.
 
         Args:
-            eve_objects: Tuple with data to cache. Should be in form of three
-                iterables, which contain types, attributes and effects.
+            eve_objects: Tuple with data to cache. Should be in form of four
+                iterables, which contain types, attributes, effects and warfare
+                buff templates.
             fingerprint: Unique ID of data in the form of string
         """
         ...

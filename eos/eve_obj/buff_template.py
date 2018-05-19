@@ -31,14 +31,14 @@ class WarfareBuffTemplate:
         affectee_filter_extra_arg=None,
         affectee_attr_id=None,
         operator=None,
-        aggregare_mode=None
+        aggregate_mode=None
     ):
         self.buff_id = buff_id
         self.affectee_filter = affectee_filter
         self.affectee_filter_extra_arg = affectee_filter_extra_arg
         self.affectee_attr_id = affectee_attr_id
         self.operator = operator
-        self.aggregare_mode = aggregare_mode
+        self.aggregate_mode = aggregate_mode
 
     # Auxiliary methods
     def __repr__(self):
@@ -48,5 +48,5 @@ class WarfareBuffTemplate:
             'affectee_filter_extra_arg',
             'affectee_attr_id',
             'operator',
-            'aggregare_mode']
+            'aggregate_mode']
         return make_repr_str(self, spec)

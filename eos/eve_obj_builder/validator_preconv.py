@@ -32,8 +32,8 @@ logger = getLogger(__name__)
 
 class ValidatorPreConv:
 
-    @staticmethod
-    def run(data):
+    @classmethod
+    def run(cls, data):
         """Verify data before conversion.
 
         Conversion of data into Eos-specific eve objects relies on several
@@ -43,12 +43,12 @@ class ValidatorPreConv:
         Args:
             data: Dictionary in {table name: {table, rows}} format.
         """
-        ValidatorPreConv._attr_value_type(data['dgmtypeattribs'])
-        ValidatorPreConv._multiple_default_effects(data['dgmtypeeffects'])
-        ValidatorPreConv._colliding_module_racks(data['dgmtypeeffects'])
-        ValidatorPreConv._fighter_unknown_ability(data['typefighterabils'])
-        ValidatorPreConv._fighter_ability_collisions(data['typefighterabils'])
-        ValidatorPreConv._fighter_ability_effect(
+        cls._attr_value_type(data['dgmtypeattribs'])
+        cls._multiple_default_effects(data['dgmtypeeffects'])
+        cls._colliding_module_racks(data['dgmtypeeffects'])
+        cls._fighter_unknown_ability(data['typefighterabils'])
+        cls._fighter_ability_collisions(data['typefighterabils'])
+        cls._fighter_ability_effect(
             data['typefighterabils'], data['dgmtypeeffects'])
 
     @staticmethod
