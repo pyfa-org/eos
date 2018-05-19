@@ -81,7 +81,7 @@ class DogmaModifier(BaseModifier):
         except KeyError as e:
             raise ModificationCalculationError from e
         else:
-            return self.operator, value
+            return self.operator, value, self.aggregate_mode, self.aggregate_key
 
     # Validation-related methods
     @property

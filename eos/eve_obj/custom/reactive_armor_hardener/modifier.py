@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -33,6 +34,7 @@ def make_rah_modifiers():
             affectee_domain=ModDomain.ship,
             affectee_attr_id=attr_id,
             operator=ModOperator.pre_mul,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=attr_id)
         for attr_id in (
             AttrId.armor_em_dmg_resonance,

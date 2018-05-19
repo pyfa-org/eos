@@ -22,6 +22,7 @@
 from eos.const.eos import EffectBuildStatus
 from eos.const.eos import EosEffectId
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -45,6 +46,7 @@ def make_missile_dmg_effect():
             affectee_filter_extra_arg=TypeId.missile_launcher_operation,
             affectee_attr_id=dmg_attr_id,
             operator=ModOperator.post_mul_immune,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.missile_dmg_mult))
     missile_dmg_effect = EffectFactory.make(
         effect_id=EosEffectId.char_missile_dmg,

@@ -22,6 +22,7 @@
 from logging import getLogger
 
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -63,7 +64,7 @@ class PropulsionModuleVelocityBoostModifier(BasePythonModifier):
             raise ModificationCalculationError from e
         else:
             mult = 1 + perc / 100
-            return ModOperator.post_mul, mult
+            return ModOperator.post_mul, mult, ModAggregateMode.stack, None
 
     def __revise_on_attr_changed(self, msg, affector_item):
         """

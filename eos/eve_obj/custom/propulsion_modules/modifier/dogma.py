@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -32,6 +33,7 @@ def make_mass_modifier():
         affectee_domain=ModDomain.ship,
         affectee_attr_id=AttrId.mass,
         operator=ModOperator.mod_add,
+        aggregate_mode=ModAggregateMode.stack,
         affector_attr_id=AttrId.mass_addition)
     return mass_modifier
 
@@ -42,5 +44,6 @@ def make_signature_modifier():
         affectee_domain=ModDomain.ship,
         affectee_attr_id=AttrId.signature_radius,
         operator=ModOperator.post_percent,
+        aggregate_mode=ModAggregateMode.stack,
         affector_attr_id=AttrId.signature_radius_bonus)
     return signature_modifier

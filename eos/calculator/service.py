@@ -91,8 +91,8 @@ class CalculationService(BaseSubscriber):
             if affector_modifier.affectee_attr_id != affectee_attr_id:
                 continue
             try:
-                mod_op, mod_value = affector_modifier.get_modification(
-                    affector_item)
+                mod_op, mod_value, aggregate_mode, aggregate_key = (
+                    affector_modifier.get_modification(affector_item))
             # Do nothing here - errors should be logged in modification
             # getter or even earlier
             except ModificationCalculationError:

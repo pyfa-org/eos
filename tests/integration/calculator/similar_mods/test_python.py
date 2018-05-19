@@ -21,6 +21,7 @@
 
 from eos import Ship
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import EffectCategoryId
@@ -45,7 +46,9 @@ class TestSimilarModifiersDogma(CalculatorTestCase):
 
             def get_modification(self, affector_item):
                 value = affector_item.attrs[src_attr_id]
-                return ModOperator.post_percent, value
+                return (
+                    ModOperator.post_percent, value,
+                    ModAggregateMode.stack, None)
 
             @property
             def revise_msg_types(self):

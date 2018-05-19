@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -38,7 +39,6 @@ class AncillaryRepAmountModifier(BasePythonModifier):
             self,
             affectee_filter=ModAffecteeFilter.item,
             affectee_domain=ModDomain.self,
-            affectee_filter_extra_arg=None,
             affectee_attr_id=AttrId.armor_dmg_amount)
 
     def get_modification(self, affector_item):
@@ -52,7 +52,7 @@ class AncillaryRepAmountModifier(BasePythonModifier):
                 raise ModificationCalculationError from e
         else:
             value = 1
-        return ModOperator.post_mul_immune, value
+        return ModOperator.post_mul_immune, value, ModAggregateMode.stack, None
 
     def __revise_on_item_added_removed(self, msg, affector_item):
         # If added/removed item is charge of effect carrying item and charge is

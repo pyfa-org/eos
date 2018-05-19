@@ -23,6 +23,7 @@ from eos import ModuleHigh
 from eos import Ship
 from eos import State
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import EffectCategoryId
@@ -58,7 +59,8 @@ class TestModifierPython(CalculatorTestCase):
                     mult2 = ship.attrs[attr3.id]
                 except (AttributeError, KeyError) as e:
                     raise ModificationCalculationError from e
-                return ModOperator.post_mul, mult1 * mult2
+                mult = mult1 * mult2
+                return ModOperator.post_mul, mult, ModAggregateMode.stack, None
 
             @property
             def revise_msg_types(self):

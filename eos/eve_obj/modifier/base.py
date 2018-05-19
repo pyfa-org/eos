@@ -54,9 +54,8 @@ class BaseModifier(metaclass=ABCMeta):
             affector_item: Item which carries the modifier.
 
         Returns:
-            Tuple (operator, modification value) which is intermediate result of
-            applying modification - only first half of process is complete, when
-            modification source value is calculated and operator is defined.
+            Tuple (operator, modification value, aggregate mode, aggregate key)
+            which is intermediate result of applying modification.
 
         """
         ...
