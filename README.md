@@ -95,8 +95,6 @@ Stats of fit can be fetched using 'stats' access point. For example, few regular
 
 And few more advanced (total uniform EHP of fit, and shield EHP vs EM damage):
 
-    >>> from eos.stats_container import DmgProfile
-
     >>> fit.stats.get_ehp(DmgProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
     95189.27348943402
     >>> fit.stats.get_ehp(DmgProfile(em=1, thermal=0, kinetic=0, explosive=0)).shield
