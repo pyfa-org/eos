@@ -19,21 +19,24 @@
 # ==============================================================================
 
 
-from .attr import AttrsValueChanged
-from .attr import AttrsValueChangedMasked
-from .fit import DefaultIncomingDmgChanged
-from .fit import RahIncomingDmgChanged
-from .fleet import FleetFitAdded
-from .fleet import FleetFitRemoved
-from .item import ItemAdded
-from .item import ItemRemoved
-from .item import StatesActivated
-from .item import StatesDeactivated
-from .item_loaded import EffectApplied
-from .item_loaded import EffectUnapplied
-from .item_loaded import EffectsStarted
-from .item_loaded import EffectsStopped
-from .item_loaded import ItemLoaded
-from .item_loaded import ItemUnloaded
-from .item_loaded import StatesActivatedLoaded
-from .item_loaded import StatesDeactivatedLoaded
+from eos.util.repr import make_repr_str
+
+
+class FleetFitAdded:
+
+    def __init__(self):
+        self.fit = None
+
+    def __repr__(self):
+        spec = ['fit']
+        return make_repr_str(self, spec)
+
+
+class FleetFitRemoved:
+
+    def __init__(self):
+        self.fit = None
+
+    def __repr__(self):
+        spec = ['fit']
+        return make_repr_str(self, spec)

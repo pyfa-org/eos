@@ -33,6 +33,8 @@ from eos.pubsub.message import EffectApplied
 from eos.pubsub.message import EffectUnapplied
 from eos.pubsub.message import EffectsStarted
 from eos.pubsub.message import EffectsStopped
+from eos.pubsub.message import FleetFitAdded
+from eos.pubsub.message import FleetFitRemoved
 from eos.pubsub.message import ItemLoaded
 from eos.pubsub.message import ItemUnloaded
 from eos.pubsub.subscriber import BaseSubscriber
@@ -121,6 +123,70 @@ class CalculationService(BaseSubscriber):
         fit._unsubscribe(self, self._handler_map.keys())
 
     # Handle item changes which are significant for calculator
+    def _handle_fleet_fit_added(self, msg):
+        fits_effect_applications = {}
+        for projector in self.__projections.get_projectors():
+            if not isinstance(projector.effect, WarfareBuffEffect):
+                continue
+            projector_fit = projector.item._fit
+            # Affect this fit by buffs existing in fleet
+            if (
+                msg.fit.ship is not None and
+                projector_fit.fleet is msg.fit.fleet
+            ):
+                fits_effect_applications.setdefault(
+                    projector_fit, []).append(
+                    (projector, [msg.fit.ship]))
+            # Affect other fits by buffs from this fit
+            if projector_fit is msg.fit:
+                for fit in msg.fit.fleet.fits:
+                    if fit is msg.fit:
+                        continue
+                    fits_effect_applications.setdefault(
+                        projector_fit, []).append(
+                        (projector, [fit.ship]))
+        # Apply warfare buffs
+        if fits_effect_applications:
+            for fit, effect_applications in fits_effect_applications.items():
+                msgs = []
+                for projector, tgt_items in effect_applications:
+                    msgs.append(EffectApplied(
+                        projector.item, projector.effect.id, tgt_items))
+                fit._publish_bulk(msgs)
+
+    def _handle_fleet_fit_removed(self, msg):
+        fits_effect_unapplications = {}
+        for projector in self.__projections.get_projectors():
+            if not isinstance(projector.effect, WarfareBuffEffect):
+                continue
+            projector_fit = projector.item._fit
+            # Unaffect this fit by buffs existing in fleet
+            if (
+                msg.fit.ship is not None and
+                projector_fit.fleet is msg.fit.fleet
+            ):
+                fits_effect_unapplications.setdefault(
+                    projector_fit, []).append(
+                    (projector, [msg.fit.ship]))
+            # Unaffect other fits by buffs from this fit
+            if projector_fit is msg.fit:
+                for fit in msg.fit.fleet.fits:
+                    if fit is msg.fit:
+                        continue
+                    fits_effect_unapplications.setdefault(
+                        projector_fit, []).append(
+                        (projector, [fit.ship]))
+        # Unapply warfare buffs
+        if fits_effect_unapplications:
+            for fit, effect_unapplications in (
+                fits_effect_unapplications.items()
+            ):
+                msgs = []
+                for projector, tgt_items in effect_unapplications:
+                    msgs.append(EffectUnapplied(
+                        projector.item, projector.effect.id, tgt_items))
+                fit._publish_bulk(msgs)
+
     def _handle_item_loaded(self, msg):
         item = msg.item
         self.__affections.register_affectee_item(item)
@@ -430,8 +496,9 @@ class CalculationService(BaseSubscriber):
                     tgt_ships = []
                     for tgt_fit in self.__solar_system.fits:
                         if (
-                            tgt_fit is msg.fit or
-                            (item_fleet is not None and tgt_fit.fleet is item_fleet)
+                            tgt_fit is msg.fit or (
+                                item_fleet is not None and
+                                tgt_fit.fleet is item_fleet)
                         ):
                             tgt_ship = tgt_fit.ship
                             if tgt_ship is not None:
@@ -479,6 +546,8 @@ class CalculationService(BaseSubscriber):
 
     # Message routing
     _handler_map = {
+        FleetFitAdded: _handle_fleet_fit_added,
+        FleetFitRemoved: _handle_fleet_fit_removed,
         ItemLoaded: _handle_item_loaded,
         ItemUnloaded: _handle_item_unloaded,
         EffectsStarted: _handle_effects_started,

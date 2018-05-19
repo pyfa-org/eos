@@ -19,6 +19,10 @@
 # ==============================================================================
 
 
+from eos.pubsub.message import FleetFitAdded
+from eos.pubsub.message import FleetFitRemoved
+
+
 class FitSet:
     """Unordered container for fits.
 
@@ -47,6 +51,7 @@ class FitSet:
             raise ValueError(fit)
         self.__set.add(fit)
         fit._fleet = self.__fleet
+        fit._publish(FleetFitAdded())
 
     def remove(self, fit):
         """Remove fit from the container.
@@ -68,6 +73,7 @@ class FitSet:
             self.__handle_fit_removal(fit)
 
     def __handle_fit_removal(self, fit):
+        fit._publish(FleetFitRemoved())
         self.__set.remove(fit)
         fit._fleet = None
 
