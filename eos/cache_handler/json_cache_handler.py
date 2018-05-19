@@ -255,6 +255,8 @@ class JsonCacheHandler(BaseCacheHandler):
             modifier.affectee_filter_extra_arg,
             modifier.affectee_attr_id,
             modifier.operator,
+            modifier.aggregate_mode,
+            modifier.aggregate_key,
             modifier.affector_attr_id)
         return modifier_data
 
@@ -266,7 +268,9 @@ class JsonCacheHandler(BaseCacheHandler):
             affectee_filter_extra_arg=modifier_data[2],
             affectee_attr_id=modifier_data[3],
             operator=modifier_data[4],
-            affector_attr_id=modifier_data[5])
+            aggregate_mode=modifier_data[5],
+            aggregate_key=modifier_data[6],
+            affector_attr_id=modifier_data[7])
         return modifier
 
     # Auxiliary methods

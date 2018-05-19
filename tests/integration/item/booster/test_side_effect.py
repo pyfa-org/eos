@@ -22,9 +22,9 @@
 from eos import Booster
 from eos import Fit
 from eos import NoSuchSideEffectError
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.item.testcase import ItemMixinTestCase
 

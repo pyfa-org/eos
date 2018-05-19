@@ -21,6 +21,7 @@
 
 from numbers import Integral
 
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModOperator
 from eos.util.repr import make_repr_str
 from .base import BaseModifier
@@ -39,20 +40,24 @@ class DogmaModifier(BaseModifier):
     def __init__(
         self,
         affectee_filter=None,
-        affectee_domain=None,
         affectee_filter_extra_arg=None,
+        affectee_domain=None,
         affectee_attr_id=None,
         operator=None,
+        aggregate_mode=None,
+        aggregate_key=None,
         affector_attr_id=None
     ):
         BaseModifier.__init__(
             self,
             affectee_filter=affectee_filter,
-            affectee_domain=affectee_domain,
             affectee_filter_extra_arg=affectee_filter_extra_arg,
+            affectee_domain=affectee_domain,
             affectee_attr_id=affectee_attr_id)
         # Dogma modifier-specific attributes
         self.operator = operator
+        self.aggregate_mode = aggregate_mode
+        self.aggregate_key = aggregate_key
         self.affector_attr_id = affector_attr_id
 
     def get_modification(self, affector_item):
@@ -71,11 +76,24 @@ class DogmaModifier(BaseModifier):
         return all((
             self._validate_base(),
             self.operator in ModOperator.__members__.values(),
+            self.aggregate_mode in ModAggregateMode.__members__.values(),
+            # Aggregate key should be specified only if aggregate mode has any
+            # value besides stacking
+            (
+                self.aggregate_key is None
+                if self.aggregate_mode == ModAggregateMode.stack
+                else isinstance(self.aggregate_key, Integral)),
             isinstance(self.affector_attr_id, Integral)))
 
     # Auxiliary methods
     def __repr__(self):
         spec = [
-            'affectee_filter', 'affectee_domain', 'affectee_filter_extra_arg',
-            'affectee_attr_id', 'operator', 'affector_attr_id']
+            'affectee_filter',
+            'affectee_filter_extra_arg',
+            'affectee_domain',
+            'affectee_attr_id',
+            'operator',
+            'aggregate_mode',
+            'aggregate_key',
+            'affector_attr_id']
         return make_repr_str(self, spec)

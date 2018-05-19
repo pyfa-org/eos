@@ -20,9 +20,10 @@
 
 import yaml
 
+from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj_builder.mod_builder.exception import YamlParsingError
 
@@ -89,6 +90,7 @@ class ModInfoconverter:
             affectee_domain=cls._get_domain(mod_info),
             affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
@@ -98,6 +100,7 @@ class ModInfoconverter:
             affectee_domain=cls._get_domain(mod_info),
             affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
@@ -108,6 +111,7 @@ class ModInfoconverter:
             affectee_filter_extra_arg=int(mod_info['groupID']),
             affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
@@ -118,6 +122,7 @@ class ModInfoconverter:
             affectee_filter_extra_arg=int(mod_info['skillTypeID']),
             affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @classmethod
@@ -128,6 +133,7 @@ class ModInfoconverter:
             affectee_filter_extra_arg=int(mod_info['skillTypeID']),
             affectee_attr_id=int(mod_info['modifiedAttributeID']),
             operator=cls._get_operator(mod_info),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=int(mod_info['modifyingAttributeID']))
 
     @staticmethod

@@ -20,9 +20,9 @@
 
 
 from eos import Rig
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase
 

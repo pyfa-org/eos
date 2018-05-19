@@ -21,9 +21,9 @@
 
 from eos.const.eos import EffectBuildStatus
 from eos.const.eos import EosEffectId
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from eos.const.eve import TypeId

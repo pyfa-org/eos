@@ -19,9 +19,9 @@
 # ==============================================================================
 
 
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.eve_obj.modifier import DogmaModifier
 

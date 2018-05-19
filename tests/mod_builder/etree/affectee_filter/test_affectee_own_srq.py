@@ -20,9 +20,9 @@
 
 
 from eos.const.eos import EffectBuildStatus
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import OperandId
 from tests.mod_builder.testcase import ModBuilderTestCase
 

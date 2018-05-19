@@ -23,8 +23,8 @@ from abc import ABCMeta
 from abc import abstractmethod
 from numbers import Integral
 
-from eos.const.eos import ModDomain
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModDomain
 
 
 class BaseModifier(metaclass=ABCMeta):
@@ -35,11 +35,15 @@ class BaseModifier(metaclass=ABCMeta):
     """
 
     def __init__(
-            self, affectee_filter, affectee_domain,
-            affectee_filter_extra_arg, affectee_attr_id):
+        self,
+        affectee_filter,
+        affectee_filter_extra_arg,
+        affectee_domain,
+        affectee_attr_id
+    ):
         self.affectee_filter = affectee_filter
-        self.affectee_domain = affectee_domain
         self.affectee_filter_extra_arg = affectee_filter_extra_arg
+        self.affectee_domain = affectee_domain
         self.affectee_attr_id = affectee_attr_id
 
     @abstractmethod
@@ -85,36 +89,36 @@ class BaseModifier(metaclass=ABCMeta):
 
     def __validate_affectee_filter_item(self):
         return all((
+            self.affectee_filter_extra_arg is None,
             self.affectee_domain in (
                 ModDomain.self, ModDomain.character, ModDomain.ship,
-                ModDomain.target, ModDomain.other),
-            self.affectee_filter_extra_arg is None))
+                ModDomain.target, ModDomain.other)))
 
     def __validate_affectee_filter_domain(self):
         return all((
+            self.affectee_filter_extra_arg is None,
             self.affectee_domain in (
                 ModDomain.self, ModDomain.character,
-                ModDomain.ship, ModDomain.target),
-            self.affectee_filter_extra_arg is None))
+                ModDomain.ship, ModDomain.target)))
 
     def __validate_affectee_filter_domain_group(self):
         return all((
+            # References group via ID
+            isinstance(self.affectee_filter_extra_arg, Integral),
             self.affectee_domain in (
                 ModDomain.self, ModDomain.character,
-                ModDomain.ship, ModDomain.target),
-            # References group via ID
-            isinstance(self.affectee_filter_extra_arg, Integral)))
+                ModDomain.ship, ModDomain.target)))
 
     def __validate_affectee_filter_domain_skillrq(self):
         return all((
+            # References skill via ID
+            isinstance(self.affectee_filter_extra_arg, Integral),
             self.affectee_domain in (
                 ModDomain.self, ModDomain.character,
-                ModDomain.ship, ModDomain.target),
-            # References skill via ID
-            isinstance(self.affectee_filter_extra_arg, Integral)))
+                ModDomain.ship, ModDomain.target)))
 
     def __validate_affectee_filter_owner_skillrq(self):
         return all((
-            self.affectee_domain == ModDomain.character,
             # References skill via ID
-            isinstance(self.affectee_filter_extra_arg, Integral)))
+            isinstance(self.affectee_filter_extra_arg, Integral),
+            self.affectee_domain == ModDomain.character))

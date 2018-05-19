@@ -20,7 +20,6 @@
 
 import json
 import os
-
 from collections.abc import Mapping
 
 from eos.util.repr import make_repr_str

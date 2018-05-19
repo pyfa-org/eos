@@ -20,9 +20,10 @@
 
 
 from eos.const.eos import EosTypeId
+from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import OperandId
 from eos.eve_obj.modifier import DogmaModifier
 from eos.eve_obj_builder.mod_builder.exception import (
@@ -107,6 +108,7 @@ class ExpressionTreeConverter:
             affectee_domain=self._get_domain(exp_row.arg1.arg2.arg1),
             affectee_attr_id=self._get_attr_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=self._get_attr_id(exp_row.arg2)))
 
     def _handle_domain_mod(self, exp_row):
@@ -115,6 +117,7 @@ class ExpressionTreeConverter:
             affectee_domain=self._get_domain(exp_row.arg1.arg2.arg1),
             affectee_attr_id=self._get_attr_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=self._get_attr_id(exp_row.arg2)))
 
     def _handle_domain_group_mod(self, exp_row):
@@ -125,6 +128,7 @@ class ExpressionTreeConverter:
                 exp_row.arg1.arg2.arg1.arg2),
             affectee_attr_id=self._get_attr_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=self._get_attr_id(exp_row.arg2)))
 
     def _handle_domain_skillrq_mod(self, exp_row):
@@ -135,6 +139,7 @@ class ExpressionTreeConverter:
                 exp_row.arg1.arg2.arg1.arg2),
             affectee_attr_id=self._get_attr_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=self._get_attr_id(exp_row.arg2)))
 
     def _handle_owner_skillrq_mod(self, exp_row):
@@ -145,6 +150,7 @@ class ExpressionTreeConverter:
                 exp_row.arg1.arg2.arg1.arg2),
             affectee_attr_id=self._get_attr_id(exp_row.arg1.arg2.arg2),
             operator=self._get_operator(exp_row.arg1.arg1),
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=self._get_attr_id(exp_row.arg2)))
 
     @staticmethod

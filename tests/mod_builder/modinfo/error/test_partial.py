@@ -22,9 +22,9 @@
 import logging
 
 from eos.const.eos import EffectBuildStatus
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from tests.mod_builder.testcase import ModBuilderTestCase
 
 

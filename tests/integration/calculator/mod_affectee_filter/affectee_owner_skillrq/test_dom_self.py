@@ -23,9 +23,9 @@ from eos import Character
 from eos import Drone
 from eos import Implant
 from eos import Ship
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import AttrId
 from eos.const.eve import EffectCategoryId
 from tests.integration.calculator.testcase import CalculatorTestCase

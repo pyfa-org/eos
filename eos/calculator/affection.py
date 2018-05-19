@@ -22,8 +22,8 @@
 from logging import getLogger
 
 from eos.const.eos import EosTypeId
-from eos.const.eos import ModDomain
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModDomain
 from eos.item import Character
 from eos.item import Ship
 from eos.util.keyed_storage import KeyedStorage

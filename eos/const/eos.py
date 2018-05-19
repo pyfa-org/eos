@@ -128,6 +128,17 @@ class ModOperator(IntEnum):
 
 
 @unique
+class ModAggregateMode(IntEnum):
+    """Contains possible modifier aggregate modes.
+
+    Used during attribute calculation.
+    """
+    stack = 1
+    minimum = 2
+    maximum = 3
+
+
+@unique
 class Restriction(IntEnum):
     """Contains possible restriction types.
 

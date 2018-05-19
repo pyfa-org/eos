@@ -23,9 +23,9 @@ from eos import Fit
 from eos import Rig
 from eos import Ship
 from eos import SolarSystem
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.source_switch.testcase import SourceSwitchTestCase
 

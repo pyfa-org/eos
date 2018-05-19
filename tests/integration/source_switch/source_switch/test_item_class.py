@@ -34,9 +34,9 @@ from eos import Ship
 from eos import Skill
 from eos import Stance
 from eos import Subsystem
+from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
-from eos.const.eos import ModAffecteeFilter
 from eos.const.eve import EffectCategoryId
 from tests.integration.source_switch.testcase import SourceSwitchTestCase
 
