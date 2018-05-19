@@ -134,7 +134,6 @@ class CalculationService(BaseSubscriber):
         item = msg.item
         effect_ids = msg.effect_ids
         attr_changes = {}
-        effect_applications = []
         for affector_spec in self.__generate_local_affector_specs(
             item, effect_ids
         ):
@@ -154,6 +153,7 @@ class CalculationService(BaseSubscriber):
         for projector in self.__generate_projectors(item, effect_ids):
             self.__projections.register_projector(projector)
         # Register warfare buffs
+        effect_applications = []
         for effect_id in effect_ids:
             effect = item._type_effects[effect_id]
             if not isinstance(effect, WarfareBuffEffect):
@@ -187,32 +187,32 @@ class CalculationService(BaseSubscriber):
                 effect_applications.append((projector, tgt_ships))
         if attr_changes:
             self.__publish_attr_changes(attr_changes)
+        # Apply warfare buffs
         if effect_applications:
             msgs = []
             for projector, tgt_items in effect_applications:
                 msgs.append(EffectApplied(
                     projector.item, projector.effect.id, tgt_items))
-                msg.fit._publish_bulk(msgs)
+            msg.fit._publish_bulk(msgs)
 
     def _handle_effects_stopped(self, msg):
-        # Remove values of affectee attributes
-        attr_changes = {}
+        # Unregister warfare buffs
         effect_unapplications = []
         for projector in self.__generate_projectors(msg.item, msg.effect_ids):
             if projector not in self.__warfare_buffs:
                 continue
-            tgt_ships = []
-            for tgt_fit in self.__solar_system.fits:
-                tgt_ship = tgt_fit.ship
-                if tgt_ship is not None:
-                    tgt_ships.append(tgt_ship)
+            tgt_ships = self.__projections.get_projector_tgts(projector)
             effect_unapplications.append((projector, tgt_ships))
+            del self.__warfare_buffs[projector]
+        # Unapply warfare buffs
         if effect_unapplications:
             msgs = []
             for projector, tgt_items in effect_unapplications:
                 msgs.append(EffectUnapplied(
                     projector.item, projector.effect.id, tgt_items))
-                msg.fit._publish_bulk(msgs)
+            msg.fit._publish_bulk(msgs)
+        attr_changes = {}
+        # Remove values of affectee attributes
         for affector_spec in self.__generate_local_affector_specs(
             msg.item, msg.effect_ids
         ):
@@ -289,6 +289,22 @@ class CalculationService(BaseSubscriber):
         """
         affections = self.__affections
         projections = self.__projections
+        effect_unapplications = []
+        # Unapply warfare buffs
+        for item, attr_ids in msg.attr_changes.items():
+            for effect in item._type_effects.values():
+                projector = Projector(item, effect)
+                if projector not in self.__warfare_buffs:
+                    continue
+                if not attr_ids.intersection(WARFARE_BUFF_ATTRS):
+                    continue
+                tgt_items = self.__projections.get_projector_tgts(projector)
+                effect_unapplications.append((projector, tgt_items))
+        msgs = []
+        for projector, tgt_items in effect_unapplications:
+            msgs.append(EffectUnapplied(
+                projector.item, projector.effect.id, tgt_items))
+        msg.fit._publish_bulk(msgs)
         attr_changes = {}
         for item, attr_ids in msg.attr_changes.items():
             # Remove values of affectee attributes capped by the changing
@@ -365,8 +381,58 @@ class CalculationService(BaseSubscriber):
                         if affectee_item.attrs._force_recalc(attr_id):
                             attr_changes.setdefault(affectee_item, set()).add(
                                 attr_id)
+        # Unregister warfare buffs only after composing list of attributes we
+        # should update
+        for projector, tgt_items in effect_unapplications:
+            del self.__warfare_buffs[projector]
         if attr_changes:
             self.__publish_attr_changes(attr_changes)
+        # Register warfare buffs
+        effect_applications = []
+        for item, attr_ids in msg.attr_changes.items():
+            if not attr_ids.intersection(WARFARE_BUFF_ATTRS):
+                continue
+            for effect_id in item._running_effect_ids:
+                effect = item._type_effects[effect_id]
+                if not isinstance(effect, WarfareBuffEffect):
+                    continue
+                projector = Projector(item, effect)
+                for buff_id_attr_id in WARFARE_BUFF_ATTRS:
+                    try:
+                        buff_id = item.attrs[buff_id_attr_id]
+                    except KeyError:
+                        continue
+                    getter = (
+                        self.__solar_system.source.
+                        cache_handler.get_buff_templates)
+                    try:
+                        buff_templates = getter(buff_id)
+                    except BuffTemplatesFetchError:
+                        continue
+                    affector_attr_id = WARFARE_BUFF_ATTRS[buff_id_attr_id]
+                    if not buff_templates:
+                        continue
+                    for buff_template in buff_templates:
+                        modifier = DogmaModifier._make_from_buff_template(
+                            buff_template, affector_attr_id)
+                        affector_spec = AffectorSpec(item, effect, modifier)
+                        self.__warfare_buffs.add_data_entry(
+                            projector, affector_spec)
+                    tgt_ships = []
+                    for tgt_fit in self.__solar_system.fits:
+                        tgt_ship = tgt_fit.ship
+                        if tgt_ship is not None:
+                            tgt_ships.append(tgt_ship)
+                    effect_applications.append((projector, tgt_ships))
+        if attr_changes:
+            self.__publish_attr_changes(attr_changes)
+        # Apply warfare buffs
+        if effect_applications:
+            msgs = []
+            for projector, tgt_items in effect_applications:
+                msgs.append(EffectApplied(
+                    projector.item, projector.effect.id, tgt_items))
+            msg.fit._publish_bulk(msgs)
 
     def _revise_python_attr_dependents(self, msg):
         """Remove calculated attribute values when necessary.
@@ -471,6 +537,8 @@ class CalculationService(BaseSubscriber):
                 to_ubsubscribe.add(msg_type)
         if to_ubsubscribe:
             fit._unsubscribe(self, to_ubsubscribe)
+
+    # Warfare buffs-related methods
 
     # Projector-related methods
     def __generate_projectors(self, item, effect_ids):
