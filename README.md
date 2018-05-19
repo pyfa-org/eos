@@ -32,11 +32,11 @@ Currently you can use engine following way:
     fit.modules.high.equip(ModuleHigh(2420, state=State.overload, charge=Charge(24519)))
     fit.modules.high.equip(ModuleHigh(2420, state=State.overload, charge=Charge(24519)))
 
-    fit.modules.med.equip(ModuleMed(5945, state=State.overload))  # Top named 100MN MWD
-    fit.modules.med.equip(ModuleMed(4833, state=State.active, charge=Charge(32014)))  # Named med cap injector with 800
-    fit.modules.med.equip(ModuleMed(9622, state=State.active))  # Named EM hardener
-    fit.modules.med.equip(ModuleMed(5443, state=State.active))  # Best named scram
-    fit.modules.med.equip(ModuleMed(2281, state=State.active))  # T2 invuln
+    fit.modules.mid.equip(ModuleMid(5945, state=State.overload))  # Top named 100MN MWD
+    fit.modules.mid.equip(ModuleMid(4833, state=State.active, charge=Charge(32014)))  # Named med cap injector with 800
+    fit.modules.mid.equip(ModuleMid(9622, state=State.active))  # Named EM hardener
+    fit.modules.mid.equip(ModuleMid(5443, state=State.active))  # Best named scram
+    fit.modules.mid.equip(ModuleMid(2281, state=State.active))  # T2 invuln
 
     fit.modules.low.equip(ModuleLow(2048, state=State.online))   # T2 DC
     fit.modules.low.equip(ModuleLow(519, state=State.online))    # T2 gyrostab
@@ -83,29 +83,31 @@ Keys of dictionary are problematic holders (in this case, all in-space drones of
 
 Attributes of any item are accessible via dictionary-like objects like phoon.attributes, e.g.:
 
-    >>> fit.ship.attributes[37] # maxVelocity
-    1841.6155389908258
+    >>> fit.ship.attrs[37] # maxVelocity
+    1858.3066943807341
 
 Stats of fit can be fetched using 'stats' access point. For example, few regular ones:
 
     >>> fit.stats.agility_factor
     15.70747757338698
     >>> fit.stats.cpu.used
-    821.0
+    823.0
 
 And few more advanced (total uniform EHP of fit, and shield EHP vs EM damage):
 
-    >>> fit.stats.get_ehp(DamageProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
-    95329.19886256836
-    >>> fit.stats.get_ehp(DamageProfile(em=1, thermal=0, kinetic=0, explosive=0)).shield
-    50013.690833719105
+    >>> from eos.stats_container import DmgProfile
+
+    >>> fit.stats.get_ehp(DmgProfile(em=25, thermal=25, kinetic=25, explosive=25)).total
+    95189.27348943402
+    >>> fit.stats.get_ehp(DmgProfile(em=1, thermal=0, kinetic=0, explosive=0)).shield
+    50013.69083371911
 
 DPS can be fetched with various parameters, for example, should it take reload into consideration or not:
 
     >>> fit.stats.get_dps(reload=False).total
-    1931.374697718373
+    1913.5769753125805
     >>> fit.stats.get_dps(reload=True).total
-    1857.2875753203057
+    1866.5853444855636
 
 Specific damage type is accessible too (in this case, hail deals some kinetic damage):
 
@@ -114,21 +116,25 @@ Specific damage type is accessible too (in this case, hail deals some kinetic da
 
 Get effective DPS against passed resistance profile:
 
-    >>> fit.stats.get_dps(target_resistances=ResistanceProfile(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
-    1072.8636430538475
+    >>> from eos.stats_container import ResistProfile
+
+    >>> fit.stats.get_dps(tgt_resists=ResistProfile(em=0.2, thermal=0.3, kinetic=0.4, explosive=0.5)).total
+    1060.4052373697928
 
 Get dps using built-in filters:
 
-    >>> fit.stats.get_dps(holder_filter=turret_filter).total
-    637.6960266845034
-    >>> fit.stats.get_dps(holder_filter=missile_filter).total
+    >>> from eos.item_filter import turret_filter, missile_filter, drone_filter, sentry_drone_filter
+
+    >>> fit.stats.get_dps(turret_filter).total
+    637.6960266845035
+    >>> fit.stats.get_dps(missile_filter).total
     826.1217743481901
-    >>> fit.stats.get_dps(holder_filter=drone_filter).total
-    467.55689668567936
+    >>> fit.stats.get_dps(drone_filter).total
+    449.7591742798868
 
 You can compose your own filters or combine existing:
 
-    >>> fit.stats.get_dps(holder_filter=lambda h: turret_filter(h) or missile_filter(h)).total
-    1463.8178010326933
+    >>> fit.stats.get_dps(lambda h: turret_filter(h) or missile_filter(h)).total
+    1463.8178010326938
 
 Not all stats are implemented yet, more to come soon.
