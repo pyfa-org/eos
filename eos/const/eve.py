@@ -243,6 +243,7 @@ class TypeCategoryId(IntEnum):
 @unique
 class EffectId(IntEnum):
     adaptive_armor_hardener = 4928
+    armor_repair = 27
     bomb_launching = 2971
     emp_wave = 38
     fighter_ability_afterburner = 6440

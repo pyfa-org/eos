@@ -19,15 +19,14 @@
 # ==============================================================================
 
 
-from .dmg_dealer import load_dmg_dealers
-from .effect import Effect
-from .ewar import load_ewar
-from .factory import EffectFactory
-from .rep_armor_local import load_rep_armor_local
-from .warfare_buff import load_warfare_buffs
+from abc import ABCMeta
+from abc import abstractmethod
+
+from eos.eve_obj.effect import Effect
 
 
-load_dmg_dealers()
-load_ewar()
-load_rep_armor_local()
-load_warfare_buffs()
+class LocalArmorRepairEffect(Effect, metaclass=ABCMeta):
+
+    @abstractmethod
+    def get_armor_rep_amount(self, item):
+        ...
