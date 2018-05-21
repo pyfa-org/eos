@@ -20,3 +20,4 @@
 
 
 from .armor import ArmorRepairerRegister
+from .shield import ShieldRepairerRegister

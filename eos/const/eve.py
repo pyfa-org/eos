@@ -198,6 +198,7 @@ class AttrId(IntEnum):
     missile_velocity_bonus = 547
     module_reactivation_delay = 669
     radius = 162
+    shield_bonus = 68
     signature_radius = 552
     signature_radius_bonus = 554
     speed_boost_factor = 567
@@ -261,6 +262,7 @@ class EffectId(IntEnum):
     fighter_ability_warp_disruption = 6436
     fof_missile_launching = 104
     fueled_armor_repair = 5275
+    fueled_shield_boosting = 4936
     hi_power = 12
     launcher_fitted = 40
     lo_power = 11
@@ -279,10 +281,13 @@ class EffectId(IntEnum):
     projectile_fired = 34
     remote_webifier_falloff = 6426
     rig_slot = 2663
+    shield_boosting = 4
     ship_module_ancillary_remote_armor_repairer = 6651
+    ship_module_ancillary_remote_shield_booster = 6652
     ship_module_guidance_disruptor = 6423
     ship_module_tracking_disruptor = 6424
     ship_module_remote_armor_repairer = 6188
+    ship_module_remote_shield_booster = 6186
     subsystem = 3772
     super_weapon_amarr = 4489
     super_weapon_caldari = 4490

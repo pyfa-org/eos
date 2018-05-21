@@ -21,6 +21,7 @@
 
 from .dmg_dealer import DmgDealerRegister
 from .repairs import ArmorRepairerRegister
+from .repairs import ShieldRepairerRegister
 from .resource import CalibrationRegister
 from .resource import CpuRegister
 from .resource import DroneBandwidthRegister

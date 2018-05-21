@@ -19,14 +19,14 @@
 # ==============================================================================
 
 
-from eos.eve_obj.effect.repairs.base import LocalArmorRepairEffect
-from eos.eve_obj.effect.repairs.base import RemoteArmorRepairEffect
+from eos.eve_obj.effect.repairs.base import LocalShieldRepairEffect
+from eos.eve_obj.effect.repairs.base import RemoteShieldRepairEffect
 from eos.pubsub.message import EffectsStarted
 from eos.pubsub.message import EffectsStopped
 from .base import BaseRepairRegister
 
 
-class ArmorRepairerRegister(BaseRepairRegister):
+class ShieldRepairerRegister(BaseRepairRegister):
 
     def __init__(self, fit):
         self.__fit = fit
@@ -44,26 +44,26 @@ class ArmorRepairerRegister(BaseRepairRegister):
             self.__fit.solar_system._calculator.
             _CalculationService__projections)
         for rep_item, rep_effect in proj_reg.get_tgt_projectors(item):
-            if not isinstance(rep_effect, RemoteArmorRepairEffect):
+            if not isinstance(rep_effect, RemoteShieldRepairEffect):
                 continue
             rps += rep_effect.get_rps(rep_item, reload)
         if dmg_profile is not None:
             rps *= item._get_tanking_efficiency(
-                dmg_profile, item.resists.armor)
+                dmg_profile, item.resists.shield)
         return rps
 
     def _handle_effects_started(self, msg):
         item_effects = msg.item._type_effects
         for effect_id in msg.effect_ids:
             effect = item_effects[effect_id]
-            if isinstance(effect, LocalArmorRepairEffect):
+            if isinstance(effect, LocalShieldRepairEffect):
                 self.__local_repairers.add((msg.item, effect))
 
     def _handle_effects_stopped(self, msg):
         item_effects = msg.item._type_effects
         for effect_id in msg.effect_ids:
             effect = item_effects[effect_id]
-            if isinstance(effect, LocalArmorRepairEffect):
+            if isinstance(effect, LocalShieldRepairEffect):
                 self.__local_repairers.remove((msg.item, effect))
 
     _handler_map = {

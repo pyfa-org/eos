@@ -22,15 +22,15 @@
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.eve_obj.effect import EffectFactory
-from .base import LocalArmorRepairEffect
+from .base import RemoteShieldRepairEffect
 
 
-class FueledArmorRepair(LocalArmorRepairEffect):
+class ShipModuleRemoteShieldBooster(RemoteShieldRepairEffect):
 
     def get_rep_amount(self, item):
-        return item.attrs.get(AttrId.armor_dmg_amount, 0)
+        return item.attrs.get(AttrId.shield_bonus, 0)
 
 
 EffectFactory.register_class_by_id(
-    FueledArmorRepair,
-    EffectId.fueled_armor_repair)
+    ShipModuleRemoteShieldBooster,
+    EffectId.ship_module_remote_shield_booster)

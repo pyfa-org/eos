@@ -44,3 +44,11 @@ class LocalArmorRepairEffect(BaseRepairEffect):
 
 class RemoteArmorRepairEffect(BaseRepairEffect):
     ...
+
+
+class LocalShieldRepairEffect(BaseRepairEffect):
+    ...
+
+
+class RemoteShieldRepairEffect(BaseRepairEffect):
+    ...

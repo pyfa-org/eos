@@ -28,10 +28,9 @@ from .base import RemoteArmorRepairEffect
 class ShipModuleRemoteArmorRepairer(RemoteArmorRepairEffect):
 
     def get_rep_amount(self, item):
-        rps = item.attrs.get(AttrId.armor_dmg_amount, 0)
-        return rps
+        return item.attrs.get(AttrId.armor_dmg_amount, 0)
 
 
 EffectFactory.register_class_by_id(
     ShipModuleRemoteArmorRepairer,
-    EffectId.ship_module_ancillary_remote_armor_repairer)
+    EffectId.ship_module_remote_armor_repairer)

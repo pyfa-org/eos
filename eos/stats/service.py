@@ -39,6 +39,7 @@ from .register import FighterSquadSupportRegister
 from .register import LaunchedDroneRegister
 from .register import LauncherSlotRegister
 from .register import PowergridRegister
+from .register import ShieldRepairerRegister
 from .register import TurretSlotRegister
 
 
@@ -54,6 +55,7 @@ class StatService:
         self.__fit = fit
         self.__dd_reg = DmgDealerRegister(fit)
         self.__armor_rep_reg = ArmorRepairerRegister(fit)
+        self.__shield_rep_reg = ShieldRepairerRegister(fit)
         # Initialize sub-containers
         self.cpu = CpuRegister(fit)
         self.powergrid = PowergridRegister(fit)
@@ -207,6 +209,12 @@ class StatService:
         if dmg_profile is DEFAULT:
             dmg_profile = self.__fit.default_incoming_dmg
         return self.__armor_rep_reg.get_rps(
+            self.__fit.ship, dmg_profile, reload)
+
+    def get_shield_rps(self, dmg_profile=DEFAULT, reload=False):
+        if dmg_profile is DEFAULT:
+            dmg_profile = self.__fit.default_incoming_dmg
+        return self.__shield_rep_reg.get_rps(
             self.__fit.ship, dmg_profile, reload)
 
     @property
