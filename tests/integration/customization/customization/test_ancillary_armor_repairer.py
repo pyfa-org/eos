@@ -61,7 +61,7 @@ class TestPropulsionModules(CustomizationTestCase):
 
     def test_remote_aar(self):
         effect = self.mkeffect(
-            effect_id=EffectId.module_bonus_ancillary_remote_armor_repairer,
+            effect_id=EffectId.ship_module_ancillary_remote_armor_repairer,
             category_id=EffectCategoryId.target)
         raar = ModuleLow(
             self.mktype(

@@ -26,6 +26,8 @@ from eos.stats_container import ItemHP
 from eos.stats_container import ResistProfile
 from eos.stats_container import SlotStats
 from eos.stats_container import TankingLayers
+from eos.util.default import DEFAULT
+from .register import ArmorRepairerRegister
 from .register import CalibrationRegister
 from .register import CpuRegister
 from .register import DmgDealerRegister
@@ -51,6 +53,7 @@ class StatService:
     def __init__(self, fit):
         self.__fit = fit
         self.__dd_reg = DmgDealerRegister(fit)
+        self.__armor_rep_reg = ArmorRepairerRegister(fit)
         # Initialize sub-containers
         self.cpu = CpuRegister(fit)
         self.powergrid = PowergridRegister(fit)
@@ -199,6 +202,12 @@ class StatService:
             DmgTypesTotal helper container instance.
         """
         return self.__dd_reg.get_dps(item_filter, reload, tgt_resists)
+
+    def get_armor_rps(self, dmg_profile=DEFAULT, reload=False):
+        if dmg_profile is DEFAULT:
+            dmg_profile = self.__fit.default_incoming_dmg
+        return self.__armor_rep_reg.get_rps(
+            self.__fit.ship, dmg_profile, reload)
 
     @property
     def agility_factor(self):

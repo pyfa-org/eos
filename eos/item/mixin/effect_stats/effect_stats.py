@@ -24,4 +24,4 @@ from .dmg_dealer import DmgDealerMixin
 
 
 class EffectStatsMixin(DefaultEffectProxyMixin, DmgDealerMixin):
-    pass
+    ...

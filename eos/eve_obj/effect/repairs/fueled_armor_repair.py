@@ -19,15 +19,19 @@
 # ==============================================================================
 
 
-from .dmg_dealer import load_dmg_dealers
-from .effect import Effect
-from .ewar import load_ewar
-from .factory import EffectFactory
-from .repairs import load_repairers
-from .warfare_buff import load_warfare_buffs
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.eve_obj.effect import EffectFactory
+from .base import LocalArmorRepairEffect
 
 
-load_dmg_dealers()
-load_ewar()
-load_repairers()
-load_warfare_buffs()
+class FueledArmorRepair(LocalArmorRepairEffect):
+
+    def get_rep_amount(self, item):
+        rps = item.attrs.get(AttrId.armor_dmg_amount, 0)
+        return rps
+
+
+EffectFactory.register_class_by_id(
+    FueledArmorRepair,
+    EffectId.fueled_armor_repair)

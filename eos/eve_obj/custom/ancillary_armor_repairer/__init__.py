@@ -25,7 +25,7 @@ from .effect import make_paste_effect
 
 
 aar_id = EffectId.fueled_armor_repair
-raar_id = EffectId.module_bonus_ancillary_remote_armor_repairer
+raar_id = EffectId.ship_module_ancillary_remote_armor_repairer
 
 
 def add_aar_paste_effect(item_type):

@@ -267,7 +267,6 @@ class EffectId(IntEnum):
     med_power = 13
     missile_launching = 9
     module_bonus_afterburner = 6731
-    module_bonus_ancillary_remote_armor_repairer = 6651
     module_bonus_microwarpdrive = 6730
     module_bonus_warfare_link_armor = 6732
     module_bonus_warfare_link_info = 6735
@@ -278,6 +277,7 @@ class EffectId(IntEnum):
     projectile_fired = 34
     remote_webifier_falloff = 6426
     rig_slot = 2663
+    ship_module_ancillary_remote_armor_repairer = 6651
     ship_module_guidance_disruptor = 6423
     ship_module_tracking_disruptor = 6424
     subsystem = 3772

@@ -41,13 +41,12 @@ class DmgDealerEffect(Effect, metaclass=ABCMeta):
         if cycle_parameters is None:
             return DmgStats(0, 0, 0, 0)
         volley = self.get_volley(item)
-        dps = DmgStats(
+        return DmgStats(
             volley.em,
             volley.thermal,
             volley.kinetic,
             volley.explosive,
             1 / cycle_parameters.average_time)
-        return dps
 
     @abstractmethod
     def get_applied_volley(self, item, tgt_data):

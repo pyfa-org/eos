@@ -19,17 +19,28 @@
 # ==============================================================================
 
 
-from eos.const.eve import EffectId
-from eos.eve_obj.effect import EffectFactory
-from .base import LocalArmorRepairEffect
+from abc import ABCMeta
+from abc import abstractmethod
+
+from eos.eve_obj.effect import Effect
 
 
-class ArmorRepair(LocalArmorRepairEffect):
+class BaseRepairEffect(Effect, metaclass=ABCMeta):
 
-    def get_armor_rep_amount(self, item):
-        raise NotImplemented
+    @abstractmethod
+    def get_rep_amount(self, item):
+        ...
+
+    def get_rps(self, item, reload):
+        cycle_parameters = self.get_cycle_parameters(item, reload)
+        if cycle_parameters is None:
+            return 0
+        return self.get_rep_amount(item) / cycle_parameters.average_time
 
 
-EffectFactory.register_class_by_id(
-    ArmorRepair,
-    EffectId.armor_repair)
+class LocalArmorRepairEffect(BaseRepairEffect):
+    ...
+
+
+class RemoteArmorRepairEffect(BaseRepairEffect):
+    ...

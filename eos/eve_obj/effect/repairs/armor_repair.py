@@ -19,14 +19,19 @@
 # ==============================================================================
 
 
-from abc import ABCMeta
-from abc import abstractmethod
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.eve_obj.effect import EffectFactory
+from .base import LocalArmorRepairEffect
 
-from eos.eve_obj.effect import Effect
+
+class ArmorRepair(LocalArmorRepairEffect):
+
+    def get_rep_amount(self, item):
+        rps = item.attrs.get(AttrId.armor_dmg_amount, 0)
+        return rps
 
 
-class LocalArmorRepairEffect(Effect, metaclass=ABCMeta):
-
-    @abstractmethod
-    def get_armor_rep_amount(self, item):
-        ...
+EffectFactory.register_class_by_id(
+    ArmorRepair,
+    EffectId.armor_repair)

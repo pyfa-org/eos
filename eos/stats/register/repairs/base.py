@@ -19,15 +19,8 @@
 # ==============================================================================
 
 
-from .dmg_dealer import load_dmg_dealers
-from .effect import Effect
-from .ewar import load_ewar
-from .factory import EffectFactory
-from .repairs import load_repairers
-from .warfare_buff import load_warfare_buffs
+from eos.stats.register.base import BaseStatRegister
 
 
-load_dmg_dealers()
-load_ewar()
-load_repairers()
-load_warfare_buffs()
+class BaseRepairRegister(BaseStatRegister):
+    ...

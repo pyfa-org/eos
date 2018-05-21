@@ -630,10 +630,7 @@ class CalculationService(BaseSubscriber):
         for effect_id in effect_ids:
             effect = item_effects[effect_id]
             if (
-                (
-                    effect.category_id == EffectCategoryId.target and
-                    effect.projected_modifiers
-                ) or
+                effect.category_id == EffectCategoryId.target or
                 isinstance(effect, WarfareBuffEffect)
             ):
                 projector = Projector(item, effect)

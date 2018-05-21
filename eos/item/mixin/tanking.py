@@ -100,10 +100,10 @@ class BufferTankingMixin(BaseItemMixin):
         """
         if not layer_hp:
             return layer_hp
-        tank_mult = self.__get_tanking_efficiency(dmg_profile, layer_resists)
+        tank_mult = self._get_tanking_efficiency(dmg_profile, layer_resists)
         return layer_hp * tank_mult
 
-    def __get_tanking_efficiency(self, dmg_profile, resists):
+    def _get_tanking_efficiency(self, dmg_profile, resists):
         """Get tanking efficiency for passed damage/resistance profiles.
 
         If any of layer resistances are not specified, they're assumed to be 0.

@@ -19,8 +19,19 @@
 # ==============================================================================
 
 
-from eos.util.dynamic_load import load_submodules
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.eve_obj.effect import EffectFactory
+from .base import RemoteArmorRepairEffect
 
 
-def load_rep_armor_local():
-    load_submodules(__path__, __name__)
+class ShipModuleAncillaryRemoteArmorRepairer(RemoteArmorRepairEffect):
+
+    def get_rep_amount(self, item):
+        rps = item.attrs.get(AttrId.armor_dmg_amount, 0)
+        return rps
+
+
+EffectFactory.register_class_by_id(
+    ShipModuleAncillaryRemoteArmorRepairer,
+    EffectId.ship_module_ancillary_remote_armor_repairer)
