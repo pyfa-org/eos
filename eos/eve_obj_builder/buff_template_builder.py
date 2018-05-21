@@ -64,7 +64,6 @@ class WarfareBuffTemplateBuilder:
 
     @classmethod
     def _handle_domain_group_mod(cls, buff_row, mod_row):
-        print(mod_row['groupID'])
         return WarfareBuffTemplate(
             buff_id=buff_row['buffID'],
             affectee_filter=ModAffecteeFilter.domain_group,
@@ -75,7 +74,6 @@ class WarfareBuffTemplateBuilder:
 
     @classmethod
     def _handle_domain_skillrq_mod(cls, buff_row, mod_row):
-        print(mod_row['skillID'])
         return WarfareBuffTemplate(
             buff_id=buff_row['buffID'],
             affectee_filter=ModAffecteeFilter.domain_skillrq,
