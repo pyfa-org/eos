@@ -273,6 +273,8 @@ class EffectId(IntEnum):
     module_bonus_warfare_link_mining = 6736
     module_bonus_warfare_link_shield = 6733
     module_bonus_warfare_link_skirmish = 6734
+    npc_entity_remote_armor_repairer = 6687
+    npc_entity_remote_shield_booster = 6688
     online = 16
     projectile_fired = 34
     remote_webifier_falloff = 6426
@@ -280,6 +282,7 @@ class EffectId(IntEnum):
     ship_module_ancillary_remote_armor_repairer = 6651
     ship_module_guidance_disruptor = 6423
     ship_module_tracking_disruptor = 6424
+    ship_module_remote_armor_repairer = 6188
     subsystem = 3772
     super_weapon_amarr = 4489
     super_weapon_caldari = 4490
