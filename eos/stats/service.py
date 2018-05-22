@@ -102,7 +102,7 @@ class StatService:
     def __get_slot_stats(self, container, attr_id):
         used = len(container)
         try:
-            total = self.__fit.ship.attrs[attr_id]
+            total = int(self.__fit.ship.attrs[attr_id])
         except (AttributeError, KeyError):
             total = 0
         return SlotStats(used, total)
