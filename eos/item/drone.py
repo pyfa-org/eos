@@ -25,11 +25,13 @@ from .mixin.effect_stats import EffectStatsMixin
 from .mixin.solar_system import SolarSystemItemMixin
 from .mixin.state import MutableStateMixin
 from .mixin.tanking import BufferTankingMixin
+from .mixin.targetable import SingleTargetableMixin
 
 
 class Drone(
         MutableStateMixin, BufferTankingMixin,
-        EffectStatsMixin, SolarSystemItemMixin):
+        EffectStatsMixin, SolarSystemItemMixin,
+        SingleTargetableMixin):
     """Represents a single drone.
 
     Eos doesn't unify multiple drones into stacks, it should be done in services
