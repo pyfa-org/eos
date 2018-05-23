@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -40,6 +41,7 @@ class ShipModuleGundanceDisruptor(Effect):
             affectee_filter_extra_arg=TypeId.missile_launcher_operation,
             affectee_attr_id=AttrId.aoe_cloud_size,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.aoe_cloud_size_bonus)
         aoe_velocity_modifier = DogmaModifier(
             affectee_filter=ModAffecteeFilter.owner_skillrq,
@@ -47,6 +49,7 @@ class ShipModuleGundanceDisruptor(Effect):
             affectee_filter_extra_arg=TypeId.missile_launcher_operation,
             affectee_attr_id=AttrId.aoe_velocity,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.aoe_velocity_bonus)
         max_velocity_modifier = DogmaModifier(
             affectee_filter=ModAffecteeFilter.owner_skillrq,
@@ -54,6 +57,7 @@ class ShipModuleGundanceDisruptor(Effect):
             affectee_filter_extra_arg=TypeId.missile_launcher_operation,
             affectee_attr_id=AttrId.max_velocity,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.missile_velocity_bonus)
         explosion_delay_modifier = DogmaModifier(
             affectee_filter=ModAffecteeFilter.owner_skillrq,
@@ -61,6 +65,7 @@ class ShipModuleGundanceDisruptor(Effect):
             affectee_filter_extra_arg=TypeId.missile_launcher_operation,
             affectee_attr_id=AttrId.explosion_delay,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.explosion_delay_bonus)
         self.modifiers = (
             *self.modifiers, aoe_cloud_size_modifier,

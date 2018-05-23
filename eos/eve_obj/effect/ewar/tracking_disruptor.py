@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -40,6 +41,7 @@ class ShipModuleTrackingDisruptor(Effect):
             affectee_filter_extra_arg=TypeId.gunnery,
             affectee_attr_id=AttrId.max_range,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.max_range_bonus)
         falloff_modifier = DogmaModifier(
             affectee_filter=ModAffecteeFilter.domain_skillrq,
@@ -47,6 +49,7 @@ class ShipModuleTrackingDisruptor(Effect):
             affectee_filter_extra_arg=TypeId.gunnery,
             affectee_attr_id=AttrId.falloff,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.falloff_bonus)
         tracking_speed_modifier = DogmaModifier(
             affectee_filter=ModAffecteeFilter.domain_skillrq,
@@ -54,6 +57,7 @@ class ShipModuleTrackingDisruptor(Effect):
             affectee_filter_extra_arg=TypeId.gunnery,
             affectee_attr_id=AttrId.tracking_speed,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.tracking_speed_bonus)
         self.modifiers = (
             *self.modifiers, max_range_modifier,
