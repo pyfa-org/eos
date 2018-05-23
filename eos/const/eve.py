@@ -195,6 +195,8 @@ class AttrId(IntEnum):
     mass_addition = 796
     max_range = 54
     max_range_bonus = 351
+    max_target_range = 76
+    max_target_range_bonus = 309
     max_velocity = 37
     missile_dmg_mult = 212
     missile_velocity_bonus = 547
@@ -202,12 +204,13 @@ class AttrId(IntEnum):
     nos_override = 1945
     power_transfer_amount = 90
     radius = 162
+    sensor_dampener_resist = 2112
     shield_bonus = 68
     signature_radius = 552
     signature_radius_bonus = 554
     speed_boost_factor = 567
     speed_factor = 20
-    stasis_webifier_resistance = 2115
+    stasis_webifier_resist = 2115
     tracking_speed = 160
     tracking_speed_bonus = 767
     volume = 161
@@ -286,6 +289,7 @@ class EffectId(IntEnum):
     npc_entity_remote_shield_booster = 6688
     online = 16
     projectile_fired = 34
+    remote_sensor_damp_falloff = 6422
     remote_webifier_falloff = 6426
     rig_slot = 2663
     shield_boosting = 4

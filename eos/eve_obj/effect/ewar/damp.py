@@ -29,21 +29,21 @@ from eos.eve_obj.effect import EffectFactory
 from eos.eve_obj.modifier import DogmaModifier
 
 
-class RemoteWebifierFalloff(Effect):
+class RemoteSensorDampFalloff(Effect):
 
     def __init__(self, *args, resist_attr_id=None, **kwargs):
         Effect.__init__(
-            self, *args, resist_attr_id=AttrId.stasis_webifier_resist,
+            self, *args, resist_attr_id=AttrId.sensor_dampener_resist,
             **kwargs)
         modifier = DogmaModifier(
             affectee_filter=ModAffecteeFilter.item,
             affectee_domain=ModDomain.target,
-            affectee_attr_id=AttrId.max_velocity,
+            affectee_attr_id=AttrId.max_target_range,
             operator=ModOperator.post_percent,
-            affector_attr_id=AttrId.speed_factor)
+            affector_attr_id=AttrId.max_target_range_bonus)
         self.modifiers = (*self.modifiers, modifier)
 
 
 EffectFactory.register_class_by_id(
-    RemoteWebifierFalloff,
-    EffectId.remote_webifier_falloff)
+    RemoteSensorDampFalloff,
+    EffectId.remote_sensor_damp_falloff)
