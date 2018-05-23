@@ -184,6 +184,7 @@ class AttrId(IntEnum):
     aoe_velocity_bonus = 847
     capacity = 38
     dmg_mult = 64
+    dmg_mult_bonus_max = 2734
     explosion_delay = 281
     explosion_delay_bonus = 596
     falloff = 158
@@ -293,6 +294,7 @@ class EffectId(IntEnum):
     super_weapon_caldari = 4490
     super_weapon_gallente = 4491
     super_weapon_minmatar = 4492
+    target_abc_attack = 6995
     target_attack = 10
     turret_fitted = 42
     use_missiles = 101
