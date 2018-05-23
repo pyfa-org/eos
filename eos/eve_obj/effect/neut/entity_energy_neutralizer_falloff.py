@@ -19,16 +19,18 @@
 # ==============================================================================
 
 
-from .default_effect import DefaultEffectProxyMixin
-from .dmg_dealer import DmgDealerMixin
-from .neut import NeutMixin
-from .remote_repair import RemoteRepairMixin
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.eve_obj.effect import EffectFactory
+from .base import BaseNeutEffect
 
 
-class EffectStatsMixin(
-    DefaultEffectProxyMixin,
-    DmgDealerMixin,
-    NeutMixin,
-    RemoteRepairMixin
-):
-    ...
+class EntityEnergyNeutralizerFalloff(BaseNeutEffect):
+
+    def get_neut_amount(self, item):
+        return item.attrs.get(AttrId.energy_neutralizer_amount, 0)
+
+
+EffectFactory.register_class_by_id(
+    EntityEnergyNeutralizerFalloff,
+    EffectId.entity_energy_neutralizer_falloff)

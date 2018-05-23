@@ -19,16 +19,20 @@
 # ==============================================================================
 
 
-from .default_effect import DefaultEffectProxyMixin
-from .dmg_dealer import DmgDealerMixin
-from .neut import NeutMixin
-from .remote_repair import RemoteRepairMixin
+from abc import ABCMeta
+from abc import abstractmethod
+
+from eos.eve_obj.effect import Effect
 
 
-class EffectStatsMixin(
-    DefaultEffectProxyMixin,
-    DmgDealerMixin,
-    NeutMixin,
-    RemoteRepairMixin
-):
-    ...
+class BaseNeutEffect(Effect, metaclass=ABCMeta):
+
+    @abstractmethod
+    def get_neut_amount(self, item):
+        ...
+
+    def get_nps(self, item, reload):
+        cycle_parameters = self.get_cycle_parameters(item, reload)
+        if cycle_parameters is None:
+            return 0
+        return self.get_neut_amount(item) / cycle_parameters.average_time

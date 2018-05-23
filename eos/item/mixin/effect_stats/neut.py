@@ -19,16 +19,18 @@
 # ==============================================================================
 
 
-from .default_effect import DefaultEffectProxyMixin
-from .dmg_dealer import DmgDealerMixin
-from .neut import NeutMixin
-from .remote_repair import RemoteRepairMixin
+from eos.eve_obj.effect.neut.base import BaseNeutEffect
+from eos.item.mixin.base import BaseItemMixin
 
 
-class EffectStatsMixin(
-    DefaultEffectProxyMixin,
-    DmgDealerMixin,
-    NeutMixin,
-    RemoteRepairMixin
-):
-    ...
+class NeutMixin(BaseItemMixin):
+
+    def get_nps(self, reload=False):
+        nps = 0
+        for effect in self._type_effects.values():
+            if not isinstance(effect, BaseNeutEffect):
+                continue
+            if effect.id not in self._running_effect_ids:
+                continue
+            nps += effect.get_nps(self, reload=reload)
+        return nps

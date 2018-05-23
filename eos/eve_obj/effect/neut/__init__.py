@@ -19,16 +19,8 @@
 # ==============================================================================
 
 
-from .default_effect import DefaultEffectProxyMixin
-from .dmg_dealer import DmgDealerMixin
-from .neut import NeutMixin
-from .remote_repair import RemoteRepairMixin
+from eos.util.dynamic_load import load_submodules
 
 
-class EffectStatsMixin(
-    DefaultEffectProxyMixin,
-    DmgDealerMixin,
-    NeutMixin,
-    RemoteRepairMixin
-):
-    ...
+def load_neuts():
+    load_submodules(__path__, __name__)

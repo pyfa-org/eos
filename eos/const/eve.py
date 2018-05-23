@@ -185,6 +185,7 @@ class AttrId(IntEnum):
     capacity = 38
     dmg_mult = 64
     dmg_mult_bonus_max = 2734
+    energy_neutralizer_amount = 97
     explosion_delay = 281
     explosion_delay_bonus = 596
     falloff = 158
@@ -198,6 +199,8 @@ class AttrId(IntEnum):
     missile_dmg_mult = 212
     missile_velocity_bonus = 547
     module_reactivation_delay = 669
+    nos_override = 1945
+    power_transfer_amount = 90
     radius = 162
     shield_bonus = 68
     signature_radius = 552
@@ -248,6 +251,9 @@ class EffectId(IntEnum):
     armor_repair = 27
     bomb_launching = 2971
     emp_wave = 38
+    energy_neutralizer_falloff = 6187
+    energy_nosferatu_falloff = 6197
+    entity_energy_neutralizer_falloff = 6691
     fighter_ability_afterburner = 6440
     fighter_ability_attack_m = 6465
     fighter_ability_ecm = 6437
