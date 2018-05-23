@@ -20,6 +20,7 @@
 
 
 from eos.const.eos import ModAffecteeFilter
+from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
 from eos.const.eos import ModOperator
 from eos.const.eve import AttrId
@@ -40,6 +41,7 @@ class RemoteWebifierFalloff(Effect):
             affectee_domain=ModDomain.target,
             affectee_attr_id=AttrId.max_velocity,
             operator=ModOperator.post_percent,
+            aggregate_mode=ModAggregateMode.stack,
             affector_attr_id=AttrId.speed_factor)
         self.modifiers = (*self.modifiers, modifier)
 
