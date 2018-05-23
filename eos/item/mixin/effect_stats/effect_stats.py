@@ -21,7 +21,12 @@
 
 from .default_effect import DefaultEffectProxyMixin
 from .dmg_dealer import DmgDealerMixin
+from .remote_repair import RemoteRepairMixin
 
 
-class EffectStatsMixin(DefaultEffectProxyMixin, DmgDealerMixin):
+class EffectStatsMixin(
+    DefaultEffectProxyMixin,
+    DmgDealerMixin,
+    RemoteRepairMixin
+):
     ...
