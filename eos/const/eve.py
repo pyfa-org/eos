@@ -42,12 +42,15 @@ class AttrId(IntEnum):
     # Slots
     boosterness = 1087
     drone_capacity = 283
+    hi_slot_modifier = 1374
     hi_slots = 14
     implantness = 331
     launcher_slots_left = 101
+    low_slot_modifier = 1376
     low_slots = 12
     max_active_drones = 352
     max_subsystems = 1367
+    med_slot_modifier = 1375
     med_slots = 13
     rig_slots = 1137
     subsystem_slot = 1366
@@ -299,6 +302,7 @@ class EffectId(IntEnum):
     ship_module_tracking_disruptor = 6424
     ship_module_remote_armor_repairer = 6188
     ship_module_remote_shield_booster = 6186
+    slot_modifier = 3774
     subsystem = 3772
     super_weapon_amarr = 4489
     super_weapon_caldari = 4490
