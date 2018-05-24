@@ -22,10 +22,14 @@
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.eve_obj.effect import EffectFactory
+from eos.eve_obj.effect.helper_func import get_cycles_until_reload_generic
 from .base import RemoteArmorRepairEffect
 
 
 class ShipModuleAncillaryRemoteArmorRepairer(RemoteArmorRepairEffect):
+
+    def get_cycles_until_reload(self, item):
+        return get_cycles_until_reload_generic(item)
 
     def get_rep_amount(self, item):
         return item.attrs.get(AttrId.armor_dmg_amount, 0)
