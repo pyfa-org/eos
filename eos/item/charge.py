@@ -19,6 +19,7 @@
 # ==============================================================================
 
 
+from eos.const.eos import ModDomain
 from eos.util.repr import make_repr_str
 from .mixin.base import BaseItemMixin
 from .mixin.state import ContainerStateMixin
@@ -30,7 +31,7 @@ class BaseCharge(ContainerStateMixin):
         super().__init__(type_id=type_id)
 
     # Attribute calculation-related properties
-    _modifier_domain = None
+    _modifier_domain = ModDomain.ship
     _owner_modifiable = True
 
     @property
