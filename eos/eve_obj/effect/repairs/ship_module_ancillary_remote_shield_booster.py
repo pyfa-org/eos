@@ -19,6 +19,8 @@
 # ==============================================================================
 
 
+import math
+
 from eos.const.eve import AttrId
 from eos.const.eve import EffectId
 from eos.eve_obj.effect import EffectFactory
@@ -29,7 +31,7 @@ from .base import RemoteShieldRepairEffect
 class ShipModuleAncillaryRemoteShieldBooster(RemoteShieldRepairEffect):
 
     def get_cycles_until_reload(self, item):
-        return get_cycles_until_reload_generic(item)
+        return get_cycles_until_reload_generic(item, default=math.inf)
 
     def get_rep_amount(self, item):
         return item.attrs.get(AttrId.shield_bonus, 0)
