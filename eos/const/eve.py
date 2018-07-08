@@ -301,6 +301,7 @@ class EffectId(IntEnum):
     ship_module_guidance_disruptor = 6423
     ship_module_tracking_disruptor = 6424
     ship_module_remote_armor_repairer = 6188
+    ship_module_remote_capacitor_transmitter = 6184
     ship_module_remote_shield_booster = 6186
     slot_modifier = 3774
     subsystem = 3772

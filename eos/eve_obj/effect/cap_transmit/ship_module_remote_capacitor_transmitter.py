@@ -19,19 +19,24 @@
 # ==============================================================================
 
 
-from .dmg_dealer import load_dmg_dealers
-from .cap_transmit import load_cap_transmit
-from .effect import Effect
-from .ewar import load_ewar
-from .factory import EffectFactory
-from .neut import load_neuts
-from .repairs import load_repairers
-from .warfare_buff import load_warfare_buffs
+from eos.const.eve import AttrId
+from eos.const.eve import EffectId
+from eos.eve_obj.effect import Effect
+from eos.eve_obj.effect import EffectFactory
 
 
-load_cap_transmit()
-load_dmg_dealers()
-load_ewar()
-load_neuts()
-load_repairers()
-load_warfare_buffs()
+class ShipModuleRemoteCapacitorTransmitter(Effect):
+
+    def get_cap_transmit_amount(self, item):
+        return item.attrs.get(AttrId.power_transfer_amount, 0)
+
+    def get_cap_transmit_per_second(self, item, reload):
+        cycle_parameters = self.get_cycle_parameters(item, reload)
+        if cycle_parameters is None:
+            return 0
+        return self.get_cap_transmit_amount(item) / cycle_parameters.average_time
+
+
+EffectFactory.register_class_by_id(
+    ShipModuleRemoteCapacitorTransmitter,
+    EffectId.ship_module_remote_capacitor_transmitter)

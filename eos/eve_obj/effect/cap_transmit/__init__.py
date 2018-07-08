@@ -19,19 +19,8 @@
 # ==============================================================================
 
 
-from .dmg_dealer import load_dmg_dealers
-from .cap_transmit import load_cap_transmit
-from .effect import Effect
-from .ewar import load_ewar
-from .factory import EffectFactory
-from .neut import load_neuts
-from .repairs import load_repairers
-from .warfare_buff import load_warfare_buffs
+from eos.util.dynamic_load import load_submodules
 
 
-load_cap_transmit()
-load_dmg_dealers()
-load_ewar()
-load_neuts()
-load_repairers()
-load_warfare_buffs()
+def load_cap_transmit():
+    load_submodules(__path__, __name__)
