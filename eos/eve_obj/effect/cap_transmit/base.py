@@ -19,18 +19,20 @@
 # ==============================================================================
 
 
-from eos.const.eve import AttrId
-from eos.const.eve import EffectId
-from eos.eve_obj.effect import EffectFactory
-from .base import BaseCapTransmitEffect
+from abc import ABCMeta
+from abc import abstractmethod
+
+from eos.eve_obj.effect import Effect
 
 
-class ShipModuleRemoteCapacitorTransmitter(BaseCapTransmitEffect):
+class BaseCapTransmitEffect(Effect, metaclass=ABCMeta):
 
+    @abstractmethod
     def get_cap_transmit_amount(self, item):
-        return item.attrs.get(AttrId.power_transfer_amount, 0)
+        ...
 
-
-EffectFactory.register_class_by_id(
-    ShipModuleRemoteCapacitorTransmitter,
-    EffectId.ship_module_remote_capacitor_transmitter)
+    def get_cap_transmit_per_second(self, item, reload):
+        cycle_parameters = self.get_cycle_parameters(item, reload)
+        if cycle_parameters is None:
+            return 0
+        return self.get_cap_transmit_amount(item) / cycle_parameters.average_time
