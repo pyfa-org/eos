@@ -19,18 +19,18 @@
 # ==============================================================================
 
 
-from .cap_transmit import CapTransmitMixin
-from .default_effect import DefaultEffectProxyMixin
-from .dmg_dealer import DmgDealerMixin
-from .neut import NeutMixin
-from .remote_repair import RemoteRepairMixin
+from eos.eve_obj.effect.cap_transmit.base import BaseCapTransmitEffect
+from eos.item.mixin.base import BaseItemMixin
 
 
-class EffectStatsMixin(
-    DefaultEffectProxyMixin,
-    CapTransmitMixin,
-    DmgDealerMixin,
-    NeutMixin,
-    RemoteRepairMixin
-):
-    ...
+class CapTransmitMixin(BaseItemMixin):
+
+    def get_cap_transmit_per_second(self, reload=False):
+        ctps = 0
+        for effect in self._type_effects.values():
+            if not isinstance(effect, BaseCapTransmitEffect):
+                continue
+            if effect.id not in self._running_effect_ids:
+                continue
+            ctps += effect.get_cap_transmit_per_second(self, reload=reload)
+        return ctps
