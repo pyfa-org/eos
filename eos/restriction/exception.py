@@ -34,4 +34,6 @@ class RestrictionValidationError(RestrictionServiceError):
 
 class ValidationError(RestrictionServiceError):
     """Raised if service-wide validation fails."""
-    ...
+
+    def __init__(self, data):
+        self.data = data
