@@ -83,7 +83,7 @@ class MsgHelper:
         running_effect_ids = item._running_effect_ids
         if running_effect_ids:
             # Unapply effects before stopping them
-            tgt_getter = getattr(item, '_get_effects_targets', None)
+            tgt_getter = getattr(item, '_get_effects_tgts', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(running_effect_ids)
                 for effect_id, tgt_items in effects_tgts.items():
