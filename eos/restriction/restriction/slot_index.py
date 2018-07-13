@@ -25,6 +25,8 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
+from eos.item import Implant
+from eos.item import Subsystem
 from eos.pubsub.message import ItemLoaded
 from eos.pubsub.message import ItemUnloaded
 from eos.restriction.exception import RestrictionValidationError
@@ -53,18 +55,31 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
         """This attribute's value on item represents index of slot."""
         ...
 
+    @property
+    @abstractmethod
+    def _item_class(self):
+        """Items belonging to this class are restricted."""
+        ...
+
     def _handle_item_loaded(self, msg):
+        item = msg.item
+        # Skip items which do not belong to specified class
+        if not isinstance(item, self._item_class):
+            return
         # Skip items which don't have index specified
-        slot_index = msg.item._type_attrs.get(self._slot_index_attr_id)
+        slot_index = item._type_attrs.get(self._slot_index_attr_id)
         if slot_index is None:
             return
-        self.__index_item_map.add_data_entry(slot_index, msg.item)
+        self.__index_item_map.add_data_entry(slot_index, item)
 
     def _handle_item_unloaded(self, msg):
-        slot_index = msg.item._type_attrs.get(self._slot_index_attr_id)
+        item = msg.item
+        if not isinstance(item, self._item_class):
+            return
+        slot_index = item._type_attrs.get(self._slot_index_attr_id)
         if slot_index is None:
             return
-        self.__index_item_map.rm_data_entry(slot_index, msg.item)
+        self.__index_item_map.rm_data_entry(slot_index, item)
 
     _handler_map = {
         ItemLoaded: _handle_item_loaded,
@@ -87,10 +102,12 @@ class SubsystemIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """Multiple subsystems can't be added into the same subsystem slot.
 
     Details:
+        Only items of Subsystem class are restricted.
         Slot to occupy is determined by item type attributes.
     """
 
     type = Restriction.subsystem_index
+    _item_class = Subsystem
     _slot_index_attr_id = AttrId.subsystem_slot
 
 
@@ -98,10 +115,12 @@ class ImplantIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """Multiple implants can't be added into the same implant slot.
 
     Details:
+        Only items of Implant class are restricted.
         Slot to occupy is determined by item type attributes.
     """
 
     type = Restriction.implant_index
+    _item_class = Implant
     _slot_index_attr_id = AttrId.implantness
 
 
@@ -109,8 +128,10 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """Multiple boosters can't be added into the same booster slot.
 
     Details:
+        Only items of Implant class are restricted.
         Slot to occupy is determined by item type attributes.
     """
 
     type = Restriction.booster_index
+    _item_class = Implant
     _slot_index_attr_id = AttrId.boosterness
