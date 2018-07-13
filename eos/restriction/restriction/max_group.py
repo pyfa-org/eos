@@ -95,7 +95,7 @@ class MaxGroupRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
             # restricted item, and item's restriction value
             group_id = item._type.group_id
             quantity = len(self.__group_item_map.get(group_id, ()))
-            max_allowed_quantity = item._type_attrs[self._max_group_attr_id]
+            max_allowed_quantity = item.attrs[self._max_group_attr_id]
             if quantity > max_allowed_quantity:
                 tainted_items[item] = MaxGroupErrorData(
                     group_id=group_id,
