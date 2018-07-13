@@ -151,7 +151,7 @@ class MsgHelper:
             # Unapply effects from targets
             tgt_getter = getattr(item, '_get_effects_tgts', None)
             if tgt_getter:
-                effects_tgts = tgt_getter(start_ids)
+                effects_tgts = tgt_getter(stop_ids)
                 for effect_id, tgt_items in effects_tgts.items():
                     msgs.append(EffectUnapplied(item, effect_id, tgt_items))
             # Stop effects
