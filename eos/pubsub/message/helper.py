@@ -142,14 +142,14 @@ class MsgHelper:
             # Start effects
             msgs.append(EffectsStarted(item, start_ids))
             # Apply effects to targets
-            tgt_getter = getattr(item, '_get_effects_targets', None)
+            tgt_getter = getattr(item, '_get_effects_tgts', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
                 for effect_id, tgt_items in effects_tgts.items():
                     msgs.append(EffectApplied(item, effect_id, tgt_items))
         if stop_ids:
             # Unapply effects from targets
-            tgt_getter = getattr(item, '_get_effects_targets', None)
+            tgt_getter = getattr(item, '_get_effects_tgts', None)
             if tgt_getter:
                 effects_tgts = tgt_getter(start_ids)
                 for effect_id, tgt_items in effects_tgts.items():
