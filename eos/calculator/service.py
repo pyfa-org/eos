@@ -270,21 +270,22 @@ class CalculationService(BaseSubscriber):
             msg.fit._publish_bulk(msgs)
 
     def _handle_effects_stopped(self, msg):
-        # Unregister warfare buffs
+        # Get info on warfare buffs
         effect_unapplications = []
         for projector in self.__generate_projectors(msg.item, msg.effect_ids):
             if projector not in self.__warfare_buffs:
                 continue
             tgt_ships = self.__projections.get_projector_tgts(projector)
             effect_unapplications.append((projector, tgt_ships))
-            del self.__warfare_buffs[projector]
-        # Unapply warfare buffs
+        # Unapply and unregister warfare buffs
         if effect_unapplications:
             msgs = []
             for projector, tgt_items in effect_unapplications:
                 msgs.append(EffectUnapplied(
                     projector.item, projector.effect.id, tgt_items))
             msg.fit._publish_bulk(msgs)
+            for projector, _ in effect_unapplications:
+                del self.__warfare_buffs[projector]
         attr_changes = {}
         # Remove values of affectee attributes
         for affector_spec in self.__generate_local_affector_specs(
