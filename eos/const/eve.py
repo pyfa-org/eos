@@ -45,6 +45,7 @@ class AttrId(IntEnum):
     hi_slot_modifier = 1374
     hi_slots = 14
     implantness = 331
+    launcher_hardpoint_modifier = 1369
     launcher_slots_left = 101
     low_slot_modifier = 1376
     low_slots = 12
@@ -54,6 +55,7 @@ class AttrId(IntEnum):
     med_slots = 13
     rig_slots = 1137
     subsystem_slot = 1366
+    turret_hardpoint_modifier = 1368
     turret_slots_left = 102
     # Damage
     em_dmg = 114
@@ -276,6 +278,7 @@ class EffectId(IntEnum):
     fof_missile_launching = 104
     fueled_armor_repair = 5275
     fueled_shield_boosting = 4936
+    hardpoint_modifier_effect = 3773
     hi_power = 12
     launcher_fitted = 40
     lo_power = 11

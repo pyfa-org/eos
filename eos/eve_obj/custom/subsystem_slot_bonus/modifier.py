@@ -41,3 +41,18 @@ def make_slot_modifiers():
             (AttrId.med_slot_modifier, AttrId.med_slots),
             (AttrId.low_slot_modifier, AttrId.low_slots)))
     return slot_modifiers
+
+
+def make_hardpoint_modifiers():
+    hardpoint_modifiers = tuple(
+        DogmaModifier(
+            affectee_filter=ModAffecteeFilter.item,
+            affectee_domain=ModDomain.ship,
+            affectee_attr_id=affectee_attr_id,
+            operator=ModOperator.mod_add,
+            aggregate_mode=ModAggregateMode.stack,
+            affector_attr_id=affector_attr_id)
+        for affector_attr_id, affectee_attr_id in (
+            (AttrId.turret_hardpoint_modifier, AttrId.turret_slots_left),
+            (AttrId.launcher_hardpoint_modifier, AttrId.launcher_slots_left)))
+    return hardpoint_modifiers

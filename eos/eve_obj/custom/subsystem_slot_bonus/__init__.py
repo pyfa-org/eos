@@ -24,10 +24,19 @@ from logging import getLogger
 from eos.const.eos import EffectBuildStatus
 from eos.const.eve import EffectId
 from eos.eve_obj.effect import EffectFactory
+from .modifier import make_hardpoint_modifiers
 from .modifier import make_slot_modifiers
 
 
 logger = getLogger(__name__)
+
+
+def add_hardpoint_modifiers(effect):
+    if effect.modifiers:
+        msg = 'hardpoint amount bonus effect has modifiers, overwriting them'
+        logger.warning(msg)
+    effect.modifiers = make_hardpoint_modifiers()
+    effect.build_status = EffectBuildStatus.custom
 
 
 def add_slot_modifiers(effect):
@@ -38,6 +47,9 @@ def add_slot_modifiers(effect):
     effect.build_status = EffectBuildStatus.custom
 
 
+EffectFactory.register_instance_by_id(
+    add_hardpoint_modifiers,
+    EffectId.hardpoint_modifier_effect)
 EffectFactory.register_instance_by_id(
     add_slot_modifiers,
     EffectId.slot_modifier)
