@@ -25,6 +25,7 @@ from collections import namedtuple
 
 from eos.const.eos import Restriction
 from eos.const.eve import AttrId
+from eos.item import Booster
 from eos.item import Implant
 from eos.item import Subsystem
 from eos.pubsub.message import ItemLoaded
@@ -133,5 +134,5 @@ class BoosterIndexRestrictionRegister(SlotIndexRestrictionRegister):
     """
 
     type = Restriction.booster_index
-    _item_class = Implant
+    _item_class = Booster
     _slot_index_attr_id = AttrId.boosterness
