@@ -35,4 +35,6 @@ class BaseCapTransmitEffect(Effect, metaclass=ABCMeta):
         cycle_parameters = self.get_cycle_parameters(item, reload)
         if cycle_parameters is None:
             return 0
-        return self.get_cap_transmit_amount(item) / cycle_parameters.average_time
+        trans_amt = self.get_cap_transmit_amount(item)
+        avg_cycle_time = cycle_parameters.average_time
+        return trans_amt / avg_cycle_time
