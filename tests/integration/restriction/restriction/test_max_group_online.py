@@ -30,6 +30,10 @@ from tests.integration.restriction.testcase import RestrictionTestCase
 class TestMaxGroupOnline(RestrictionTestCase):
     """Check functionality of max group online restriction."""
 
+    def setUp(self):
+        RestrictionTestCase.setUp(self)
+        self.mkattr(attr_id=AttrId.max_group_online)
+
     def test_fail_all(self):
         # Make sure error is raised for all items exceeding their group
         # restriction
