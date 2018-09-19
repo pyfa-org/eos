@@ -64,7 +64,10 @@ class SlotIndexRestrictionRegister(BaseRestrictionRegister, metaclass=ABCMeta):
 
     def _handle_item_loaded(self, msg):
         item = msg.item
-        # Skip items which do not belong to specified class
+        # Skip items which do not belong to specified class. Initially there was
+        # no such check, but there was issue with Amarr Battlecruisers skill. As
+        # of 2018-09-19, it still has subSystemSlot attribute with value 125,
+        # which overlaps with t3c core subsystems
         if not isinstance(item, self._item_class):
             return
         # Skip items which don't have index specified

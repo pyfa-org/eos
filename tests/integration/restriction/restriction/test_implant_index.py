@@ -53,27 +53,6 @@ class TestImplantIndex(RestrictionTestCase):
         self.assert_solsys_buffers_empty(self.fit.solar_system)
         self.assert_log_entries(0)
 
-    def test_fail_item_class_other(self):
-        # Make sure items of all classes are affected
-        item_type = self.mktype(attrs={self.index_attr.id: 120})
-        item1 = ModuleHigh(item_type.id)
-        item2 = ModuleHigh(item_type.id)
-        self.fit.modules.high.append(item1)
-        self.fit.modules.high.append(item2)
-        # Action
-        error1 = self.get_error(item1, Restriction.implant_index)
-        # Verification
-        self.assertIsNotNone(error1)
-        self.assertEqual(error1.slot_index, 120)
-        # Action
-        error2 = self.get_error(item2, Restriction.implant_index)
-        # Verification
-        self.assertIsNotNone(error2)
-        self.assertEqual(error2.slot_index, 120)
-        # Cleanup
-        self.assert_solsys_buffers_empty(self.fit.solar_system)
-        self.assert_log_entries(0)
-
     def test_pass(self):
         # Single item which takes some slot shouldn't trigger any errors
         item = Implant(self.mktype(attrs={self.index_attr.id: 120}).id)
@@ -92,6 +71,25 @@ class TestImplantIndex(RestrictionTestCase):
         item2 = Implant(self.mktype(attrs={self.index_attr.id: 121}).id)
         self.fit.implants.add(item1)
         self.fit.implants.add(item2)
+        # Action
+        error1 = self.get_error(item1, Restriction.implant_index)
+        # Verification
+        self.assertIsNone(error1)
+        # Action
+        error2 = self.get_error(item2, Restriction.implant_index)
+        # Verification
+        self.assertIsNone(error2)
+        # Cleanup
+        self.assert_solsys_buffers_empty(self.fit.solar_system)
+        self.assert_log_entries(0)
+
+    def test_pass_item_class_other(self):
+        # Make sure items of other classes are not affected
+        item_type = self.mktype(attrs={self.index_attr.id: 120})
+        item1 = ModuleHigh(item_type.id)
+        item2 = ModuleHigh(item_type.id)
+        self.fit.modules.high.append(item1)
+        self.fit.modules.high.append(item2)
         # Action
         error1 = self.get_error(item1, Restriction.implant_index)
         # Verification
