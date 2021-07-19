@@ -189,6 +189,7 @@ class AttrId(IntEnum):
     aoe_velocity_bonus = 847
     capacity = 38
     dmg_mult = 64
+    dmg_mult_bonus = 292
     dmg_mult_bonus_max = 2734
     energy_neutralizer_amount = 97
     explosion_delay = 281
@@ -285,7 +286,11 @@ class EffectId(IntEnum):
     launcher_fitted = 40
     lo_power = 11
     med_power = 13
+    missile_em_dmg_bonus = 660
+    missile_expl_dmg_bonus = 661
+    missile_kin_dmg_bonus2 = 668
     missile_launching = 9
+    missile_therm_dmg_bonus = 662
     module_bonus_afterburner = 6731
     module_bonus_microwarpdrive = 6730
     module_bonus_warfare_link_armor = 6732
