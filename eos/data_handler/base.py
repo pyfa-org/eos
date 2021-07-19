@@ -91,8 +91,6 @@ class BaseDataHandler(metaclass=ABCMeta):
             trackingSpeedAttributeID
             fittingUsageChanceAttributeID
             resistanceID
-            preExpression
-            postExpression
             modifierInfo
         """
         ...
@@ -104,21 +102,6 @@ class BaseDataHandler(metaclass=ABCMeta):
             typeID
             effectID
             isDefault
-        """
-        ...
-
-    @abstractmethod
-    def get_dgmexpressions(self):
-        """
-        Fields:
-            expressionID
-            operandID
-            arg1
-            arg2
-            expressionValue
-            expressionTypeID
-            expressionGroupID
-            expressionAttributeID
         """
         ...
 

@@ -27,11 +27,6 @@ class ModBuilderError(EosError):
     ...
 
 
-class UnknownEtreeRootOperandError(ModBuilderError):
-    """Raised when expression tree root operand cannot be handled."""
-    ...
-
-
 class YamlParsingError(ModBuilderError):
     """Raised when YAML parser fails to parse modifierInfo."""
     ...

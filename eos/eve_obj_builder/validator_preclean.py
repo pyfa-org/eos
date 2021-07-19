@@ -43,7 +43,6 @@ class ValidatorPreClean:
         pk_spec = {
             'dgmattribs': ['attributeID'],
             'dgmeffects': ['effectID'],
-            'dgmexpressions': ['expressionID'],
             'dgmtypeattribs': ['typeID', 'attributeID'],
             'dgmtypeeffects': ['typeID', 'effectID'],
             'evegroups': ['groupID'],

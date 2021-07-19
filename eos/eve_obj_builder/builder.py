@@ -58,7 +58,6 @@ class EveObjBuilder:
             'dgmtypeattribs': data_handler.get_dgmtypeattribs,
             'dgmeffects': data_handler.get_dgmeffects,
             'dgmtypeeffects': data_handler.get_dgmtypeeffects,
-            'dgmexpressions': data_handler.get_dgmexpressions,
             'dbuffcollections': data_handler.get_dbuffcollections,
             'typefighterabils': data_handler.get_typefighterabils}
 

@@ -17,9 +17,6 @@
 # along with Eos. If not, see <http://www.gnu.org/licenses/>.
 # ==============================================================================
 
-
-import yaml
-
 from eos.const.eos import ModAffecteeFilter
 from eos.const.eos import ModAggregateMode
 from eos.const.eos import ModDomain
@@ -32,11 +29,11 @@ class ModInfoconverter:
     """Parses modifierInfos into modifiers."""
 
     @classmethod
-    def convert(cls, mod_infos_yaml):
+    def convert(cls, mod_infos):
         """Generate modifiers out of YAML data.
 
         Args:
-            mod_infos_yaml: String with YAML modifier data.
+            mod_infos: structure with modifier data.
 
         Returns:
             Tuple with iterable which contains modifiers, and quantity of
@@ -45,13 +42,6 @@ class ModInfoconverter:
         Raises:
             YamlParsingError: If YAML parses fails.
         """
-        try:
-            mod_infos = yaml.safe_load(mod_infos_yaml)
-        except KeyboardInterrupt:
-            raise
-        # We cannot recover any data in case of YAML parsing failure
-        except Exception as e:
-            raise YamlParsingError('failed to parse YAML') from e
         mods = []
         fails = 0
         # Get handler according to function specified in info
@@ -160,4 +150,4 @@ class ModInfoconverter:
             5: ModOperator.post_div,
             6: ModOperator.post_percent,
             7: ModOperator.post_assign}
-        return conversion_map[mod_info['operator']]
+        return conversion_map[mod_info['operation']]

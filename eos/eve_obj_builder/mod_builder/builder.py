@@ -22,9 +22,7 @@
 from logging import getLogger
 
 from eos.const.eos import EffectBuildStatus
-from .converter import ExpressionTreeConverter
 from .converter import ModInfoconverter
-from .exception import UnknownEtreeRootOperandError
 from .exception import YamlParsingError
 
 
@@ -36,27 +34,19 @@ class ModBuilder:
 
     This class actually doesn't do much: routes tasks between two child
     converters and reports results.
-
-    Args:
-        exp_rows: Iterable with expression rows.
     """
-
-    def __init__(self, exp_rows):
-        self._etree = ExpressionTreeConverter(exp_rows)
 
     def build(self, effect_row):
         """Generate modifiers using passed data.
 
         Args:
-            effect_row: Effect row with effect category, pre-/post-expression
-                IDs, modifier info data.
+            effect_row: Effect row with effect category and modifier info data.
 
         Returns:
             Tuple with with iterable which contains modifiers and effect's
             modifier build status.
         """
         mod_info = effect_row.get('modifierInfo')
-        pre_exp_id = effect_row.get('preExpression')
         # Modifier info has priority
         if mod_info:
             try:
@@ -67,19 +57,6 @@ class ModBuilder:
                     effect_id, e.args[0])
                 logger.error(msg)
                 return (), EffectBuildStatus.error
-        # When no modifierInfo specified, use expression trees
-        elif pre_exp_id:
-            try:
-                mods, fails = self._etree.convert(pre_exp_id)
-            # There're quite many root-level operands we do not handle and do
-            # not want to handle. Special effects, non-modifier definitions.
-            # Handle these somewhat gracefully and mark such effects as skipped
-            except UnknownEtreeRootOperandError as e:
-                effect_id = effect_row['effectID']
-                msg = 'failed to build modifiers for effect {}: {}'.format(
-                    effect_id, e.args[0])
-                logger.info(msg)
-                return (), EffectBuildStatus.skipped
         # We tried and didn't find anything to do, that's a success
         else:
             return (), EffectBuildStatus.success

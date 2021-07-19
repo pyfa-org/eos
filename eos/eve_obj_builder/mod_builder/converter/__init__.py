@@ -19,5 +19,4 @@
 # ==============================================================================
 
 
-from .expression_tree import ExpressionTreeConverter
 from .mod_info import ModInfoconverter

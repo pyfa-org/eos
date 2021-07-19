@@ -23,8 +23,6 @@ from collections.abc import Iterable
 from itertools import chain
 from logging import getLogger
 
-import yaml
-
 from eos.const.eve import AttrId
 from eos.const.eve import TypeCategoryId
 from eos.const.eve import TypeGroupId
@@ -132,7 +130,7 @@ class Cleaner:
         # Format: {(target table name, target column name): {values to have}}}
         tgt_data = {}
         self._get_tgts_relational(tgt_data)
-        self._get_tgts_yaml(tgt_data)
+        self._get_tgts_modinfo(tgt_data)
         self._get_tgts_attr_autocharge(tgt_data)
         self._get_tgts_attr_buff(tgt_data)
         self._get_tgts_buff(tgt_data)
@@ -165,8 +163,6 @@ class Cleaner:
             'dgmattribs': {
                 'maxAttributeID': ('dgmattribs', 'attributeID')},
             'dgmeffects': {
-                'preExpression': ('dgmexpressions', 'expressionID'),
-                'postExpression': ('dgmexpressions', 'expressionID'),
                 'durationAttributeID': ('dgmattribs', 'attributeID'),
                 'trackingSpeedAttributeID': ('dgmattribs', 'attributeID'),
                 'dischargeAttributeID': ('dgmattribs', 'attributeID'),
@@ -174,12 +170,6 @@ class Cleaner:
                 'falloffAttributeID': ('dgmattribs', 'attributeID'),
                 'fittingUsageChanceAttributeID': ('dgmattribs', 'attributeID'),
                 'resistanceID': ('dgmattribs', 'attributeID')},
-            'dgmexpressions': {
-                'arg1': ('dgmexpressions', 'expressionID'),
-                'arg2': ('dgmexpressions', 'expressionID'),
-                'expressionTypeID': ('evetypes', 'typeID'),
-                'expressionGroupID': ('evegroups', 'groupID'),
-                'expressionAttributeID': ('dgmattribs', 'attributeID')},
             'dgmtypeattribs': {
                 'typeID': ('evetypes', 'typeID'),
                 'attributeID': ('dgmattribs', 'attributeID')},
@@ -202,23 +192,23 @@ class Cleaner:
                     tgt_spec = (tgt_table_name, tgt_column_name)
                     tgt_data.setdefault(tgt_spec, set()).add(fk_value)
 
-    def _get_tgts_yaml(self, tgt_data):
-        """Find out which data is referenced from YAML in actual data.
+    def _get_tgts_modinfo(self, tgt_data):
+        """Find out which data is referenced from modinfo in actual data.
 
-        Method knows where to look for YAML data and which references it
-        contains. If YAML data format is somehow changed, this method also needs
-        to be updated.
+        Method knows where to look for modinfo data and which references it
+        contains. If modinfo data format is somehow changed, this method also
+        needs to be updated.
 
         Args:
             tgt_data: Dictionary which will be filled during the process. Its
                 contents should specify target field and which values this field
                 should have.
         """
-        yaml_relations = self._yaml_modinfo_relations()
+        modinfo_relations = self._modinfo_relations()
         for effect_row in self.data['dgmeffects']:
             effect_id = effect_row['effectID']
             try:
-                relations = yaml_relations[effect_id]
+                relations = modinfo_relations[effect_id]
             except KeyError:
                 continue
             type_ids, group_ids, attr_ids = relations
@@ -233,8 +223,8 @@ class Cleaner:
                     tgt_spec = (tgt_table_name, tgt_column_name)
                     tgt_data.setdefault(tgt_spec, set()).update(references)
 
-    def _yaml_modinfo_relations(self):
-        """Helper method for YAML reference getter.
+    def _modinfo_relations(self):
+        """Helper method for modinfo reference getter.
 
         Generates auxiliary map to avoid re-parsing YAML on each cleanup cycle.
 
@@ -261,15 +251,8 @@ class Cleaner:
             self.trashed_data['dgmeffects']
         ):
             # We do not need anything here if modifier info is empty
-            mod_infos_yaml = effect_row.get('modifierInfo')
-            if mod_infos_yaml is None:
-                continue
-            # Skip row in case of any YAML parsing errors
-            try:
-                mod_infos = yaml.safe_load(mod_infos_yaml)
-            except KeyboardInterrupt:
-                raise
-            except:
+            mod_infos = effect_row.get('modifierInfo')
+            if not mod_infos:
                 continue
             # Modifier infos should be basic python iterable
             if not isinstance(mod_infos, Iterable):

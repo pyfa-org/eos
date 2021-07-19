@@ -40,29 +40,36 @@ class JsonDataHandler(BaseDataHandler):
         self.basepath = os.path.abspath(basepath)
 
     def get_evetypes(self):
-        return self.__fetch_file('evetypes', values_only=True)
+        return self.__fetch_file('fsd_lite', 'evetypes', values_only=True)
 
     def get_evegroups(self):
-        return self.__fetch_file('evegroups', values_only=True)
+        return self.__fetch_file('fsd_lite', 'evegroups', values_only=True)
 
     def get_dgmattribs(self):
-        return self.__fetch_file('dgmattribs')
+        return self.__fetch_file('fsd_binary', 'dogmaattributes', values_only=True)
 
     def get_dgmtypeattribs(self):
-        return self.__fetch_file('dgmtypeattribs')
+        rows = []
+        for type_id, type_data in self.__fetch_file('fsd_binary', 'typedogma').items():
+            type_id = int(type_id)
+            for tdrow in type_data.get('dogmaAttributes', ()):
+                rows.append({'typeID': type_id, 'attributeID': tdrow['attributeID'], 'value': tdrow['value']})
+        return rows
 
     def get_dgmeffects(self):
-        return self.__fetch_file('dgmeffects')
+        return self.__fetch_file('fsd_binary', 'dogmaeffects', values_only=True)
 
     def get_dgmtypeeffects(self):
-        return self.__fetch_file('dgmtypeeffects')
-
-    def get_dgmexpressions(self):
-        return self.__fetch_file('dgmexpressions')
+        rows = []
+        for type_id, type_data in self.__fetch_file('fsd_binary', 'typedogma').items():
+            type_id = int(type_id)
+            for tdrow in type_data.get('dogmaEffects', ()):
+                rows.append({'typeID': type_id, 'effectID': tdrow['effectID'], 'isDefault': tdrow['isDefault']})
+        return rows
 
     def get_dbuffcollections(self):
         rows = []
-        dbuffs = self.__fetch_file('dbuffcollections')
+        dbuffs = self.__fetch_file('fsd_lite', 'dbuffcollections')
         for buff_id, row in dbuffs.items():
             row['buffID'] = int(buff_id)
             rows.append(row)
@@ -70,7 +77,7 @@ class JsonDataHandler(BaseDataHandler):
 
     def get_typefighterabils(self):
         rows = []
-        fighter_abils = self.__fetch_file('fighterabilitiesbytype')
+        fighter_abils = self.__fetch_file('fsd_lite', 'fighterabilitiesbytype')
         for type_id, type_abilities in fighter_abils.items():
             for ability_slot, ability_data in type_abilities.items():
                 ability_row = {'typeID': int(type_id)}
@@ -78,8 +85,8 @@ class JsonDataHandler(BaseDataHandler):
                 rows.append(ability_row)
         return rows
 
-    def __fetch_file(self, filename, values_only=False):
-        filepath = os.path.join(self.basepath, '{}.json'.format(filename))
+    def __fetch_file(self, miner, filename, values_only=False):
+        filepath = os.path.join(self.basepath, miner, '{}.json'.format(filename))
         with open(filepath, mode='r', encoding='utf8') as file:
             data = json.load(file)
         if values_only:
@@ -95,7 +102,7 @@ class JsonDataHandler(BaseDataHandler):
                 tgt[k] = v
 
     def get_version(self):
-        metadata = self.__fetch_file('phbmetadata')
+        metadata = self.__fetch_file('phobos', 'metadata')
         for row in metadata:
             if row['field_name'] == 'client_build':
                 return row['field_value']

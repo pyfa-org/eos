@@ -60,9 +60,6 @@ class SQLiteDataHandler(BaseDataHandler):
     def get_dgmtypeeffects(self):
         return self.__fetch_table('dgmtypeeffects')
 
-    def get_dgmexpressions(self):
-        return self.__fetch_table('dgmexpressions')
-
     def __fetch_table(self, tablename):
         self.cursor.execute('SELECT * FROM {}'.format(tablename))
         return [dict(row) for row in self.cursor]

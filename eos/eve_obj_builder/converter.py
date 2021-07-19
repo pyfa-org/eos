@@ -83,7 +83,7 @@ class Converter:
 
         # Convert effects
         effects = []
-        mod_builder = ModBuilder(data['dgmexpressions'])
+        mod_builder = ModBuilder()
         for row in data['dgmeffects']:
             modifiers, build_status = mod_builder.build(row)
             effects.append(Effect(

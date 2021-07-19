@@ -22,7 +22,6 @@
 from logging import getLogger
 
 from eos.const.eve import AttrId
-from eos.const.eve import OperandId
 from eos.const.eve import TypeGroupId
 from eos.util.frozendict import frozendict
 
@@ -44,7 +43,6 @@ class Normalizer:
             data: Dictionary in {table name: {table, rows}} format.
         """
         cls._move_attrs(data)
-        cls._convert_expression_symbolic_references(data)
 
     @staticmethod
     def _move_attrs(data):
@@ -96,96 +94,3 @@ class Normalizer:
                 'in dgmtypeattribs and were skipped'
             ).format(attrs_skipped)
             logger.warning(msg)
-
-    @staticmethod
-    def _convert_expression_symbolic_references(data):
-        """Convert all known symbolic references to int references.
-
-        Some of entities in dgmexpressions table are defined not as IDs, but as
-        symbolic references. CCP most likely has these symbolic names defined in
-        their code, thus we have to hardcode it too.
-
-        Args:
-            data: Dictionary in {table name: {table, rows}} format.
-        """
-        dgmexps = data['dgmexpressions']
-        # Replacement specification
-        # Format:
-        # (
-        #   (
-        #     operator,
-        #     column name for entity ID,
-        #     {replacement: map},
-        #     (ignored names, ...)
-        #   ),
-        #   ...
-        # )
-        repl_spec = (
-            (
-                OperandId.def_attr,
-                'expressionAttributeID',
-                {},
-                ('shieldDamage',)),
-            (
-                OperandId.def_grp,
-                'expressionGroupID',
-                {
-                    'EnergyWeapon': TypeGroupId.energy_weapon,
-                    'HybridWeapon': TypeGroupId.hydrid_weapon,
-                    'MiningLaser': TypeGroupId.mining_laser,
-                    'ProjectileWeapon': TypeGroupId.projectile_weapon},
-                ('Structure', 'PowerCore', '    None')),
-            (
-                OperandId.def_type,
-                'expressionTypeID',
-                {},
-                ('Acceration Control',)))
-        for operand, id_col_name, repls, ignored_names in repl_spec:
-            used_repls = set()
-            unknown_names = set()
-            # We're modifying only rows with specific operands
-            for exp_row in dgmexps:
-                if exp_row['operandID'] != operand:
-                    continue
-                exp_entity_id = exp_row[id_col_name]
-                # If entity is already referenced via ID, nothing to do here
-                if exp_entity_id is not None:
-                    continue
-                symbolic_entity_name = exp_row['expressionValue']
-                # Skip names we've set to ignore explicitly
-                if symbolic_entity_name in ignored_names:
-                    continue
-                # Do replacements if they're known to us
-                if symbolic_entity_name in repls:
-                    # As rows are frozen dicts, we compose new mutable dict,
-                    # update data there, freeze it, and do actual replacement
-                    new_exp_row = {}
-                    new_exp_row.update(exp_row)
-                    new_exp_row['expressionValue'] = None
-                    new_exp_row[id_col_name] = repls[symbolic_entity_name]
-                    new_exp_row = frozendict(new_exp_row)
-                    dgmexps.remove(exp_row)
-                    dgmexps.add(new_exp_row)
-                    used_repls.add(symbolic_entity_name)
-                    continue
-                # If we do not know it, add to special container which we will
-                # use later
-                unknown_names.add(symbolic_entity_name)
-            # Report results to log, it will help to indicate when CCP finally
-            # stops using literal references, and we can get rid of this
-            # conversion, or add some new
-            unused_repls = set(repls).difference(used_repls)
-            if unused_repls:
-                unused_repls = sorted(unused_repls)
-                unused_line = ', '.join('"{}"'.format(r) for r in unused_repls)
-                msg = '{} replacements for {} were not used: {}'.format(
-                    len(unused_repls), id_col_name, unused_line)
-                logger.warning(msg)
-            if unknown_names:
-                unknown_names = sorted(unknown_names)
-                unknown_line = ', '.join(
-                    '"{}"'.format(n) for n in unknown_names)
-                msg = (
-                    'unable to convert {} literal references to {}: {}'
-                ).format(len(unknown_names), id_col_name, unknown_line)
-                logger.warning(msg)
