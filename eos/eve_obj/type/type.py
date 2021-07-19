@@ -54,7 +54,7 @@ class Type:
 
     def __init__(
             self, type_id, group_id=None, category_id=None, attrs=None,
-            effects=(), default_effect=None, abilities_data=None):
+            effects=(), default_effect=None, abilities_data=None, required_skills=None):
         self.id = type_id
         self.group_id = group_id
         self.category_id = category_id
@@ -66,6 +66,9 @@ class Type:
         if abilities_data is None:
             abilities_data = {}
         self.abilities_data = abilities_data
+        if required_skills is None:
+            required_skills = {}
+        self.required_skills = required_skills
 
     @cached_property
     def effects_data(self):
@@ -75,39 +78,6 @@ class Type:
             effect_id = fighter_ability_map[ability_id]
             effects_data[effect_id] = ability_data
         return effects_data
-
-    # Define attributes which describe item type skill requirement details
-    # Format: {skill type attribute ID: skill level attribute ID}
-    __skillrq_attrs = {
-        AttrId.required_skill_1: AttrId.required_skill_1_level,
-        AttrId.required_skill_2: AttrId.required_skill_2_level,
-        AttrId.required_skill_3: AttrId.required_skill_3_level,
-        AttrId.required_skill_4: AttrId.required_skill_4_level,
-        AttrId.required_skill_5: AttrId.required_skill_5_level,
-        AttrId.required_skill_6: AttrId.required_skill_6_level}
-
-    @cached_property
-    def required_skills(self):
-        """Get skill requirements.
-
-        Returns:
-            Map between skill type IDs and corresponding skill levels, which are
-            required to use this item type.
-        """
-        required_skills = {}
-        for skill_attr_id in self.__skillrq_attrs:
-            # Skip skill requirement attribute pair if any of them is not
-            # available
-            try:
-                skill_type_id = self.attrs[skill_attr_id]
-            except KeyError:
-                continue
-            try:
-                skill_lvl = self.attrs[self.__skillrq_attrs[skill_attr_id]]
-            except KeyError:
-                continue
-            required_skills[int(skill_type_id)] = int(skill_lvl)
-        return required_skills
 
     @cached_property
     def max_state(self):

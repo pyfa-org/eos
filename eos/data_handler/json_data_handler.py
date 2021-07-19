@@ -75,6 +75,16 @@ class JsonDataHandler(BaseDataHandler):
             rows.append(row)
         return rows
 
+    def get_skillreqs(self):
+        rows = []
+        skillreq_datas = self.__fetch_file('fsd_binary', 'requiredskillsfortypes')
+        for type_id, skillreq_data in skillreq_datas.items():
+            type_id = int(type_id)
+            for skill_type_id, skill_level in skillreq_data.items():
+                skill_type_id = int(skill_type_id)
+                rows.append({'typeID': type_id, 'skillTypeID': skill_type_id, 'level': skill_level})
+        return rows
+
     def get_typefighterabils(self):
         rows = []
         fighter_abils = self.__fetch_file('fsd_lite', 'fighterabilitiesbytype')

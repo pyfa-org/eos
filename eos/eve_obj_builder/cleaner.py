@@ -112,7 +112,7 @@ class Cleaner:
         type_ids = {row['typeID'] for row in self.data['evetypes']}
         # Auxiliary tables are those which do not define any entities, they just
         # map one entities to others or complement entities with additional data
-        aux_tables = ('dgmtypeattribs', 'dgmtypeeffects', 'typefighterabils')
+        aux_tables = ('dgmtypeattribs', 'dgmtypeeffects', 'skillreqs', 'typefighterabils')
         for table_name in aux_tables:
             to_restore = set()
             # Restore rows which map other entities to types
@@ -178,6 +178,9 @@ class Cleaner:
                 'effectID': ('dgmeffects', 'effectID')},
             'evetypes': {
                 'groupID': ('evegroups', 'groupID')},
+            'skillreqs': {
+                'typeID': ('evetypes', 'typeID'),
+                'skillTypeID': ('evetypes', 'typeID')},
             'typefighterabils': {
                 'typeID': ('evetypes', 'typeID')}}
         for src_table_name, table_fks in foreign_keys.items():

@@ -48,6 +48,7 @@ class ValidatorPreClean:
             'evegroups': ['groupID'],
             'evetypes': ['typeID'],
             'dbuffcollections': ['buffID'],
+            'skillreqs': ['typeID', 'skillTypeID'],
             'typefighterabils': ['typeID', 'abilityID']}
         for table_name, pks in pk_spec.items():
             cls._table_pk(pks, data[table_name], table_name)

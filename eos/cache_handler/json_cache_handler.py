@@ -196,7 +196,8 @@ class JsonCacheHandler(BaseCacheHandler):
             tuple(item_type.attrs.items()),
             tuple(item_type.effects.keys()),
             default_effect_id,
-            tuple(item_type.abilities_data.items()))
+            tuple(item_type.abilities_data.items()),
+            tuple(item_type.required_skills.items()))
 
     def __type_decompress(self, type_data):
         """Reconstruct item type from python primitives."""
@@ -212,7 +213,8 @@ class JsonCacheHandler(BaseCacheHandler):
             attrs={k: v for k, v in type_data[3]},
             effects=tuple(self.get_effect(eid) for eid in type_data[4]),
             default_effect=default_effect,
-            abilities_data={k: AbilityData(*v) for k, v in type_data[6]})
+            abilities_data={k: AbilityData(*v) for k, v in type_data[6]},
+            required_skills={k: v for k, v in type_data[7]})
 
     def __attr_compress(self, attr):
         """Compress attribute into python primitives."""

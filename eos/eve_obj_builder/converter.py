@@ -70,6 +70,11 @@ class Converter:
             type_abilities_data[row['abilityID']] = AbilityData(
                 cooldown_time=row.get('cooldownSeconds', 0),
                 charge_quantity=row.get('chargeCount', math.inf))
+        # Format: {type ID: {skill type ID: level}}
+        types_skillreq_data = {}
+        for row in data['skillreqs']:
+            type_skillreq_data = types_skillreq_data.setdefault(row['typeID'], {})
+            type_skillreq_data[row['skillTypeID']] = row['level']
 
         # Convert attributes
         attrs = []
@@ -117,7 +122,8 @@ class Converter:
                 attrs=types_attrs.get(type_id, {}),
                 effects=tuple(effect_map[eid] for eid in type_effect_ids),
                 default_effect=effect_map.get(types_defeff_map.get(type_id)),
-                abilities_data=types_abilities_data.get(type_id, {})))
+                abilities_data=types_abilities_data.get(type_id, {}),
+                required_skills=types_skillreq_data.get(type_id)))
 
         # Convert buff templates
         buff_templates = []

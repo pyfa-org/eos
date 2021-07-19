@@ -130,6 +130,16 @@ class BaseDataHandler(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def get_skillreqs(self):
+        """
+        Fields:
+            typeID
+            skillTypeID
+            level
+        """
+        ...
+
+    @abstractmethod
     def get_typefighterabils(self):
         """
         Fields:

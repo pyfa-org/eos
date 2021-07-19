@@ -59,6 +59,7 @@ class EveObjBuilder:
             'dgmeffects': data_handler.get_dgmeffects,
             'dgmtypeeffects': data_handler.get_dgmtypeeffects,
             'dbuffcollections': data_handler.get_dbuffcollections,
+            'skillreqs': data_handler.get_skillreqs,
             'typefighterabils': data_handler.get_typefighterabils}
 
         for table_name, getter in getter_map.items():
