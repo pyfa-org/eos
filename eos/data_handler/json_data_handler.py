@@ -64,7 +64,7 @@ class JsonDataHandler(BaseDataHandler):
         for type_id, type_data in self.__fetch_file('fsd_binary', 'typedogma').items():
             type_id = int(type_id)
             for tdrow in type_data.get('dogmaEffects', ()):
-                rows.append({'typeID': type_id, 'effectID': tdrow['effectID'], 'isDefault': tdrow['isDefault']})
+                rows.append({'typeID': type_id, 'effectID': tdrow['effectID'], 'isDefault': bool(tdrow['isDefault'])})
         return rows
 
     def get_dbuffcollections(self):

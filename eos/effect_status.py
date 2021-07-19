@@ -82,8 +82,7 @@ class EffectStatusResolver:
         return effects_status
 
     @staticmethod
-    def __resolve_effect_status(
-            item, effect, online_running, state_override):
+    def __resolve_effect_status(item, effect, online_running, state_override):
         resolver_map = {
             EffectMode.full_compliance:
                 EffectStatusResolver.__resolve_full_compliance,
