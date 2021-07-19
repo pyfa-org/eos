@@ -261,6 +261,7 @@ class EffectId(IntEnum):
     adaptive_armor_hardener = 4928
     armor_repair = 27
     bomb_launching = 2971
+    drone_dmg_bonus = 1730
     emp_wave = 38
     energy_neutralizer_falloff = 6187
     energy_nosferatu_falloff = 6197
