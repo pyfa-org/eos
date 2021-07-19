@@ -209,10 +209,12 @@ class AttrId(IntEnum):
     nos_override = 1945
     power_transfer_amount = 90
     radius = 162
+    rof_bonus = 293
     sensor_dampener_resist = 2112
     shield_bonus = 68
     signature_radius = 552
     signature_radius_bonus = 554
+    speed = 51
     speed_boost_factor = 567
     speed_factor = 20
     stasis_webifier_resist = 2115
@@ -298,6 +300,7 @@ class EffectId(IntEnum):
     remote_sensor_damp_falloff = 6422
     remote_webifier_falloff = 6426
     rig_slot = 2663
+    self_rof = 1851
     shield_boosting = 4
     ship_module_ancillary_remote_armor_repairer = 6651
     ship_module_ancillary_remote_shield_booster = 6652
