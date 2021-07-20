@@ -20,28 +20,22 @@
 
 
 from eos.const.eve import AttrId
-from eos.eve_obj.effect.helper_func import get_cycles_until_reload_generic
-from eos.stats_container import DmgStats
-from .base import TurretDmgEffect
+from eos.const.eve import EffectId
+from eos.eve_obj.effect import EffectFactory
+from .base import RemoteArmorRepairEffect
 
 
-class TargetABCAttack(TurretDmgEffect):
+class ShipModuleRemoteArmorMutadaptiveRepairer(RemoteArmorRepairEffect):
 
-    def _get_base_dmg_item(self, item):
-        return self.get_charge(item)
-
-    def get_volley(self, item):
-        volley = TurretDmgEffect.get_volley(self, item)
+    def get_rep_amount(self, item):
+        rep_amount = item.attrs.get(AttrId.armor_dmg_amount, 0)
         try:
-            spoolup_mult = item.attrs[AttrId.dmg_mult_bonus_max]
+            spoolup_mult = 1 + item.attrs[AttrId.repair_mult_bonus_max]
         except KeyError:
-            return volley
-        return DmgStats(
-            volley.em,
-            volley.thermal,
-            volley.kinetic,
-            volley.explosive,
-            1 + spoolup_mult)
+            spoolup_mult = 1
+        return rep_amount * spoolup_mult
 
-    def get_cycles_until_reload(self, item):
-        return get_cycles_until_reload_generic(item)
+
+EffectFactory.register_class_by_id(
+    ShipModuleRemoteArmorMutadaptiveRepairer,
+    EffectId.ship_module_remote_armor_mutadaptive_repairer)

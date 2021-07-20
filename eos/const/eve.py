@@ -210,6 +210,7 @@ class AttrId(IntEnum):
     nos_override = 1945
     power_transfer_amount = 90
     radius = 162
+    repair_mult_bonus_max = 2797
     rof_bonus = 293
     sensor_dampener_resist = 2112
     shield_bonus = 68
@@ -312,6 +313,7 @@ class EffectId(IntEnum):
     ship_module_ancillary_remote_shield_booster = 6652
     ship_module_guidance_disruptor = 6423
     ship_module_tracking_disruptor = 6424
+    ship_module_remote_armor_mutadaptive_repairer = 7166
     ship_module_remote_armor_repairer = 6188
     ship_module_remote_capacitor_transmitter = 6184
     ship_module_remote_shield_booster = 6186
@@ -321,7 +323,7 @@ class EffectId(IntEnum):
     super_weapon_caldari = 4490
     super_weapon_gallente = 4491
     super_weapon_minmatar = 4492
-    target_abc_attack = 6995
+    target_disintegrator_attack = 6995
     target_attack = 10
     turret_fitted = 42
     use_missiles = 101
