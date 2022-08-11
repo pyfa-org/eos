@@ -40,10 +40,10 @@ class JsonDataHandler(BaseDataHandler):
         self.basepath = os.path.abspath(basepath)
 
     def get_evetypes(self):
-        return self.__fetch_file('fsd_lite', 'evetypes', values_only=True)
+        return self.__fetch_file('fsd_lite', 'types', values_only=True)
 
     def get_evegroups(self):
-        return self.__fetch_file('fsd_lite', 'evegroups', values_only=True)
+        return self.__fetch_file('fsd_lite', 'groups', values_only=True)
 
     def get_dgmattribs(self):
         return self.__fetch_file('fsd_binary', 'dogmaattributes', values_only=True)
