@@ -40,28 +40,28 @@ class JsonDataHandler(BaseDataHandler):
         self.basepath = os.path.abspath(basepath)
 
     def get_evetypes(self):
-        return self.__fetch_file('fsd_binary', 'types', values_only=True)
+        return self.__fetch_file('fsd_built', 'types', values_only=True)
 
     def get_evegroups(self):
-        return self.__fetch_file('fsd_binary', 'groups', values_only=True)
+        return self.__fetch_file('fsd_built', 'groups', values_only=True)
 
     def get_dgmattribs(self):
-        return self.__fetch_file('fsd_binary', 'dogmaattributes', values_only=True)
+        return self.__fetch_file('fsd_built', 'dogmaattributes', values_only=True)
 
     def get_dgmtypeattribs(self):
         rows = []
-        for type_id, type_data in self.__fetch_file('fsd_binary', 'typedogma').items():
+        for type_id, type_data in self.__fetch_file('fsd_built', 'typedogma').items():
             type_id = int(type_id)
             for tdrow in type_data.get('dogmaAttributes', ()):
                 rows.append({'typeID': type_id, 'attributeID': tdrow['attributeID'], 'value': tdrow['value']})
         return rows
 
     def get_dgmeffects(self):
-        return self.__fetch_file('fsd_binary', 'dogmaeffects', values_only=True)
+        return self.__fetch_file('fsd_built', 'dogmaeffects', values_only=True)
 
     def get_dgmtypeeffects(self):
         rows = []
-        for type_id, type_data in self.__fetch_file('fsd_binary', 'typedogma').items():
+        for type_id, type_data in self.__fetch_file('fsd_built', 'typedogma').items():
             type_id = int(type_id)
             for tdrow in type_data.get('dogmaEffects', ()):
                 rows.append({'typeID': type_id, 'effectID': tdrow['effectID'], 'isDefault': bool(tdrow['isDefault'])})
@@ -77,7 +77,7 @@ class JsonDataHandler(BaseDataHandler):
 
     def get_skillreqs(self):
         rows = []
-        skillreq_datas = self.__fetch_file('fsd_binary', 'requiredskillsfortypes')
+        skillreq_datas = self.__fetch_file('fsd_built', 'requiredskillsfortypes')
         for type_id, skillreq_data in skillreq_datas.items():
             type_id = int(type_id)
             for skill_type_id, skill_level in skillreq_data.items():
